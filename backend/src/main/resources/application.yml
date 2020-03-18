@@ -1,0 +1,26 @@
+server:
+  compression:
+    enabled: true
+    mime-types:
+      - application/json
+      - application/javascript
+      - text/html
+      - text/css
+      - text/plain
+spring:
+  datasource:
+    url: jdbc:postgresql:rarebasket
+    username: rarebasket
+    password: rarebasket
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 20MB
+
+---
+spring:
+  profiles: test
+  datasource:
+    url: jdbc:postgresql:rarebasket_test
+    hikari:
+      maximum-pool-size: 2
