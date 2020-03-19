@@ -35,6 +35,13 @@ public class GrcContact {
     @ManyToOne(fetch = FetchType.LAZY)
     private Grc grc;
 
+    public GrcContact() {
+    }
+
+    public GrcContact(Long id) {
+        this.id = id;
+    }
+
     public Long getId() {
         return id;
     }

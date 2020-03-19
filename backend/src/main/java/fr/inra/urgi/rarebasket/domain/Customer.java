@@ -1,5 +1,6 @@
 package fr.inra.urgi.rarebasket.domain;
 
+import java.util.Objects;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import javax.persistence.EnumType;
@@ -69,5 +70,25 @@ public class Customer {
 
     public void setType(CustomerType type) {
         this.type = type;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof Customer)) {
+            return false;
+        }
+        Customer customer = (Customer) o;
+        return Objects.equals(name, customer.name) &&
+            Objects.equals(email, customer.email) &&
+            Objects.equals(address, customer.address) &&
+            type == customer.type;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(name, email, address, type);
     }
 }

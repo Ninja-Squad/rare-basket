@@ -13,6 +13,7 @@ import fr.inra.urgi.rarebasket.domain.BasketStatus;
  * @author JB Nizet
  */
 public final class BasketDTO {
+
     private final Long id;
     private final String reference;
     private final BasketStatus status;

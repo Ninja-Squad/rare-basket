@@ -2,14 +2,14 @@
 
 This project is built with Gradle, and is composed of two sub-projects:
 
-1. backend: the Backend, implemented using Java 8 and Spring Boot. 
+1. backend: the Backend, implemented using Java 11 and Spring Boot. 
    See [the backend README](backend/README.md) for details.
 2. frontend: the frontend, implemented using Angular.
    See [the frontend README](frontend/README.md) for details.
    
 ## Prerequisites
 
-- A [Java 8 SDK](https://adoptopenjdk.net/)
+- A [Java 11 SDK](https://adoptopenjdk.net/)
 - [Docker](https://www.docker.com/) to easily setup a database and an SMTP server
 
 ## Building

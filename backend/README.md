@@ -1,6 +1,6 @@
 # Backend
 
-The backend is implemented in Java 8, using 
+The backend is implemented in Java 11, using 
 [Spring Boot](https://docs.spring.io/spring-boot/docs/current/reference/htmlsingle/).
 
 It uses [Spring Data JPA](https://docs.spring.io/spring-data/jpa/docs/current/reference/html/#reference) for its 
