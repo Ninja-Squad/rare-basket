@@ -6,7 +6,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.time.Instant;
 
 import com.ninja_squad.dbsetup.operation.Operation;
-import fr.inra.urgi.rarebasket.domain.Basket;
 import fr.inra.urgi.rarebasket.domain.BasketStatus;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -32,10 +31,8 @@ class BasketDaoTest extends BaseDaoTest {
     }
 
     @Test
-    void shouldFindById() {
-        Basket basket = basketDao.findById(1L).get();
-        assertThat(basket.getReference()).isEqualTo("abcdef");
-        assertThat(basket.getStatus()).isEqualTo(BasketStatus.DRAFT);
-        assertThat(basket.getCreationInstant()).isEqualTo(Instant.parse("2020-03-19T09:00:00Z"));
+    void shouldFindByReference() {
+        assertThat(basketDao.findByReference("abcdef")).isNotEmpty();
+        assertThat(basketDao.findByReference("notExisting")).isEmpty();
     }
 }

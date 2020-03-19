@@ -49,6 +49,13 @@ public class BasketItem {
     @ManyToOne(fetch = FetchType.LAZY)
     private Basket basket;
 
+    public BasketItem() {
+    }
+
+    public BasketItem(Long id) {
+        this.id = id;
+    }
+
     public Long getId() {
         return id;
     }

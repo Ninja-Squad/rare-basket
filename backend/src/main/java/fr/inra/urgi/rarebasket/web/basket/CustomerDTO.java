@@ -1,0 +1,42 @@
+package fr.inra.urgi.rarebasket.web.basket;
+
+import fr.inra.urgi.rarebasket.domain.Customer;
+import fr.inra.urgi.rarebasket.domain.CustomerType;
+
+/**
+ * DTO containing the customer information
+ * @author JB Nizet
+ */
+public final class CustomerDTO {
+    private final String name;
+    private final String email;
+    private final String address;
+    private final CustomerType type;
+
+    public CustomerDTO(String name, String email, String address, CustomerType type) {
+        this.name = name;
+        this.email = email;
+        this.address = address;
+        this.type = type;
+    }
+
+    public CustomerDTO(Customer customer) {
+        this(customer.getName(), customer.getEmail(), customer.getAddress(), customer.getType());
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public CustomerType getType() {
+        return type;
+    }
+}
