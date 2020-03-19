@@ -1,0 +1,5 @@
+<div *ngIf="basket">
+  <h1>Votre commande {{ basket.reference }}</h1>
+  <rb-edit-basket *ngIf="basket.status === 'DRAFT'" [basket]="basket" (basketSaved)="save($event)"></rb-edit-basket>
+  <div *ngIf="basket.status !== 'DRAFT'">Votre commande a bien été enregistrée</div>
+</div>

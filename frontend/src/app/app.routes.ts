@@ -5,5 +5,9 @@ export const APP_ROUTES: Routes = [
   {
     path: '',
     component: HomeComponent
+  },
+  {
+    path: 'baskets',
+    loadChildren: () => import('./basket/basket.module').then(m => m.BasketModule)
   }
 ];

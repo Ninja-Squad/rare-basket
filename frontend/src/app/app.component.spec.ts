@@ -4,6 +4,8 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { ComponentTester } from 'ngx-speculoos';
 import { By } from '@angular/platform-browser';
 import { RouterOutlet } from '@angular/router';
+import { ValidationDefaultsComponent } from './validation-defaults/validation-defaults.component';
+import { ValdemortModule } from 'ngx-valdemort';
 
 class AppComponentTester extends ComponentTester<AppComponent> {
   constructor() {
@@ -20,8 +22,8 @@ describe('AppComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      declarations: [AppComponent],
-      imports: [RouterTestingModule]
+      declarations: [AppComponent, ValidationDefaultsComponent],
+      imports: [RouterTestingModule, ValdemortModule]
     });
 
     tester = new AppComponentTester();

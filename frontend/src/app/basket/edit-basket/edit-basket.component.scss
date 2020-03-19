@@ -1,0 +1,15 @@
+@import '../../../common';
+
+.delete-btn {
+  border: 1px solid transparent;
+  &:hover {
+    border: 1px solid $danger;
+  }
+  &:disabled {
+    border: 1px solid transparent;
+  }
+}
+
+h3 {
+  font-size: 1.2rem;
+}
