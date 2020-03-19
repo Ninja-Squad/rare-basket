@@ -3,6 +3,8 @@ package fr.inra.urgi.rarebasket.dao;
 import static com.ninja_squad.dbsetup.Operations.insertInto;
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.time.Instant;
+
 import com.ninja_squad.dbsetup.operation.Operation;
 import fr.inra.urgi.rarebasket.domain.Basket;
 import fr.inra.urgi.rarebasket.domain.BasketStatus;
@@ -22,8 +24,8 @@ class BasketDaoTest extends BaseDaoTest {
     void prepare() {
         Operation baskets =
             insertInto("basket")
-                .columns("id", "reference", "email", "status")
-                .values(1L, "abcdef", "john@mail.com", BasketStatus.DRAFT)
+                .columns("id", "reference", "status", "creation_instant")
+                .values(1L, "abcdef", BasketStatus.DRAFT, Instant.parse("2020-03-19T09:00:00Z"))
                 .build();
 
         executeIfNecessary(baskets);
@@ -33,7 +35,7 @@ class BasketDaoTest extends BaseDaoTest {
     void shouldFindById() {
         Basket basket = basketDao.findById(1L).get();
         assertThat(basket.getReference()).isEqualTo("abcdef");
-        assertThat(basket.getEmail()).isEqualTo("john@mail.com");
         assertThat(basket.getStatus()).isEqualTo(BasketStatus.DRAFT);
+        assertThat(basket.getCreationInstant()).isEqualTo(Instant.parse("2020-03-19T09:00:00Z"));
     }
 }

@@ -15,7 +15,6 @@ import fr.inra.urgi.rarebasket.MoreAnswers;
 import fr.inra.urgi.rarebasket.dao.BasketDao;
 import fr.inra.urgi.rarebasket.domain.Basket;
 import fr.inra.urgi.rarebasket.domain.BasketStatus;
-import org.hamcrest.CoreMatchers;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -50,7 +49,6 @@ class BasketControllerTest {
                             .content(objectMapper.writeValueAsBytes(command)))
                .andExpect(status().isCreated())
                .andExpect(jsonPath("$.id").value(42L))
-               .andExpect(jsonPath("$.email").value(CoreMatchers.nullValue()))
                .andExpect(jsonPath("$.reference").isNotEmpty())
                .andExpect(jsonPath("$.status").value(BasketStatus.DRAFT.name()));
 
@@ -59,13 +57,14 @@ class BasketControllerTest {
 
     @Test
     void shouldGet() throws Exception {
-        Basket basket = new Basket(42L, "ref", "john@mail.com", BasketStatus.DRAFT);
+        Basket basket = new Basket(42L);
+        basket.setReference("ref");
+        basket.setStatus(BasketStatus.DRAFT);
         when(mockBasketDao.findById(basket.getId())).thenReturn(Optional.of(basket));
 
         mockMvc.perform(get("/api/baskets/{id}", basket.getId()))
                .andExpect(status().isOk())
                .andExpect(jsonPath("$.id").value(basket.getId()))
-               .andExpect(jsonPath("$.email").value(basket.getEmail()))
                .andExpect(jsonPath("$.reference").value(basket.getReference()))
                .andExpect(jsonPath("$.status").value(BasketStatus.DRAFT.name()));
     }

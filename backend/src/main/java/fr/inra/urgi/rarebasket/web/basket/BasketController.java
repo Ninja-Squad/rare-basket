@@ -50,7 +50,10 @@ public class BasketController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public BasketDTO create(@Validated @RequestBody BasketCommandDTO command) {
-        Basket basket = basketDao.save(new Basket(generateRandomReference(), command.getEmail(), BasketStatus.DRAFT));
+        Basket basket = new Basket();
+        basket.setReference(generateRandomReference());
+        basket.setStatus(BasketStatus.DRAFT);
+        basketDao.save(basket);
         return new BasketDTO(basket);
     }
 

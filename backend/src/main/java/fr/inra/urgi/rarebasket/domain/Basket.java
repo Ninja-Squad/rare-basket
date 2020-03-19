@@ -1,17 +1,27 @@
 package fr.inra.urgi.rarebasket.domain;
 
+import java.time.Instant;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
+import javax.persistence.CascadeType;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
-import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
 
 /**
- * A basket
+ * A basket. The list of items it contains is what is sent from Rare when a customer sends a order from its basket.
+ * The basket then stays in the draft status until the customer has filled the missing information (name, email,
+ * quantity, of each item, etc.). Once it's saved, the basket is split into basket orders: one order per distinct
+ * contact found in the items. Each basket order can be seen as a copy of the items of the basket associated with a
+ * given contact.
  * @author JB Nizet
  */
 @Entity
@@ -28,31 +38,46 @@ public class Basket {
     @NotNull
     private String reference;
 
-    @Email
-    private String email;
+    /**
+     * The information about the customer
+     */
+    @Embedded
+    private Customer customer;
 
+    /**
+     * The status of the order. While it's DRAFT, the customer can still edit it (remove items, specify their quantity,
+     * fill the customer information, etc.). Once SAVED, it's immutable: the order has been splitted into
+     * basket orders (one by distinct contact)
+     */
     @NotNull
     @Enumerated(EnumType.STRING)
     private BasketStatus status = BasketStatus.DRAFT;
+
+    /**
+     * The instant when the basket was created (typically by sending it from Rare)
+     */
+    @NotNull
+    private Instant creationInstant = Instant.now();
+
+    /**
+     * The instant when the customer saved this order (and thus made it immutable), i.e. made its status go
+     * from DRAFT to SAVED.
+     */
+    private Instant saveInstant;
+
+    /**
+     * A text describing why this order was requested by the customer.
+     */
+    private String rationale;
+
+    @OneToMany(mappedBy = "basket", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<BasketItem> items = new HashSet<>();
 
     public Basket() {
     }
 
     public Basket(Long id) {
         this.id = id;
-    }
-
-    public Basket(String reference, String email, BasketStatus status) {
-        this.reference = reference;
-        this.email = email;
-        this.status = status;
-    }
-
-    public Basket(Long id, String reference, String email, BasketStatus status) {
-        this.id = id;
-        this.reference = reference;
-        this.email = email;
-        this.status = status;
     }
 
     public Long getId() {
@@ -71,12 +96,12 @@ public class Basket {
         this.reference = reference;
     }
 
-    public String getEmail() {
-        return email;
+    public Customer getCustomer() {
+        return customer;
     }
 
-    public void setEmail(String email) {
-        this.email = email;
+    public void setCustomer(Customer customer) {
+        this.customer = customer;
     }
 
     public BasketStatus getStatus() {
@@ -85,5 +110,42 @@ public class Basket {
 
     public void setStatus(BasketStatus status) {
         this.status = status;
+    }
+
+    public Instant getCreationInstant() {
+        return creationInstant;
+    }
+
+    public void setCreationInstant(Instant creationInstant) {
+        this.creationInstant = creationInstant;
+    }
+
+    public Instant getSaveInstant() {
+        return saveInstant;
+    }
+
+    public void setSaveInstant(Instant saveInstant) {
+        this.saveInstant = saveInstant;
+    }
+
+    public String getRationale() {
+        return rationale;
+    }
+
+    public void setRationale(String rationale) {
+        this.rationale = rationale;
+    }
+
+    public Set<BasketItem> getItems() {
+        return Collections.unmodifiableSet(items);
+    }
+
+    public void addItem(BasketItem item) {
+        item.setBasket(this);
+        this.items.add(item);
+    }
+
+    public void removeItem(BasketItem item) {
+        this.items.remove(item);
     }
 }

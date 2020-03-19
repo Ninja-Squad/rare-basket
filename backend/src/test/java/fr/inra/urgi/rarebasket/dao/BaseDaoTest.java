@@ -30,7 +30,14 @@ public class BaseDaoTest {
     protected void executeIfNecessary(Operation operation) {
         Operation completeOperation =
             Operations.sequenceOf(
-                Operations.deleteAllFrom("basket"),
+                Operations.deleteAllFrom("accession_order_document",
+                                         "document",
+                                         "accession_order_item",
+                                         "accession_order",
+                                         "basket_item",
+                                         "basket",
+                                         "grc_contact",
+                                         "grc"),
                 operation
             );
         TRACKER.launchIfNecessary(new DbSetup(new DataSourceDestination(dataSource), completeOperation));

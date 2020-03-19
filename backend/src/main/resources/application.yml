@@ -24,3 +24,6 @@ spring:
     url: jdbc:postgresql:rarebasket_test
     hikari:
       maximum-pool-size: 2
+  jpa:
+    hibernate:
+      ddl-auto: validate
