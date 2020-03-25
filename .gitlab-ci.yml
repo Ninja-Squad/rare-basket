@@ -1,0 +1,22 @@
+image: circleci/openjdk:11-browsers
+
+# Disable the Gradle daemon for Continuous Integration servers as correctness
+# is usually a priority over speed in CI environments. Using a fresh
+# runtime for each build is more reliable since the runtime is completely
+# isolated from any previous builds.
+variables:
+ GRADLE_OPTS: "-Dorg.gradle.daemon=false"
+ POSTGRES_HOST_AUTH_METHOD: trust
+
+test:
+ services:
+  - name: postgres:12.2-alpine
+    alias: postgres
+ script:
+  # I know this looks weird, but apt-get update is consistently failing the first time...
+  # running it twice fixes the issue
+  - sudo apt-get update || sudo apt-get update
+  - sudo apt-get install -y postgresql-client
+  # create the test db before running the tests
+  - psql -h postgres -U postgres -f backend/database/setup.sql
+  - ./gradlew check build

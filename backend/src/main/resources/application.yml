@@ -1,3 +1,7 @@
+rare-basket:
+  database:
+    host-and-port: localhost:5432
+
 server:
   compression:
     enabled: true
@@ -21,7 +25,7 @@ spring:
 spring:
   profiles: test
   datasource:
-    url: jdbc:postgresql:rarebasket_test
+    url: jdbc:postgresql://${rare-basket.database.host-and-port}/rarebasket_test
     hikari:
       maximum-pool-size: 2
   jpa:
