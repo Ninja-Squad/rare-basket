@@ -4,6 +4,7 @@ import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.time.Instant;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Function;
@@ -13,15 +14,20 @@ import javax.validation.Validator;
 
 import fr.inra.urgi.rarebasket.dao.BasketDao;
 import fr.inra.urgi.rarebasket.dao.GrcContactDao;
+import fr.inra.urgi.rarebasket.dao.OrderDao;
 import fr.inra.urgi.rarebasket.domain.Basket;
 import fr.inra.urgi.rarebasket.domain.BasketItem;
 import fr.inra.urgi.rarebasket.domain.BasketStatus;
 import fr.inra.urgi.rarebasket.domain.Customer;
 import fr.inra.urgi.rarebasket.domain.GrcContact;
+import fr.inra.urgi.rarebasket.domain.Order;
+import fr.inra.urgi.rarebasket.domain.OrderItem;
+import fr.inra.urgi.rarebasket.domain.OrderStatus;
 import fr.inra.urgi.rarebasket.exception.BadRequestException;
 import fr.inra.urgi.rarebasket.exception.NotFoundException;
 import fr.inra.urgi.rarebasket.service.event.BasketSaved;
 import fr.inra.urgi.rarebasket.service.event.EventPublisher;
+import fr.inra.urgi.rarebasket.service.event.OrderCreated;
 import org.springframework.http.HttpStatus;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
@@ -45,6 +51,7 @@ public class BasketController {
 
     private final BasketDao basketDao;
     private final GrcContactDao grcContactDao;
+    private final OrderDao orderDao;
     private final Validator validator;
     private final EventPublisher eventPublisher;
 
@@ -54,10 +61,12 @@ public class BasketController {
 
     public BasketController(BasketDao basketDao,
                             GrcContactDao grcContactDao,
+                            OrderDao orderDao,
                             Validator validator,
                             EventPublisher eventPublisher) {
         this.basketDao = basketDao;
         this.grcContactDao = grcContactDao;
+        this.orderDao = orderDao;
         this.validator = validator;
         this.eventPublisher = eventPublisher;
         try {
@@ -133,6 +142,7 @@ public class BasketController {
 
         basket.setStatus(BasketStatus.CONFIRMED);
         basket.setConfirmationInstant(Instant.now());
+        createOrders(basket);
     }
 
     private void validateIfComplete(@RequestBody @Validated(BasketCommandDTO.Create.class) BasketCommandDTO command) {
@@ -214,7 +224,31 @@ public class BasketController {
         StringBuilder builder = new StringBuilder();
         for (int i = 0; i < 8; i++) {
             builder.append(REFERENCE_CHARACTERS.charAt(random.nextInt(REFERENCE_CHARACTERS.length())));
-        };
+        }
         return builder.toString();
+    }
+
+    private void createOrders(Basket basket) {
+        basket.getItems()
+              .stream()
+              .collect(Collectors.groupingBy(BasketItem::getContact))
+              .forEach((contact, basketItems) -> createOrder(basket, contact, basketItems));
+    }
+
+    private void createOrder(Basket basket, GrcContact contact, List<BasketItem> basketItems) {
+        Order order = new Order();
+        order.setBasket(basket);
+        order.setStatus(OrderStatus.DRAFT);
+        order.setContact(contact);
+        basketItems.forEach(basketItem -> order.addItem(createOrderItem(basketItem)));
+        orderDao.save(order);
+        eventPublisher.publish(new OrderCreated(order.getId()));
+    }
+
+    private OrderItem createOrderItem(BasketItem basketItem) {
+        OrderItem orderItem = new OrderItem();
+        orderItem.setAccession(basketItem.getAccession());
+        orderItem.setQuantity(basketItem.getQuantity());
+        return orderItem;
     }
 }

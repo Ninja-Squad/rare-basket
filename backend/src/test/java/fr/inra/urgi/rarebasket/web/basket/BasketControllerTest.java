@@ -10,19 +10,26 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicLong;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import fr.inra.urgi.rarebasket.MoreAnswers;
 import fr.inra.urgi.rarebasket.dao.BasketDao;
 import fr.inra.urgi.rarebasket.dao.GrcContactDao;
+import fr.inra.urgi.rarebasket.dao.OrderDao;
 import fr.inra.urgi.rarebasket.domain.Basket;
 import fr.inra.urgi.rarebasket.domain.BasketItem;
 import fr.inra.urgi.rarebasket.domain.BasketStatus;
 import fr.inra.urgi.rarebasket.domain.Customer;
 import fr.inra.urgi.rarebasket.domain.CustomerType;
 import fr.inra.urgi.rarebasket.domain.GrcContact;
+import fr.inra.urgi.rarebasket.domain.Order;
+import fr.inra.urgi.rarebasket.domain.OrderItem;
+import fr.inra.urgi.rarebasket.domain.OrderStatus;
 import fr.inra.urgi.rarebasket.service.event.BasketSaved;
 import fr.inra.urgi.rarebasket.service.event.EventPublisher;
+import fr.inra.urgi.rarebasket.service.event.OrderCreated;
+import org.assertj.core.groups.Tuple;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
@@ -44,6 +51,9 @@ class BasketControllerTest {
 
     @MockBean
     private GrcContactDao mockGrcContactDao;
+
+    @MockBean
+    private OrderDao mockOrderDao;
 
     @MockBean
     private EventPublisher mockEventPublisher;
@@ -415,8 +425,14 @@ class BasketControllerTest {
     void shouldConfirm() throws Exception {
         BasketConfirmationCommandDTO command = new BasketConfirmationCommandDTO("ZYXWVUTS");
 
+        rosa.setQuantity(1);
+        violetta.setQuantity(2);
         basket.setStatus(BasketStatus.SAVED);
         basket.setConfirmationCode(command.getConfirmationCode());
+
+        ArgumentCaptor<Order> orderCaptor = ArgumentCaptor.forClass(Order.class);
+        AtomicLong counter = new AtomicLong(1L);
+        when(mockOrderDao.save(any())).thenAnswer(MoreAnswers.<Order>firstArgWith(o -> o.setId(counter.getAndIncrement())));
 
         mockMvc.perform(put("/api/baskets/{reference}/confirmation", basket.getReference())
                             .contentType(MediaType.APPLICATION_JSON)
@@ -425,6 +441,19 @@ class BasketControllerTest {
 
         assertThat(basket.getStatus()).isEqualTo(BasketStatus.CONFIRMED);
         assertThat(basket.getConfirmationInstant()).isNotNull();
+
+        verify(mockOrderDao, times(2)).save(orderCaptor.capture());
+
+        Order johnsOrder = orderCaptor.getAllValues().stream().filter(order -> order.getContact().equals(john)).findAny().get();
+        Order alicesOrder = orderCaptor.getAllValues().stream().filter(order -> order.getContact().equals(alice)).findAny().get();
+        assertThat(johnsOrder.getBasket()).isEqualTo(basket);
+        assertThat(johnsOrder.getStatus()).isEqualTo(OrderStatus.DRAFT);
+        assertThat(johnsOrder.getItems())
+            .extracting(OrderItem::getOrder, OrderItem::getAccession, OrderItem::getQuantity)
+            .containsOnly(Tuple.tuple(johnsOrder, rosa.getAccession(), rosa.getQuantity()));
+
+        verify(mockEventPublisher).publish(new OrderCreated(johnsOrder.getId()));
+        verify(mockEventPublisher).publish(new OrderCreated(alicesOrder.getId()));
     }
 
     private void checkBadRequestWhenCreating(BasketCommandDTO command) throws Exception {

@@ -29,6 +29,13 @@ import javax.validation.constraints.NotNull;
 @Entity
 @Table(name = "accession_order")
 public class Order {
+    public Order() {
+    }
+
+    public Order(Long id) {
+        this.id = id;
+    }
+
     @Id
     @SequenceGenerator(name = "ORDER_GENERATOR", sequenceName = "accession_order_seq")
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "ORDER_GENERATOR")

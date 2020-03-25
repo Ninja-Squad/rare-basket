@@ -14,6 +14,7 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { SharedModule } from '../../shared/shared.module';
 import { ValdemortModule } from 'ngx-valdemort';
 import { EditConfirmationComponent } from '../edit-confirmation/edit-confirmation.component';
+import { ConfirmedComponent } from '../confirmed/confirmed.component';
 
 class BasketComponentTester extends ComponentTester<BasketComponent> {
   constructor() {
@@ -30,6 +31,10 @@ class BasketComponentTester extends ComponentTester<BasketComponent> {
 
   get editConfirmationComponent(): EditConfirmationComponent {
     return this.debugElement.query(By.directive(EditConfirmationComponent))?.componentInstance ?? null;
+  }
+
+  get confirmedComponent(): ConfirmedComponent {
+    return this.debugElement.query(By.directive(ConfirmedComponent))?.componentInstance ?? null;
   }
 }
 
@@ -49,7 +54,7 @@ describe('BasketComponent', () => {
     basketService = jasmine.createSpyObj<BasketService>('BasketService', ['get', 'save', 'confirm']);
 
     TestBed.configureTestingModule({
-      declarations: [BasketComponent, EditBasketComponent, EditConfirmationComponent],
+      declarations: [BasketComponent, EditBasketComponent, EditConfirmationComponent, ConfirmedComponent],
       imports: [RbNgbModule, ReactiveFormsModule, FontAwesomeModule, SharedModule, ValdemortModule],
       providers: [
         { provide: ActivatedRoute, useValue: route },
@@ -95,6 +100,7 @@ describe('BasketComponent', () => {
       expect(tester.editBasketComponent).not.toBeNull();
       expect(tester.editBasketComponent.basket).toBe(basket);
       expect(tester.editConfirmationComponent).toBeNull();
+      expect(tester.confirmedComponent).toBeNull();
     });
 
     it('should save basket when edit component emits', () => {
@@ -146,6 +152,7 @@ describe('BasketComponent', () => {
       expect(basketService.get).toHaveBeenCalledWith('ABCDEFGH');
       expect(tester.editBasketComponent).toBeNull();
       expect(tester.editConfirmationComponent).not.toBeNull();
+      expect(tester.confirmedComponent).toBeNull();
 
       expect(tester.editConfirmationComponent.basket).toBe(basket);
       expect(tester.editConfirmationComponent.confirmationFailed).toBe(false);
@@ -160,6 +167,8 @@ describe('BasketComponent', () => {
       expect(basketService.confirm).toHaveBeenCalledWith('ABCDEFGH', 'CODE');
       expect(tester.componentInstance.basket).toBe(confirmedBasket);
       expect(tester.editConfirmationComponent).toBeNull();
+      expect(tester.confirmedComponent).not.toBeNull();
+      expect(tester.confirmedComponent.basket).toBe(confirmedBasket);
     });
 
     it('should signal failed confirmation', () => {

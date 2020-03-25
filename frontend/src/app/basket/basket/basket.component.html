@@ -8,5 +8,5 @@
     (basketConfirmed)="confirm($event)"
     (refreshRequested)="refresh()"
   ></rb-edit-confirmation>
-  <div *ngIf="basket.status === 'CONFIRMED'">Votre commande est confirmée</div>
+  <rb-confirmed *ngIf="basket.status === 'CONFIRMED'" [basket]="basket"></rb-confirmed>
 </div>
