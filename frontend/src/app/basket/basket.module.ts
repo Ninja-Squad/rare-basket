@@ -9,9 +9,11 @@ import { ValdemortModule } from 'ngx-valdemort';
 import { SharedModule } from '../shared/shared.module';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { RbNgbModule } from '../rb-ngb/rb-ngb.module';
+import { BasketConfirmationComponent } from './basket-confirmation/basket-confirmation.component';
+import { EditConfirmationComponent } from './edit-confirmation/edit-confirmation.component';
 
 @NgModule({
-  declarations: [BasketComponent, EditBasketComponent],
+  declarations: [BasketComponent, EditBasketComponent, BasketConfirmationComponent, EditConfirmationComponent],
   imports: [
     CommonModule,
     RouterModule.forChild(BASKET_ROUTES),

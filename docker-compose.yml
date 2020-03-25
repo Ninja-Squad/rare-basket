@@ -7,7 +7,7 @@ services:
     # the script run on start by the postgres container
     # and creates the appropriate databases and users
     volumes:
-      - ./backend/database:/docker-entrypoint-initdb.d/:cached
+      - ./backend/database/setup:/docker-entrypoint-initdb.d/:cached
     ports:
       - 5432:5432
 

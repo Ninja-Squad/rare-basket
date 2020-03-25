@@ -12,7 +12,7 @@ The easiest way to have a database running and set up with the expected users an
 to use Docker. Running `docker-compose up` from the root directory os the project will start
 a container with a PostgreSQL database running, as well as an SMTP server which doesn't send any email
 (which is nice for testing).
-The PostgreSQL database is configured using the `database/setup.sql` script.
+The PostgreSQL database is configured using the `database/setup/setup.sql` script.
 
 There are actually two databases available: one to actually run the application, and one
 used for the unit tests (in order to be able to run the application and unit tests

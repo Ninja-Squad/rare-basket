@@ -1,0 +1,39 @@
+<div *ngIf="confirmationFailed" class="alert alert-danger" role="alert">
+  <div class="d-flex">
+    <div class="mr-4">
+      <fa-icon [icon]="errorIcon"></fa-icon>
+    </div>
+    <div class="flex-grow-1">
+      La confirmation de votre commande a échoué. Peut-être était-elle déjà confirmée? <br />
+      <a href (click)="refresh(); $event.preventDefault()" id="error-refresh-link">Rafraîchir</a>
+    </div>
+  </div>
+</div>
+<div class="alert alert-info" role="alert">
+  <div class="d-flex">
+    <div class="mr-4">
+      <fa-icon [icon]="infoIcon"></fa-icon>
+    </div>
+    <div class="flex-grow-1">
+      <p>Votre commande a été enregistrée.</p>
+      <p>
+        Un courriel vous a été envoyé à l'adresse <code>{{ basket.customer.email }}</code> afin de confirmer votre commande.<br />
+        Saisissez ici le code de confirmation qu'il contient, ou
+        <a href (click)="refresh(); $event.preventDefault()" id="info-refresh-link">rafraîchissez</a> la page après avoir cliqué sur le lien
+        qu'il contient.
+      </p>
+      <p>Pensez à consulter vos spams si vous ne trouvez pas le courriel.</p>
+    </div>
+  </div>
+</div>
+
+<div class="d-flex justify-content-center">
+  <form [formGroup]="form" (ngSubmit)="confirm()" class="form-inline">
+    <label for="confirmation-code" class="sr-only">Code de confirmation</label>
+    <input formControlName="confirmationCode" id="confirmation-code" class="form-control mb-2 mr-sm-2" placeholder="Code de confirmation" />
+    <button class="btn btn-primary mb-2" [disabled]="form.invalid" id="confirm-button">
+      <fa-icon [icon]="confirmIcon" class="mr-1"></fa-icon>
+      Confirmer
+    </button>
+  </form>
+</div>

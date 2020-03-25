@@ -1,0 +1,16 @@
+<html lang="fr">
+<body>
+  <h1>Confirmation de la commande {{ basketReference }}</h1>
+  <p>Bonjour {{ customerName }}&nbsp;!</p>
+  <p>Vous avez enregistré la commande d'accessions n° {{ basketReference }}.</p>
+  <p>
+    Pour confirmer que vous êtes bien à l'origine de cette commande,
+    <a href="{{& confirmationUrl }}">cliquez sur ce lien</a>, ou saisissez le code suivant
+    dans la page de confirmation de commande: <strong><code>{{ confirmationCode }}</code></strong>.
+  </p>
+
+  <p>Si vous n'êtes pas à l'origine de cette commande, vous pouvez effacer ce courriel.</p>
+
+  <p>L'équipe RARe</p>
+</body>
+</html>

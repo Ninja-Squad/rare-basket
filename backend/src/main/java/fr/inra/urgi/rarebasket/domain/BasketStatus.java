@@ -6,5 +6,6 @@ package fr.inra.urgi.rarebasket.domain;
  */
 public enum BasketStatus {
     DRAFT,
-    SAVED
+    SAVED,
+    CONFIRMED
 }

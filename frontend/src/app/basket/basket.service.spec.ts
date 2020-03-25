@@ -39,4 +39,16 @@ describe('BasketService', () => {
 
     expect(done).toBe(true);
   });
+
+  it('should confirm a basket', () => {
+    let done = false;
+
+    const confirmationCode = 'ZYXWVUTS';
+    service.confirm('ref1', confirmationCode).subscribe(() => (done = true));
+    const testRequest = http.expectOne({ method: 'PUT', url: '/api/baskets/ref1/confirmation' });
+    expect(testRequest.request.body).toEqual({ confirmationCode });
+    testRequest.flush(null);
+
+    expect(done).toBe(true);
+  });
 });

@@ -18,5 +18,5 @@ test:
   - sudo apt-get update || sudo apt-get update
   - sudo apt-get install -y postgresql-client
   # create the test db before running the tests
-  - psql -h postgres -U postgres -f backend/database/setup.sql
+  - psql -h postgres -U postgres -f backend/database/setup/setup.sql
   - ./gradlew check build

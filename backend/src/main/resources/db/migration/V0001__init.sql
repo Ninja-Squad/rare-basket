@@ -15,16 +15,17 @@ CREATE TABLE grc_contact (
 CREATE SEQUENCE grc_contact_seq START WITH 1001 INCREMENT 50;
 
 CREATE TABLE basket (
-    id               BIGINT PRIMARY KEY,
-    reference        VARCHAR     NOT NULL UNIQUE,
-    customer_name    VARCHAR,
-    customer_email   VARCHAR,
-    customer_address VARCHAR,
-    customer_type    VARCHAR,
-    status           VARCHAR     NOT NULL,
-    creation_instant TIMESTAMPTZ NOT NULL,
-    save_instant     TIMESTAMPTZ,
-    rationale        VARCHAR
+    id                   BIGINT PRIMARY KEY,
+    reference            VARCHAR     NOT NULL UNIQUE,
+    customer_name        VARCHAR,
+    customer_email       VARCHAR,
+    customer_address     VARCHAR,
+    customer_type        VARCHAR,
+    status               VARCHAR     NOT NULL,
+    creation_instant     TIMESTAMPTZ NOT NULL,
+    rationale            VARCHAR,
+    confirmation_code    VARCHAR,
+    confirmation_instant TIMESTAMPTZ
 );
 
 CREATE SEQUENCE basket_seq START WITH 1001 INCREMENT 50;

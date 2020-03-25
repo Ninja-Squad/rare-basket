@@ -2,6 +2,7 @@ package fr.inra.urgi.rarebasket.web.basket;
 
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
+import java.time.Instant;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -19,6 +20,8 @@ import fr.inra.urgi.rarebasket.domain.Customer;
 import fr.inra.urgi.rarebasket.domain.GrcContact;
 import fr.inra.urgi.rarebasket.exception.BadRequestException;
 import fr.inra.urgi.rarebasket.exception.NotFoundException;
+import fr.inra.urgi.rarebasket.service.event.BasketSaved;
+import fr.inra.urgi.rarebasket.service.event.EventPublisher;
 import org.springframework.http.HttpStatus;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
@@ -43,15 +46,20 @@ public class BasketController {
     private final BasketDao basketDao;
     private final GrcContactDao grcContactDao;
     private final Validator validator;
+    private final EventPublisher eventPublisher;
 
     private final SecureRandom random;
 
     private static final String REFERENCE_CHARACTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
 
-    public BasketController(BasketDao basketDao, GrcContactDao grcContactDao, Validator validator) {
+    public BasketController(BasketDao basketDao,
+                            GrcContactDao grcContactDao,
+                            Validator validator,
+                            EventPublisher eventPublisher) {
         this.basketDao = basketDao;
         this.grcContactDao = grcContactDao;
         this.validator = validator;
+        this.eventPublisher = eventPublisher;
         try {
             this.random = SecureRandom.getInstance("SHA1PRNG");
         }
@@ -73,6 +81,7 @@ public class BasketController {
         validateIfComplete(command);
         Basket basket = createBasket(command);
         basketDao.save(basket);
+        generateConfirmationCodeAndFireSavedEventIfNecessary(basket);
         return new BasketDTO(basket);
     }
 
@@ -102,6 +111,28 @@ public class BasketController {
             throw new BadRequestException("A non-DRAFT basket may not be updated");
         }
         updateBasket(basket, command);
+
+        generateConfirmationCodeAndFireSavedEventIfNecessary(basket);
+    }
+
+    /**
+     * Endpoint used by rare-basket to confirm a basket
+     * @param command the command containing the confirmation code
+     */
+    @PutMapping("/{basketReference}/confirmation")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void confirm(@PathVariable("basketReference") String basketReference,
+                       @Validated @RequestBody BasketConfirmationCommandDTO command) {
+        Basket basket = basketDao.findByReference(basketReference).orElseThrow(NotFoundException::new);
+        if (basket.getStatus() != BasketStatus.SAVED) {
+            throw new BadRequestException("A non-SAVED basket may not be updated");
+        }
+        if (!basket.getConfirmationCode().equals(command.getConfirmationCode())) {
+            throw new BadRequestException("Incorrect confirmation code");
+        }
+
+        basket.setStatus(BasketStatus.CONFIRMED);
+        basket.setConfirmationInstant(Instant.now());
     }
 
     private void validateIfComplete(@RequestBody @Validated(BasketCommandDTO.Create.class) BasketCommandDTO command) {
@@ -170,6 +201,13 @@ public class BasketController {
             BasketItemCommandDTO itemCommand = itemCommandsByAccession.get(item.getAccession());
             item.setQuantity(itemCommand.getQuantity());
         });
+    }
+
+    private void generateConfirmationCodeAndFireSavedEventIfNecessary(Basket basket) {
+        if (basket.getStatus() == BasketStatus.SAVED) {
+            basket.setConfirmationCode(generateRandomReference());
+            eventPublisher.publish(new BasketSaved(basket.getId()));
+        }
     }
 
     private String generateRandomReference() {

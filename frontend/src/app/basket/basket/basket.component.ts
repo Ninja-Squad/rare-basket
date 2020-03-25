@@ -12,6 +12,8 @@ import { switchMap } from 'rxjs/operators';
 export class BasketComponent implements OnInit {
   basket: Basket | null = null;
 
+  confirmationFailed = false;
+
   constructor(private route: ActivatedRoute, private basketService: BasketService) {}
 
   ngOnInit() {
@@ -23,5 +25,21 @@ export class BasketComponent implements OnInit {
       .save(this.basket.reference, command)
       .pipe(switchMap(() => this.basketService.get(this.basket.reference)))
       .subscribe(basket => (this.basket = basket));
+  }
+
+  confirm(confirmationCode: string) {
+    this.confirmationFailed = false;
+    this.basketService
+      .confirm(this.basket.reference, confirmationCode)
+      .pipe(switchMap(() => this.basketService.get(this.basket.reference)))
+      .subscribe(
+        basket => (this.basket = basket),
+        () => (this.confirmationFailed = true)
+      );
+  }
+
+  refresh() {
+    this.confirmationFailed = false;
+    this.basketService.get(this.basket.reference).subscribe(basket => (this.basket = basket));
   }
 }

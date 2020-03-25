@@ -14,7 +14,7 @@ export interface BasketItem {
   quantity: number | null;
 }
 
-export type BasketStatus = 'DRAFT' | 'SAVED';
+export type BasketStatus = 'DRAFT' | 'SAVED' | 'CONFIRMED';
 
 export interface Basket {
   id: number;

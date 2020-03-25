@@ -3,8 +3,7 @@ package fr.inra.urgi.rarebasket.web.basket;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.groups.Tuple.tuple;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -22,6 +21,8 @@ import fr.inra.urgi.rarebasket.domain.BasketStatus;
 import fr.inra.urgi.rarebasket.domain.Customer;
 import fr.inra.urgi.rarebasket.domain.CustomerType;
 import fr.inra.urgi.rarebasket.domain.GrcContact;
+import fr.inra.urgi.rarebasket.service.event.BasketSaved;
+import fr.inra.urgi.rarebasket.service.event.EventPublisher;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
@@ -43,6 +44,9 @@ class BasketControllerTest {
 
     @MockBean
     private GrcContactDao mockGrcContactDao;
+
+    @MockBean
+    private EventPublisher mockEventPublisher;
 
     @Autowired
     private MockMvc mockMvc;
@@ -240,6 +244,8 @@ class BasketControllerTest {
                 tuple("violetta", john, savedBasket),
                 tuple("amanita", alice, savedBasket)
             );
+
+        verify(mockEventPublisher, never()).publish(any());
     }
 
     @Test
@@ -289,6 +295,8 @@ class BasketControllerTest {
                                                                      command.getCustomer().getAddress(),
                                                                      command.getCustomer().getType()));
         assertThat(savedBasket.getRationale()).isEqualTo(command.getRationale());
+
+        verify(mockEventPublisher).publish(new BasketSaved(savedBasket.getId()));
     }
 
     @Test
@@ -346,6 +354,7 @@ class BasketControllerTest {
         assertThat(rosa.getQuantity()).isEqualTo(5);
         assertThat(violetta.getQuantity()).isEqualTo(10);
         assertThat(basket.getStatus()).isEqualTo(BasketStatus.DRAFT);
+        verify(mockEventPublisher, never()).publish(any());
     }
 
     @Test
@@ -379,6 +388,43 @@ class BasketControllerTest {
                                                                 command.getCustomer().getAddress(),
                                                                 command.getCustomer().getType()));
         assertThat(basket.getRationale()).isEqualTo(command.getRationale());
+        verify(mockEventPublisher).publish(new BasketSaved(basket.getId()));
+    }
+
+    @Test
+    void shouldThrowWhenConfirmingNonSavedBasket() throws Exception {
+        BasketConfirmationCommandDTO command = new BasketConfirmationCommandDTO("ZYXWVUTS");
+
+        basket.setStatus(BasketStatus.DRAFT);
+        checkBadRequestWhenConfirming(command);
+
+        basket.setStatus(BasketStatus.CONFIRMED);
+        checkBadRequestWhenConfirming(command);
+    }
+
+    @Test
+    void shouldThrowWhenConfirmingWithBadCode() throws Exception {
+        BasketConfirmationCommandDTO command = new BasketConfirmationCommandDTO("ZYXWVUTS");
+
+        basket.setStatus(BasketStatus.SAVED);
+        basket.setConfirmationCode("OTHER");
+        checkBadRequestWhenConfirming(command);
+    }
+
+    @Test
+    void shouldConfirm() throws Exception {
+        BasketConfirmationCommandDTO command = new BasketConfirmationCommandDTO("ZYXWVUTS");
+
+        basket.setStatus(BasketStatus.SAVED);
+        basket.setConfirmationCode(command.getConfirmationCode());
+
+        mockMvc.perform(put("/api/baskets/{reference}/confirmation", basket.getReference())
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(objectMapper.writeValueAsBytes(command)))
+               .andExpect(status().isNoContent());
+
+        assertThat(basket.getStatus()).isEqualTo(BasketStatus.CONFIRMED);
+        assertThat(basket.getConfirmationInstant()).isNotNull();
     }
 
     private void checkBadRequestWhenCreating(BasketCommandDTO command) throws Exception {
@@ -390,6 +436,13 @@ class BasketControllerTest {
 
     private void checkBadRequestWhenUpdating(BasketCommandDTO command) throws Exception {
         mockMvc.perform(put("/api/baskets/{reference}", basket.getReference())
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(objectMapper.writeValueAsBytes(command)))
+               .andExpect(status().isBadRequest());
+    }
+
+    private void checkBadRequestWhenConfirming(BasketConfirmationCommandDTO command) throws Exception {
+        mockMvc.perform(put("/api/baskets/{reference}/confirmation", basket.getReference())
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(objectMapper.writeValueAsBytes(command)))
                .andExpect(status().isBadRequest());

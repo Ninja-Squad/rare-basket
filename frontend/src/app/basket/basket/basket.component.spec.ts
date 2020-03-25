@@ -7,12 +7,13 @@ import { By } from '@angular/platform-browser';
 import { ActivatedRoute } from '@angular/router';
 import { Basket, BasketCommand } from '../basket.model';
 import { BasketService } from '../basket.service';
-import { of } from 'rxjs';
+import { of, throwError } from 'rxjs';
 import { RbNgbModule } from '../../rb-ngb/rb-ngb.module';
 import { ReactiveFormsModule } from '@angular/forms';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { SharedModule } from '../../shared/shared.module';
 import { ValdemortModule } from 'ngx-valdemort';
+import { EditConfirmationComponent } from '../edit-confirmation/edit-confirmation.component';
 
 class BasketComponentTester extends ComponentTester<BasketComponent> {
   constructor() {
@@ -25,6 +26,10 @@ class BasketComponentTester extends ComponentTester<BasketComponent> {
 
   get editBasketComponent(): EditBasketComponent {
     return this.debugElement.query(By.directive(EditBasketComponent))?.componentInstance ?? null;
+  }
+
+  get editConfirmationComponent(): EditConfirmationComponent {
+    return this.debugElement.query(By.directive(EditConfirmationComponent))?.componentInstance ?? null;
   }
 }
 
@@ -41,10 +46,10 @@ describe('BasketComponent', () => {
       })
     });
 
-    basketService = jasmine.createSpyObj<BasketService>('BasketService', ['get', 'save']);
+    basketService = jasmine.createSpyObj<BasketService>('BasketService', ['get', 'save', 'confirm']);
 
     TestBed.configureTestingModule({
-      declarations: [BasketComponent, EditBasketComponent],
+      declarations: [BasketComponent, EditBasketComponent, EditConfirmationComponent],
       imports: [RbNgbModule, ReactiveFormsModule, FontAwesomeModule, SharedModule, ValdemortModule],
       providers: [
         { provide: ActivatedRoute, useValue: route },
@@ -71,6 +76,9 @@ describe('BasketComponent', () => {
       savedBasket = {
         reference: 'ABCDEFGH',
         status: 'SAVED',
+        customer: {
+          email: 'john@mail.com'
+        },
         items: []
       } as Basket;
 
@@ -86,6 +94,7 @@ describe('BasketComponent', () => {
       expect(basketService.get).toHaveBeenCalledWith('ABCDEFGH');
       expect(tester.editBasketComponent).not.toBeNull();
       expect(tester.editBasketComponent.basket).toBe(basket);
+      expect(tester.editConfirmationComponent).toBeNull();
     });
 
     it('should save basket when edit component emits', () => {
@@ -99,27 +108,79 @@ describe('BasketComponent', () => {
       expect(basketService.save).toHaveBeenCalledWith('ABCDEFGH', command);
       expect(tester.componentInstance.basket).toBe(savedBasket);
       expect(tester.editBasketComponent).toBeNull();
+      expect(tester.editConfirmationComponent).not.toBeNull();
+      expect(tester.editConfirmationComponent.basket).toBe(savedBasket);
+      expect(tester.editConfirmationComponent.confirmationFailed).toBe(false);
     });
   });
 
   describe('with a saved basket', () => {
     let basket: Basket;
+    let confirmedBasket: Basket;
 
     beforeEach(() => {
       basket = {
         reference: 'ABCDEFGH',
         status: 'SAVED',
+        customer: {
+          email: 'john@mail.com'
+        },
         items: []
       } as Basket;
 
-      basketService.get.and.returnValues(of(basket));
+      confirmedBasket = {
+        reference: 'ABCDEFGH',
+        status: 'CONFIRMED',
+        customer: {
+          email: 'john@mail.com'
+        },
+        items: []
+      } as Basket;
+
+      basketService.get.and.returnValues(of(basket), of(confirmedBasket));
 
       tester.detectChanges();
     });
 
-    it('should not have an edit component', () => {
+    it('should have an edit confirmation component', () => {
       expect(basketService.get).toHaveBeenCalledWith('ABCDEFGH');
       expect(tester.editBasketComponent).toBeNull();
+      expect(tester.editConfirmationComponent).not.toBeNull();
+
+      expect(tester.editConfirmationComponent.basket).toBe(basket);
+      expect(tester.editConfirmationComponent.confirmationFailed).toBe(false);
+    });
+
+    it('should confirm when edit confirmation component emits', () => {
+      basketService.confirm.and.returnValue(of(undefined));
+
+      tester.editConfirmationComponent.basketConfirmed.emit('CODE');
+      tester.detectChanges();
+
+      expect(basketService.confirm).toHaveBeenCalledWith('ABCDEFGH', 'CODE');
+      expect(tester.componentInstance.basket).toBe(confirmedBasket);
+      expect(tester.editConfirmationComponent).toBeNull();
+    });
+
+    it('should signal failed confirmation', () => {
+      basketService.confirm.and.returnValue(throwError(undefined));
+
+      tester.editConfirmationComponent.basketConfirmed.emit('CODE');
+      tester.detectChanges();
+
+      expect(basketService.confirm).toHaveBeenCalledWith('ABCDEFGH', 'CODE');
+      expect(tester.componentInstance.basket).toBe(basket);
+      expect(tester.editConfirmationComponent.basket).toBe(basket);
+      expect(tester.editConfirmationComponent.confirmationFailed).toBe(true);
+    });
+
+    it('should refresh when edit confirmation component asks to', () => {
+      tester.componentInstance.confirmationFailed = false;
+      tester.editConfirmationComponent.refreshRequested.emit(undefined);
+      tester.detectChanges();
+
+      expect(tester.componentInstance.basket).toBe(confirmedBasket);
+      expect(tester.componentInstance.confirmationFailed).toBe(false);
     });
   });
 });

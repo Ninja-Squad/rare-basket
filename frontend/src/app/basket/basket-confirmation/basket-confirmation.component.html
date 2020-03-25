@@ -1,0 +1,5 @@
+<div *ngIf="confirmationFailed" class="alert alert-danger" role="alert">
+  <fa-icon [icon]="errorIcon" class="mr-1"></fa-icon>
+  La confirmation de votre commande a échoué. Peut-être était-elle déjà confirmée? <br />
+  <a [routerLink]="['/baskets', basketReference]">Votre commande</a>
+</div>

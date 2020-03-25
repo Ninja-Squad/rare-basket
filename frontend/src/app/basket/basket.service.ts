@@ -16,4 +16,9 @@ export class BasketService {
   save(reference: string, command: BasketCommand): Observable<void> {
     return this.http.put<void>(`/api/baskets/${reference}`, command);
   }
+
+  confirm(reference: string, confirmationCode: string): Observable<void> {
+    const command = { confirmationCode };
+    return this.http.put<void>(`/api/baskets/${reference}/confirmation`, command);
+  }
 }

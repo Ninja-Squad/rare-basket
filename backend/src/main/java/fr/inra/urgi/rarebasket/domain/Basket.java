@@ -60,18 +60,24 @@ public class Basket {
     private Instant creationInstant = Instant.now();
 
     /**
-     * The instant when the customer saved this order (and thus made it immutable), i.e. made its status go
-     * from DRAFT to SAVED.
-     */
-    private Instant saveInstant;
-
-    /**
      * A text describing why this order was requested by the customer.
      */
     private String rationale;
 
     @OneToMany(mappedBy = "basket", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<BasketItem> items = new HashSet<>();
+
+    /**
+     * The random confirmation code generated when the basket is saved. It's used to check that the customer
+     * has indeed made the basket by sending an email containing this code and asking the user to confirm the basket.
+     */
+    private String confirmationCode;
+
+    /**
+     * The instant when the customer confirmed this order, i.e. made its status go
+     * from SAVED to CONFIRMED.
+     */
+    private Instant confirmationInstant;
 
     public Basket() {
     }
@@ -120,14 +126,6 @@ public class Basket {
         this.creationInstant = creationInstant;
     }
 
-    public Instant getSaveInstant() {
-        return saveInstant;
-    }
-
-    public void setSaveInstant(Instant saveInstant) {
-        this.saveInstant = saveInstant;
-    }
-
     public String getRationale() {
         return rationale;
     }
@@ -147,5 +145,21 @@ public class Basket {
 
     public void removeItem(BasketItem item) {
         this.items.remove(item);
+    }
+
+    public String getConfirmationCode() {
+        return confirmationCode;
+    }
+
+    public void setConfirmationCode(String confirmationCode) {
+        this.confirmationCode = confirmationCode;
+    }
+
+    public Instant getConfirmationInstant() {
+        return confirmationInstant;
+    }
+
+    public void setConfirmationInstant(Instant confirmationInstant) {
+        this.confirmationInstant = confirmationInstant;
     }
 }
