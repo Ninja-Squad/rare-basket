@@ -25,7 +25,7 @@ class BasketConfirmationMailerTest {
         Mailer mockMailer = mock(Mailer.class);
         BasketDao mockBasketDao = mock(BasketDao.class);
 
-        MailProperties mailProperties = new MailProperties("noreply@rare-basket.fr", "http://localhost:4200");
+        MailProperties mailProperties = new MailProperties("noreply@rare-basket.fr", "http://localhost:4201");
         BasketConfirmationMailer basketConfirmationMailer =
             new BasketConfirmationMailer(mockMailer, mockBasketDao, mailProperties);
 
@@ -50,11 +50,11 @@ class BasketConfirmationMailerTest {
             .contains(basket.getCustomer().getName())
             .contains(basket.getReference())
             .contains(basket.getConfirmationCode())
-            .contains("http://localhost:4200/baskets/ABCDEFGH/confirmation?code=ZYXWVUTS");
+            .contains("http://localhost:4201/baskets/ABCDEFGH/confirmation?code=ZYXWVUTS");
         assertThat(sentMessage.getHtmlText())
             .contains(basket.getCustomer().getName())
             .contains(basket.getReference())
             .contains(basket.getConfirmationCode())
-            .contains("http://localhost:4200/baskets/ABCDEFGH/confirmation?code=ZYXWVUTS");
+            .contains("http://localhost:4201/baskets/ABCDEFGH/confirmation?code=ZYXWVUTS");
     }
 }

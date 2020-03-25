@@ -8,8 +8,11 @@ Here are the customizations that have been made.
 
 ## Development server
 
-`ng serve` acts as a reverse proxy (see `proxy.conf.json`) to the backend Spring Boot server
-running on port 8080, for all the paths starting with `/api`.
+`ng serve` runs on port 4201 instead of the classical 4200, in order to easily be able to run the RARe frontend
+(on port 4200) and the rare-basket frontend (on port 4201) on the same machine.
+
+It acts as a reverse proxy (see `proxy.conf.json`) to the backend Spring Boot server
+running on port 8081, for all the paths starting with `/api`.
 
 ## Code formatting
 
