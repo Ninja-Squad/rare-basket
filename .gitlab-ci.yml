@@ -5,7 +5,6 @@ image: circleci/openjdk:11-browsers
 # runtime for each build is more reliable since the runtime is completely
 # isolated from any previous builds.
 variables:
- GRADLE_OPTS: "-Dorg.gradle.daemon=false"
  POSTGRES_HOST_AUTH_METHOD: trust
 
 test:
@@ -19,4 +18,4 @@ test:
   - sudo apt-get install -y postgresql-client
   # create the test db before running the tests
   - psql -h postgres -U postgres -f backend/database/setup/setup.sql
-  - ./gradlew check build
+  - ./gradlew check build --no-daemon --parallel
