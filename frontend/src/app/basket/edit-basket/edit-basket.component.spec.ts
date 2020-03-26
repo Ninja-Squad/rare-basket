@@ -143,7 +143,7 @@ describe('EditBasketComponent', () => {
       tester.customerName.fillWith('John');
       tester.customerEmail.fillWith('john@mail.com');
       tester.customerAddress.fillWith('21 Jump Street');
-      tester.customerType.selectLabel('BIOLOGIST');
+      tester.customerType.selectLabel('Biologiste');
       tester.rationale.fillWith('Because');
       tester.quantities[0].fillWith('10');
       tester.quantities[1].fillWith('20');
@@ -220,7 +220,7 @@ describe('EditBasketComponent', () => {
       expect(tester.customerName).toHaveValue('John');
       expect(tester.customerEmail).toHaveValue('john@mail.com');
       expect(tester.customerAddress).toHaveValue('21 Jump Street');
-      expect(tester.customerType).toHaveSelectedLabel('BIOLOGIST');
+      expect(tester.customerType).toHaveSelectedLabel('Biologiste');
       expect(tester.rationale).toHaveValue('Because');
       expect(tester.quantities[0]).toHaveValue('10');
       expect(tester.quantities[1]).toHaveValue('20');

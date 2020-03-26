@@ -26,8 +26,7 @@
           <label for="type">Votre secteur d'activité</label>
           <select formControlName="type" id="type" class="form-control">
             <option [ngValue]="null"></option>
-            <!-- TODO translate -->
-            <option *ngFor="let customerType of customerTypes" [value]="customerType">{{ customerType }}</option>
+            <option *ngFor="let customerType of customerTypes" [value]="customerType">{{ customerType | customerTypeEnum }}</option>
           </select>
           <val-errors controlName="type" label="Le secteur d'activité"></val-errors>
         </div>
