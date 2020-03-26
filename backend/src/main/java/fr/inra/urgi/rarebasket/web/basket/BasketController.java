@@ -31,6 +31,7 @@ import fr.inra.urgi.rarebasket.service.event.OrderCreated;
 import org.springframework.http.HttpStatus;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -78,12 +79,13 @@ public class BasketController {
     }
 
     /**
-     * Endpoint used by RARe to submit a basket, i.e. create a new draft basket that the customer will then have
-     * to complete and save (or cancel).
+     * Endpoint used by RARe (and potentially other applications) to submit a basket, i.e. create a new draft basket
+     * that the customer will then have to complete and save.
      * It's also valid to create a basket with already filled customer information, quantities etc.
      * If the command is flagged as complete, then checks are made to be sure that all the required information
      * is present.
      */
+    @CrossOrigin("*")
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public BasketDTO create(@Validated(BasketCommandDTO.Create.class) @RequestBody BasketCommandDTO command) {
