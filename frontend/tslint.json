@@ -4,19 +4,31 @@
     "codelyzer"
   ],
   "rules": {
+    "align": {
+      "options": [
+        "parameters",
+        "statements"
+      ]
+    },
     "array-type": false,
-    "arrow-parens": false,
+    "arrow-return-shorthand": true,
+    "curly": true,
     "deprecation": {
       "severity": "warning"
     },
+    "eofline": true,
     "import-blacklist": [
       true,
       "rxjs/Rx"
     ],
-    "interface-name": false,
+    "import-spacing": true,
+    "indent": {
+      "options": [
+        "spaces"
+      ]
+    },
     "max-classes-per-file": false,
     "max-line-length": false,
-    "member-access": false,
     "member-ordering": [
       true,
       {
@@ -28,7 +40,6 @@
         ]
       }
     ],
-    "no-consecutive-blank-lines": false,
     "no-console": [
       true,
       "debug",
@@ -50,13 +61,59 @@
       true,
       "as-needed"
     ],
-    "object-literal-sort-keys": false,
-    "ordered-imports": false,
     "quotemark": [
       true,
       "single"
     ],
-    "trailing-comma": false,
+    "semicolon": {
+      "options": [
+        "always"
+      ]
+    },
+    "space-before-function-paren": {
+      "options": {
+        "anonymous": "never",
+        "asyncArrow": "always",
+        "constructor": "never",
+        "method": "never",
+        "named": "never"
+      }
+    },
+    "typedef-whitespace": {
+      "options": [
+        {
+          "call-signature": "nospace",
+          "index-signature": "nospace",
+          "parameter": "nospace",
+          "property-declaration": "nospace",
+          "variable-declaration": "nospace"
+        },
+        {
+          "call-signature": "onespace",
+          "index-signature": "onespace",
+          "parameter": "onespace",
+          "property-declaration": "onespace",
+          "variable-declaration": "onespace"
+        }
+      ]
+    },
+    "variable-name": {
+      "options": [
+        "ban-keywords",
+        "check-format",
+        "allow-pascal-case"
+      ]
+    },
+    "whitespace": {
+      "options": [
+        "check-branch",
+        "check-decl",
+        "check-operator",
+        "check-separator",
+        "check-type",
+        "check-typecast"
+      ]
+    },
     "no-import-side-effect": [true, {"ignore-module": "(core-js/.*|zone\\.js/.*|@angular/localize/.*)$"}],
     "template-banana-in-box": true,
     "component-class-suffix": true,
@@ -87,12 +144,6 @@
     "no-outputs-metadata-property": true,
     "use-pipe-transform-interface": true,
     "use-component-view-encapsulation": true,
-    "variable-name": [
-      true,
-      "ban-keywords",
-      "check-format",
-      "allow-leading-underscore"
-    ],
     "ban": [
       true,
       {"name": "fit", "message": "Focused tests are not allowed."},

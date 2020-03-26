@@ -55,7 +55,7 @@ describe('BasketContentComponent', () => {
     TestBed.configureTestingModule({
       declarations: [BasketContentComponent, TestComponent],
       imports: [SharedModule, FontAwesomeModule],
-      providers: [{ provide: LOCALE_ID, useValue: 'fr-FR' }]
+      providers: [{ provide: LOCALE_ID, useValue: 'fr' }]
     });
 
     tester = new TestComponentTester();

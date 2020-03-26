@@ -31,7 +31,7 @@
               "src/styles.scss"
             ],
             "scripts": [],
-            "i18nLocale": "fr-FR"
+            "i18nLocale": "fr"
           },
           "configurations": {
             "production": {
