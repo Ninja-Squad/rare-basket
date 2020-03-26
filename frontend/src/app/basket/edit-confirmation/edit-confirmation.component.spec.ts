@@ -6,6 +6,8 @@ import { Basket } from '../basket.model';
 import { ComponentTester, speculoosMatchers, TestButton, TestHtmlElement } from 'ngx-speculoos';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { ReactiveFormsModule } from '@angular/forms';
+import { BasketContentComponent } from '../basket-content/basket-content.component';
+import { SharedModule } from '../../shared/shared.module';
 
 @Component({
   template: `
@@ -59,8 +61,8 @@ describe('EditConfirmationComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      declarations: [EditConfirmationComponent, TestComponent],
-      imports: [FontAwesomeModule, ReactiveFormsModule]
+      declarations: [EditConfirmationComponent, TestComponent, BasketContentComponent],
+      imports: [FontAwesomeModule, ReactiveFormsModule, SharedModule]
     });
 
     tester = new TestComponentTester();

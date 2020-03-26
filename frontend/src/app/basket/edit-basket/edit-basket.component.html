@@ -2,77 +2,82 @@
   Pour valider votre commande, veuillez remplir le formulaire suivant.
 </p>
 
-<form [formGroup]="form" (ngSubmit)="save()">
-  <div class="row">
-    <div class="col-sm">
-      <h2>Informations personnelles</h2>
-      <div formGroupName="customer">
-        <div class="form-group">
-          <label for="name">Votre nom</label>
-          <input formControlName="name" id="name" class="form-control" />
-          <val-errors controlName="name" label="Le nom"></val-errors>
+<div class="border rounded bg-light p-5">
+  <form [formGroup]="form" (ngSubmit)="save()">
+    <div class="row">
+      <div class="col-sm">
+        <h2>Informations personnelles</h2>
+        <div formGroupName="customer">
+          <div class="form-group">
+            <label for="name">Votre nom</label>
+            <input formControlName="name" id="name" class="form-control" />
+            <val-errors controlName="name" label="Le nom"></val-errors>
+          </div>
+          <div class="form-group">
+            <label for="email">Votre adresse courriel</label>
+            <input type="email" formControlName="email" id="email" class="form-control" />
+            <val-errors controlName="email" label="L'adresse courriel"></val-errors>
+          </div>
+          <div class="form-group">
+            <label for="address">Votre adresse postale</label>
+            <textarea formControlName="address" id="address" class="form-control"></textarea>
+            <val-errors controlName="address" label="L'adresse postale"></val-errors>
+          </div>
+          <div class="form-group">
+            <label for="type">Votre secteur d'activité</label>
+            <select formControlName="type" id="type" class="form-control custom-select">
+              <option [ngValue]="null"></option>
+              <option *ngFor="let customerType of customerTypes" [value]="customerType">{{ customerType | customerTypeEnum }}</option>
+            </select>
+            <val-errors controlName="type" label="Le secteur d'activité"></val-errors>
+          </div>
         </div>
         <div class="form-group">
-          <label for="email">Votre adresse courriel</label>
-          <input type="email" formControlName="email" id="email" class="form-control" />
-          <val-errors controlName="email" label="L'adresse courriel"></val-errors>
-        </div>
-        <div class="form-group">
-          <label for="address">Votre adresse postale</label>
-          <textarea formControlName="address" id="address" class="form-control"></textarea>
-          <val-errors controlName="address" label="L'adresse postale"></val-errors>
-        </div>
-        <div class="form-group">
-          <label for="type">Votre secteur d'activité</label>
-          <select formControlName="type" id="type" class="form-control">
-            <option [ngValue]="null"></option>
-            <option *ngFor="let customerType of customerTypes" [value]="customerType">{{ customerType | customerTypeEnum }}</option>
-          </select>
-          <val-errors controlName="type" label="Le secteur d'activité"></val-errors>
+          <label for="rationale">Merci d'indiquer ici la raison pour laquelle vous effectuez cette commande</label>
+          <textarea formControlName="rationale" id="rationale" class="form-control"></textarea>
         </div>
       </div>
-      <div class="form-group">
-        <label for="rationale">Merci d'indiquer ici la raison pour laquelle vous effectuez cette commande</label>
-        <textarea formControlName="rationale" id="rationale" class="form-control"></textarea>
+      <div class="col-sm" formArrayName="items">
+        <h2>Accessions commandées</h2>
+        <div *ngFor="let itemGroup of items.controls; index as index" [formGroupName]="index" class="accession">
+          <h3>
+            <fa-icon [icon]="seedIcon" class="mr-1"></fa-icon>
+            {{ itemGroup.get('accession').value }}
+          </h3>
+          <div class="form-inline">
+            <label [for]="'item-' + index" class="mb-2 mr-2"
+              >Quantité <span class="sr-only"> de {{ itemGroup.get('accession').value }}</span></label
+            >
+            <input
+              type="number"
+              min="1"
+              formControlName="quantity"
+              [id]="'item-' + index"
+              class="form-control mb-2 mr-2 quantity"
+              style="width: 7rem;"
+            />
+            <button
+              [disabled]="items.controls.length === 1"
+              type="button"
+              class="btn btn-outline-danger mb-2 delete-btn"
+              (click)="deleteItemAt(index)"
+            >
+              <fa-icon [icon]="deleteIcon"></fa-icon>
+              <span class="sr-only">Supprimer l'accession {{ itemGroup.get('accession').value }} de la commande</span>
+            </button>
+          </div>
+          <val-errors controlName="quantity" label="La quantité" class="mb-2">
+            <ng-template valError="min">La quantité doit être supérieure ou égale à 1</ng-template>
+          </val-errors>
+        </div>
       </div>
     </div>
-    <div class="col-sm" formArrayName="items">
-      <h2>Accessions commandées</h2>
-      <div *ngFor="let itemGroup of items.controls; index as index" [formGroupName]="index" class="accession">
-        <h3>
-          <fa-icon [icon]="seedIcon" class="mr-1"></fa-icon>
-          {{ itemGroup.get('accession').value }}
-        </h3>
-        <div class="form-inline">
-          <label [for]="'item-' + index" class="mb-2 mr-2"
-            >Quantité <span class="sr-only"> de {{ itemGroup.get('accession').value }}</span></label
-          >
-          <input
-            type="number"
-            min="1"
-            formControlName="quantity"
-            [id]="'item-' + index"
-            class="form-control mb-2 mr-2 quantity"
-            style="width: 7rem;"
-          />
-          <button
-            [disabled]="items.controls.length === 1"
-            type="button"
-            class="btn btn-outline-danger mb-2 delete-btn"
-            (click)="deleteItemAt(index)"
-          >
-            <fa-icon [icon]="deleteIcon"></fa-icon>
-            <span class="sr-only">Supprimer l'accession {{ itemGroup.get('accession').value }} de la commande</span>
-          </button>
-        </div>
-        <val-errors controlName="quantity" label="La quantité" class="mb-2">
-          <ng-template valError="min">La quantité doit être supérieure ou égale à 1</ng-template>
-        </val-errors>
-      </div>
-    </div>
-  </div>
 
-  <div class="text-right">
-    <button class="btn btn-primary" id="save">Finaliser ma commande</button>
-  </div>
-</form>
+    <div class="text-center mt-4">
+      <button class="btn btn-primary" id="save">
+        <fa-icon [icon]="saveIcon" class="mr-1"></fa-icon>
+        Finaliser ma commande
+      </button>
+    </div>
+  </form>
+</div>

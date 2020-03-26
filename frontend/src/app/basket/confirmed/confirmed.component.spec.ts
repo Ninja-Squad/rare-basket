@@ -5,6 +5,8 @@ import { ComponentTester, speculoosMatchers } from 'ngx-speculoos';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { Component } from '@angular/core';
 import { Basket } from '../basket.model';
+import { BasketContentComponent } from '../basket-content/basket-content.component';
+import { SharedModule } from '../../shared/shared.module';
 
 @Component({
   template: `
@@ -30,8 +32,8 @@ describe('ConfirmedComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      declarations: [ConfirmedComponent, TestComponent],
-      imports: [FontAwesomeModule]
+      declarations: [ConfirmedComponent, TestComponent, BasketContentComponent],
+      imports: [FontAwesomeModule, SharedModule]
     });
 
     tester = new TestComponentTester();

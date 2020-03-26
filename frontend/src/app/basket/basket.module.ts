@@ -12,9 +12,17 @@ import { RbNgbModule } from '../rb-ngb/rb-ngb.module';
 import { BasketConfirmationComponent } from './basket-confirmation/basket-confirmation.component';
 import { EditConfirmationComponent } from './edit-confirmation/edit-confirmation.component';
 import { ConfirmedComponent } from './confirmed/confirmed.component';
+import { BasketContentComponent } from './basket-content/basket-content.component';
 
 @NgModule({
-  declarations: [BasketComponent, EditBasketComponent, BasketConfirmationComponent, EditConfirmationComponent, ConfirmedComponent],
+  declarations: [
+    BasketComponent,
+    EditBasketComponent,
+    BasketConfirmationComponent,
+    EditConfirmationComponent,
+    ConfirmedComponent,
+    BasketContentComponent
+  ],
   imports: [
     CommonModule,
     RouterModule.forChild(BASKET_ROUTES),

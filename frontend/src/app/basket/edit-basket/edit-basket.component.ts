@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { ALL_CUSTOMER_TYPES, Basket, BasketCommand } from '../basket.model';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { faSeedling, faTrash } from '@fortawesome/free-solid-svg-icons';
+import { faCheck, faSeedling, faTrash } from '@fortawesome/free-solid-svg-icons';
 import { ConfirmationService } from '../../shared/confirmation.service';
 
 @Component({
@@ -19,6 +19,7 @@ export class EditBasketComponent implements OnInit {
 
   deleteIcon = faTrash;
   seedIcon = faSeedling;
+  saveIcon = faCheck;
 
   constructor(private fb: FormBuilder, private confirmationService: ConfirmationService) {}
 

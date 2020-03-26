@@ -15,6 +15,7 @@ import { SharedModule } from '../../shared/shared.module';
 import { ValdemortModule } from 'ngx-valdemort';
 import { EditConfirmationComponent } from '../edit-confirmation/edit-confirmation.component';
 import { ConfirmedComponent } from '../confirmed/confirmed.component';
+import { BasketContentComponent } from '../basket-content/basket-content.component';
 
 class BasketComponentTester extends ComponentTester<BasketComponent> {
   constructor() {
@@ -54,7 +55,7 @@ describe('BasketComponent', () => {
     basketService = jasmine.createSpyObj<BasketService>('BasketService', ['get', 'save', 'confirm']);
 
     TestBed.configureTestingModule({
-      declarations: [BasketComponent, EditBasketComponent, EditConfirmationComponent, ConfirmedComponent],
+      declarations: [BasketComponent, EditBasketComponent, EditConfirmationComponent, ConfirmedComponent, BasketContentComponent],
       imports: [RbNgbModule, ReactiveFormsModule, FontAwesomeModule, SharedModule, ValdemortModule],
       providers: [
         { provide: ActivatedRoute, useValue: route },

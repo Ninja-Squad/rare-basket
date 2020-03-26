@@ -1,19 +1,20 @@
-<div class="alert alert-info" role="alert">
+<div class="alert alert-success" role="alert">
   <div class="d-flex">
     <div class="mr-4">
       <fa-icon [icon]="confirmedIcon"></fa-icon>
     </div>
     <div class="flex-grow-1">
-      Votre commande est confirmée.
+      <p>Votre commande est confirmée.</p>
+      <p>
+        Elle a été distribuée aux divers responsables en charge des accessions commandées, qui vous recontacteront par email, à l'adresse
+        <code style="white-space: pre">{{ basket.customer.email }}</code
+        >.
+      </p>
+      <p>
+        Surveillez votre boîte aux lettres.
+      </p>
     </div>
   </div>
 </div>
 
-<h2>Et maintenant?</h2>
-<p>
-  Votre commande a été distribuée aux divers responsables en charge des accessions commandées.
-</p>
-<p>
-  Ils/Elles vous recontacteront par email, à l'adresse <code>{{ basket.customer.email }}</code
-  >. Surveillez votre boîte aux lettres.
-</p>
+<rb-basket-content [basket]="basket" class="mt-5"></rb-basket-content>
