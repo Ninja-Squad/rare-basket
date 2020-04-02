@@ -1,0 +1,21 @@
+<div *ngFor="let order of orders.content">
+  <div class="row">
+    <div class="col-6 col-md-2">
+      <a [routerLink]="['/orders', order.id]">{{ order.basket.reference }}</a>
+    </div>
+    <div class="col-6 col-md-2 order-md-3">
+      <ng-container [ngPlural]="order.items.length">
+        <ng-template ngPluralCase="=1">1 accession</ng-template>
+        <ng-template ngPluralCase="other">{{ order.items.length | number }} accessions</ng-template>
+      </ng-container>
+    </div>
+    <div class="col-6 col-md order-md-1">{{ order.basket.customer.name }}, {{ order.basket.customer.type | customerTypeEnum }}</div>
+    <div class="col-6 col-md-2 order-md-4">
+      <span class="badge badge-secondary">{{ order.status }}</span>
+    </div>
+    <div class="col-6 col-md-2 order-md-2">{{ order.basket.confirmationInstant | date }}</div>
+  </div>
+  <hr class="my-2" />
+</div>
+
+<rb-pagination class="d-flex justify-content-center mt-4" [page]="orders" [navigate]="true"></rb-pagination>

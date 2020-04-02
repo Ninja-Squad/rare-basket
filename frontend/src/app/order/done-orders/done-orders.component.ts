@@ -1,0 +1,26 @@
+import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
+import { OrderService } from '../order.service';
+import { map, switchMap } from 'rxjs/operators';
+import { Order } from '../order.model';
+import { Page } from '../../shared/page.model';
+
+@Component({
+  selector: 'rb-done-orders',
+  templateUrl: './done-orders.component.html',
+  styleUrls: ['./done-orders.component.scss']
+})
+export class DoneOrdersComponent implements OnInit {
+  orders: Page<Order>;
+
+  constructor(private route: ActivatedRoute, private orderService: OrderService) {}
+
+  ngOnInit() {
+    this.route.queryParamMap
+      .pipe(
+        map(params => +(params.get('page') || 0)),
+        switchMap(page => this.orderService.listDone(page))
+      )
+      .subscribe(orders => (this.orders = orders));
+  }
+}

@@ -9,5 +9,9 @@ export const APP_ROUTES: Routes = [
   {
     path: 'baskets',
     loadChildren: () => import('./basket/basket.module').then(m => m.BasketModule)
+  },
+  {
+    path: 'orders',
+    loadChildren: () => import('./order/order.module').then(m => m.OrderModule)
   }
 ];

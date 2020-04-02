@@ -48,6 +48,15 @@ public class OrderItem {
     @ManyToOne(fetch = FetchType.LAZY)
     private Order order;
 
+    public OrderItem() {
+    }
+
+    public OrderItem(Long id, String accession, int quantity) {
+        this.id = id;
+        this.accession = accession;
+        this.quantity = quantity;
+    }
+
     public Long getId() {
         return id;
     }
