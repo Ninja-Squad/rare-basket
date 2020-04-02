@@ -1,4 +1,15 @@
 {
+  "common": {
+    "confirmation-modal-title": "Confirmation",
+    "yes": "Yes",
+    "no": "No"
+  },
+  "enums": {
+    "customer-type": {
+      "FARMER": "Agriculteur",
+      "BIOLOGIST": "Biologiste"
+    }
+  },
   "basket": {
     "basket": {
       "title": "Votre commande {{ reference }}"
@@ -23,6 +34,7 @@
       "accession-heading": "Accession",
       "quantity-heading": "Quantité",
       "delete-accession": "Supprimer l'accession {{ name }} - {{ identifier }} de la commande",
+      "confirm-accession-deletion": "Voulez-vous vraiment supprimer cette accession de votre commande\u00a0?",
       "save": "Finaliser ma commande"
     },
     "basket-confirmation": {

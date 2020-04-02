@@ -3,17 +3,18 @@ import { ConfirmationModalComponent } from './confirmation-modal/confirmation-mo
 import { ConfirmationOptions, ConfirmationService } from './confirmation.service';
 import { RbNgbModule } from '../rb-ngb/rb-ngb.module';
 import { MockModalModule, MockModalService } from './mock-modal.service.spec';
+import { I18nTestingModule } from '../i18n/i18n-testing.module.spec';
 
 describe('ConfirmationService', () => {
   let confirmationService: ConfirmationService;
   let mockModalService: MockModalService<ConfirmationModalComponent>;
   let confirmationModalComponent: ConfirmationModalComponent;
-  const commonOptions = { message: 'world', title: 'Hello' };
+  const commonOptions = { messageKey: 'basket.edit-basket.confirm-accession-deletion' };
 
   beforeEach(() => {
     TestBed.configureTestingModule({
       declarations: [ConfirmationModalComponent],
-      imports: [RbNgbModule, MockModalModule]
+      imports: [I18nTestingModule, RbNgbModule, MockModalModule]
     });
     mockModalService = TestBed.inject(MockModalService);
     confirmationService = TestBed.inject(ConfirmationService);
@@ -26,8 +27,8 @@ describe('ConfirmationService', () => {
     let closed = false;
     confirmationService.confirm(commonOptions).subscribe(() => (closed = true));
 
-    expect(confirmationModalComponent.title).toBe('Hello');
-    expect(confirmationModalComponent.message).toBe('world');
+    expect(confirmationModalComponent.title).toBe('Confirmation');
+    expect(confirmationModalComponent.message).toBe('Voulez-vous vraiment supprimer cette accession de votre commande\u00a0?');
     expect(closed).toBe(true);
   });
 

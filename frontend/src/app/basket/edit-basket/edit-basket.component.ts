@@ -62,7 +62,7 @@ export class EditBasketComponent implements OnInit {
 
   deleteItemAt(index: number) {
     this.confirmationService
-      .confirm({ message: 'Voulez-vous vraiment supprimer cette accession de votre commande\u00a0?' })
+      .confirm({ messageKey: 'basket.edit-basket.confirm-accession-deletion' })
       .subscribe(() => {
         this.items.removeAt(index);
         this.quantityDisplayed = this.shouldDisplayQuantity();

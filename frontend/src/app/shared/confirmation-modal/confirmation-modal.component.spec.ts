@@ -3,6 +3,7 @@ import { SharedModule } from '../shared.module';
 import { ConfirmationOptions, ConfirmationService } from '../confirmation.service';
 import { Component } from '@angular/core';
 import { Observable } from 'rxjs';
+import { I18nTestingModule } from '../../i18n/i18n-testing.module.spec';
 
 class ModalComponentTester {
   constructor(private fixture: ComponentFixture<any>) {}
@@ -53,7 +54,7 @@ describe('ConfirmationModalComponent and ConfirmationService', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [TestComponent],
-      imports: [SharedModule]
+      imports: [I18nTestingModule, SharedModule]
     });
 
     confirmationService = TestBed.inject(ConfirmationService);
@@ -77,33 +78,33 @@ describe('ConfirmationModalComponent and ConfirmationService', () => {
   }
 
   it('should display a modal dialog when confirming and use default title', () => {
-    confirm({ message: 'Really?' });
+    confirm({ messageKey: 'basket.edit-basket.confirm-accession-deletion' });
     expect(tester.modalWindow).toBeTruthy();
     expect(tester.modalTitle.textContent).toBe('Confirmation');
-    expect(tester.modalBody.textContent).toContain('Really?');
+    expect(tester.modalBody.textContent).toContain('Voulez-vous vraiment supprimer cette accession de votre commande\u00a0?');
   });
 
-  it('should honor the title option', () => {
-    confirm({ message: 'Really?', title: 'foo' });
-    expect(tester.modalTitle.textContent).toBe('foo');
+  it('should honor the titleKey option', () => {
+    confirm({ messageKey: 'basket.edit-basket.confirm-accession-deletion', titleKey: 'basket.edit-basket.email' });
+    expect(tester.modalTitle.textContent).toBe('Votre adresse courriel');
   });
 
   it('should emit when confirming', (done: DoneFn) => {
-    confirm({ message: 'Really?' }).subscribe(() => done());
+    confirm({ messageKey: 'basket.edit-basket.confirm-accession-deletion' }).subscribe(() => done());
     tester.yes();
 
     expect(tester.modalWindow).toBeFalsy();
   });
 
   it('should error when not confirming and errorOnClose is true', (done: DoneFn) => {
-    confirm({ message: 'Really?', errorOnClose: true }).subscribe({ error: () => done() });
+    confirm({ messageKey: 'basket.edit-basket.confirm-accession-deletion', errorOnClose: true }).subscribe({ error: () => done() });
     tester.no();
 
     expect(tester.modalWindow).toBeFalsy();
   });
 
   it('should do nothing when not confirming and errorOnClose is not set', (done: DoneFn) => {
-    confirm({ message: 'Really?' }).subscribe({
+    confirm({ messageKey: 'basket.edit-basket.confirm-accession-deletion' }).subscribe({
       error: () => fail(),
       complete: () => done()
     });

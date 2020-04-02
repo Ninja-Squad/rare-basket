@@ -1,10 +1,11 @@
 import { CustomerTypeEnumPipe } from './customer-type-enum.pipe';
+import { testEnumPipe } from './base-enum-pipe.spec';
 
 describe('CustomerTypeEnumPipe', () => {
   it('should translate customer types', () => {
-    const pipe = new CustomerTypeEnumPipe();
-    expect(pipe.transform(null)).toBe('');
-    expect(pipe.transform('FARMER')).toBe('Agriculteur');
-    expect(pipe.transform('WTF')).toBe('???WTF???');
+    testEnumPipe(ts => new CustomerTypeEnumPipe(ts), {
+      FARMER: 'Agriculteur',
+      BIOLOGIST: 'Biologiste'
+    });
   });
 });
