@@ -9,10 +9,11 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { HttpClientModule } from '@angular/common/http';
 import { ValdemortModule } from 'ngx-valdemort';
 import { ValidationDefaultsComponent } from './validation-defaults/validation-defaults.component';
+import { I18nModule } from './i18n/i18n.module';
 
 @NgModule({
   declarations: [AppComponent, HomeComponent, ValidationDefaultsComponent],
-  imports: [BrowserModule, RouterModule.forRoot(APP_ROUTES), FontAwesomeModule, HttpClientModule, ValdemortModule],
+  imports: [BrowserModule, RouterModule.forRoot(APP_ROUTES), FontAwesomeModule, HttpClientModule, ValdemortModule, I18nModule],
   providers: [],
   bootstrap: [AppComponent]
 })

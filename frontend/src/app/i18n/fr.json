@@ -1,0 +1,26 @@
+{
+  "basket": {
+    "edit-basket": {
+      "message": "Pour valider votre commande, veuillez remplir le formulaire suivant.",
+      "personal-information": "Informations personnelles",
+      "name": "Votre nom",
+      "name-error-label": "Le nom",
+      "email": "Votre adresse courriel",
+      "email-error-label": "L'adresse courriel",
+      "address": "Votre adresse postale",
+      "address-error-label": "L'adresse postale",
+      "customer-type": "Comment vous décririez-vous?",
+      "customer-type-error-label": "La catégorie",
+      "rationale": "Description de votre commande",
+      "rationale-hint": "Merci d'indiquer ici toutes les informations qui peuvent nous aider à gérer rapidement votre commande\u00a0:",
+      "rationale-question1": "dans quel but faites-vous cette commande\u00a0?",
+      "rationale-question2": "de quelles quantités avez-vous besoin\u00a0?",
+      "rationale-question3": "etc.",
+      "ordered-accessions": "Accessions commandées",
+      "accession-heading": "Accession",
+      "quantity-heading": "Quantité",
+      "delete-accession": "Supprimer l'accession {{ name }} - {{ identifier }} de la commande",
+      "save": "Finaliser ma commande"
+    }
+  }
+}

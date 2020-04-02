@@ -13,6 +13,7 @@ import { BasketConfirmationComponent } from './basket-confirmation/basket-confir
 import { EditConfirmationComponent } from './edit-confirmation/edit-confirmation.component';
 import { ConfirmedComponent } from './confirmed/confirmed.component';
 import { BasketContentComponent } from './basket-content/basket-content.component';
+import { TranslateModule } from '@ngx-translate/core';
 
 @NgModule({
   declarations: [
@@ -25,6 +26,7 @@ import { BasketContentComponent } from './basket-content/basket-content.componen
   ],
   imports: [
     CommonModule,
+    TranslateModule,
     RouterModule.forChild(BASKET_ROUTES),
     ReactiveFormsModule,
     ValdemortModule,

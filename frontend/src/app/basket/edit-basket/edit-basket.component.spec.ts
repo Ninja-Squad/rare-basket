@@ -12,6 +12,7 @@ import { SharedModule } from '../../shared/shared.module';
 import { ValdemortModule } from 'ngx-valdemort';
 import { ConfirmationService } from '../../shared/confirmation.service';
 import { of } from 'rxjs';
+import { I18nTestingModule } from '../../i18n/i18n-testing.module.spec';
 
 @Component({
   template: '<rb-edit-basket [basket]="basket" (basketSaved)="savedCommand = $event"></rb-edit-basket>'
@@ -76,7 +77,7 @@ describe('EditBasketComponent', () => {
 
     TestBed.configureTestingModule({
       declarations: [EditBasketComponent, TestComponent, ValidationDefaultsComponent],
-      imports: [RbNgbModule, ReactiveFormsModule, FontAwesomeModule, SharedModule, ValdemortModule],
+      imports: [I18nTestingModule, RbNgbModule, ReactiveFormsModule, FontAwesomeModule, SharedModule, ValdemortModule],
       providers: [{ provide: ConfirmationService, useValue: confirmationService }]
     });
 
@@ -140,7 +141,7 @@ describe('EditBasketComponent', () => {
 
       expect(tester.accessionsHeadings.length).toBe(3);
       expect(tester.accessionsHeadings[0]).toHaveText('Accession');
-      expect(tester.accessionsHeadings[1]).toHaveText('Quantity');
+      expect(tester.accessionsHeadings[1]).toHaveText('Quantité');
       expect(tester.accessionsHeadings[2]).toHaveText('');
       expect(tester.accessions.length).toBe(2);
       expect(tester.accessions[0]).toContainText('10');

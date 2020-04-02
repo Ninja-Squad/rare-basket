@@ -16,6 +16,7 @@ import { ValdemortModule } from 'ngx-valdemort';
 import { EditConfirmationComponent } from '../edit-confirmation/edit-confirmation.component';
 import { ConfirmedComponent } from '../confirmed/confirmed.component';
 import { BasketContentComponent } from '../basket-content/basket-content.component';
+import { I18nTestingModule } from '../../i18n/i18n-testing.module.spec';
 
 class BasketComponentTester extends ComponentTester<BasketComponent> {
   constructor() {
@@ -56,7 +57,7 @@ describe('BasketComponent', () => {
 
     TestBed.configureTestingModule({
       declarations: [BasketComponent, EditBasketComponent, EditConfirmationComponent, ConfirmedComponent, BasketContentComponent],
-      imports: [RbNgbModule, ReactiveFormsModule, FontAwesomeModule, SharedModule, ValdemortModule],
+      imports: [I18nTestingModule, RbNgbModule, ReactiveFormsModule, FontAwesomeModule, SharedModule, ValdemortModule],
       providers: [
         { provide: ActivatedRoute, useValue: route },
         { provide: BasketService, useValue: basketService }

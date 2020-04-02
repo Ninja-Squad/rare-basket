@@ -30,8 +30,7 @@
             "styles": [
               "src/styles.scss"
             ],
-            "scripts": [],
-            "i18nLocale": "fr"
+            "scripts": []
           },
           "configurations": {
             "production": {
