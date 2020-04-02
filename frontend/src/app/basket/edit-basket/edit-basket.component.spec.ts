@@ -155,7 +155,7 @@ describe('EditBasketComponent', () => {
       expect(tester.testElement).toContainText('Le nom est obligatoire');
       expect(tester.testElement).toContainText(`L'adresse courriel est obligatoire`);
       expect(tester.testElement).toContainText(`L'adresse postale est obligatoire`);
-      expect(tester.testElement).toContainText(`Le secteur d'activité est obligatoire`);
+      expect(tester.testElement).toContainText(`La catégorie est obligatoire`);
     });
 
     it('should save', () => {

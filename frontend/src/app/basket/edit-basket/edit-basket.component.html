@@ -24,17 +24,25 @@
             <val-errors controlName="address" label="L'adresse postale"></val-errors>
           </div>
           <div class="form-group">
-            <label for="type">Votre secteur d'activité</label>
+            <label for="type">Comment vous décririez-vous?</label>
             <select formControlName="type" id="type" class="form-control custom-select">
               <option [ngValue]="null"></option>
               <option *ngFor="let customerType of customerTypes" [value]="customerType">{{ customerType | customerTypeEnum }}</option>
             </select>
-            <val-errors controlName="type" label="Le secteur d'activité"></val-errors>
+            <val-errors controlName="type" label="La catégorie"></val-errors>
           </div>
         </div>
         <div class="form-group">
-          <label for="rationale">Merci d'indiquer ici la raison pour laquelle vous effectuez cette commande</label>
-          <textarea formControlName="rationale" id="rationale" class="form-control"></textarea>
+          <label for="rationale">Description de votre commande</label>
+          <textarea formControlName="rationale" id="rationale" class="form-control" style="height: 8rem;"></textarea>
+          <small class="text-muted form-text">
+            Merci d'indiquer ici toutes les informations qui peuvent nous aider à gérer rapidement votre commande&nbsp;:
+            <ul>
+              <li>dans quel but faites-vous cette commande&nbsp;?</li>
+              <li>de quelles quantités avez-vous besoin&nbsp;?</li>
+              <li>etc.</li>
+            </ul>
+          </small>
         </div>
       </div>
       <div class="col-sm" formArrayName="items">

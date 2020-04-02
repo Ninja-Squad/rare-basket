@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, Input, OnChanges } from '@angular/core';
 import { Basket } from '../basket.model';
-import { faAt, faCommentDots, faHome, faIndustry, faUser } from '@fortawesome/free-solid-svg-icons';
+import { faAddressCard, faAt, faCommentDots, faHome, faUser } from '@fortawesome/free-solid-svg-icons';
 
 /**
  * Component used to remind the customer of his basket
@@ -17,7 +17,7 @@ export class BasketContentComponent implements OnChanges {
   nameIcon = faUser;
   emailIcon = faAt;
   addressIcon = faHome;
-  customerTypeIcon = faIndustry;
+  customerTypeIcon = faAddressCard;
   rationaleIcon = faCommentDots;
 
   quantityDisplayed = false;
