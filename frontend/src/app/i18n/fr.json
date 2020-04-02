@@ -1,5 +1,8 @@
 {
   "basket": {
+    "basket": {
+      "title": "Votre commande {{ reference }}"
+    },
     "edit-basket": {
       "message": "Pour valider votre commande, veuillez remplir le formulaire suivant.",
       "personal-information": "Informations personnelles",
@@ -21,6 +24,34 @@
       "quantity-heading": "Quantité",
       "delete-accession": "Supprimer l'accession {{ name }} - {{ identifier }} de la commande",
       "save": "Finaliser ma commande"
+    },
+    "basket-confirmation": {
+      "error": "La confirmation de votre commande a échoué. Peut-être était-elle déjà confirmée\u00a0?",
+      "basket": "Votre commande"
+    },
+    "basket-content": {
+      "information": "Vos informations",
+      "ordered-accessions": "Accessions commandées",
+      "accession-heading": "Accession",
+      "quantity-heading": "Quantité"
+    },
+    "confirmed": {
+      "message": "Votre commande est confirmée.",
+      "dispatched-message": "Elle a été distribuée aux divers responsables en charge des accessions commandées, qui vous recontacteront par email, à l'adresse",
+      "mailbox-message": "Surveillez votre boîte aux lettres."
+    },
+    "edit-confirmation": {
+      "error": "La confirmation de votre commande a échoué. Peut-être était-elle déjà confirmée\u00a0?",
+      "refresh": "Rafraîchir",
+      "success": "Votre commande a été enregistrée.",
+      "message-prefix": "Un courriel vous a été envoyé à l'adresse",
+      "message-suffix": "afin de confirmer votre commande.",
+      "code-message-prefix": "Saisissez ici le code de confirmation qu'il contient, ou",
+      "code-message-refresh": "rafraichissez",
+      "code-message-suffix": "la page après avoir cliqué sur le lien qu'il contient.",
+      "spam-message": "Pensez à consulter vos spams si vous ne trouvez pas le courriel.",
+      "confirmation-code": "Code de confirmation",
+      "confirm": "Confirmer"
     }
   }
 }

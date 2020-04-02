@@ -1,5 +1,5 @@
 <div *ngIf="basket">
-  <h1>Votre commande {{ basket.reference }}</h1>
+  <h1 translate="basket.basket.title" [translateParams]="{ reference: basket.reference }"></h1>
   <rb-edit-basket *ngIf="basket.status === 'DRAFT'" [basket]="basket" (basketSaved)="save($event)"></rb-edit-basket>
   <rb-edit-confirmation
     *ngIf="basket.status === 'SAVED'"

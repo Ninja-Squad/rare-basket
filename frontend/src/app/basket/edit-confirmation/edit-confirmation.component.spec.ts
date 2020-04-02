@@ -8,6 +8,7 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { ReactiveFormsModule } from '@angular/forms';
 import { BasketContentComponent } from '../basket-content/basket-content.component';
 import { SharedModule } from '../../shared/shared.module';
+import { I18nTestingModule } from '../../i18n/i18n-testing.module.spec';
 
 @Component({
   template: `
@@ -63,7 +64,7 @@ describe('EditConfirmationComponent', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       declarations: [EditConfirmationComponent, TestComponent, BasketContentComponent],
-      imports: [FontAwesomeModule, ReactiveFormsModule, SharedModule]
+      imports: [I18nTestingModule, FontAwesomeModule, ReactiveFormsModule, SharedModule]
     });
 
     tester = new TestComponentTester();

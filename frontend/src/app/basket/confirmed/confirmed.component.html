@@ -4,15 +4,14 @@
       <fa-icon [icon]="confirmedIcon"></fa-icon>
     </div>
     <div class="flex-grow-1">
-      <p>Votre commande est confirmée.</p>
+      <p translate="basket.confirmed.message"></p>
       <p>
-        Elle a été distribuée aux divers responsables en charge des accessions commandées, qui vous recontacteront par email, à l'adresse
+        <span translate="basket.confirmed.dispatched-message"></span>
+        &nbsp;
         <code style="white-space: pre">{{ basket.customer.email }}</code
         >.
       </p>
-      <p>
-        Surveillez votre boîte aux lettres.
-      </p>
+      <p translate="basket.confirmed.mailbox-message"></p>
     </div>
   </div>
 </div>

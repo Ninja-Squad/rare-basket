@@ -7,6 +7,7 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { ActivatedRoute, Router } from '@angular/router';
 import { BasketService } from '../basket.service';
 import { of, throwError } from 'rxjs';
+import { I18nTestingModule } from '../../i18n/i18n-testing.module.spec';
 
 class BasketConfirmationComponentTester extends ComponentTester<BasketConfirmationComponent> {
   constructor() {
@@ -38,7 +39,7 @@ describe('BasketConfirmationComponent', () => {
 
     TestBed.configureTestingModule({
       declarations: [BasketConfirmationComponent],
-      imports: [FontAwesomeModule, RouterTestingModule],
+      imports: [I18nTestingModule, FontAwesomeModule, RouterTestingModule],
       providers: [
         { provide: ActivatedRoute, useValue: route },
         { provide: BasketService, useValue: basketService }

@@ -7,6 +7,7 @@ import { Component } from '@angular/core';
 import { Basket } from '../basket.model';
 import { BasketContentComponent } from '../basket-content/basket-content.component';
 import { SharedModule } from '../../shared/shared.module';
+import { I18nTestingModule } from '../../i18n/i18n-testing.module.spec';
 
 @Component({
   template: `
@@ -34,7 +35,7 @@ describe('ConfirmedComponent', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       declarations: [ConfirmedComponent, TestComponent, BasketContentComponent],
-      imports: [FontAwesomeModule, SharedModule]
+      imports: [I18nTestingModule, FontAwesomeModule, SharedModule]
     });
 
     tester = new TestComponentTester();

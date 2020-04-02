@@ -1,7 +1,7 @@
 <div class="border rounded bg-light p-5">
   <div class="row">
     <div class="col-sm">
-      <h2>Vos informations</h2>
+      <h2 translate="basket.basket-content.information"></h2>
       <div class="d-flex">
         <div class="mr-2"><fa-icon [icon]="nameIcon" [fixedWidth]="true"></fa-icon></div>
         <div class="flex-grow-1">{{ basket.customer.name }}</div>
@@ -24,12 +24,12 @@
       </div>
     </div>
     <div class="col-sm">
-      <h2>Accessions commandées</h2>
+      <h2 translate="basket.basket-content.ordered-accessions"></h2>
       <table class="table table-sm">
         <thead class="thead-light">
           <tr>
-            <th>Accession</th>
-            <th *ngIf="quantityDisplayed">Quantité</th>
+            <th translate="basket.basket-content.accession-heading"></th>
+            <th *ngIf="quantityDisplayed" translate="basket.basket-content.quantity-heading"></th>
           </tr>
         </thead>
         <tbody>
