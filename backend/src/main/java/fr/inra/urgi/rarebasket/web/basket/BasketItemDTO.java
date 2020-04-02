@@ -1,5 +1,6 @@
 package fr.inra.urgi.rarebasket.web.basket;
 
+import fr.inra.urgi.rarebasket.domain.Accession;
 import fr.inra.urgi.rarebasket.domain.BasketItem;
 
 /**
@@ -8,10 +9,10 @@ import fr.inra.urgi.rarebasket.domain.BasketItem;
  */
 public final class BasketItemDTO {
     private final Long id;
-    private final String accession;
+    private final Accession accession;
     private final Integer quantity;
 
-    public BasketItemDTO(Long id, String accession, Integer quantity) {
+    public BasketItemDTO(Long id, Accession accession, Integer quantity) {
         this.id = id;
         this.accession = accession;
         this.quantity = quantity;
@@ -25,7 +26,7 @@ public final class BasketItemDTO {
         return id;
     }
 
-    public String getAccession() {
+    public Accession getAccession() {
         return accession;
     }
 

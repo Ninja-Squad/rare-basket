@@ -32,3 +32,5 @@ secrets
 # System Files
 .DS_Store
 Thumbs.db
+
+examples

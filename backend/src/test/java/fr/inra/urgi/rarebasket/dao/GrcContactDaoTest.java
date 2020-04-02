@@ -37,6 +37,7 @@ class GrcContactDaoTest extends BaseDaoTest {
 
     @Test
     void shouldFindByEmail() {
+        skipNextLaunch();
         assertThat(grcContactDao.findByEmail("unexisting@mail.com")).isEmpty();
         assertThat(grcContactDao.findByEmail("orders@grc1.com")).isNotEmpty();
     }

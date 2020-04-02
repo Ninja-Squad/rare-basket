@@ -37,7 +37,7 @@
           </thead>
           <tbody>
             <tr *ngFor="let item of order.items" class="order-item">
-              <td>{{ item.accession }}</td>
+              <td><rb-accession [accession]="item.accession"></rb-accession></td>
               <td>{{ item.quantity | number }}</td>
             </tr>
           </tbody>

@@ -31,12 +31,13 @@ CREATE TABLE basket (
 CREATE SEQUENCE basket_seq START WITH 1001 INCREMENT 50;
 
 CREATE TABLE basket_item (
-    id         BIGINT PRIMARY KEY,
-    accession  VARCHAR NOT NULL,
-    quantity   INT,
-    basket_id  BIGINT  NOT NULL
+    id                   BIGINT PRIMARY KEY,
+    accession_name       VARCHAR NOT NULL,
+    accession_identifier VARCHAR NOT NULL,
+    quantity             INT,
+    basket_id            BIGINT  NOT NULL
         CONSTRAINT basket_item_fk1 REFERENCES basket(id),
-    contact_id BIGINT  NOT NULL
+    contact_id           BIGINT  NOT NULL
         CONSTRAINT basket_item_fk2 REFERENCES grc_contact(id)
 );
 CREATE INDEX basket_item_idx1 ON basket_item(basket_id);
@@ -55,10 +56,11 @@ CREATE TABLE accession_order (
 CREATE INDEX accession_order_idx1 ON accession_order(contact_id);
 
 CREATE TABLE accession_order_item (
-    id        BIGINT PRIMARY KEY,
-    accession VARCHAR NOT NULL,
-    quantity  INT     NOT NULL,
-    order_id  BIGINT  NOT NULL
+    id                   BIGINT PRIMARY KEY,
+    accession_name       VARCHAR NOT NULL,
+    accession_identifier VARCHAR NOT NULL,
+    quantity             INT     NOT NULL,
+    order_id             BIGINT  NOT NULL
         CONSTRAINT accession_order_item_fk1 REFERENCES accession_order(id)
 );
 CREATE INDEX accession_order_item_idx1 ON accession_order_item(order_id);

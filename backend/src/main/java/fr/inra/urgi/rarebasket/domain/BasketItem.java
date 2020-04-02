@@ -7,8 +7,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
+import javax.validation.Valid;
 import javax.validation.constraints.Min;
-import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
 /**
@@ -25,8 +25,9 @@ public class BasketItem {
     /**
      * The RARe accession being ordered
      */
-    @NotBlank
-    private String accession;
+    @NotNull
+    @Valid
+    private Accession accession;
 
     /**
      * The quantity of the accession being ordered.
@@ -64,11 +65,11 @@ public class BasketItem {
         this.id = id;
     }
 
-    public String getAccession() {
+    public Accession getAccession() {
         return accession;
     }
 
-    public void setAccession(String accession) {
+    public void setAccession(Accession accession) {
         this.accession = accession;
     }
 

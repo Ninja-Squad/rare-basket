@@ -1,8 +1,8 @@
-import { Customer } from '../basket/basket.model';
+import { Accession, Customer } from '../basket/basket.model';
 
 export interface OrderItem {
   id: number;
-  accession: string;
+  accession: Accession;
   quantity: number;
 }
 

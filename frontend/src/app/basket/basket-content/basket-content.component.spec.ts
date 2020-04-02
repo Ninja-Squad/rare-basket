@@ -26,12 +26,18 @@ class TestComponent {
     items: [
       {
         id: 1,
-        accession: 'rosa',
+        accession: {
+          name: 'Rosa',
+          identifier: 'rosa1'
+        },
         quantity: 1234
       },
       {
         id: 2,
-        accession: 'violetta',
+        accession: {
+          name: 'Violetta',
+          identifier: 'violetta1'
+        },
         quantity: 5
       }
     ]
@@ -73,8 +79,10 @@ describe('BasketContentComponent', () => {
 
   it('should display basket items', () => {
     expect(tester.items.length).toBe(2);
-    expect(tester.items[0]).toContainText('rosa');
+    expect(tester.items[0]).toContainText('Rosa');
+    expect(tester.items[0]).toContainText('rosa1');
     expect(tester.items[0]).toContainText('1 234');
-    expect(tester.items[1]).toContainText('violetta');
+    expect(tester.items[1]).toContainText('Violetta');
+    expect(tester.items[1]).toContainText('violetta1');
   });
 });

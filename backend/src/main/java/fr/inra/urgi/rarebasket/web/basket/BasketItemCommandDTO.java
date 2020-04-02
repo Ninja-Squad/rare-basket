@@ -1,14 +1,15 @@
 package fr.inra.urgi.rarebasket.web.basket;
 
 import java.util.Objects;
+import javax.validation.Valid;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.Min;
-import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Null;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import fr.inra.urgi.rarebasket.domain.Accession;
 
 /**
  * An item of basket command
@@ -19,8 +20,9 @@ public final class BasketItemCommandDTO {
     /**
      * The accession being ordered
      */
-    @NotBlank
-    private final String accession;
+    @NotNull
+    @Valid
+    private final Accession accession;
 
     /**
      * The email of the GRC contact in charge of handling this ordered item
@@ -35,7 +37,7 @@ public final class BasketItemCommandDTO {
     private Integer quantity;
 
     @JsonCreator
-    public BasketItemCommandDTO(@JsonProperty("accession") String accession,
+    public BasketItemCommandDTO(@JsonProperty("accession") Accession accession,
                                 @JsonProperty("contactEmail") String contactEmail,
                                 @JsonProperty("quantity") Integer quantity) {
         this.accession = accession;
@@ -43,17 +45,17 @@ public final class BasketItemCommandDTO {
         this.quantity = quantity;
     }
 
-    public BasketItemCommandDTO(String accession,
+    public BasketItemCommandDTO(Accession accession,
                                 String contactEmail) {
         this(accession, contactEmail, null);
     }
 
-    public BasketItemCommandDTO(String accession,
+    public BasketItemCommandDTO(Accession accession,
                                 Integer quantity) {
         this(accession, null, quantity);
     }
 
-    public String getAccession() {
+    public Accession getAccession() {
         return accession;
     }
 

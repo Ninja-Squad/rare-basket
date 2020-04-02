@@ -98,12 +98,18 @@ describe('EditBasketComponent', () => {
         items: [
           {
             id: 1,
-            accession: 'rosa',
+            accession: {
+              name: 'Rosa',
+              identifier: 'rosa1'
+            },
             quantity: null
           },
           {
             id: 2,
-            accession: 'violetta',
+            accession: {
+              name: 'Violetta',
+              identifier: 'violetta1'
+            },
             quantity: null
           }
         ]
@@ -120,8 +126,10 @@ describe('EditBasketComponent', () => {
       expect(tester.rationale).toHaveValue('');
       expect(tester.quantities.length).toBe(2);
       tester.quantities.forEach(quantity => expect(quantity).toHaveValue(''));
-      expect(tester.accessionTitles[0]).toContainText('rosa');
-      expect(tester.accessionTitles[1]).toContainText('violetta');
+      expect(tester.accessionTitles[0]).toContainText('Rosa');
+      expect(tester.accessionTitles[0]).toContainText('rosa1');
+      expect(tester.accessionTitles[1]).toContainText('Violetta');
+      expect(tester.accessionTitles[1]).toContainText('violetta1');
     });
 
     it('should validate and not save', () => {
@@ -161,11 +169,17 @@ describe('EditBasketComponent', () => {
         rationale: 'Because',
         items: [
           {
-            accession: 'rosa',
+            accession: {
+              name: 'Rosa',
+              identifier: 'rosa1'
+            },
             quantity: 10
           },
           {
-            accession: 'violetta',
+            accession: {
+              name: 'Violetta',
+              identifier: 'violetta1'
+            },
             quantity: 20
           }
         ],
@@ -181,7 +195,8 @@ describe('EditBasketComponent', () => {
       expect(confirmationService.confirm).toHaveBeenCalled();
       expect(tester.quantities.length).toBe(1);
       expect(tester.accessionTitles.length).toBe(1);
-      expect(tester.accessionTitles[0]).toContainText('violetta');
+      expect(tester.accessionTitles[0]).toContainText('Violetta');
+      expect(tester.accessionTitles[0]).toContainText('violetta1');
       expect(tester.accessionDeleteButtons[0].disabled).toBe(true);
     });
   });
@@ -202,12 +217,18 @@ describe('EditBasketComponent', () => {
         items: [
           {
             id: 1,
-            accession: 'rosa',
+            accession: {
+              name: 'rosa',
+              identifier: 'rosa1'
+            },
             quantity: 10
           },
           {
             id: 2,
-            accession: 'rosa',
+            accession: {
+              name: 'rosa',
+              identifier: 'rosa2'
+            },
             quantity: 20
           }
         ]

@@ -1,6 +1,11 @@
 export const ALL_CUSTOMER_TYPES = ['FARMER', 'BIOLOGIST'] as const;
 export type CustomerType = typeof ALL_CUSTOMER_TYPES[number];
 
+export interface Accession {
+  name: string;
+  identifier: string;
+}
+
 export interface Customer {
   name: string | null;
   email: string | null;
@@ -10,7 +15,7 @@ export interface Customer {
 
 export interface BasketItem {
   id: number;
-  accession: string;
+  accession: Accession;
   quantity: number | null;
 }
 
@@ -33,7 +38,7 @@ export interface CustomerCommand {
 }
 
 export interface BasketItemCommand {
-  accession: string;
+  accession: Accession;
   quantity: number;
 }
 

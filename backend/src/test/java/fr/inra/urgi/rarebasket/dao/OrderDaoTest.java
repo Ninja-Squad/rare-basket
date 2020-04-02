@@ -67,6 +67,7 @@ class OrderDaoTest extends BaseDaoTest {
 
     @Test
     void shouldPageAll() {
+        skipNextLaunch();
         PageRequest pageRequest = PageRequest.of(0, 2);
         Page<Order> result = dao.pageAll(pageRequest);
         assertThat(result.getTotalElements()).isEqualTo(3);
@@ -75,6 +76,7 @@ class OrderDaoTest extends BaseDaoTest {
 
     @Test
     void shouldPageByStatuses() {
+        skipNextLaunch();
         PageRequest pageRequest = PageRequest.of(0, 2);
         Page<Order> result = dao.pageByStatuses(EnumSet.of(OrderStatus.CANCELLED, OrderStatus.FINALIZED), pageRequest);
         assertThat(result.getTotalElements()).isEqualTo(2);

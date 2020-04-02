@@ -34,7 +34,7 @@
         </thead>
         <tbody>
           <tr *ngFor="let item of basket.items" class="basket-item">
-            <td>{{ item.accession }}</td>
+            <td><rb-accession [accession]="item.accession"></rb-accession></td>
             <td>{{ item.quantity | number }}</td>
           </tr>
         </tbody>

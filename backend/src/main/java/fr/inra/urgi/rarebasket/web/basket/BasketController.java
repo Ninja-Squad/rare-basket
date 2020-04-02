@@ -15,6 +15,7 @@ import javax.validation.Validator;
 import fr.inra.urgi.rarebasket.dao.BasketDao;
 import fr.inra.urgi.rarebasket.dao.GrcContactDao;
 import fr.inra.urgi.rarebasket.dao.OrderDao;
+import fr.inra.urgi.rarebasket.domain.Accession;
 import fr.inra.urgi.rarebasket.domain.Basket;
 import fr.inra.urgi.rarebasket.domain.BasketItem;
 import fr.inra.urgi.rarebasket.domain.BasketStatus;
@@ -197,7 +198,7 @@ public class BasketController {
             basket.setStatus(BasketStatus.SAVED);
         }
 
-        Map<String, BasketItemCommandDTO> itemCommandsByAccession =
+        Map<Accession, BasketItemCommandDTO> itemCommandsByAccession =
             command.getItems()
                    .stream()
                    .collect(Collectors.toMap(BasketItemCommandDTO::getAccession, Function.identity()));

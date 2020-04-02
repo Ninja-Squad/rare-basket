@@ -42,12 +42,10 @@
         <div *ngFor="let itemGroup of items.controls; index as index" [formGroupName]="index" class="accession">
           <h3>
             <fa-icon [icon]="seedIcon" class="mr-1"></fa-icon>
-            {{ itemGroup.get('accession').value }}
+            <rb-accession [accession]="itemGroup.get('accession').value"></rb-accession>
           </h3>
           <div class="form-inline">
-            <label [for]="'item-' + index" class="mb-2 mr-2"
-              >Quantité <span class="sr-only"> de {{ itemGroup.get('accession').value }}</span></label
-            >
+            <label [for]="'item-' + index" class="mb-2 mr-2">Quantité</label>
             <input
               type="number"
               min="1"
@@ -63,7 +61,9 @@
               (click)="deleteItemAt(index)"
             >
               <fa-icon [icon]="deleteIcon"></fa-icon>
-              <span class="sr-only">Supprimer l'accession {{ itemGroup.get('accession').value }} de la commande</span>
+              <span class="sr-only"
+                >Supprimer l'accession <rb-accession [accession]="itemGroup.get('accession').value"></rb-accession> de la commande</span
+              >
             </button>
           </div>
           <val-errors controlName="quantity" label="La quantité" class="mb-2">

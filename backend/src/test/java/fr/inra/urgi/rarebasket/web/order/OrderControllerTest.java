@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Optional;
 
 import fr.inra.urgi.rarebasket.dao.OrderDao;
+import fr.inra.urgi.rarebasket.domain.Accession;
 import fr.inra.urgi.rarebasket.domain.Basket;
 import fr.inra.urgi.rarebasket.domain.Customer;
 import fr.inra.urgi.rarebasket.domain.CustomerType;
@@ -52,8 +53,8 @@ class OrderControllerTest {
         order = new Order(42L);
         order.setBasket(basket);
         order.setStatus(OrderStatus.DRAFT);
-        order.addItem(new OrderItem(421L, "rosa", 10));
-        order.addItem(new OrderItem(422L, "violetta", 20));
+        order.addItem(new OrderItem(421L, new Accession("rosa", "rosa1"), 10));
+        order.addItem(new OrderItem(422L, new Accession("violetta", "violetta1"), 20));
 
         when(mockOrderDao.findById(order.getId())).thenReturn(Optional.of(order));
     }
@@ -83,7 +84,8 @@ class OrderControllerTest {
                .andExpect(jsonPath("$.content[0].basket.confirmationInstant").value(order.getBasket().getConfirmationInstant().toString()))
                .andExpect(jsonPath("$.content[0].items.length()").value(2))
                .andExpect(jsonPath("$.content[0].items[0].id").value(421L))
-               .andExpect(jsonPath("$.content[0].items[0].accession").value("rosa"))
+               .andExpect(jsonPath("$.content[0].items[0].accession.name").value("rosa"))
+               .andExpect(jsonPath("$.content[0].items[0].accession.identifier").value("rosa1"))
                .andExpect(jsonPath("$.content[0].items[0].quantity").value(10));
     }
 

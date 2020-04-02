@@ -8,8 +8,8 @@ import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
+import javax.validation.Valid;
 import javax.validation.constraints.Min;
-import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
 /**
@@ -35,8 +35,9 @@ public class OrderItem {
     /**
      * The RARe accession being ordered
      */
-    @NotBlank
-    private String accession;
+    @NotNull
+    @Valid
+    private Accession accession;
 
     /**
      * The quantity of the accession being ordered.
@@ -51,7 +52,7 @@ public class OrderItem {
     public OrderItem() {
     }
 
-    public OrderItem(Long id, String accession, int quantity) {
+    public OrderItem(Long id, Accession accession, int quantity) {
         this.id = id;
         this.accession = accession;
         this.quantity = quantity;
@@ -65,11 +66,11 @@ public class OrderItem {
         this.id = id;
     }
 
-    public String getAccession() {
+    public Accession getAccession() {
         return accession;
     }
 
-    public void setAccession(String accession) {
+    public void setAccession(Accession accession) {
         this.accession = accession;
     }
 
