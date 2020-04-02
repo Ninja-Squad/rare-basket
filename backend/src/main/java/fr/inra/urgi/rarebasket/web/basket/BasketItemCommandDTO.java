@@ -32,7 +32,6 @@ public final class BasketItemCommandDTO {
     @Null(groups = BasketCommandDTO.Update.class)
     private final String contactEmail;
 
-    @NotNull(groups = BasketCommandDTO.Complete.class)
     @Min(value = 1)
     private Integer quantity;
 

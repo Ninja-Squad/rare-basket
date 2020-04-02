@@ -54,7 +54,7 @@ class OrderControllerTest {
         order.setBasket(basket);
         order.setStatus(OrderStatus.DRAFT);
         order.addItem(new OrderItem(421L, new Accession("rosa", "rosa1"), 10));
-        order.addItem(new OrderItem(422L, new Accession("violetta", "violetta1"), 20));
+        order.addItem(new OrderItem(422L, new Accession("violetta", "violetta1"), null));
 
         when(mockOrderDao.findById(order.getId())).thenReturn(Optional.of(order));
     }
@@ -86,7 +86,8 @@ class OrderControllerTest {
                .andExpect(jsonPath("$.content[0].items[0].id").value(421L))
                .andExpect(jsonPath("$.content[0].items[0].accession.name").value("rosa"))
                .andExpect(jsonPath("$.content[0].items[0].accession.identifier").value("rosa1"))
-               .andExpect(jsonPath("$.content[0].items[0].quantity").value(10));
+               .andExpect(jsonPath("$.content[0].items[0].quantity").value(10))
+               .andExpect(jsonPath("$.content[0].items[1].quantity").isEmpty());
     }
 
     @Test

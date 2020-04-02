@@ -1,7 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 
 import { EditBasketComponent } from './edit-basket.component';
-import { ComponentTester, speculoosMatchers, TestButton, TestInput } from 'ngx-speculoos';
+import { ComponentTester, speculoosMatchers, TestButton } from 'ngx-speculoos';
 import { Component } from '@angular/core';
 import { Basket, BasketCommand } from '../basket.model';
 import { ValidationDefaultsComponent } from '../../validation-defaults/validation-defaults.component';
@@ -46,10 +46,6 @@ class TestComponentTester extends ComponentTester<TestComponent> {
     return this.textarea('#rationale');
   }
 
-  get quantities(): Array<TestInput> {
-    return this.elements('.quantity') as Array<TestInput>;
-  }
-
   get saveButton() {
     return this.button('#save');
   }
@@ -58,8 +54,12 @@ class TestComponentTester extends ComponentTester<TestComponent> {
     return this.elements('.invalid-feedback div');
   }
 
-  get accessionTitles() {
-    return this.elements('.accession h3');
+  get accessionsHeadings() {
+    return this.elements('th');
+  }
+
+  get accessions() {
+    return this.elements('.accession');
   }
 
   get accessionDeleteButtons(): Array<TestButton> {
@@ -114,47 +114,59 @@ describe('EditBasketComponent', () => {
           }
         ]
       };
-
-      tester.detectChanges();
     });
 
     it('should display an empty form', () => {
+      tester.detectChanges();
+
       expect(tester.customerName).toHaveValue('');
       expect(tester.customerEmail).toHaveValue('');
       expect(tester.customerAddress).toHaveValue('');
       expect(tester.customerType).toHaveSelectedLabel('');
       expect(tester.rationale).toHaveValue('');
-      expect(tester.quantities.length).toBe(2);
-      tester.quantities.forEach(quantity => expect(quantity).toHaveValue(''));
-      expect(tester.accessionTitles[0]).toContainText('Rosa');
-      expect(tester.accessionTitles[0]).toContainText('rosa1');
-      expect(tester.accessionTitles[1]).toContainText('Violetta');
-      expect(tester.accessionTitles[1]).toContainText('violetta1');
+      expect(tester.accessionsHeadings.length).toBe(2);
+      expect(tester.accessionsHeadings[0]).toHaveText('Accession');
+      expect(tester.accessionsHeadings[1]).toHaveText('');
+      expect(tester.accessions.length).toBe(2);
+      expect(tester.accessions[0]).toContainText('Rosa');
+      expect(tester.accessions[0]).toContainText('rosa1');
+      expect(tester.accessions[1]).toContainText('Violetta');
+      expect(tester.accessions[1]).toContainText('violetta1');
+    });
+
+    it('should display quantities if at least one is set', () => {
+      tester.componentInstance.basket.items[0].quantity = 10;
+      tester.detectChanges();
+
+      expect(tester.accessionsHeadings.length).toBe(3);
+      expect(tester.accessionsHeadings[0]).toHaveText('Accession');
+      expect(tester.accessionsHeadings[1]).toHaveText('Quantity');
+      expect(tester.accessionsHeadings[2]).toHaveText('');
+      expect(tester.accessions.length).toBe(2);
+      expect(tester.accessions[0]).toContainText('10');
     });
 
     it('should validate and not save', () => {
+      tester.detectChanges();
+
       tester.saveButton.click();
       expect(tester.componentInstance.savedCommand).toBeNull();
-      expect(tester.errors.length).toBe(6);
+      expect(tester.errors.length).toBe(4);
       expect(tester.testElement).toContainText('Le nom est obligatoire');
       expect(tester.testElement).toContainText(`L'adresse courriel est obligatoire`);
       expect(tester.testElement).toContainText(`L'adresse postale est obligatoire`);
       expect(tester.testElement).toContainText(`Le secteur d'activité est obligatoire`);
-      expect(tester.testElement).toContainText(`La quantité est obligatoire`);
-
-      tester.quantities[0].fillWith('0');
-      tester.saveButton.click();
-      expect(tester.testElement).toContainText(`La quantité doit être supérieure ou égale à 1`);
     });
 
     it('should save', () => {
+      tester.componentInstance.basket.items[0].quantity = 10;
+      tester.detectChanges();
+
       tester.customerName.fillWith('John');
       tester.customerEmail.fillWith('john@mail.com');
       tester.customerAddress.fillWith('21 Jump Street');
       tester.customerType.selectLabel('Biologiste');
       tester.rationale.fillWith('Because');
-      tester.quantities[0].fillWith('10');
-      tester.quantities[1].fillWith('20');
 
       tester.saveButton.click();
       expect(tester.errors.length).toBe(0);
@@ -180,7 +192,7 @@ describe('EditBasketComponent', () => {
               name: 'Violetta',
               identifier: 'violetta1'
             },
-            quantity: 20
+            quantity: null
           }
         ],
         complete: true
@@ -189,15 +201,17 @@ describe('EditBasketComponent', () => {
     });
 
     it('should remove accession after confirmation and make last one removal disabled', () => {
+      tester.componentInstance.basket.items[0].quantity = 10;
+      tester.detectChanges();
+
       confirmationService.confirm.and.returnValue(of(undefined));
       tester.accessionDeleteButtons[0].click();
 
       expect(confirmationService.confirm).toHaveBeenCalled();
-      expect(tester.quantities.length).toBe(1);
-      expect(tester.accessionTitles.length).toBe(1);
-      expect(tester.accessionTitles[0]).toContainText('Violetta');
-      expect(tester.accessionTitles[0]).toContainText('violetta1');
+      expect(tester.accessions.length).toBe(1);
+      expect(tester.accessions[0]).toContainText('Violetta');
       expect(tester.accessionDeleteButtons[0].disabled).toBe(true);
+      expect(tester.accessionsHeadings.length).toBe(2); // because there is no accession with a quantity anymore
     });
   });
 
@@ -243,8 +257,6 @@ describe('EditBasketComponent', () => {
       expect(tester.customerAddress).toHaveValue('21 Jump Street');
       expect(tester.customerType).toHaveSelectedLabel('Biologiste');
       expect(tester.rationale).toHaveValue('Because');
-      expect(tester.quantities[0]).toHaveValue('10');
-      expect(tester.quantities[1]).toHaveValue('20');
     });
   });
 });

@@ -217,22 +217,6 @@ class BasketControllerTest {
     }
 
     @Test
-    void shouldNotCreateCompleteBasketWithIncompleteQuantities() throws Exception {
-        BasketCommandDTO command = new BasketCommandDTO(
-            List.of(new BasketItemCommandDTO(new Accession("rosa", "rosa1"), john.getEmail())),
-            new CustomerCommandDTO(
-                "Jack",
-                "jack@mail.com",
-                "21 Jump street",
-                CustomerType.BIOLOGIST
-            ),
-            "rationale",
-            true
-        );
-        checkBadRequestWhenCreating(command);
-    }
-
-    @Test
     void shouldCreateADraftBasket() throws Exception {
         BasketCommandDTO command = new BasketCommandDTO(
             List.of(

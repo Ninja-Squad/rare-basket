@@ -23,7 +23,8 @@ class TestComponent {
   basket = {
     customer: {
       email: 'john@mail.com'
-    }
+    },
+    items: []
   } as Basket;
   confirmationFailed = false;
   confirmationCode: string = null;

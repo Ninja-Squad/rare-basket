@@ -10,9 +10,9 @@ import fr.inra.urgi.rarebasket.domain.OrderItem;
 public final class OrderItemDTO {
     private final Long id;
     private final Accession accession;
-    private final int quantity;
+    private final Integer quantity;
 
-    public OrderItemDTO(Long id, Accession accession, int quantity) {
+    public OrderItemDTO(Long id, Accession accession, Integer quantity) {
         this.id = id;
         this.accession = accession;
         this.quantity = quantity;
@@ -30,7 +30,7 @@ public final class OrderItemDTO {
         return accession;
     }
 
-    public int getQuantity() {
+    public Integer getQuantity() {
         return quantity;
     }
 }

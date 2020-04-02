@@ -52,6 +52,10 @@ class TestComponentTester extends ComponentTester<TestComponent> {
   get items() {
     return this.elements('.basket-item');
   }
+
+  get itemTableHeadings() {
+    return this.elements('th');
+  }
 }
 
 describe('BasketContentComponent', () => {
@@ -65,11 +69,12 @@ describe('BasketContentComponent', () => {
     });
 
     tester = new TestComponentTester();
-    tester.detectChanges();
     jasmine.addMatchers(speculoosMatchers);
   });
 
   it('should display customer information', () => {
+    tester.detectChanges();
+
     expect(tester.testElement).toContainText('John');
     expect(tester.testElement).toContainText('john@mail.com');
     expect(tester.testElement).toContainText('Av. du Centre\n75000 Paris');
@@ -78,11 +83,22 @@ describe('BasketContentComponent', () => {
   });
 
   it('should display basket items', () => {
+    tester.detectChanges();
+
+    expect(tester.itemTableHeadings.length).toBe(2);
     expect(tester.items.length).toBe(2);
     expect(tester.items[0]).toContainText('Rosa');
     expect(tester.items[0]).toContainText('rosa1');
     expect(tester.items[0]).toContainText('1 234');
     expect(tester.items[1]).toContainText('Violetta');
     expect(tester.items[1]).toContainText('violetta1');
+  });
+
+  it('should display basket items without quantity if no item has a quantity', () => {
+    tester.componentInstance.basket.items.forEach(item => (item.quantity = null));
+    tester.detectChanges();
+
+    expect(tester.itemTableHeadings.length).toBe(1);
+    expect(tester.items.length).toBe(2);
   });
 });

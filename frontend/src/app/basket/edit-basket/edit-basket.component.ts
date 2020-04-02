@@ -1,8 +1,22 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { ALL_CUSTOMER_TYPES, Basket, BasketCommand } from '../basket.model';
+import { Accession, ALL_CUSTOMER_TYPES, Basket, BasketCommand, CustomerType } from '../basket.model';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { faCheck, faSeedling, faTrash } from '@fortawesome/free-solid-svg-icons';
+import { faCheck, faTrash } from '@fortawesome/free-solid-svg-icons';
 import { ConfirmationService } from '../../shared/confirmation.service';
+
+interface FormValue {
+  customer: {
+    name: string;
+    email: string;
+    address: string;
+    type: CustomerType;
+  };
+  rationale: string;
+  items: Array<{
+    accession: Accession;
+    quantity: number;
+  }>;
+}
 
 @Component({
   selector: 'rb-edit-basket',
@@ -18,8 +32,9 @@ export class EditBasketComponent implements OnInit {
   form: FormGroup;
 
   deleteIcon = faTrash;
-  seedIcon = faSeedling;
   saveIcon = faCheck;
+
+  quantityDisplayed = false;
 
   constructor(private fb: FormBuilder, private confirmationService: ConfirmationService) {}
 
@@ -37,17 +52,21 @@ export class EditBasketComponent implements OnInit {
         this.basket.items.map(item =>
           this.fb.group({
             accession: item.accession,
-            quantity: [item.quantity, [Validators.required, Validators.min(1)]]
+            quantity: item.quantity
           })
         )
       )
     });
+    this.quantityDisplayed = this.shouldDisplayQuantity();
   }
 
   deleteItemAt(index: number) {
     this.confirmationService
       .confirm({ message: 'Voulez-vous vraiment supprimer cette accession de votre commande\u00a0?' })
-      .subscribe(() => this.items.removeAt(index));
+      .subscribe(() => {
+        this.items.removeAt(index);
+        this.quantityDisplayed = this.shouldDisplayQuantity();
+      });
   }
 
   save() {
@@ -55,11 +74,15 @@ export class EditBasketComponent implements OnInit {
       return;
     }
 
-    const command: BasketCommand = { ...this.form.value, complete: true };
+    const command: BasketCommand = { ...(this.form.value as FormValue), complete: true };
     this.basketSaved.emit(command);
   }
 
   get items(): FormArray {
     return this.form.get('items') as FormArray;
+  }
+
+  private shouldDisplayQuantity(): boolean {
+    return (this.form.value as FormValue).items.some(item => item.quantity);
   }
 }

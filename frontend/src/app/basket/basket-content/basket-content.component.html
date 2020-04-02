@@ -29,13 +29,13 @@
         <thead class="thead-light">
           <tr>
             <th>Accession</th>
-            <th>Quantité</th>
+            <th *ngIf="quantityDisplayed">Quantité</th>
           </tr>
         </thead>
         <tbody>
           <tr *ngFor="let item of basket.items" class="basket-item">
             <td><rb-accession [accession]="item.accession"></rb-accession></td>
-            <td>{{ item.quantity | number }}</td>
+            <td *ngIf="quantityDisplayed">{{ item.quantity | number }}</td>
           </tr>
         </tbody>
       </table>

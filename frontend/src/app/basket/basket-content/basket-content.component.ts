@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input, OnChanges } from '@angular/core';
 import { Basket } from '../basket.model';
 import { faAt, faCommentDots, faHome, faIndustry, faUser } from '@fortawesome/free-solid-svg-icons';
 
@@ -11,7 +11,7 @@ import { faAt, faCommentDots, faHome, faIndustry, faUser } from '@fortawesome/fr
   styleUrls: ['./basket-content.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class BasketContentComponent {
+export class BasketContentComponent implements OnChanges {
   @Input() basket: Basket;
 
   nameIcon = faUser;
@@ -19,4 +19,10 @@ export class BasketContentComponent {
   addressIcon = faHome;
   customerTypeIcon = faIndustry;
   rationaleIcon = faCommentDots;
+
+  quantityDisplayed = false;
+
+  ngOnChanges() {
+    this.quantityDisplayed = this.basket.items.some(item => item.quantity);
+  }
 }

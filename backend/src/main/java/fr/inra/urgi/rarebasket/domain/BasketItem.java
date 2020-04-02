@@ -31,7 +31,8 @@ public class BasketItem {
 
     /**
      * The quantity of the accession being ordered.
-     * It can only be null if the item is part of a DRAFT basket. Once the basket is saved, it can't be null anymore.
+     * When coming from RARe, the quantity is always null. But in order to make it possible later, or for
+     * other applications, to pre-fill quantities, we keep this field here.
      */
     @Min(1)
     public Integer quantity;

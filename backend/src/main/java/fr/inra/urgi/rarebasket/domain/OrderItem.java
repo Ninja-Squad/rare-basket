@@ -41,9 +41,11 @@ public class OrderItem {
 
     /**
      * The quantity of the accession being ordered.
+     * While the order is a DRAFT order, the quantity can be null. When finalized, the
+     * quantity may not be null anymore.
      */
     @Min(1)
-    public int quantity;
+    public Integer quantity;
 
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY)
@@ -52,7 +54,7 @@ public class OrderItem {
     public OrderItem() {
     }
 
-    public OrderItem(Long id, Accession accession, int quantity) {
+    public OrderItem(Long id, Accession accession, Integer quantity) {
         this.id = id;
         this.accession = accession;
         this.quantity = quantity;
@@ -74,11 +76,11 @@ public class OrderItem {
         this.accession = accession;
     }
 
-    public int getQuantity() {
+    public Integer getQuantity() {
         return quantity;
     }
 
-    public void setQuantity(int quantity) {
+    public void setQuantity(Integer quantity) {
         this.quantity = quantity;
     }
 

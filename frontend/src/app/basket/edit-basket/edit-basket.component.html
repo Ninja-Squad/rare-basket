@@ -39,37 +39,35 @@
       </div>
       <div class="col-sm" formArrayName="items">
         <h2>Accessions commandées</h2>
-        <div *ngFor="let itemGroup of items.controls; index as index" [formGroupName]="index" class="accession">
-          <h3>
-            <fa-icon [icon]="seedIcon" class="mr-1"></fa-icon>
-            <rb-accession [accession]="itemGroup.get('accession').value"></rb-accession>
-          </h3>
-          <div class="form-inline">
-            <label [for]="'item-' + index" class="mb-2 mr-2">Quantité</label>
-            <input
-              type="number"
-              min="1"
-              formControlName="quantity"
-              [id]="'item-' + index"
-              class="form-control mb-2 mr-2 quantity"
-              style="width: 7rem;"
-            />
-            <button
-              [disabled]="items.controls.length === 1"
-              type="button"
-              class="btn btn-outline-danger mb-2 delete-btn"
-              (click)="deleteItemAt(index)"
-            >
-              <fa-icon [icon]="deleteIcon"></fa-icon>
-              <span class="sr-only"
-                >Supprimer l'accession <rb-accession [accession]="itemGroup.get('accession').value"></rb-accession> de la commande</span
-              >
-            </button>
-          </div>
-          <val-errors controlName="quantity" label="La quantité" class="mb-2">
-            <ng-template valError="min">La quantité doit être supérieure ou égale à 1</ng-template>
-          </val-errors>
-        </div>
+
+        <table class="table table-sm">
+          <thead class="thead-light">
+            <tr>
+              <th>Accession</th>
+              <th *ngIf="quantityDisplayed">Quantity</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let itemGroup of items.controls; index as index" class="accession">
+              <td><rb-accession [accession]="itemGroup.get('accession').value"></rb-accession></td>
+              <td *ngIf="quantityDisplayed">{{ itemGroup.get('quantity').value | number }}</td>
+              <td class="text-right">
+                <button
+                  [disabled]="items.controls.length === 1"
+                  type="button"
+                  class="btn btn-outline-danger py-0 delete-btn"
+                  (click)="deleteItemAt(index)"
+                >
+                  <fa-icon [icon]="deleteIcon"></fa-icon>
+                  <span class="sr-only"
+                    >Supprimer l'accession <rb-accession [accession]="itemGroup.get('accession').value"></rb-accession> de la commande</span
+                  >
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
       </div>
     </div>
 

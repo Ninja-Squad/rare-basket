@@ -59,7 +59,7 @@ CREATE TABLE accession_order_item (
     id                   BIGINT PRIMARY KEY,
     accession_name       VARCHAR NOT NULL,
     accession_identifier VARCHAR NOT NULL,
-    quantity             INT     NOT NULL,
+    quantity             INT,
     order_id             BIGINT  NOT NULL
         CONSTRAINT accession_order_item_fk1 REFERENCES accession_order(id)
 );

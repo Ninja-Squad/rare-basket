@@ -3,7 +3,7 @@ import { Accession, Customer } from '../basket/basket.model';
 export interface OrderItem {
   id: number;
   accession: Accession;
-  quantity: number;
+  quantity: number | null;
 }
 
 export type OrderStatus = 'DRAFT' | 'FINALIZED' | 'CANCELLED';
