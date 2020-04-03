@@ -25,20 +25,25 @@
     </div>
     <div class="col-sm">
       <h2 translate="basket.basket-content.ordered-accessions"></h2>
-      <table class="table table-sm">
-        <thead class="thead-light">
-          <tr>
-            <th translate="basket.basket-content.accession-heading"></th>
-            <th *ngIf="quantityDisplayed" translate="basket.basket-content.quantity-heading"></th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr *ngFor="let item of basket.items" class="basket-item">
-            <td><rb-accession [accession]="item.accession"></rb-accession></td>
-            <td *ngIf="quantityDisplayed">{{ item.quantity | number }}</td>
-          </tr>
-        </tbody>
-      </table>
+
+      <div *ngFor="let accessionHolderBasket of basket.accessionHolderBaskets">
+        <h3>{{ accessionHolderBasket.grcName }} - {{ accessionHolderBasket.accessionHolderName }}</h3>
+
+        <table class="table table-sm">
+          <thead class="thead-light">
+            <tr>
+              <th translate="basket.basket-content.accession-heading"></th>
+              <th *ngIf="quantityDisplayed" translate="basket.basket-content.quantity-heading" style="width: 25%;"></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let item of accessionHolderBasket.items" class="basket-item">
+              <td><rb-accession [accession]="item.accession"></rb-accession></td>
+              <td *ngIf="quantityDisplayed">{{ item.quantity | number }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
     </div>
   </div>
 </div>

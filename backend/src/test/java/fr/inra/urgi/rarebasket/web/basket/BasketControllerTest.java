@@ -24,6 +24,7 @@ import fr.inra.urgi.rarebasket.domain.BasketStatus;
 import fr.inra.urgi.rarebasket.domain.Customer;
 import fr.inra.urgi.rarebasket.domain.CustomerType;
 import fr.inra.urgi.rarebasket.domain.AccessionHolder;
+import fr.inra.urgi.rarebasket.domain.Grc;
 import fr.inra.urgi.rarebasket.domain.Order;
 import fr.inra.urgi.rarebasket.domain.OrderItem;
 import fr.inra.urgi.rarebasket.domain.OrderStatus;
@@ -75,10 +76,17 @@ class BasketControllerTest {
 
     @BeforeEach
     void prepare() {
+        Grc grc = new Grc();
+        grc.setName("GRC1");
+
         john = new AccessionHolder(1L);
         john.setEmail("john@mail.com");
+        john.setName("John");
+        john.setGrc(grc);
         alice = new AccessionHolder(2L);
         alice.setEmail("alice@mail.com");
+        alice.setName("Alice");
+        alice.setGrc(grc);
 
         List.of(john, alice).forEach(
             accessionHolder -> when(mockAccessionHolderDao.findByEmail(accessionHolder.getEmail()))
@@ -334,13 +342,16 @@ class BasketControllerTest {
                .andExpect(jsonPath("$.customer.address").value(basket.getCustomer().getAddress()))
                .andExpect(jsonPath("$.customer.type").value(basket.getCustomer().getType().name()))
                .andExpect(jsonPath("$.customer.language").value(basket.getCustomer().getLanguage().getLanguageCode()))
-               .andExpect(jsonPath("$.items.length()").value(2))
-               .andExpect(jsonPath("$.items[0].id").value(rosa.getId()))
-               .andExpect(jsonPath("$.items[0].accession.name").value(rosa.getAccession().getName()))
-               .andExpect(jsonPath("$.items[0].accession.identifier").value(rosa.getAccession().getIdentifier()))
-               .andExpect(jsonPath("$.items[0].quantity").value(rosa.getQuantity()))
-               .andExpect(jsonPath("$.items[1].id").value(violetta.getId()))
-               .andExpect(jsonPath("$.items[1].quantity").isEmpty());
+               .andExpect(jsonPath("$.accessionHolderBaskets.length()").value(2))
+               .andExpect(jsonPath("$.accessionHolderBaskets[0].grcName").value("GRC1"))
+               .andExpect(jsonPath("$.accessionHolderBaskets[0].accessionHolderName").value("Alice"))
+               .andExpect(jsonPath("$.accessionHolderBaskets[0].items.length()").value(1))
+               .andExpect(jsonPath("$.accessionHolderBaskets[0].items[0].id").value(violetta.getId()))
+               .andExpect(jsonPath("$.accessionHolderBaskets[0].items[0].quantity").isEmpty())
+               .andExpect(jsonPath("$.accessionHolderBaskets[1].items[0].id").value(rosa.getId()))
+               .andExpect(jsonPath("$.accessionHolderBaskets[1].items[0].accession.name").value(rosa.getAccession().getName()))
+               .andExpect(jsonPath("$.accessionHolderBaskets[1].items[0].accession.identifier").value(rosa.getAccession().getIdentifier()))
+               .andExpect(jsonPath("$.accessionHolderBaskets[1].items[0].quantity").value(rosa.getQuantity()));
     }
 
     @Test

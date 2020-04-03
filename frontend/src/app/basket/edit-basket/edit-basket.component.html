@@ -43,42 +43,46 @@
           </small>
         </div>
       </div>
-      <div class="col-sm" formArrayName="items">
+      <div class="col-sm">
         <h2 translate="basket.edit-basket.ordered-accessions"></h2>
 
-        <table class="table table-sm">
-          <thead class="thead-light">
-            <tr>
-              <th translate="basket.edit-basket.accession-heading"></th>
-              <th *ngIf="quantityDisplayed" translate="basket.edit-basket.quantity-heading"></th>
-              <th></th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr *ngFor="let itemGroup of items.controls; index as index" class="accession">
-              <td><rb-accession [accession]="itemGroup.get('accession').value"></rb-accession></td>
-              <td *ngIf="quantityDisplayed">{{ itemGroup.get('quantity').value | number }}</td>
-              <td class="text-right">
-                <button
-                  [disabled]="items.controls.length === 1"
-                  type="button"
-                  class="btn btn-outline-danger py-0 delete-btn"
-                  (click)="deleteItemAt(index)"
-                >
-                  <fa-icon [icon]="deleteIcon"></fa-icon>
-                  <span
-                    class="sr-only"
-                    translate="basket.edit-basket.delete-accession"
-                    [translateParams]="{
-                      name: itemGroup.get('accession').value.name,
-                      identifier: itemGroup.get('accession').value.identifier
-                    }"
-                  ></span>
-                </button>
-              </td>
-            </tr>
-          </tbody>
-        </table>
+        <div *ngFor="let accessionHolderBasket of basket.accessionHolderBaskets; index as accessionHolderBasketIndex">
+          <h3>{{ accessionHolderBasket.grcName }} - {{ accessionHolderBasket.accessionHolderName }}</h3>
+
+          <table class="table table-sm">
+            <thead class="thead-light">
+              <tr>
+                <th translate="basket.edit-basket.accession-heading"></th>
+                <th *ngIf="quantityDisplayed" translate="basket.edit-basket.quantity-heading" style="width: 25%;"></th>
+                <th style="width: 20%;"></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let item of accessionHolderBasket.items; index as itemIndex" class="accession">
+                <td><rb-accession [accession]="item.accession"></rb-accession></td>
+                <td *ngIf="quantityDisplayed">{{ item.quantity | number }}</td>
+                <td class="text-right">
+                  <button
+                    [disabled]="deleteItemDisabled"
+                    type="button"
+                    class="btn btn-outline-danger py-0 delete-btn"
+                    (click)="deleteItemAt(accessionHolderBasketIndex, itemIndex)"
+                  >
+                    <fa-icon [icon]="deleteIcon"></fa-icon>
+                    <span
+                      class="sr-only"
+                      translate="basket.edit-basket.delete-accession"
+                      [translateParams]="{
+                        name: item.accession.name,
+                        identifier: item.accession.identifier
+                      }"
+                    ></span>
+                  </button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
 

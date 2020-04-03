@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Inject, Input, LOCALE_ID, OnInit, Output } from '@angular/core';
-import { Accession, ALL_CUSTOMER_TYPES, Basket, BasketCommand, CustomerType, Language } from '../basket.model';
-import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { ALL_CUSTOMER_TYPES, Basket, BasketCommand, BasketItemCommand, CustomerType, Language } from '../basket.model';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { faCheck, faTrash } from '@fortawesome/free-solid-svg-icons';
 import { ConfirmationService } from '../../shared/confirmation.service';
 
@@ -13,10 +13,6 @@ interface FormValue {
     language: Language;
   };
   rationale: string;
-  items: Array<{
-    accession: Accession;
-    quantity: number;
-  }>;
 }
 
 @Component({
@@ -36,6 +32,7 @@ export class EditBasketComponent implements OnInit {
   saveIcon = faCheck;
 
   quantityDisplayed = false;
+  deleteItemDisabled = false;
 
   constructor(private fb: FormBuilder, private confirmationService: ConfirmationService, @Inject(LOCALE_ID) private language: Language) {}
 
@@ -49,23 +46,22 @@ export class EditBasketComponent implements OnInit {
         type: [customer?.type ?? null, Validators.required],
         language: this.language
       }),
-      rationale: [this.basket.rationale],
-      items: this.fb.array(
-        this.basket.items.map(item =>
-          this.fb.group({
-            accession: item.accession,
-            quantity: item.quantity
-          })
-        )
-      )
+      rationale: [this.basket.rationale]
     });
     this.quantityDisplayed = this.shouldDisplayQuantity();
+    this.deleteItemDisabled = this.shouldDisableDeleteItem();
   }
 
-  deleteItemAt(index: number) {
+  deleteItemAt(accessionHolderBasketIndex: number, itemIndex: number) {
     this.confirmationService.confirm({ messageKey: 'basket.edit-basket.confirm-accession-deletion' }).subscribe(() => {
-      this.items.removeAt(index);
+      const accessionHolderBasket = this.basket.accessionHolderBaskets[accessionHolderBasketIndex];
+      accessionHolderBasket.items.splice(itemIndex, 1);
+      if (accessionHolderBasket.items.length === 0) {
+        this.basket.accessionHolderBaskets.splice(accessionHolderBasketIndex, 1);
+      }
+
       this.quantityDisplayed = this.shouldDisplayQuantity();
+      this.deleteItemDisabled = this.shouldDisableDeleteItem();
     });
   }
 
@@ -74,15 +70,25 @@ export class EditBasketComponent implements OnInit {
       return;
     }
 
-    const command: BasketCommand = { ...(this.form.value as FormValue), complete: true };
+    const itemCommands: Array<BasketItemCommand> = [];
+    this.basket.accessionHolderBaskets.forEach(accessionHolderBasket => {
+      accessionHolderBasket.items.forEach(item => {
+        itemCommands.push({
+          accession: item.accession,
+          quantity: item.quantity
+        });
+      });
+    });
+
+    const command: BasketCommand = { ...(this.form.value as FormValue), complete: true, items: itemCommands };
     this.basketSaved.emit(command);
   }
 
-  get items(): FormArray {
-    return this.form.get('items') as FormArray;
+  private shouldDisplayQuantity() {
+    return this.basket.accessionHolderBaskets.some(accessionHolderBasket => accessionHolderBasket.items.some(item => !!item.quantity));
   }
 
-  private shouldDisplayQuantity(): boolean {
-    return (this.form.value as FormValue).items.some(item => item.quantity);
+  private shouldDisableDeleteItem() {
+    return this.basket.accessionHolderBaskets.length === 1 && this.basket.accessionHolderBaskets[0].items.length === 1;
   }
 }

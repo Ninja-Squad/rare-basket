@@ -77,7 +77,7 @@ describe('BasketComponent', () => {
       basket = {
         reference: 'ABCDEFGH',
         status: 'DRAFT',
-        items: []
+        accessionHolderBaskets: []
       } as Basket;
 
       savedBasket = {
@@ -86,7 +86,7 @@ describe('BasketComponent', () => {
         customer: {
           email: 'john@mail.com'
         },
-        items: []
+        accessionHolderBaskets: []
       } as Basket;
 
       basketService.get.and.returnValues(of(basket), of(savedBasket));
@@ -133,7 +133,7 @@ describe('BasketComponent', () => {
         customer: {
           email: 'john@mail.com'
         },
-        items: []
+        accessionHolderBaskets: []
       } as Basket;
 
       confirmedBasket = {
@@ -142,7 +142,7 @@ describe('BasketComponent', () => {
         customer: {
           email: 'john@mail.com'
         },
-        items: []
+        accessionHolderBaskets: []
       } as Basket;
 
       basketService.get.and.returnValues(of(basket), of(confirmedBasket));

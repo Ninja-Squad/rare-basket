@@ -20,13 +20,19 @@ export interface BasketItem {
   quantity: number | null;
 }
 
+export interface AccessionHolderBasket {
+  grcName: string;
+  accessionHolderName: string;
+  items: Array<BasketItem>;
+}
+
 export type BasketStatus = 'DRAFT' | 'SAVED' | 'CONFIRMED';
 
 export interface Basket {
   id: number;
   reference: string;
   status: BasketStatus;
-  items: Array<BasketItem>;
+  accessionHolderBaskets: Array<AccessionHolderBasket>;
   customer: Customer | null;
   rationale: string;
 }
@@ -43,7 +49,7 @@ export interface CustomerCommand {
 
 export interface BasketItemCommand {
   accession: Accession;
-  quantity: number;
+  quantity: number | null;
 }
 
 export interface BasketCommand {

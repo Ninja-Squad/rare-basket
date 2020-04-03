@@ -23,6 +23,8 @@ export class BasketContentComponent implements OnChanges {
   quantityDisplayed = false;
 
   ngOnChanges() {
-    this.quantityDisplayed = this.basket.items.some(item => item.quantity);
+    this.quantityDisplayed = this.basket.accessionHolderBaskets.some(accessionHolderBasket =>
+      accessionHolderBasket.items.some(item => !!item.quantity)
+    );
   }
 }

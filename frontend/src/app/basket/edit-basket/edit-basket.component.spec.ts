@@ -55,8 +55,16 @@ class TestComponentTester extends ComponentTester<TestComponent> {
     return this.elements('.invalid-feedback div');
   }
 
-  get accessionsHeadings() {
-    return this.elements('th');
+  get accessionsHolderTitles() {
+    return this.elements('h3');
+  }
+
+  get accessionsTables() {
+    return this.elements('table');
+  }
+
+  accessionsHeadings(index: number) {
+    return this.accessionsTables[index].elements('th');
   }
 
   get accessions() {
@@ -96,22 +104,42 @@ describe('EditBasketComponent', () => {
         customer: null,
         rationale: null,
         status: 'DRAFT',
-        items: [
+        accessionHolderBaskets: [
           {
-            id: 1,
-            accession: {
-              name: 'Rosa',
-              identifier: 'rosa1'
-            },
-            quantity: null
+            grcName: 'GRC1',
+            accessionHolderName: 'Contact1',
+            items: [
+              {
+                id: 1,
+                accession: {
+                  name: 'Rosa',
+                  identifier: 'rosa1'
+                },
+                quantity: null
+              },
+              {
+                id: 2,
+                accession: {
+                  name: 'Violetta',
+                  identifier: 'violetta1'
+                },
+                quantity: null
+              }
+            ]
           },
           {
-            id: 2,
-            accession: {
-              name: 'Violetta',
-              identifier: 'violetta1'
-            },
-            quantity: null
+            grcName: 'GRC2',
+            accessionHolderName: 'Contact2',
+            items: [
+              {
+                id: 3,
+                accession: {
+                  name: 'Bacteria',
+                  identifier: 'bacteria1'
+                },
+                quantity: null
+              }
+            ]
           }
         ]
       };
@@ -125,10 +153,15 @@ describe('EditBasketComponent', () => {
       expect(tester.customerAddress).toHaveValue('');
       expect(tester.customerType).toHaveSelectedLabel('');
       expect(tester.rationale).toHaveValue('');
-      expect(tester.accessionsHeadings.length).toBe(2);
-      expect(tester.accessionsHeadings[0]).toHaveText('Accession');
-      expect(tester.accessionsHeadings[1]).toHaveText('');
-      expect(tester.accessions.length).toBe(2);
+      expect(tester.accessionsHolderTitles.length).toBe(2);
+      expect(tester.accessionsHolderTitles[0]).toHaveText('GRC1 - Contact1');
+      expect(tester.accessionsHolderTitles[1]).toHaveText('GRC2 - Contact2');
+      expect(tester.accessionsTables.length).toBe(2);
+      expect(tester.accessionsHeadings(0).length).toBe(2);
+      expect(tester.accessionsHeadings(1).length).toBe(2);
+      expect(tester.accessionsHeadings(0)[0]).toHaveText('Accession');
+      expect(tester.accessionsHeadings(0)[1]).toHaveText('');
+      expect(tester.accessions.length).toBe(3);
       expect(tester.accessions[0]).toContainText('Rosa');
       expect(tester.accessions[0]).toContainText('rosa1');
       expect(tester.accessions[1]).toContainText('Violetta');
@@ -136,14 +169,14 @@ describe('EditBasketComponent', () => {
     });
 
     it('should display quantities if at least one is set', () => {
-      tester.componentInstance.basket.items[0].quantity = 10;
+      tester.componentInstance.basket.accessionHolderBaskets[0].items[0].quantity = 10;
       tester.detectChanges();
 
-      expect(tester.accessionsHeadings.length).toBe(3);
-      expect(tester.accessionsHeadings[0]).toHaveText('Accession');
-      expect(tester.accessionsHeadings[1]).toHaveText('Quantité');
-      expect(tester.accessionsHeadings[2]).toHaveText('');
-      expect(tester.accessions.length).toBe(2);
+      expect(tester.accessionsHeadings(0).length).toBe(3);
+      expect(tester.accessionsHeadings(1).length).toBe(3);
+      expect(tester.accessionsHeadings(0)[0]).toHaveText('Accession');
+      expect(tester.accessionsHeadings(0)[1]).toHaveText('Quantité');
+      expect(tester.accessionsHeadings(0)[2]).toHaveText('');
       expect(tester.accessions[0]).toContainText('10');
     });
 
@@ -160,7 +193,7 @@ describe('EditBasketComponent', () => {
     });
 
     it('should save', () => {
-      tester.componentInstance.basket.items[0].quantity = 10;
+      tester.componentInstance.basket.accessionHolderBaskets[0].items[0].quantity = 10;
       tester.detectChanges();
 
       tester.customerName.fillWith('John');
@@ -195,6 +228,13 @@ describe('EditBasketComponent', () => {
               identifier: 'violetta1'
             },
             quantity: null
+          },
+          {
+            accession: {
+              name: 'Bacteria',
+              identifier: 'bacteria1'
+            },
+            quantity: null
           }
         ],
         complete: true
@@ -203,17 +243,27 @@ describe('EditBasketComponent', () => {
     });
 
     it('should remove accession after confirmation and make last one removal disabled', () => {
-      tester.componentInstance.basket.items[0].quantity = 10;
+      tester.componentInstance.basket.accessionHolderBaskets[0].items[0].quantity = 10;
       tester.detectChanges();
 
       confirmationService.confirm.and.returnValue(of(undefined));
+
+      // delete first of 3 items
       tester.accessionDeleteButtons[0].click();
 
       expect(confirmationService.confirm).toHaveBeenCalled();
-      expect(tester.accessions.length).toBe(1);
+      expect(tester.accessionsTables.length).toBe(2);
+      expect(tester.accessions.length).toBe(2);
       expect(tester.accessions[0]).toContainText('Violetta');
-      expect(tester.accessionDeleteButtons[0].disabled).toBe(true);
-      expect(tester.accessionsHeadings.length).toBe(2); // because there is no accession with a quantity anymore
+      expect(tester.accessionsHeadings(0).length).toBe(2); // because there is no accession with a quantity anymore
+
+      // delete first of 2 items
+      tester.accessionDeleteButtons[0].click();
+      expect(tester.accessionsTables.length).toBe(1); // because the first accession holder basket is now empty, thus removed
+      expect(tester.accessions.length).toBe(1);
+      expect(tester.accessions[0]).toContainText('Bacteria');
+
+      expect(tester.accessionDeleteButtons[0].disabled).toBe(true); // because it's the last one, which can thus not be deleted
     });
   });
 
@@ -231,22 +281,20 @@ describe('EditBasketComponent', () => {
         },
         rationale: 'Because',
         status: 'DRAFT',
-        items: [
+        accessionHolderBaskets: [
           {
-            id: 1,
-            accession: {
-              name: 'rosa',
-              identifier: 'rosa1'
-            },
-            quantity: 10
-          },
-          {
-            id: 2,
-            accession: {
-              name: 'rosa',
-              identifier: 'rosa2'
-            },
-            quantity: 20
+            grcName: 'GRC1',
+            accessionHolderName: 'Contact1',
+            items: [
+              {
+                id: 1,
+                accession: {
+                  name: 'Rosa',
+                  identifier: 'rosa1'
+                },
+                quantity: null
+              }
+            ]
           }
         ]
       };

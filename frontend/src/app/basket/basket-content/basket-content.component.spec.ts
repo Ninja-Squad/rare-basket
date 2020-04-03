@@ -24,22 +24,42 @@ class TestComponent {
       type: 'BIOLOGIST'
     },
     rationale: 'Why not?',
-    items: [
+    accessionHolderBaskets: [
       {
-        id: 1,
-        accession: {
-          name: 'Rosa',
-          identifier: 'rosa1'
-        },
-        quantity: 1234
+        grcName: 'GRC1',
+        accessionHolderName: 'Contact1',
+        items: [
+          {
+            id: 1,
+            accession: {
+              name: 'Rosa',
+              identifier: 'rosa1'
+            },
+            quantity: 1234
+          },
+          {
+            id: 2,
+            accession: {
+              name: 'Violetta',
+              identifier: 'violetta1'
+            },
+            quantity: 5
+          }
+        ]
       },
       {
-        id: 2,
-        accession: {
-          name: 'Violetta',
-          identifier: 'violetta1'
-        },
-        quantity: 5
+        grcName: 'GRC2',
+        accessionHolderName: 'Contact2',
+        items: [
+          {
+            id: 3,
+            accession: {
+              name: 'Bacteria',
+              identifier: 'bacteria1'
+            },
+            quantity: null
+          }
+        ]
       }
     ]
   } as Basket;
@@ -54,8 +74,16 @@ class TestComponentTester extends ComponentTester<TestComponent> {
     return this.elements('.basket-item');
   }
 
-  get itemTableHeadings() {
-    return this.elements('th');
+  get accessionHolderTitles() {
+    return this.elements('h3');
+  }
+
+  get itemTables() {
+    return this.elements('table');
+  }
+
+  itemTableHeadings(index: number) {
+    return this.itemTables[index].elements('th');
   }
 }
 
@@ -83,23 +111,36 @@ describe('BasketContentComponent', () => {
     expect(tester.testElement).toContainText('Why not?');
   });
 
+  it('should display one section per accession holder basket', () => {
+    tester.detectChanges();
+
+    expect(tester.accessionHolderTitles.length).toBe(2);
+    expect(tester.accessionHolderTitles[0]).toHaveText('GRC1 - Contact1');
+    expect(tester.accessionHolderTitles[1]).toHaveText('GRC2 - Contact2');
+    expect(tester.itemTables.length).toBe(2);
+  });
+
   it('should display basket items', () => {
     tester.detectChanges();
 
-    expect(tester.itemTableHeadings.length).toBe(2);
-    expect(tester.items.length).toBe(2);
+    expect(tester.itemTableHeadings(0).length).toBe(2);
+    expect(tester.items.length).toBe(3);
     expect(tester.items[0]).toContainText('Rosa');
     expect(tester.items[0]).toContainText('rosa1');
     expect(tester.items[0]).toContainText('1 234');
     expect(tester.items[1]).toContainText('Violetta');
     expect(tester.items[1]).toContainText('violetta1');
+
+    expect(tester.itemTableHeadings(0).length).toBe(2);
   });
 
   it('should display basket items without quantity if no item has a quantity', () => {
-    tester.componentInstance.basket.items.forEach(item => (item.quantity = null));
+    tester.componentInstance.basket.accessionHolderBaskets.forEach(accessionHolderBasket => {
+      accessionHolderBasket.items.forEach(item => (item.quantity = null));
+    });
     tester.detectChanges();
 
-    expect(tester.itemTableHeadings.length).toBe(1);
-    expect(tester.items.length).toBe(2);
+    expect(tester.itemTableHeadings(0).length).toBe(1);
+    expect(tester.itemTableHeadings(1).length).toBe(1);
   });
 });

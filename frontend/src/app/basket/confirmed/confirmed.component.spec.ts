@@ -19,7 +19,7 @@ class TestComponent {
     customer: {
       email: 'john@mail.com'
     },
-    items: []
+    accessionHolderBaskets: []
   } as Basket;
 }
 

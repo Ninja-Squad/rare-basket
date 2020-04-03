@@ -2,8 +2,10 @@ package fr.inra.urgi.rarebasket.web.basket;
 
 import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
+import fr.inra.urgi.rarebasket.domain.AccessionHolder;
 import fr.inra.urgi.rarebasket.domain.Basket;
 import fr.inra.urgi.rarebasket.domain.BasketItem;
 import fr.inra.urgi.rarebasket.domain.BasketStatus;
@@ -19,20 +21,20 @@ public final class BasketDTO {
     private final BasketStatus status;
     private final CustomerDTO customer;
     private final String rationale;
-    private final List<BasketItemDTO> items;
+    private final List<AccessionHolderBasketDTO> accessionHolderBaskets;
 
     public BasketDTO(Long id,
                      String reference,
                      BasketStatus status,
                      CustomerDTO customer,
                      String rationale,
-                     List<BasketItemDTO> items) {
+                     List<AccessionHolderBasketDTO> accessionHolderBaskets) {
         this.id = id;
         this.reference = reference;
         this.status = status;
         this.customer = customer;
         this.rationale = rationale;
-        this.items = items;
+        this.accessionHolderBaskets = accessionHolderBaskets;
     }
 
     public BasketDTO(Basket basket) {
@@ -41,11 +43,22 @@ public final class BasketDTO {
              basket.getStatus(),
              basket.getCustomer() == null ? null : new CustomerDTO(basket.getCustomer()),
              basket.getRationale(),
-             basket.getItems()
-                   .stream()
-                   .sorted(Comparator.comparing(BasketItem::getAccession))
-                   .map(BasketItemDTO::new)
-                   .collect(Collectors.toList()));
+             createAccessionHolderBaskets(basket));
+    }
+
+    private static List<AccessionHolderBasketDTO> createAccessionHolderBaskets(Basket basket) {
+        Map<AccessionHolder, List<BasketItem>> itemsByAccessionHolder =
+            basket.getItems()
+                  .stream()
+                  .collect(Collectors.groupingBy(BasketItem::getAccessionHolder));
+
+        return itemsByAccessionHolder
+            .entrySet()
+            .stream()
+            .map(entry -> new AccessionHolderBasketDTO(entry.getKey(), entry.getValue()))
+            .sorted(Comparator.comparing(AccessionHolderBasketDTO::getGrcName)
+                              .thenComparing(AccessionHolderBasketDTO::getAccessionHolderName))
+            .collect(Collectors.toList());
     }
 
     public Long getId() {
@@ -68,7 +81,7 @@ public final class BasketDTO {
         return rationale;
     }
 
-    public List<BasketItemDTO> getItems() {
-        return items;
+    public List<AccessionHolderBasketDTO> getAccessionHolderBaskets() {
+        return accessionHolderBaskets;
     }
 }
