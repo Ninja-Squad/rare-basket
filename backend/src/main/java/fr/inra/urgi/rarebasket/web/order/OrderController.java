@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
- * Controller used to handle orders. This controller is used by GRC contact users.
+ * Controller used to handle orders. This controller is used by accession holder users.
  * // TODO handle access rights
  * @author JB Nizet
  */

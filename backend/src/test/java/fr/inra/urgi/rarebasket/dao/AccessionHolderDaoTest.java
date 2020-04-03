@@ -10,12 +10,12 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 /**
- * Test for {@link GrcContactDao}
+ * Test for {@link AccessionHolderDao}
  * @author JB Nizet
  */
-class GrcContactDaoTest extends BaseDaoTest {
+class AccessionHolderDaoTest extends BaseDaoTest {
     @Autowired
-    private GrcContactDao grcContactDao;
+    private AccessionHolderDao accessionHolderDao;
 
     @BeforeEach
     void prepare() {
@@ -26,19 +26,19 @@ class GrcContactDaoTest extends BaseDaoTest {
                 .values(grc1Id, "GRC1")
                 .build();
 
-        Operation contacts =
-            insertInto("grc_contact")
-                .columns("id", "email", "grc_id")
-                .values(1L, "orders@grc1.com", grc1Id)
+        Operation accessionHolders =
+            insertInto("accession_holder")
+                .columns("id", "email", "name", "grc_id")
+                .values(1L, "orders@grc1.com", "GRC1 Orders", grc1Id)
                 .build();
 
-        executeIfNecessary(Operations.sequenceOf(grcs, contacts));
+        executeIfNecessary(Operations.sequenceOf(grcs, accessionHolders));
     }
 
     @Test
     void shouldFindByEmail() {
         skipNextLaunch();
-        assertThat(grcContactDao.findByEmail("unexisting@mail.com")).isEmpty();
-        assertThat(grcContactDao.findByEmail("orders@grc1.com")).isNotEmpty();
+        assertThat(accessionHolderDao.findByEmail("unexisting@mail.com")).isEmpty();
+        assertThat(accessionHolderDao.findByEmail("orders@grc1.com")).isNotEmpty();
     }
 }

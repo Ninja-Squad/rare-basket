@@ -13,14 +13,14 @@ import javax.validation.ConstraintViolation;
 import javax.validation.Validator;
 
 import fr.inra.urgi.rarebasket.dao.BasketDao;
-import fr.inra.urgi.rarebasket.dao.GrcContactDao;
+import fr.inra.urgi.rarebasket.dao.AccessionHolderDao;
 import fr.inra.urgi.rarebasket.dao.OrderDao;
 import fr.inra.urgi.rarebasket.domain.Accession;
 import fr.inra.urgi.rarebasket.domain.Basket;
 import fr.inra.urgi.rarebasket.domain.BasketItem;
 import fr.inra.urgi.rarebasket.domain.BasketStatus;
 import fr.inra.urgi.rarebasket.domain.Customer;
-import fr.inra.urgi.rarebasket.domain.GrcContact;
+import fr.inra.urgi.rarebasket.domain.AccessionHolder;
 import fr.inra.urgi.rarebasket.domain.Order;
 import fr.inra.urgi.rarebasket.domain.OrderItem;
 import fr.inra.urgi.rarebasket.domain.OrderStatus;
@@ -52,7 +52,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class BasketController {
 
     private final BasketDao basketDao;
-    private final GrcContactDao grcContactDao;
+    private final AccessionHolderDao accessionHolderDao;
     private final OrderDao orderDao;
     private final Validator validator;
     private final EventPublisher eventPublisher;
@@ -62,12 +62,12 @@ public class BasketController {
     private static final String REFERENCE_CHARACTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
 
     public BasketController(BasketDao basketDao,
-                            GrcContactDao grcContactDao,
+                            AccessionHolderDao accessionHolderDao,
                             OrderDao orderDao,
                             Validator validator,
                             EventPublisher eventPublisher) {
         this.basketDao = basketDao;
-        this.grcContactDao = grcContactDao;
+        this.accessionHolderDao = accessionHolderDao;
         this.orderDao = orderDao;
         this.validator = validator;
         this.eventPublisher = eventPublisher;
@@ -163,16 +163,16 @@ public class BasketController {
         basket.setReference(generateRandomReference());
         basket.setStatus(BasketStatus.DRAFT);
 
-        Map<String, GrcContact> contactsByEmail = new HashMap<>();
+        Map<String, AccessionHolder> accessionHoldersByEmail = new HashMap<>();
         command.getItems().forEach(itemCommand -> {
             BasketItem item = new BasketItem();
             item.setAccession(itemCommand.getAccession());
-            GrcContact contact = contactsByEmail.computeIfAbsent(
+            AccessionHolder accessionHolder = accessionHoldersByEmail.computeIfAbsent(
                 itemCommand.getContactEmail(),
-                email -> grcContactDao.findByEmail(itemCommand.getContactEmail())
-                                      .orElseThrow(() -> new BadRequestException("No GRC contact with email " + email))
+                email -> accessionHolderDao.findByEmail(itemCommand.getContactEmail())
+                                           .orElseThrow(() -> new BadRequestException("No accession holder with email " + email))
             );
-            item.setContact(contact);
+            item.setAccessionHolder(accessionHolder);
             basket.addItem(item);
         });
 
@@ -235,15 +235,15 @@ public class BasketController {
     private void createOrders(Basket basket) {
         basket.getItems()
               .stream()
-              .collect(Collectors.groupingBy(BasketItem::getContact))
-              .forEach((contact, basketItems) -> createOrder(basket, contact, basketItems));
+              .collect(Collectors.groupingBy(BasketItem::getAccessionHolder))
+              .forEach((accessionHolder, basketItems) -> createOrder(basket, accessionHolder, basketItems));
     }
 
-    private void createOrder(Basket basket, GrcContact contact, List<BasketItem> basketItems) {
+    private void createOrder(Basket basket, AccessionHolder accessionHolder, List<BasketItem> basketItems) {
         Order order = new Order();
         order.setBasket(basket);
         order.setStatus(OrderStatus.DRAFT);
-        order.setContact(contact);
+        order.setAccessionHolder(accessionHolder);
         basketItems.forEach(basketItem -> order.addItem(createOrderItem(basketItem)));
         orderDao.save(order);
         eventPublisher.publish(new OrderCreated(order.getId()));

@@ -25,7 +25,7 @@ public final class BasketItemCommandDTO {
     private final Accession accession;
 
     /**
-     * The email of the GRC contact in charge of handling this ordered item
+     * The email of the accession holder in charge of handling this ordered item
      */
     @NotNull(groups = BasketCommandDTO.Create.class)
     @Email(groups = BasketCommandDTO.Create.class)

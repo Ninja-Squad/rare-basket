@@ -22,8 +22,8 @@ import javax.validation.constraints.NotNull;
 
 /**
  * An order, containing one or several order items.
- * These items are originally a copy of the items of a basket, but the order can be further edited by the GRC
- * contact user to remove some items or modify their qantity.
+ * These items are originally a copy of the items of a basket, but the order can be further edited by the
+ * accession holder user to remove some items or modify their qantity.
  * @author JB Nizet
  */
 @Entity
@@ -54,7 +54,7 @@ public class Order {
      */
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY)
-    private GrcContact contact;
+    private AccessionHolder accessionHolder;
 
     /**
      * The items of this order
@@ -101,12 +101,12 @@ public class Order {
         this.basket = basket;
     }
 
-    public GrcContact getContact() {
-        return contact;
+    public AccessionHolder getAccessionHolder() {
+        return accessionHolder;
     }
 
-    public void setContact(GrcContact contact) {
-        this.contact = contact;
+    public void setAccessionHolder(AccessionHolder accessionHolder) {
+        this.accessionHolder = accessionHolder;
     }
 
     public OrderStatus getStatus() {

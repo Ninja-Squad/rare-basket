@@ -42,7 +42,7 @@ public class BasketItem {
      */
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY)
-    private GrcContact contact;
+    private AccessionHolder accessionHolder;
 
     /**
      * The basket that this item is part of
@@ -82,12 +82,12 @@ public class BasketItem {
         this.quantity = quantity;
     }
 
-    public GrcContact getContact() {
-        return contact;
+    public AccessionHolder getAccessionHolder() {
+        return accessionHolder;
     }
 
-    public void setContact(GrcContact contact) {
-        this.contact = contact;
+    public void setAccessionHolder(AccessionHolder accessionHolder) {
+        this.accessionHolder = accessionHolder;
     }
 
     public Basket getBasket() {

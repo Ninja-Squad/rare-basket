@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.event.TransactionalEventListener;
 
 /**
- * Mailer used to send an email to the GRC contact of an order when it's created, i.e.
+ * Mailer used to send an email to the accession holder of an order when it's created, i.e.
  * when the customer has confirmed a basket.
  * @author JB Nizet
  */
@@ -39,7 +39,7 @@ public class OrderCreatedMailer extends TemplateBasedMailer {
             sendEmail(
                 SupportedLanguage.FRENCH,
                 mailProperties.getFrom(),
-                order.getContact().getEmail(),
+                order.getAccessionHolder().getEmail(),
                 "Nouvelle commande d'accessions " + order.getBasket().getReference(),
                 context
             );

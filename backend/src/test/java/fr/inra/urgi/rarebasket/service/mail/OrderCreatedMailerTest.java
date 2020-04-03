@@ -8,7 +8,7 @@ import java.util.Optional;
 import fr.inra.urgi.rarebasket.config.MailProperties;
 import fr.inra.urgi.rarebasket.dao.OrderDao;
 import fr.inra.urgi.rarebasket.domain.Basket;
-import fr.inra.urgi.rarebasket.domain.GrcContact;
+import fr.inra.urgi.rarebasket.domain.AccessionHolder;
 import fr.inra.urgi.rarebasket.domain.Order;
 import fr.inra.urgi.rarebasket.service.event.OrderCreated;
 import org.junit.jupiter.api.Test;
@@ -32,9 +32,9 @@ class OrderCreatedMailerTest {
         basket.setReference("ABCDEFGH");
         Order order = new Order(42L);
         order.setBasket(basket);
-        GrcContact contact = new GrcContact();
-        contact.setEmail("contact@grc.com");
-        order.setContact(contact);
+        AccessionHolder accessionHolder = new AccessionHolder();
+        accessionHolder.setEmail("contact@grc.com");
+        order.setAccessionHolder(accessionHolder);
 
         OrderCreated event = new OrderCreated(order.getId());
         when(mockOrderDao.findById(event.getOrderId())).thenReturn(Optional.of(order));
@@ -47,7 +47,7 @@ class OrderCreatedMailerTest {
 
         MailMessage sentMessage = sentMessageCaptor.getValue();
         assertThat(sentMessage.getFrom()).isEqualTo(mailProperties.getFrom());
-        assertThat(sentMessage.getTo()).isEqualTo(contact.getEmail());
+        assertThat(sentMessage.getTo()).isEqualTo(accessionHolder.getEmail());
         assertThat(sentMessage.getSubject()).contains(basket.getReference());
         assertThat(sentMessage.getPlainText())
             .contains(basket.getReference())

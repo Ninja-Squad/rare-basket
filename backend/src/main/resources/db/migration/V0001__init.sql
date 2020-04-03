@@ -5,14 +5,15 @@ CREATE TABLE grc (
 
 CREATE SEQUENCE grc_seq START WITH 1001 INCREMENT 50;
 
-CREATE TABLE grc_contact (
+CREATE TABLE accession_holder (
     id     BIGINT PRIMARY KEY,
+    name   VARCHAR NOT NULL,
     email  VARCHAR NOT NULL UNIQUE,
     grc_id BIGINT  NOT NULL
-        CONSTRAINT grc_contact_fk1 REFERENCES grc(id)
+        CONSTRAINT accession_holder_fk1 REFERENCES grc(id)
 );
 
-CREATE SEQUENCE grc_contact_seq START WITH 1001 INCREMENT 50;
+CREATE SEQUENCE accession_holder_seq START WITH 1001 INCREMENT 50;
 
 CREATE TABLE basket (
     id                   BIGINT PRIMARY KEY,
@@ -38,23 +39,23 @@ CREATE TABLE basket_item (
     quantity             INT,
     basket_id            BIGINT  NOT NULL
         CONSTRAINT basket_item_fk1 REFERENCES basket(id),
-    contact_id           BIGINT  NOT NULL
-        CONSTRAINT basket_item_fk2 REFERENCES grc_contact(id)
+    accession_holder_id  BIGINT  NOT NULL
+        CONSTRAINT basket_item_fk2 REFERENCES accession_holder(id)
 );
 CREATE INDEX basket_item_idx1 ON basket_item(basket_id);
 
 CREATE SEQUENCE basket_item_seq START WITH 1001 INCREMENT 50;
 
 CREATE TABLE accession_order (
-    id              BIGINT PRIMARY KEY,
-    basket_id       BIGINT  NOT NULL
+    id                  BIGINT PRIMARY KEY,
+    basket_id           BIGINT  NOT NULL
         CONSTRAINT accession_order_fk1 REFERENCES basket(id),
-    contact_id      BIGINT  NOT NULL
-        CONSTRAINT accession_order_fk2 REFERENCES grc_contact(id),
-    status          VARCHAR NOT NULL,
-    closing_instant TIMESTAMPTZ
+    accession_holder_id BIGINT  NOT NULL
+        CONSTRAINT accession_order_fk2 REFERENCES accession_holder(id),
+    status              VARCHAR NOT NULL,
+    closing_instant     TIMESTAMPTZ
 );
-CREATE INDEX accession_order_idx1 ON accession_order(contact_id);
+CREATE INDEX accession_order_idx1 ON accession_order(accession_holder_id);
 
 CREATE TABLE accession_order_item (
     id                   BIGINT PRIMARY KEY,

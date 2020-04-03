@@ -15,7 +15,7 @@ import java.util.concurrent.atomic.AtomicLong;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import fr.inra.urgi.rarebasket.MoreAnswers;
 import fr.inra.urgi.rarebasket.dao.BasketDao;
-import fr.inra.urgi.rarebasket.dao.GrcContactDao;
+import fr.inra.urgi.rarebasket.dao.AccessionHolderDao;
 import fr.inra.urgi.rarebasket.dao.OrderDao;
 import fr.inra.urgi.rarebasket.domain.Accession;
 import fr.inra.urgi.rarebasket.domain.Basket;
@@ -23,7 +23,7 @@ import fr.inra.urgi.rarebasket.domain.BasketItem;
 import fr.inra.urgi.rarebasket.domain.BasketStatus;
 import fr.inra.urgi.rarebasket.domain.Customer;
 import fr.inra.urgi.rarebasket.domain.CustomerType;
-import fr.inra.urgi.rarebasket.domain.GrcContact;
+import fr.inra.urgi.rarebasket.domain.AccessionHolder;
 import fr.inra.urgi.rarebasket.domain.Order;
 import fr.inra.urgi.rarebasket.domain.OrderItem;
 import fr.inra.urgi.rarebasket.domain.OrderStatus;
@@ -52,7 +52,7 @@ class BasketControllerTest {
     private BasketDao mockBasketDao;
 
     @MockBean
-    private GrcContactDao mockGrcContactDao;
+    private AccessionHolderDao mockAccessionHolderDao;
 
     @MockBean
     private OrderDao mockOrderDao;
@@ -70,18 +70,19 @@ class BasketControllerTest {
     private BasketItem rosa;
     private BasketItem violetta;
 
-    private GrcContact john;
-    private GrcContact alice;
+    private AccessionHolder john;
+    private AccessionHolder alice;
 
     @BeforeEach
     void prepare() {
-        john = new GrcContact(1L);
+        john = new AccessionHolder(1L);
         john.setEmail("john@mail.com");
-        alice = new GrcContact(2L);
+        alice = new AccessionHolder(2L);
         alice.setEmail("alice@mail.com");
 
         List.of(john, alice).forEach(
-            contact -> when(mockGrcContactDao.findByEmail(contact.getEmail())).thenReturn(Optional.of(contact))
+            accessionHolder -> when(mockAccessionHolderDao.findByEmail(accessionHolder.getEmail()))
+                .thenReturn(Optional.of(accessionHolder))
         );
 
         basket = new Basket(42L);
@@ -93,13 +94,13 @@ class BasketControllerTest {
         rosa = new BasketItem(5L);
         rosa.setAccession(new Accession("rosa", "rosa1"));
         rosa.setQuantity(2);
-        rosa.setContact(john);
+        rosa.setAccessionHolder(john);
         basket.addItem(rosa);
 
         violetta = new BasketItem(3L);
         violetta.setAccession(new Accession("violetta", "violetta1"));
         violetta.setQuantity(null);
-        violetta.setContact(alice);
+        violetta.setAccessionHolder(alice);
         basket.addItem(violetta);
 
         when(mockBasketDao.findByReference(basket.getReference())).thenReturn(Optional.of(basket));
@@ -138,7 +139,7 @@ class BasketControllerTest {
     }
 
     @Test
-    void shouldNotCreateBasketWithItemWithUnexistingContact() throws Exception {
+    void shouldNotCreateBasketWithItemWithUnexistingAccessionHolder() throws Exception {
         BasketCommandDTO command = new BasketCommandDTO(
             List.of(new BasketItemCommandDTO(new Accession("rosa", "rosa1"), "unexisting@mail.com"))
         );
@@ -257,7 +258,7 @@ class BasketControllerTest {
         assertThat(savedBasket.getCreationInstant()).isNotNull();
         assertThat(savedBasket.getItems()).hasSize(3);
         assertThat(savedBasket.getItems())
-            .extracting(BasketItem::getAccession, BasketItem::getContact, BasketItem::getBasket)
+            .extracting(BasketItem::getAccession, BasketItem::getAccessionHolder, BasketItem::getBasket)
             .containsOnly(
                 tuple(new Accession("rosa", "rosa1"), john, savedBasket),
                 tuple(new Accession("violetta", "violetta1"), john, savedBasket),
@@ -303,7 +304,7 @@ class BasketControllerTest {
         assertThat(savedBasket.getCreationInstant()).isNotNull();
         assertThat(savedBasket.getItems()).hasSize(3);
         assertThat(savedBasket.getItems())
-            .extracting(BasketItem::getAccession, BasketItem::getContact, BasketItem::getQuantity, BasketItem::getBasket)
+            .extracting(BasketItem::getAccession, BasketItem::getAccessionHolder, BasketItem::getQuantity, BasketItem::getBasket)
             .containsOnly(
                 tuple(new Accession("rosa", "rosa1"), john, 1, savedBasket),
                 tuple(new Accession("violetta", "violetta1"), john, 2, savedBasket),
@@ -405,7 +406,7 @@ class BasketControllerTest {
 
         assertThat(basket.getItems()).containsOnly(violetta);
         assertThat(violetta.getQuantity()).isEqualTo(10);
-        assertThat(violetta.getContact()).isEqualTo(alice);
+        assertThat(violetta.getAccessionHolder()).isEqualTo(alice);
         assertThat(basket.getStatus()).isEqualTo(BasketStatus.SAVED);
         assertThat(basket.getCustomer()).isEqualTo(new Customer(command.getCustomer().getName(),
                                                                 command.getCustomer().getEmail(),
@@ -459,8 +460,8 @@ class BasketControllerTest {
 
         verify(mockOrderDao, times(2)).save(orderCaptor.capture());
 
-        Order johnsOrder = orderCaptor.getAllValues().stream().filter(order -> order.getContact().equals(john)).findAny().get();
-        Order alicesOrder = orderCaptor.getAllValues().stream().filter(order -> order.getContact().equals(alice)).findAny().get();
+        Order johnsOrder = orderCaptor.getAllValues().stream().filter(order -> order.getAccessionHolder().equals(john)).findAny().get();
+        Order alicesOrder = orderCaptor.getAllValues().stream().filter(order -> order.getAccessionHolder().equals(alice)).findAny().get();
         assertThat(johnsOrder.getBasket()).isEqualTo(basket);
         assertThat(johnsOrder.getStatus()).isEqualTo(OrderStatus.DRAFT);
         assertThat(johnsOrder.getItems())

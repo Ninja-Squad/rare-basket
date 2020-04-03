@@ -8,21 +8,25 @@ import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
 import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
 /**
- * A contact of a GRC, responsible of handling orders.
+ * An accession holder, part of a GRC, responsible of handling orders.
  * @author JB Nizet
  */
 @Entity
-public class GrcContact {
+public class AccessionHolder {
     @Id
-    @SequenceGenerator(name = "GRC_CONTACT_GENERATOR", sequenceName = "grc_contact_seq")
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "GRC_CONTACT_GENERATOR")
+    @SequenceGenerator(name = "ACCESSION_HOLDER_GENERATOR", sequenceName = "accession_holder_seq")
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "ACCESSION_HOLDER_GENERATOR")
     private Long id;
 
+    @NotBlank
+    private String name;
+
     /**
-     * The email identifying the contact (inside the accessions sent from RARe)
+     * The email identifying the accession holder (inside the accessions sent from RARe)
      */
     @NotNull
     @Email
@@ -35,10 +39,10 @@ public class GrcContact {
     @ManyToOne(fetch = FetchType.LAZY)
     private Grc grc;
 
-    public GrcContact() {
+    public AccessionHolder() {
     }
 
-    public GrcContact(Long id) {
+    public AccessionHolder(Long id) {
         this.id = id;
     }
 
@@ -48,6 +52,14 @@ public class GrcContact {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getEmail() {

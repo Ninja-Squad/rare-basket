@@ -36,7 +36,7 @@ public class BaseDaoTest {
                                          "accession_order",
                                          "basket_item",
                                          "basket",
-                                         "grc_contact",
+                                         "accession_holder",
                                          "grc"),
                 operation
             );

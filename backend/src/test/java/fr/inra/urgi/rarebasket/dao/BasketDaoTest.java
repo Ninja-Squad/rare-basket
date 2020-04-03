@@ -31,10 +31,10 @@ class BasketDaoTest extends BaseDaoTest {
                 .values(1L, "GRC1")
                 .build();
 
-        Operation contacts =
-            insertInto("grc_contact")
-                .columns("id", "email", "grc_id")
-                .values(1L, "orders@grc1.com", 1L)
+        Operation accessionHolders =
+            insertInto("accession_holder")
+                .columns("id", "email", "name", "grc_id")
+                .values(1L, "orders@grc1.com", "GRC1 Orders", 1L)
                 .build();
 
         Operation baskets =
@@ -45,11 +45,11 @@ class BasketDaoTest extends BaseDaoTest {
 
         Operation basketItems =
             insertInto("basket_item")
-                .columns("id", "accession_name", "accession_identifier", "basket_id", "contact_id")
+                .columns("id", "accession_name", "accession_identifier", "basket_id", "accession_holder_id")
                 .values(1L, "rosa", "rosa1", 1L, 1L)
                 .build();
 
-        executeIfNecessary(Operations.sequenceOf(grcs, contacts, baskets, basketItems));
+        executeIfNecessary(Operations.sequenceOf(grcs, accessionHolders, baskets, basketItems));
     }
 
     @Test

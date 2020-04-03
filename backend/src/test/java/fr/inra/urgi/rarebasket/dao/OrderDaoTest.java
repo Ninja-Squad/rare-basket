@@ -35,10 +35,10 @@ class OrderDaoTest extends BaseDaoTest {
                 .values(1L, "GRC1")
                 .build();
 
-        Operation contacts =
-            insertInto("grc_contact")
-                .columns("id", "email", "grc_id")
-                .values(1L, "orders@grc1.com", 1L)
+        Operation accessionHolders =
+            insertInto("accession_holder")
+                .columns("id", "email", "name", "grc_id")
+                .values(1L, "orders@grc1.com", "GRC1 Orders", 1L)
                 .build();
 
         Operation baskets =
@@ -55,14 +55,14 @@ class OrderDaoTest extends BaseDaoTest {
 
         Operation orders =
             insertInto("accession_order")
-                .withDefaultValue("contact_id", 1L)
+                .withDefaultValue("accession_holder_id", 1L)
                 .columns("id", "basket_id", "status")
                 .values(3L, 3L, OrderStatus.DRAFT)
                 .values(2L, 2L, OrderStatus.CANCELLED)
                 .values(1L, 1L, OrderStatus.FINALIZED)
                 .build();
 
-        executeIfNecessary(Operations.sequenceOf(grcs, contacts, baskets, orders));
+        executeIfNecessary(Operations.sequenceOf(grcs, accessionHolders, baskets, orders));
     }
 
     @Test
