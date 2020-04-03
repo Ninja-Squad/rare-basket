@@ -27,6 +27,7 @@ import fr.inra.urgi.rarebasket.domain.GrcContact;
 import fr.inra.urgi.rarebasket.domain.Order;
 import fr.inra.urgi.rarebasket.domain.OrderItem;
 import fr.inra.urgi.rarebasket.domain.OrderStatus;
+import fr.inra.urgi.rarebasket.domain.SupportedLanguage;
 import fr.inra.urgi.rarebasket.service.event.BasketSaved;
 import fr.inra.urgi.rarebasket.service.event.EventPublisher;
 import fr.inra.urgi.rarebasket.service.event.OrderCreated;
@@ -86,7 +87,7 @@ class BasketControllerTest {
         basket = new Basket(42L);
         basket.setReference("ref");
         basket.setStatus(BasketStatus.DRAFT);
-        basket.setCustomer(new Customer("jb", "jb@mail.com", "Saint Just", CustomerType.FARMER));
+        basket.setCustomer(new Customer("jb", "jb@mail.com", "Saint Just", CustomerType.FARMER, SupportedLanguage.FRENCH));
         basket.setRationale("why not?");
 
         rosa = new BasketItem(5L);
@@ -151,7 +152,8 @@ class BasketControllerTest {
                 "validName",
                 "notAnEmail",
                 "address",
-                CustomerType.FARMER
+                CustomerType.FARMER,
+                SupportedLanguage.FRENCH
             );
 
         BasketCommandDTO command = new BasketCommandDTO(
@@ -178,30 +180,42 @@ class BasketControllerTest {
                 "",
                 "foo@bar.com",
                 "address",
-                CustomerType.FARMER
+                CustomerType.FARMER,
+                SupportedLanguage.FRENCH
             ),
             new CustomerCommandDTO(
                 "validName",
                 null,
                 "address",
-                CustomerType.FARMER
+                CustomerType.FARMER,
+                SupportedLanguage.FRENCH
             ),
             new CustomerCommandDTO(
                 "validName",
                 "notAnEmail",
                 "address",
-                CustomerType.FARMER
+                CustomerType.FARMER,
+                SupportedLanguage.FRENCH
             ),
             new CustomerCommandDTO(
                 "validName",
                 "foo@bar.com",
                 "",
-                CustomerType.FARMER
+                CustomerType.FARMER,
+                SupportedLanguage.FRENCH
             ),
             new CustomerCommandDTO(
                 "validName",
                 "foo@bar.com",
                 "",
+                null,
+                SupportedLanguage.FRENCH
+            ),
+            new CustomerCommandDTO(
+                "validName",
+                "foo@bar.com",
+                "",
+                CustomerType.FARMER,
                 null
             )
         );
@@ -265,7 +279,8 @@ class BasketControllerTest {
                 "Jack",
                 "jack@mail.com",
                 "21 Jump street",
-                CustomerType.BIOLOGIST
+                CustomerType.BIOLOGIST,
+                SupportedLanguage.ENGLISH
             ),
             "because...",
             true
@@ -298,7 +313,8 @@ class BasketControllerTest {
         assertThat(savedBasket.getCustomer()).isEqualTo(new Customer(command.getCustomer().getName(),
                                                                      command.getCustomer().getEmail(),
                                                                      command.getCustomer().getAddress(),
-                                                                     command.getCustomer().getType()));
+                                                                     command.getCustomer().getType(),
+                                                                     command.getCustomer().getLanguage()));
         assertThat(savedBasket.getRationale()).isEqualTo(command.getRationale());
 
         verify(mockEventPublisher).publish(new BasketSaved(savedBasket.getId()));
@@ -316,6 +332,7 @@ class BasketControllerTest {
                .andExpect(jsonPath("$.customer.email").value(basket.getCustomer().getEmail()))
                .andExpect(jsonPath("$.customer.address").value(basket.getCustomer().getAddress()))
                .andExpect(jsonPath("$.customer.type").value(basket.getCustomer().getType().name()))
+               .andExpect(jsonPath("$.customer.language").value(basket.getCustomer().getLanguage().getLanguageCode()))
                .andExpect(jsonPath("$.items.length()").value(2))
                .andExpect(jsonPath("$.items[0].id").value(rosa.getId()))
                .andExpect(jsonPath("$.items[0].accession.name").value(rosa.getAccession().getName()))
@@ -374,7 +391,8 @@ class BasketControllerTest {
                 "Jack",
                 "jack@mail.com",
                 "21 Jump street",
-                CustomerType.BIOLOGIST
+                CustomerType.BIOLOGIST,
+                SupportedLanguage.ENGLISH
             ),
             "because...",
             true
@@ -392,7 +410,8 @@ class BasketControllerTest {
         assertThat(basket.getCustomer()).isEqualTo(new Customer(command.getCustomer().getName(),
                                                                 command.getCustomer().getEmail(),
                                                                 command.getCustomer().getAddress(),
-                                                                command.getCustomer().getType()));
+                                                                command.getCustomer().getType(),
+                                                                command.getCustomer().getLanguage()));
         assertThat(basket.getRationale()).isEqualTo(command.getRationale());
         verify(mockEventPublisher).publish(new BasketSaved(basket.getId()));
     }

@@ -1,0 +1,16 @@
+<html lang="en">
+<body>
+  <h1>Confirmation of the order {{ basketReference }}</h1>
+  <p>Hello {{ customerName }}!</p>
+  <p>You have saved the accession order #{{ basketReference }}.</p>
+  <p>
+    To confirm that you indeed created this order,
+    <a href="{{& confirmationUrl }}">click this link</a>, or enter the fllowing code
+    in the order confirmation page: <strong><code>{{ confirmationCode }}</code></strong>.
+  </p>
+
+  <p>If you didn't create an accession order, you can simply ignore and delete this email.</p>
+
+  <p>The RARe team</p>
+</body>
+</html>

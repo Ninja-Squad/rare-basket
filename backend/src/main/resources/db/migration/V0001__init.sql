@@ -21,6 +21,7 @@ CREATE TABLE basket (
     customer_email       VARCHAR,
     customer_address     VARCHAR,
     customer_type        VARCHAR,
+    customer_language    VARCHAR,
     status               VARCHAR     NOT NULL,
     creation_instant     TIMESTAMPTZ NOT NULL,
     rationale            VARCHAR,

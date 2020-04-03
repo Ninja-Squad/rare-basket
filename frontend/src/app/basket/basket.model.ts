@@ -11,6 +11,7 @@ export interface Customer {
   email: string | null;
   address: string | null;
   type: CustomerType | null;
+  language: Language | null;
 }
 
 export interface BasketItem {
@@ -30,11 +31,14 @@ export interface Basket {
   rationale: string;
 }
 
+export type Language = 'en' | 'fr';
+
 export interface CustomerCommand {
   name: string;
   email: string;
   address: string;
   type: CustomerType;
+  language: Language;
 }
 
 export interface BasketItemCommand {

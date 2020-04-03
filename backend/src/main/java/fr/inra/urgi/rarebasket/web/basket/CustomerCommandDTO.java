@@ -8,6 +8,7 @@ import javax.validation.constraints.NotNull;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import fr.inra.urgi.rarebasket.domain.CustomerType;
+import fr.inra.urgi.rarebasket.domain.SupportedLanguage;
 
 /**
  * Command containing the information about a customer
@@ -27,15 +28,20 @@ public final class CustomerCommandDTO {
     @NotNull(groups = BasketCommandDTO.Complete.class)
     private final CustomerType type;
 
+    @NotNull(groups = BasketCommandDTO.Complete.class)
+    private final SupportedLanguage language;
+
     @JsonCreator
     public CustomerCommandDTO(@JsonProperty("name") String name,
                               @JsonProperty("email") String email,
                               @JsonProperty("address") String address,
-                              @JsonProperty("type") CustomerType type) {
+                              @JsonProperty("type") CustomerType type,
+                              @JsonProperty("language") SupportedLanguage language) {
         this.name = name;
         this.email = email;
         this.address = address;
         this.type = type;
+        this.language = language;
     }
 
     public String getName() {
@@ -54,6 +60,10 @@ public final class CustomerCommandDTO {
         return type;
     }
 
+    public SupportedLanguage getLanguage() {
+        return language;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -66,12 +76,13 @@ public final class CustomerCommandDTO {
         return Objects.equals(name, that.name) &&
             Objects.equals(email, that.email) &&
             Objects.equals(address, that.address) &&
-            type == that.type;
+            type == that.type &&
+            language == that.language;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(name, email, address, type);
+        return Objects.hash(name, email, address, type, language);
     }
 
     @Override
@@ -81,6 +92,7 @@ public final class CustomerCommandDTO {
             ", email='" + email + '\'' +
             ", address='" + address + '\'' +
             ", type=" + type +
+            ", language=" + language +
             '}';
     }
 }

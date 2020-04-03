@@ -177,7 +177,8 @@ describe('EditBasketComponent', () => {
           name: 'John',
           email: 'john@mail.com',
           address: '21 Jump Street',
-          type: 'BIOLOGIST'
+          type: 'BIOLOGIST',
+          language: 'fr'
         },
         rationale: 'Because',
         items: [
@@ -225,7 +226,8 @@ describe('EditBasketComponent', () => {
           name: 'John',
           email: 'john@mail.com',
           address: '21 Jump Street',
-          type: 'BIOLOGIST'
+          type: 'BIOLOGIST',
+          language: 'en'
         },
         rationale: 'Because',
         status: 'DRAFT',

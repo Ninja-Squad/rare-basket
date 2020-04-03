@@ -1,10 +1,13 @@
 package fr.inra.urgi.rarebasket.service.mail;
 
+import java.util.EnumSet;
 import java.util.Objects;
 
 import fr.inra.urgi.rarebasket.config.MailProperties;
 import fr.inra.urgi.rarebasket.dao.BasketDao;
+import fr.inra.urgi.rarebasket.domain.SupportedLanguage;
 import fr.inra.urgi.rarebasket.service.event.BasketSaved;
+import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.event.TransactionalEventListener;
 
@@ -16,11 +19,16 @@ import org.springframework.transaction.event.TransactionalEventListener;
 public class BasketConfirmationMailer extends TemplateBasedMailer {
     private final BasketDao basketDao;
     private final MailProperties mailProperties;
+    private final MessageSource messageSource;
 
-    public BasketConfirmationMailer(Mailer mailer, BasketDao basketDao, MailProperties mailProperties) {
-        super(mailer, "/mail/basket-confirmation.text.mustache", "/mail/basket-confirmation.html.mustache");
+    public BasketConfirmationMailer(Mailer mailer, BasketDao basketDao, MailProperties mailProperties, MessageSource messageSource) {
+        super(mailer,
+              EnumSet.allOf(SupportedLanguage.class),
+              "basket-confirmation.text.mustache",
+              "basket-confirmation.html.mustache");
         this.basketDao = basketDao;
         this.mailProperties = mailProperties;
+        this.messageSource = messageSource;
     }
 
     @TransactionalEventListener(BasketSaved.class)
@@ -34,10 +42,14 @@ public class BasketConfirmationMailer extends TemplateBasedMailer {
                                                             mailProperties.getBaseUrl(),
                                                             basket.getReference(),
                                                             basket.getConfirmationCode()));
+            String subject = messageSource.getMessage("mail.basket-confirmation.subject",
+                                                      new Object[]{basket.getReference()},
+                                                      basket.getCustomer().getLanguage().getLocale());
             sendEmail(
+                basket.getCustomer().getLanguage(),
                 mailProperties.getFrom(),
                 basket.getCustomer().getEmail(),
-                "Votre commande " + basket.getReference() + " : confirmation",
+                subject,
                 context
             );
         });

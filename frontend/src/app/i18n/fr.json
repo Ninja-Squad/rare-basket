@@ -22,6 +22,10 @@
       "DRAFT": "En cours",
       "FINALIZED": "Finalisée",
       "CANCELLED": "Annulée"
+    },
+    "language": {
+      "fr": "Français",
+      "en": "Anglais"
     }
   },
   "basket": {

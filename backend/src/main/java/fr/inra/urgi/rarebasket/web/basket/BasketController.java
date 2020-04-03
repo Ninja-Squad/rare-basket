@@ -193,6 +193,7 @@ public class BasketController {
             customer.setEmail(command.getCustomer().getEmail());
             customer.setAddress(command.getCustomer().getAddress());
             customer.setType(command.getCustomer().getType());
+            customer.setLanguage(command.getCustomer().getLanguage());
         }
         if (command.isComplete()) {
             basket.setStatus(BasketStatus.SAVED);

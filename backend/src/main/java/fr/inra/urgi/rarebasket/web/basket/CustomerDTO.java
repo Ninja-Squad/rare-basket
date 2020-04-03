@@ -2,6 +2,7 @@ package fr.inra.urgi.rarebasket.web.basket;
 
 import fr.inra.urgi.rarebasket.domain.Customer;
 import fr.inra.urgi.rarebasket.domain.CustomerType;
+import fr.inra.urgi.rarebasket.domain.SupportedLanguage;
 
 /**
  * DTO containing the customer information
@@ -12,16 +13,22 @@ public final class CustomerDTO {
     private final String email;
     private final String address;
     private final CustomerType type;
+    private final SupportedLanguage language;
 
-    public CustomerDTO(String name, String email, String address, CustomerType type) {
+    public CustomerDTO(String name,
+                       String email,
+                       String address,
+                       CustomerType type,
+                       SupportedLanguage language) {
         this.name = name;
         this.email = email;
         this.address = address;
         this.type = type;
+        this.language = language;
     }
 
     public CustomerDTO(Customer customer) {
-        this(customer.getName(), customer.getEmail(), customer.getAddress(), customer.getType());
+        this(customer.getName(), customer.getEmail(), customer.getAddress(), customer.getType(), customer.getLanguage());
     }
 
     public String getName() {
@@ -38,5 +45,9 @@ public final class CustomerDTO {
 
     public CustomerType getType() {
         return type;
+    }
+
+    public SupportedLanguage getLanguage() {
+        return language;
     }
 }

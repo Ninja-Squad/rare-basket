@@ -1,5 +1,5 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { Accession, ALL_CUSTOMER_TYPES, Basket, BasketCommand, CustomerType } from '../basket.model';
+import { Component, EventEmitter, Inject, Input, LOCALE_ID, OnInit, Output } from '@angular/core';
+import { Accession, ALL_CUSTOMER_TYPES, Basket, BasketCommand, CustomerType, Language } from '../basket.model';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { faCheck, faTrash } from '@fortawesome/free-solid-svg-icons';
 import { ConfirmationService } from '../../shared/confirmation.service';
@@ -10,6 +10,7 @@ interface FormValue {
     email: string;
     address: string;
     type: CustomerType;
+    language: Language;
   };
   rationale: string;
   items: Array<{
@@ -36,7 +37,7 @@ export class EditBasketComponent implements OnInit {
 
   quantityDisplayed = false;
 
-  constructor(private fb: FormBuilder, private confirmationService: ConfirmationService) {}
+  constructor(private fb: FormBuilder, private confirmationService: ConfirmationService, @Inject(LOCALE_ID) private language: Language) {}
 
   ngOnInit(): void {
     const customer = this.basket.customer;
@@ -45,7 +46,8 @@ export class EditBasketComponent implements OnInit {
         name: [customer?.name ?? null, Validators.required],
         email: [customer?.email ?? null, [Validators.required, Validators.email]],
         address: [customer?.address ?? null, Validators.required],
-        type: [customer?.type ?? null, Validators.required]
+        type: [customer?.type ?? null, Validators.required],
+        language: this.language
       }),
       rationale: [this.basket.rationale],
       items: this.fb.array(

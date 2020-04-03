@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { OrderService } from '../order.service';
 import { Order } from '../order.model';
-import { faAddressCard, faAt, faChevronLeft, faCommentDots, faHome, faUser } from '@fortawesome/free-solid-svg-icons';
+import { faAddressCard, faAt, faChevronLeft, faCommentDots, faHome, faMicrophone, faUser } from '@fortawesome/free-solid-svg-icons';
 
 /**
  * Component displaying the details of an order to a GRC user
@@ -19,6 +19,7 @@ export class OrderComponent implements OnInit {
   emailIcon = faAt;
   addressIcon = faHome;
   customerTypeIcon = faAddressCard;
+  languageIcon = faMicrophone;
   rationaleIcon = faCommentDots;
   allOrdersIcon = faChevronLeft;
 

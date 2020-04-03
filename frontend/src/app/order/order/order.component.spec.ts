@@ -11,6 +11,7 @@ import { Order } from '../order.model';
 import { LOCALE_ID } from '@angular/core';
 import { SharedModule } from '../../shared/shared.module';
 import { I18nTestingModule } from '../../i18n/i18n-testing.module.spec';
+import { LanguageEnumPipe } from '../language-enum.pipe';
 
 class OrderComponentTester extends ComponentTester<OrderComponent> {
   constructor() {
@@ -42,7 +43,7 @@ describe('OrderComponent', () => {
     orderService = jasmine.createSpyObj<OrderService>('OrderService', ['get']);
 
     TestBed.configureTestingModule({
-      declarations: [OrderComponent],
+      declarations: [OrderComponent, LanguageEnumPipe],
       imports: [I18nTestingModule, FontAwesomeModule, RouterTestingModule, SharedModule],
       providers: [
         { provide: ActivatedRoute, useValue: route },
@@ -62,7 +63,8 @@ describe('OrderComponent', () => {
           name: 'John Doe',
           email: 'john@mail.com',
           address: 'Av. du Centre\n75000 Paris',
-          type: 'BIOLOGIST'
+          type: 'BIOLOGIST',
+          language: 'en'
         },
         rationale: 'Why not?',
         reference: 'ABCDEFGH',
@@ -113,6 +115,7 @@ describe('OrderComponent', () => {
     expect(tester.testElement).toContainText('john@mail.com');
     expect(tester.testElement).toContainText('Av. du Centre\n75000 Paris');
     expect(tester.testElement).toContainText('Biologiste');
+    expect(tester.testElement).toContainText('Anglais');
     expect(tester.testElement).toContainText('Why not?');
   });
 

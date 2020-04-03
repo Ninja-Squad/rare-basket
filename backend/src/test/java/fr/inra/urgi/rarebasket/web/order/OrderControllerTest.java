@@ -18,6 +18,7 @@ import fr.inra.urgi.rarebasket.domain.CustomerType;
 import fr.inra.urgi.rarebasket.domain.Order;
 import fr.inra.urgi.rarebasket.domain.OrderItem;
 import fr.inra.urgi.rarebasket.domain.OrderStatus;
+import fr.inra.urgi.rarebasket.domain.SupportedLanguage;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,7 +47,9 @@ class OrderControllerTest {
     void prepare() {
         Basket basket = new Basket(34L);
         basket.setReference("ref");
-        basket.setCustomer(new Customer("jb", "jb@mail.com", "Saint Just", CustomerType.FARMER));
+        basket.setCustomer(
+            new Customer("jb", "jb@mail.com", "Saint Just", CustomerType.FARMER, SupportedLanguage.FRENCH)
+        );
         basket.setRationale("why not?");
         basket.setConfirmationInstant(Instant.parse("2020-04-02T10:43:00Z"));
 

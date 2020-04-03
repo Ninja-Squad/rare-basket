@@ -27,17 +27,23 @@ public class Customer {
     @Column(name = "customer_type")
     private CustomerType type;
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "customer_language")
+    private SupportedLanguage language;
+
     public Customer() {
     }
 
     public Customer(String name,
                     String email,
                     String address,
-                    CustomerType type) {
+                    CustomerType type,
+                    SupportedLanguage language) {
         this.name = name;
         this.email = email;
         this.address = address;
         this.type = type;
+        this.language = language;
     }
 
     public String getName() {
@@ -72,6 +78,14 @@ public class Customer {
         this.type = type;
     }
 
+    public SupportedLanguage getLanguage() {
+        return language;
+    }
+
+    public void setLanguage(SupportedLanguage language) {
+        this.language = language;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -84,11 +98,12 @@ public class Customer {
         return Objects.equals(name, customer.name) &&
             Objects.equals(email, customer.email) &&
             Objects.equals(address, customer.address) &&
-            type == customer.type;
+            type == customer.type &&
+            language == customer.language;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(name, email, address, type);
+        return Objects.hash(name, email, address, type, language);
     }
 }

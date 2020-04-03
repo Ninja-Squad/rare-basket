@@ -1,7 +1,10 @@
 package fr.inra.urgi.rarebasket.service.mail;
 
+import java.util.EnumSet;
+
 import fr.inra.urgi.rarebasket.config.MailProperties;
 import fr.inra.urgi.rarebasket.dao.OrderDao;
+import fr.inra.urgi.rarebasket.domain.SupportedLanguage;
 import fr.inra.urgi.rarebasket.service.event.OrderCreated;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.event.TransactionalEventListener;
@@ -17,7 +20,10 @@ public class OrderCreatedMailer extends TemplateBasedMailer {
     private final MailProperties mailProperties;
 
     public OrderCreatedMailer(Mailer mailer, OrderDao orderDao, MailProperties mailProperties) {
-        super(mailer, "/mail/order-created.text.mustache", "/mail/order-created.html.mustache");
+        super(mailer,
+              EnumSet.of(SupportedLanguage.FRENCH),
+              "order-created.text.mustache",
+              "order-created.html.mustache");
         this.orderDao = orderDao;
         this.mailProperties = mailProperties;
     }
@@ -31,6 +37,7 @@ public class OrderCreatedMailer extends TemplateBasedMailer {
                                                       mailProperties.getBaseUrl(),
                                                       order.getId()));
             sendEmail(
+                SupportedLanguage.FRENCH,
                 mailProperties.getFrom(),
                 order.getContact().getEmail(),
                 "Nouvelle commande d'accessions " + order.getBasket().getReference(),
