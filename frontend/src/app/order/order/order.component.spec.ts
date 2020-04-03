@@ -10,6 +10,7 @@ import { EMPTY, of } from 'rxjs';
 import { Order } from '../order.model';
 import { LOCALE_ID } from '@angular/core';
 import { SharedModule } from '../../shared/shared.module';
+import { I18nTestingModule } from '../../i18n/i18n-testing.module.spec';
 
 class OrderComponentTester extends ComponentTester<OrderComponent> {
   constructor() {
@@ -42,7 +43,7 @@ describe('OrderComponent', () => {
 
     TestBed.configureTestingModule({
       declarations: [OrderComponent],
-      imports: [FontAwesomeModule, RouterTestingModule, SharedModule],
+      imports: [I18nTestingModule, FontAwesomeModule, RouterTestingModule, SharedModule],
       providers: [
         { provide: ActivatedRoute, useValue: route },
         { provide: OrderService, useValue: orderService },

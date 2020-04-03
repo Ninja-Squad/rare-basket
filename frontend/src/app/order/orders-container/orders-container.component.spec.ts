@@ -5,6 +5,7 @@ import { ComponentTester } from 'ngx-speculoos';
 import { RouterOutlet } from '@angular/router';
 import { By } from '@angular/platform-browser';
 import { RouterTestingModule } from '@angular/router/testing';
+import { I18nTestingModule } from '../../i18n/i18n-testing.module.spec';
 
 class OrdersContainerComponentTester extends ComponentTester<OrdersContainerComponent> {
   constructor() {
@@ -22,7 +23,7 @@ describe('OrdersContainerComponent', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       declarations: [OrdersContainerComponent],
-      imports: [RouterTestingModule]
+      imports: [I18nTestingModule, RouterTestingModule]
     });
 
     tester = new OrdersContainerComponentTester();

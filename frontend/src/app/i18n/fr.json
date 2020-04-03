@@ -17,6 +17,11 @@
     "customer-type": {
       "FARMER": "Agriculteur",
       "BIOLOGIST": "Biologiste"
+    },
+    "order-status": {
+      "DRAFT": "En cours",
+      "FINALIZED": "Finalisée",
+      "CANCELLED": "Annulée"
     }
   },
   "basket": {
@@ -73,6 +78,25 @@
       "spam-message": "Pensez à consulter vos spams si vous ne trouvez pas le courriel.",
       "confirmation-code": "Code de confirmation",
       "confirm": "Confirmer"
+    }
+  },
+  "order": {
+    "orders-container": {
+      "title": "Commandes",
+      "in-progress": "En cours",
+      "done": "Terminées"
+    },
+    "orders": {
+      "one-accession": "1 accession",
+      "n-accessions": "{{ n }} accessions"
+    },
+    "order": {
+      "title": "Commande n° {{ reference }}",
+      "customer-information": "Informations du client",
+      "ordered-accessions": "Accessions commandées",
+      "accession-heading": "Accession",
+      "quantity-heading": "Quantité",
+      "all-orders": "Toutes les commandes"
     }
   }
 }

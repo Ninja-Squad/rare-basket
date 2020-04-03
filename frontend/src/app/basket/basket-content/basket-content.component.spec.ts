@@ -8,6 +8,7 @@ import { SharedModule } from '../../shared/shared.module';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import localeFr from '@angular/common/locales/fr';
 import { registerLocaleData } from '@angular/common';
+import { I18nTestingModule } from '../../i18n/i18n-testing.module.spec';
 
 registerLocaleData(localeFr);
 
@@ -64,7 +65,7 @@ describe('BasketContentComponent', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       declarations: [BasketContentComponent, TestComponent],
-      imports: [SharedModule, FontAwesomeModule],
+      imports: [I18nTestingModule, SharedModule, FontAwesomeModule],
       providers: [{ provide: LOCALE_ID, useValue: 'fr' }]
     });
 

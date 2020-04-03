@@ -10,6 +10,8 @@ import { By } from '@angular/platform-browser';
 import { RbNgbModule } from '../../rb-ngb/rb-ngb.module';
 import { CustomerTypeEnumPipe } from '../../shared/customer-type-enum.pipe';
 import { RouterTestingModule } from '@angular/router/testing';
+import { I18nTestingModule } from '../../i18n/i18n-testing.module.spec';
+import { OrderStatusEnumPipe } from '../order-status-enum.pipe';
 
 @Component({
   template: `
@@ -72,8 +74,8 @@ describe('OrdersComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      declarations: [OrdersComponent, TestComponent, CustomerTypeEnumPipe],
-      imports: [RouterTestingModule, RbNgbModule],
+      declarations: [OrdersComponent, TestComponent, CustomerTypeEnumPipe, OrderStatusEnumPipe],
+      imports: [I18nTestingModule, RouterTestingModule, RbNgbModule],
       providers: [{ provide: LOCALE_ID, useValue: 'fr' }]
     });
 
@@ -93,7 +95,7 @@ describe('OrdersComponent', () => {
     expect(tester.rows[0]).toContainText('John Doe, Biologiste');
     expect(tester.rows[0]).toContainText('2 avr. 2020');
     expect(tester.rows[0]).toContainText('2 accessions');
-    expect(tester.rows[0]).toContainText('DRAFT');
+    expect(tester.rows[0]).toContainText('En cours');
 
     expect(tester.rows[1]).toContainText('1 accession');
   });

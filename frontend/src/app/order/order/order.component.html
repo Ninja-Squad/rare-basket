@@ -1,10 +1,10 @@
 <div *ngIf="order">
-  <h1>Commande n° {{ order.basket.reference }}</h1>
+  <h1 translate="order.order.title" [translateParams]="{ reference: order.basket.reference }"></h1>
 
   <div class="border rounded bg-light p-5 mb-2">
     <div class="row">
       <div class="col-sm">
-        <h2>Informations du client</h2>
+        <h2 translate="order.order.customer-information"></h2>
         <div class="d-flex">
           <div class="mr-2"><fa-icon [icon]="nameIcon" [fixedWidth]="true"></fa-icon></div>
           <div class="flex-grow-1">{{ order.basket.customer.name }}</div>
@@ -27,12 +27,12 @@
         </div>
       </div>
       <div class="col-sm">
-        <h2>Accessions commandées</h2>
+        <h2 translate="order.order.ordered-accessions"></h2>
         <table class="table table-sm">
           <thead class="thead-light">
             <tr>
-              <th>Accession</th>
-              <th>Quantité</th>
+              <th translate="order.order.accession-heading"></th>
+              <th translate="order.order.quantity-heading"></th>
             </tr>
           </thead>
           <tbody>
@@ -48,6 +48,6 @@
 
   <a routerLink="/orders" class="btn btn-outline-secondary">
     <fa-icon [icon]="allOrdersIcon" class="mr-1"></fa-icon>
-    Toutes les commandes
+    <span translate="order.order.all-orders"></span>
   </a>
 </div>

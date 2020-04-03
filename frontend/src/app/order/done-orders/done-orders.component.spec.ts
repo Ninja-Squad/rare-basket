@@ -11,6 +11,7 @@ import { Order } from '../order.model';
 import { Page } from '../../shared/page.model';
 import { DoneOrdersComponent } from './done-orders.component';
 import { RouterTestingModule } from '@angular/router/testing';
+import { I18nTestingModule } from '../../i18n/i18n-testing.module.spec';
 
 class DoneOrdersComponentTester extends ComponentTester<DoneOrdersComponent> {
   constructor() {
@@ -36,7 +37,7 @@ describe('DoneOrdersComponent', () => {
 
     TestBed.configureTestingModule({
       declarations: [DoneOrdersComponent, OrdersComponent],
-      imports: [RouterTestingModule, RbNgbModule],
+      imports: [I18nTestingModule, RouterTestingModule, RbNgbModule],
       providers: [
         { provide: ActivatedRoute, useValue: route },
         { provide: OrderService, useValue: orderService }

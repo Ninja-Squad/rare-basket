@@ -10,9 +10,18 @@ import { OrdersContainerComponent } from './orders-container/orders-container.co
 import { InProgressOrdersComponent } from './in-progress-orders/in-progress-orders.component';
 import { DoneOrdersComponent } from './done-orders/done-orders.component';
 import { OrdersComponent } from './orders/orders.component';
+import { TranslateModule } from '@ngx-translate/core';
+import { OrderStatusEnumPipe } from './order-status-enum.pipe';
 
 @NgModule({
-  declarations: [OrderComponent, OrdersContainerComponent, InProgressOrdersComponent, DoneOrdersComponent, OrdersComponent],
-  imports: [CommonModule, RouterModule.forChild(ORDER_ROUTES), SharedModule, FontAwesomeModule, RbNgbModule]
+  declarations: [
+    OrderComponent,
+    OrdersContainerComponent,
+    InProgressOrdersComponent,
+    DoneOrdersComponent,
+    OrdersComponent,
+    OrderStatusEnumPipe
+  ],
+  imports: [CommonModule, TranslateModule, RouterModule.forChild(ORDER_ROUTES), SharedModule, FontAwesomeModule, RbNgbModule]
 })
 export class OrderModule {}

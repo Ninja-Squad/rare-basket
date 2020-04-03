@@ -61,12 +61,10 @@ export class EditBasketComponent implements OnInit {
   }
 
   deleteItemAt(index: number) {
-    this.confirmationService
-      .confirm({ messageKey: 'basket.edit-basket.confirm-accession-deletion' })
-      .subscribe(() => {
-        this.items.removeAt(index);
-        this.quantityDisplayed = this.shouldDisplayQuantity();
-      });
+    this.confirmationService.confirm({ messageKey: 'basket.edit-basket.confirm-accession-deletion' }).subscribe(() => {
+      this.items.removeAt(index);
+      this.quantityDisplayed = this.shouldDisplayQuantity();
+    });
   }
 
   save() {
