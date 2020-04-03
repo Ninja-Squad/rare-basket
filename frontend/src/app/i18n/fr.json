@@ -2,7 +2,16 @@
   "common": {
     "confirmation-modal-title": "Confirmation",
     "yes": "Yes",
-    "no": "No"
+    "no": "No",
+    "errors": {
+      "required": "{{ label }} est obligatoire",
+      "minlength": "{{ label }} doit avoir au moins {{ requiredLength }} caractères",
+      "maxlength": "{{ label }} doit avoir au plus {{ requiredLength | number }} caractères",
+      "pattern": "{{ label }} n'a pas le format requis",
+      "email": "{{ label }} doit être une adresse email valide",
+      "min": "{{ label }} doit être supérieur ou égal à {{ min }}",
+      "max": "{{ label }} doit être inférieur ou égal à {{ max }}"
+    }
   },
   "enums": {
     "customer-type": {

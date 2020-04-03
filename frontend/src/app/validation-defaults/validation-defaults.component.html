@@ -1,13 +1,23 @@
 <val-default-errors>
-  <ng-template valError="required" let-label>{{ label }} est obligatoire</ng-template>
-  <ng-template valError="minlength" let-error="error" let-label
-    >{{ label }} doit avoir au moins {{ error.requiredLength | number }} caractères</ng-template
-  >
-  <ng-template valError="maxlength" let-error="error" let-label
-    >{{ label }} doit avoir au plus {{ error.requiredLength | number }} caractères</ng-template
-  >
-  <ng-template valError="pattern" let-label>{{ label }} n'a pas le format requis</ng-template>
-  <ng-template valError="email" let-label>{{ label }} doit être une adresse email valide</ng-template>
-  <ng-template valError="min" let-error="error" let-label>{{ label }} doit être supérieur ou égal à {{ error.min | number }}</ng-template>
-  <ng-template valError="max" let-error="error" let-label>{{ label }} doit être inférieur ou égal à {{ error.max | number }}</ng-template>
+  <ng-template valError="required" let-label>
+    <span translate="common.errors.required" [translateParams]="{ label: label }"></span>
+  </ng-template>
+  <ng-template valError="minlength" let-error="error" let-label>
+    <span translate="common.errors.minlength" [translateParams]="{ label: label, requiredLength: error.requiredLength | number }"></span>
+  </ng-template>
+  <ng-template valError="maxlength" let-error="error" let-label>
+    <span translate="common.errors.maxlength" [translateParams]="{ label: label, requiredLength: error.requiredLength | number }"></span>
+  </ng-template>
+  <ng-template valError="pattern" let-label>
+    <span translate="common.errors.pattern" [translateParams]="{ label: label }"></span>
+  </ng-template>
+  <ng-template valError="email" let-label>
+    <span translate="common.errors.email" [translateParams]="{ label: label }"></span>
+  </ng-template>
+  <ng-template valError="min" let-error="error" let-label>
+    <span translate="common.errors.min" [translateParams]="{ label: label, min: error.min | number }"></span>
+  </ng-template>
+  <ng-template valError="max" let-error="error" let-label>
+    <span translate="common.errors.min" [translateParams]="{ label: label, max: error.max | number }"></span>
+  </ng-template>
 </val-default-errors>
