@@ -1,1 +1,102 @@
-{}
+{
+  "common": {
+    "confirmation-modal-title": "Confirmation",
+    "yes": "Yes",
+    "no": "No",
+    "errors": {
+      "required": "{{ label }} is mandatory",
+      "minlength": "{{ label }} must have at least {{ requiredLength }} characters",
+      "maxlength": "{{ label }} must have at most {{ requiredLength }} characters",
+      "pattern": "{{ label }} does not have the required format",
+      "email": "{{ label }} must be a valid email address",
+      "min": "{{ label }} must be greater or equal to {{ min }}",
+      "max": "{{ label }} must be less or equal to {{ max }}"
+    }
+  },
+  "enums": {
+    "customer-type": {
+      "FARMER": "Farmer",
+      "BIOLOGIST": "Biologist"
+    },
+    "order-status": {
+      "DRAFT": "In progress",
+      "FINALIZED": "Finalized",
+      "CANCELLED": "Cancelled"
+    }
+  },
+  "basket": {
+    "basket": {
+      "title": "Your order {{ reference }}"
+    },
+    "edit-basket": {
+      "message": "To complete your order, please fill the following form.",
+      "personal-information": "Personal information",
+      "name": "Your name",
+      "name-error-label": "The name",
+      "email": "Your email address",
+      "email-error-label": "The email address",
+      "address": "Your postal address",
+      "address-error-label": "The postal address",
+      "customer-type": "How would you describe yourself?",
+      "customer-type-error-label": "The category",
+      "rationale": "Description of your order",
+      "rationale-hint": "Please give all the details that can help us handle your order quickly:",
+      "rationale-question1": "for what purpose do you order these accessions?",
+      "rationale-question2": "what quantity do you need?",
+      "rationale-question3": "etc.",
+      "ordered-accessions": "Ordered accessions",
+      "accession-heading": "Accession",
+      "quantity-heading": "Quantity",
+      "delete-accession": "Delete the accession {{ name }} - {{ identifier }} from the order",
+      "confirm-accession-deletion": "Do you really want to delete this accession from your order?",
+      "save": "Finalize my order"
+    },
+    "basket-confirmation": {
+      "error": "The confirmation of your order has failed. Maybe it was confirmed already?",
+      "basket": "Your order"
+    },
+    "basket-content": {
+      "information": "Your information",
+      "ordered-accessions": "Ordered accessions",
+      "accession-heading": "Accession",
+      "quantity-heading": "Quantity"
+    },
+    "confirmed": {
+      "message": "Your order is confirmed.",
+      "dispatched-message": "It has been dispatched to the various persons in charge of the ordered accessions, who will contact you by email, using the address",
+      "mailbox-message": "Check your inbox."
+    },
+    "edit-confirmation": {
+      "error": "The confirmation of your order has failed. Maybe it was confirmed already?",
+      "refresh": "Refresh",
+      "success": "Your order has been saved.",
+      "message-prefix": "We sent you an email at the address",
+      "message-suffix": "in order to confirm your order.",
+      "code-message-prefix": "Enter the confirmation code it contains, or",
+      "code-message-refresh": "refresh",
+      "code-message-suffix": "the page after you have clicked the confirmation link it contains.",
+      "spam-message": "If you can't find our email, please check your spam folder.",
+      "confirmation-code": "Confirmation code",
+      "confirm": "Confirm"
+    }
+  },
+  "order": {
+    "orders-container": {
+      "title": "Orders",
+      "in-progress": "In progress",
+      "done": "Done"
+    },
+    "orders": {
+      "one-accession": "1 accession",
+      "n-accessions": "{{ n }} accessions"
+    },
+    "order": {
+      "title": "Order {{ reference }}",
+      "customer-information": "Customer information",
+      "ordered-accessions": "Ordered accessions",
+      "accession-heading": "Accession",
+      "quantity-heading": "Quantity",
+      "all-orders": "All the orders"
+    }
+  }
+}
