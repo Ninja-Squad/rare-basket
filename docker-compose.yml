@@ -17,3 +17,16 @@ services:
     ports:
       - 25:1025
       - 8025:8025
+
+  keycloak:
+    image: quay.io/keycloak/keycloak:9.0.2
+    container_name: rare-basket-keycloak
+    volumes:
+      - ./keycloak:/tmp/keycloak
+    environment:
+      KEYCLOAK_USER: admin
+      KEYCLOAK_PASSWORD: admin
+      KEYCLOAK_IMPORT: /tmp/keycloak/rare-basket-realm.json
+      DB_VENDOR: h2
+    ports:
+      - 8082:8080

@@ -1,0 +1,39 @@
+<nav class="navbar navbar-expand-md navbar-dark bg-dark py-0">
+  <span class="navbar-brand">
+    <img src="/assets/logo.png" alt="Logo" />
+  </span>
+  <button
+    class="navbar-toggler"
+    type="button"
+    [attr.aria-expanded]="!collapsed"
+    [attr.aria-label]="'navbar.toggle' | translate"
+    (click)="collapsed = !collapsed"
+  >
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  <div class="collapse navbar-collapse" [class.show]="!collapsed">
+    <ul class="navbar-nav mr-auto">
+      <li class="nav-item" *ngIf="user" id="navbar-orders">
+        <a class="nav-link" routerLink="/orders" translate="navbar.orders"></a>
+      </li>
+    </ul>
+    <ul class="navbar-nav">
+      <li class="nav-item" *ngIf="user" class="mr-2" id="navbar-user">
+        <span class="navbar-text">
+          <fa-icon [icon]="userIcon" class="mr-1"></fa-icon>
+          {{ user.preferred_username }}
+        </span>
+      </li>
+      <li>
+        <a *ngIf="!user" class="nav-link" role="button" (click)="login()" style="cursor: pointer;" id="navbar-login">
+          <fa-icon [icon]="loginIcon" class="mr-1"></fa-icon>
+          <span translate="navbar.login"></span>
+        </a>
+        <a *ngIf="user" class="nav-link" role="button" (click)="logout()" style="cursor: pointer;" id="navbar-logout">
+          <fa-icon [icon]="logoutIcon" class="mr-1"></fa-icon>
+          <span translate="navbar.logout"></span>
+        </a>
+      </li>
+    </ul>
+  </div>
+</nav>

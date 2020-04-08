@@ -8,10 +8,6 @@ class HomeComponentTester extends ComponentTester<HomeComponent> {
   constructor() {
     super(HomeComponent);
   }
-
-  get title() {
-    return this.element('h1');
-  }
 }
 
 describe('HomeComponent', () => {
@@ -29,7 +25,5 @@ describe('HomeComponent', () => {
     tester.detectChanges();
   });
 
-  it('should have a title', () => {
-    expect(tester.title).toContainText('Bienvenue dans Rare Basket');
-  });
+  it('should create', () => {});
 });

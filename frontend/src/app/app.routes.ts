@@ -1,5 +1,6 @@
 import { Routes } from '@angular/router';
 import { HomeComponent } from './home/home.component';
+import { AuthenticationGuard } from './shared/authentication.guard';
 
 export const APP_ROUTES: Routes = [
   {
@@ -11,7 +12,13 @@ export const APP_ROUTES: Routes = [
     loadChildren: () => import('./basket/basket.module').then(m => m.BasketModule)
   },
   {
-    path: 'orders',
-    loadChildren: () => import('./order/order.module').then(m => m.OrderModule)
+    path: '',
+    canActivateChild: [AuthenticationGuard],
+    children: [
+      {
+        path: 'orders',
+        loadChildren: () => import('./order/order.module').then(m => m.OrderModule)
+      }
+    ]
   }
 ];

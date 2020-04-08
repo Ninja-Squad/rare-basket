@@ -14,16 +14,16 @@ import java.util.concurrent.atomic.AtomicLong;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import fr.inra.urgi.rarebasket.MoreAnswers;
-import fr.inra.urgi.rarebasket.dao.BasketDao;
 import fr.inra.urgi.rarebasket.dao.AccessionHolderDao;
+import fr.inra.urgi.rarebasket.dao.BasketDao;
 import fr.inra.urgi.rarebasket.dao.OrderDao;
 import fr.inra.urgi.rarebasket.domain.Accession;
+import fr.inra.urgi.rarebasket.domain.AccessionHolder;
 import fr.inra.urgi.rarebasket.domain.Basket;
 import fr.inra.urgi.rarebasket.domain.BasketItem;
 import fr.inra.urgi.rarebasket.domain.BasketStatus;
 import fr.inra.urgi.rarebasket.domain.Customer;
 import fr.inra.urgi.rarebasket.domain.CustomerType;
-import fr.inra.urgi.rarebasket.domain.AccessionHolder;
 import fr.inra.urgi.rarebasket.domain.Grc;
 import fr.inra.urgi.rarebasket.domain.Order;
 import fr.inra.urgi.rarebasket.domain.OrderItem;
@@ -40,6 +40,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 
 /**
@@ -47,6 +48,7 @@ import org.springframework.test.web.servlet.MockMvc;
  * @author JB Nizet
  */
 @WebMvcTest(BasketController.class)
+@ActiveProfiles("test")
 class BasketControllerTest {
 
     @MockBean

@@ -17,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 
 /**
@@ -24,6 +25,7 @@ import org.springframework.test.web.servlet.MockMvc;
  * @author JB Nizet
  */
 @WebMvcTest(IndexFilter.class)
+@ActiveProfiles("test")
 class IndexFilterTest {
 
     @Autowired

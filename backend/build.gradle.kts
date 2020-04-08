@@ -71,11 +71,19 @@ tasks {
     }
 }
 
+dependencyManagement {
+    imports {
+        mavenBom("org.keycloak.bom:keycloak-adapter-bom:9.0.2")
+    }
+}
+
 dependencies {
     implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
     implementation("org.springframework.boot:spring-boot-starter-mail")
+    implementation("org.springframework.boot:spring-boot-starter-security")
     implementation("com.samskivert:jmustache")
+    implementation("org.keycloak:keycloak-spring-boot-starter")
 
     runtimeOnly("org.postgresql:postgresql")
     runtimeOnly("org.flywaydb:flyway-core")
@@ -83,6 +91,7 @@ dependencies {
     testImplementation("org.springframework.boot:spring-boot-starter-test") {
         exclude(group = "org.junit.vintage", module = "junit-vintage-engine")
     }
+    testImplementation("org.springframework.security:spring-security-test")
 
     testImplementation("com.ninja-squad:DbSetup:2.1.0")
     testImplementation("org.junit.jupiter:junit-jupiter")

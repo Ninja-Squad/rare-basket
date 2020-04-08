@@ -28,6 +28,12 @@
       "en": "Anglais"
     }
   },
+  "navbar": {
+    "toggle": "Afficher/maquer la navigation",
+    "orders": "Commandes",
+    "login": "Connexion",
+    "logout": "Déconnexion"
+  },
   "basket": {
     "basket": {
       "title": "Votre commande {{ reference }}"

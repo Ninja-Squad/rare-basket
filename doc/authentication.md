@@ -1,0 +1,73 @@
+# Authentication
+
+The authentication is handled by Keycloak, using OpenID/Connect.
+
+The flow is the following one:
+
+1. The user logs in on the frontend (by clicking the login button, or by trying to access a route that requires authentication)
+2. The user is redirected to the Keycloak login page for the `rare-basket` realm
+3. The user logs in by entering the user name and password
+4. Keycloak sends the user back to the rare-basket frontend, with query parameters in the URL
+5. The frontend uses these query parameters to extract the information needed to get an access token
+6. The frontend, using AJAX, requests the access token, and the user information, to the Keycloak server
+7. The authentication is now done, and the user information and token is stored in local storage. 
+   An Angular http interceptor sends the token inside the `Authorization` header in every HTTP request sent to the backend
+8. The backend extracts and verifies the token from the `Authorization` header, in order to know who sent the request.
+   If the request is not authenticated and needs to be, a 401 error response is sent back.
+   
+## Libraries being used
+
+### Frontend
+
+The frontend uses the library [angular-auth-oidc-client](https://github.com/damienbod/angular-auth-oidc-client).
+See its README and [its API documentation](https://github.com/damienbod/angular-auth-oidc-client/blob/master/API_DOCUMENTATION.md)
+for more details.
+
+Here are the configuration choices that have been made:
+
+ - the access token is silently refreshed, using a refresh token;
+ - the application code handles the authentication result by itself, 
+   in order to be able to route to the requested URL after the authentication succeeds;
+ - the information is stored in local storage rather than session storage in order to be 
+   able to open links in new tabs
+   
+### Backend
+
+The backend uses the standard, but not very well documented, [Spring Boot and Spring Security
+adapter](https://www.keycloak.org/docs/latest/securing_apps/index.html#_spring_security_adapter) provided by Keycloak. 
+
+Given the poor documentation, the main source of documentation used is 
+[this blog post](https://www.thomasvitale.com/spring-security-keycloak/) by Thomas Vitale.
+
+The backend has been configured to also accept basic authentication, so curl or HTTPie commands
+can easily be used to access the backend HTTP services.
+
+### Keycloak configuration
+
+For the authentication to work as expected, the following must be done on the Keycloak server:
+
+ - create a realm named `rare-basket`;
+ - create a client in this realm, with the client ID `rare-basket`, using the `openid-connect` protocol 
+ - configure this client to have, in the "Valid Redirect URIs" field, the root public-facing URL(s) of the application.
+   In development, these URLs are `http://localhost:4201` and `http://localhost:8081`
+ - configure this client to have, in the "Valid Redirect URIs" field
+ - configure this client to have, in its "Web Origins" field, the value `+` (which means that the
+   Valid Redirect URIs are used as web origins). Of course, the actual public facing URL of the 
+   rare-basket server can also be used instead. This is necessary because the frontd sends AJAX request
+   to the Keycloak server, and CORS must thus be enabled for requests coming from the frontend.
+ - add the necessary users, with their password.
+ 
+Note that, during development, all this is done automatically by `docker-compose`, which starts
+a Keycloak server exposed on port 8082, and imports the necessary configuration.
+At the time of this writing, this imported configuration conains a single user named `contact1`
+and having the password `password`.
+
+The admin user for the Keycloak server is `admin`, identified by the passwong `admin`.
+The Keycloak console is available at http://localhost:8082/auth/.
+
+The standard Angular environment mechanism is used to be specify the URL of the Keycloak server,
+so the `environment.prod.ts` configuration file should be modified to contain the actual, public-facing
+URL of the Keycloak server.
+
+Also note that, in order to be secure, both rare-basket and the Keycloak server should only be
+exposed over HTTPS.

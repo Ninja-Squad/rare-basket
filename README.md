@@ -27,3 +27,7 @@ Here are the main gradle commands available:
  - `./gradlew tasks`: lists the tasks.
 
 See the backend README and the `build.gradle.kts` files for more details.
+
+## Documentation
+
+ - [Authentication](doc/authentication.md)

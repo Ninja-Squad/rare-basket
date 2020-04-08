@@ -28,6 +28,12 @@
       "en": "English"
     }
   },
+  "navbar": {
+    "toggle": "Toggle navigation",
+    "orders": "Orders",
+    "login": "Log in",
+    "logout": "Log out"
+  },
   "basket": {
     "basket": {
       "title": "Your order {{ reference }}"
