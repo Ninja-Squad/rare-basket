@@ -18,16 +18,19 @@ public interface OrderDao extends JpaRepository<Order, Long> {
     @Query(
         value = "select o from Order o" +
             " left join fetch o.basket b" +
+            " where o.accessionHolder.id = ?1" +
             " order by b.confirmationInstant desc",
         countQuery = "select count(o.id) from Order o")
-    Page<Order> pageAll(Pageable page);
+    Page<Order> pageByAccessionHolder(Long accessionHolderid, Pageable page);
 
     @Query(
         value = "select o from Order o" +
             " left join fetch o.basket b" +
-            " where o.status in ?1" +
+            " where o.accessionHolder.id = ?1" +
+            " and o.status in ?2" +
             " order by b.confirmationInstant desc",
         countQuery = "select count(o.id) from Order o" +
-            " where o.status in ?1")
-    Page<Order> pageByStatuses(Set<OrderStatus> statuses, Pageable page);
+            " where o.accessionHolder.id = ?1" +
+            " and o.status in ?2")
+    Page<Order> pageByAccessionHolderAndStatuses(Long accessionHolderId, Set<OrderStatus> statuses, Pageable page);
 }

@@ -47,7 +47,7 @@ describe('AuthenticationInterceptorService', () => {
     expect(testRequest.request.headers.get('Authorization')).toBeNull();
   });
 
-  it('should add token is authenticated and request to api', () => {
+  it('should add token if authenticated and request to api', () => {
     oidcSecurityService.getToken.and.returnValue('token');
     httpClient.get('/api/foo').subscribe(() => {});
 

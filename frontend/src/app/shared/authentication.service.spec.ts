@@ -1,16 +1,19 @@
 import { TestBed } from '@angular/core/testing';
 
-import { AuthenticatedUserData, AuthenticationService } from './authentication.service';
+import { AuthenticationService } from './authentication.service';
 import { WINDOW } from './window.service';
 import { AuthorizationResult, AuthorizationState, OidcSecurityService } from 'angular-auth-oidc-client';
 import { Router } from '@angular/router';
-import { BehaviorSubject, Subject } from 'rxjs';
+import { BehaviorSubject, EMPTY, of, Subject } from 'rxjs';
+import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
+import { User } from './user.model';
 
 describe('AuthenticationService', () => {
   let service: AuthenticationService;
   let fakeWindow: Window;
   let oidcSecurityService: jasmine.SpyObj<OidcSecurityService>;
   let router: jasmine.SpyObj<Router>;
+  let http: HttpTestingController;
 
   beforeEach(() => {
     fakeWindow = ({
@@ -23,7 +26,6 @@ describe('AuthenticationService', () => {
       'authorize',
       'logoff',
       'getIsAuthorized',
-      'getUserData',
       'setupModule',
       'authorizedCallbackWithCode'
     ]);
@@ -31,6 +33,7 @@ describe('AuthenticationService', () => {
     router = jasmine.createSpyObj<Router>('Router', ['navigateByUrl']);
 
     TestBed.configureTestingModule({
+      imports: [HttpClientTestingModule],
       providers: [
         { provide: WINDOW, useValue: fakeWindow },
         { provide: OidcSecurityService, useValue: oidcSecurityService },
@@ -38,6 +41,7 @@ describe('AuthenticationService', () => {
       ]
     });
     service = TestBed.inject(AuthenticationService);
+    http = TestBed.inject(HttpTestingController);
   });
 
   it('should login without requested URL', () => {
@@ -63,41 +67,50 @@ describe('AuthenticationService', () => {
 
     oidcSecurityService.getIsAuthorized.and.returnValue(subject);
 
+    (oidcSecurityService as any).onAuthorizationResult = EMPTY;
+
+    service.init();
     service.isAuthenticated().subscribe(event => events.push(event));
 
     subject.next(false);
     subject.next(false);
     subject.next(true);
+    http.expectOne('/api/users/me').flush({});
     subject.next(true);
     subject.next(false);
 
     expect(events).toEqual([false, true, false]);
+    http.verify();
   });
 
-  it('should get the user data, or null if the user is not authenticated', () => {
-    const events: Array<AuthenticatedUserData> = [];
+  it('should get the current user, or null if the user is not authenticated', () => {
+    const events: Array<User> = [];
     const authenticatedSubject = new BehaviorSubject<boolean>(false);
-    const userDataSubject = new BehaviorSubject<AuthenticatedUserData>(null);
 
     oidcSecurityService.getIsAuthorized.and.returnValue(authenticatedSubject);
-    oidcSecurityService.getUserData.and.returnValue(userDataSubject);
 
-    service.getUserData().subscribe(event => events.push(event));
+    (oidcSecurityService as any).onAuthorizationResult = EMPTY;
+
+    service.init();
+    service.getCurrentUser().subscribe(event => events.push(event));
 
     authenticatedSubject.next(false);
     authenticatedSubject.next(false);
-    userDataSubject.next({ preferred_username: 'a' });
     authenticatedSubject.next(true);
+    http.expectOne('/api/users/me').flush({ id: 1 });
+
     authenticatedSubject.next(true);
-    userDataSubject.next(null);
     authenticatedSubject.next(false);
 
-    expect(events).toEqual([null, { preferred_username: 'a' }, null]);
+    expect(events).toEqual([null, { id: 1 } as User, null]);
+    http.verify();
   });
 
   it('should init and route to requested URL when authentication succeeds', () => {
     const subject = new Subject<AuthorizationResult>();
     (oidcSecurityService as any).onAuthorizationResult = subject;
+
+    oidcSecurityService.getIsAuthorized.and.returnValue(of(true));
 
     service.init();
 
@@ -108,6 +121,7 @@ describe('AuthenticationService', () => {
     expect(router.navigateByUrl).not.toHaveBeenCalled();
 
     subject.next({ isRenewProcess: false, authorizationState: AuthorizationState.authorized, validationResult: null });
+    http.expectOne('/api/users/me').flush({});
     expect(router.navigateByUrl).toHaveBeenCalledWith('/');
 
     (fakeWindow.sessionStorage.getItem as jasmine.Spy).and.returnValue('/foo');

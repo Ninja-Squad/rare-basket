@@ -26,7 +26,7 @@ import { NavbarComponent } from './navbar/navbar.component';
     I18nModule,
     AuthModule.forRoot()
   ],
-  providers: [{ provide: HTTP_INTERCEPTORS, useClass: AuthenticationInterceptorService, multi: true }, { provide: Window }],
+  providers: [{ provide: HTTP_INTERCEPTORS, useClass: AuthenticationInterceptorService, multi: true }],
   bootstrap: [AppComponent]
 })
 export class AppModule {

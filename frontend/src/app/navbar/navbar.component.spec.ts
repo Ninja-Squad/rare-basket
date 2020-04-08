@@ -4,9 +4,10 @@ import { NavbarComponent } from './navbar.component';
 import { ComponentTester, speculoosMatchers, TestHtmlElement } from 'ngx-speculoos';
 import { I18nTestingModule } from '../i18n/i18n-testing.module.spec';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
-import { AuthenticatedUserData, AuthenticationService } from '../shared/authentication.service';
+import { AuthenticationService } from '../shared/authentication.service';
 import { Subject } from 'rxjs';
 import { RouterTestingModule } from '@angular/router/testing';
+import { User } from '../shared/user.model';
 
 class NavbarComponentTester extends ComponentTester<NavbarComponent> {
   constructor() {
@@ -33,12 +34,12 @@ class NavbarComponentTester extends ComponentTester<NavbarComponent> {
 describe('NavbarComponent', () => {
   let tester: NavbarComponentTester;
   let authenticationService: jasmine.SpyObj<AuthenticationService>;
-  let userSubject: Subject<AuthenticatedUserData>;
+  let userSubject: Subject<User>;
 
   beforeEach(() => {
-    userSubject = new Subject<AuthenticatedUserData>();
-    authenticationService = jasmine.createSpyObj<AuthenticationService>('AuthenticationService', ['login', 'logout', 'getUserData']);
-    authenticationService.getUserData.and.returnValue(userSubject);
+    userSubject = new Subject<User>();
+    authenticationService = jasmine.createSpyObj<AuthenticationService>('AuthenticationService', ['login', 'logout', 'getCurrentUser']);
+    authenticationService.getCurrentUser.and.returnValue(userSubject);
 
     TestBed.configureTestingModule({
       declarations: [NavbarComponent],
@@ -51,13 +52,13 @@ describe('NavbarComponent', () => {
     tester.detectChanges();
   });
 
-  it('should display elements depending on user presence', () => {
+  it('should display elements depending on user presence and permissions', () => {
     expect(tester.user).toBeNull();
     expect(tester.orders).toBeNull();
     expect(tester.logout).toBeNull();
     expect(tester.login).not.toBeNull();
 
-    userSubject.next({ preferred_username: 'JB' });
+    userSubject.next({ name: 'JB', permissions: ['ORDER_MANAGEMENT'] } as User);
     tester.detectChanges();
 
     expect(tester.user).toContainText('JB');
@@ -72,6 +73,14 @@ describe('NavbarComponent', () => {
     expect(tester.orders).toBeNull();
     expect(tester.logout).toBeNull();
     expect(tester.login).not.toBeNull();
+
+    userSubject.next({ name: 'JB', permissions: [] } as User);
+    tester.detectChanges();
+
+    expect(tester.user).toContainText('JB');
+    expect(tester.orders).toBeNull();
+    expect(tester.logout).not.toBeNull();
+    expect(tester.login).toBeNull();
   });
 
   it('should login', () => {
@@ -80,7 +89,7 @@ describe('NavbarComponent', () => {
   });
 
   it('should logout', () => {
-    userSubject.next({ preferred_username: 'JB' });
+    userSubject.next({ name: 'JB', permissions: [] } as User);
     tester.detectChanges();
 
     tester.logout.click();

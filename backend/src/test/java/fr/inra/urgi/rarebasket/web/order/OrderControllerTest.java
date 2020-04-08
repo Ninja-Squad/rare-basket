@@ -1,5 +1,6 @@
 package fr.inra.urgi.rarebasket.web.order;
 
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -12,13 +13,16 @@ import java.util.Optional;
 
 import fr.inra.urgi.rarebasket.dao.OrderDao;
 import fr.inra.urgi.rarebasket.domain.Accession;
+import fr.inra.urgi.rarebasket.domain.AccessionHolder;
 import fr.inra.urgi.rarebasket.domain.Basket;
 import fr.inra.urgi.rarebasket.domain.Customer;
 import fr.inra.urgi.rarebasket.domain.CustomerType;
 import fr.inra.urgi.rarebasket.domain.Order;
 import fr.inra.urgi.rarebasket.domain.OrderItem;
 import fr.inra.urgi.rarebasket.domain.OrderStatus;
+import fr.inra.urgi.rarebasket.domain.Permission;
 import fr.inra.urgi.rarebasket.domain.SupportedLanguage;
+import fr.inra.urgi.rarebasket.service.user.CurrentUser;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,10 +46,14 @@ class OrderControllerTest {
     @MockBean
     private OrderDao mockOrderDao;
 
+    @MockBean
+    private CurrentUser mockCurrentUser;
+
     @Autowired
     private MockMvc mockMvc;
 
     private Order order;
+    private final Long accessionHolderId = 65L;
 
     @BeforeEach
     void prepare() {
@@ -62,14 +70,16 @@ class OrderControllerTest {
         order.setStatus(OrderStatus.DRAFT);
         order.addItem(new OrderItem(421L, new Accession("rosa", "rosa1"), 10));
         order.addItem(new OrderItem(422L, new Accession("violetta", "violetta1"), null));
+        order.setAccessionHolder(new AccessionHolder(accessionHolderId));
 
+        when(mockCurrentUser.getAccessionHolderId()).thenReturn(Optional.of(accessionHolderId));
         when(mockOrderDao.findById(order.getId())).thenReturn(Optional.of(order));
     }
 
     @Test
     void shouldList() throws Exception {
         Pageable pageable = PageRequest.of(0, OrderController.PAGE_SIZE);
-        when(mockOrderDao.pageAll(pageable)).thenReturn(
+        when(mockOrderDao.pageByAccessionHolder(accessionHolderId, pageable)).thenReturn(
             new PageImpl<>(List.of(order), pageable, 1)
         );
 
@@ -95,12 +105,14 @@ class OrderControllerTest {
                .andExpect(jsonPath("$.content[0].items[0].accession.identifier").value("rosa1"))
                .andExpect(jsonPath("$.content[0].items[0].quantity").value(10))
                .andExpect(jsonPath("$.content[0].items[1].quantity").isEmpty());
+
+        verify(mockCurrentUser).checkPermission(Permission.ORDER_MANAGEMENT);
     }
 
     @Test
     void shouldListByStatus() throws Exception {
         Pageable pageable = PageRequest.of(1, OrderController.PAGE_SIZE);
-        when(mockOrderDao.pageByStatuses(EnumSet.of(OrderStatus.CANCELLED, OrderStatus.FINALIZED),
+        when(mockOrderDao.pageByAccessionHolderAndStatuses(accessionHolderId, EnumSet.of(OrderStatus.CANCELLED, OrderStatus.FINALIZED),
                                          pageable)).thenReturn(
             new PageImpl<>(List.of(order), pageable, OrderController.PAGE_SIZE + 1)
         );
@@ -115,6 +127,8 @@ class OrderControllerTest {
                .andExpect(jsonPath("$.totalPages").value(2))
                .andExpect(jsonPath("$.content.length()").value(1))
                .andExpect(jsonPath("$.content[0].id").value(order.getId()));
+
+        verify(mockCurrentUser).checkPermission(Permission.ORDER_MANAGEMENT);
     }
 
     @Test
@@ -122,5 +136,7 @@ class OrderControllerTest {
         mockMvc.perform(get("/api/orders/{id}", order.getId()))
                .andExpect(status().isOk())
                .andExpect(jsonPath("$.id").value(order.getId()));
+
+        verify(mockCurrentUser).checkPermission(Permission.ORDER_MANAGEMENT);
     }
 }

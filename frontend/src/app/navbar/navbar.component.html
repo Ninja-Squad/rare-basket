@@ -13,7 +13,7 @@
   </button>
   <div class="collapse navbar-collapse" [class.show]="!collapsed">
     <ul class="navbar-nav mr-auto">
-      <li class="nav-item" *ngIf="user" id="navbar-orders">
+      <li class="nav-item" *ngIf="showOrders" id="navbar-orders">
         <a class="nav-link" routerLink="/orders" translate="navbar.orders"></a>
       </li>
     </ul>
@@ -21,7 +21,7 @@
       <li class="nav-item" *ngIf="user" class="mr-2" id="navbar-user">
         <span class="navbar-text">
           <fa-icon [icon]="userIcon" class="mr-1"></fa-icon>
-          {{ user.preferred_username }}
+          {{ user.name }}
         </span>
       </li>
       <li>

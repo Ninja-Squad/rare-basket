@@ -84,8 +84,8 @@ public class SecurityConfig extends KeycloakWebSecurityConfigurerAdapter {
     public static void configureHttp(HttpSecurity http) throws Exception {
         http.csrf().disable();
         http.authorizeRequests()
-            .antMatchers("/api/orders").authenticated()
             .antMatchers("/api/orders/**").authenticated()
+            .antMatchers("/api/users/**").authenticated()
             .anyRequest().permitAll();
     }
 }

@@ -13,7 +13,7 @@ export const APP_ROUTES: Routes = [
   },
   {
     path: '',
-    canActivateChild: [AuthenticationGuard],
+    canActivate: [AuthenticationGuard],
     children: [
       {
         path: 'orders',

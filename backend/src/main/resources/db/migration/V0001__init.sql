@@ -87,3 +87,21 @@ CREATE TABLE accession_order_document (
         CONSTRAINT accession_order_document_fk2 REFERENCES document(id),
     PRIMARY KEY (order_id, document_id)
 );
+
+CREATE TABLE app_user (
+    id                  BIGINT PRIMARY KEY,
+    name                VARCHAR NOT NULL UNIQUE,
+    accession_holder_id BIGINT
+        CONSTRAINT app_user_fk1 REFERENCES accession_holder(id)
+);
+
+CREATE SEQUENCE app_user_seq START WITH 1001 INCREMENT 50;
+
+CREATE TABLE user_permission (
+    id         BIGINT PRIMARY KEY,
+    permission VARCHAR NOT NULL,
+    user_id    BIGINT  NOT NULL
+        CONSTRAINT user_permission_fk1 REFERENCES app_user(id)
+);
+
+CREATE SEQUENCE user_permission_seq START WITH 1001 INCREMENT 50;

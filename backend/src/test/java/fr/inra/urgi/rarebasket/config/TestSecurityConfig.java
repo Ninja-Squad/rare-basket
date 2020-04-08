@@ -8,6 +8,9 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 /**
  * The security configuration used in MVC tests, by annotating them with <code>ActiveProfiles("test")</code>.
  * This is necessary because Keycloak Spring support does not work in tests. Yay!
+ *
+ * (see https://issues.redhat.com/browse/KEYCLOAK-6163, https://issues.redhat.com/browse/KEYCLOAK-4814)
+ *
  * @author JB Nizet
  */
 @Configuration

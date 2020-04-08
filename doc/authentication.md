@@ -1,6 +1,7 @@
 # Authentication
 
-The authentication is handled by Keycloak, using OpenID/Connect.
+The authentication is handled by [Keycloak](https://www.keycloak.org/documentation), using 
+[OpenID/Connect](https://openid.net/connect/).
 
 The flow is the following one:
 
@@ -9,8 +10,8 @@ The flow is the following one:
 3. The user logs in by entering the user name and password
 4. Keycloak sends the user back to the rare-basket frontend, with query parameters in the URL
 5. The frontend uses these query parameters to extract the information needed to get an access token
-6. The frontend, using AJAX, requests the access token, and the user information, to the Keycloak server
-7. The authentication is now done, and the user information and token is stored in local storage. 
+6. The frontend, using AJAX, requests the access token, to the Keycloak server
+7. The authentication is now done, and the token is stored in local storage. 
    An Angular http interceptor sends the token inside the `Authorization` header in every HTTP request sent to the backend
 8. The backend extracts and verifies the token from the `Authorization` header, in order to know who sent the request.
    If the request is not authenticated and needs to be, a 401 error response is sent back.
@@ -50,22 +51,21 @@ For the authentication to work as expected, the following must be done on the Ke
  - create a client in this realm, with the client ID `rare-basket`, using the `openid-connect` protocol 
  - configure this client to have, in the "Valid Redirect URIs" field, the root public-facing URL(s) of the application.
    In development, these URLs are `http://localhost:4201` and `http://localhost:8081`
- - configure this client to have, in the "Valid Redirect URIs" field
  - configure this client to have, in its "Web Origins" field, the value `+` (which means that the
    Valid Redirect URIs are used as web origins). Of course, the actual public facing URL of the 
-   rare-basket server can also be used instead. This is necessary because the frontd sends AJAX request
+   rare-basket server can also be used instead. This is necessary because the frontend sends AJAX request
    to the Keycloak server, and CORS must thus be enabled for requests coming from the frontend.
  - add the necessary users, with their password.
  
 Note that, during development, all this is done automatically by `docker-compose`, which starts
 a Keycloak server exposed on port 8082, and imports the necessary configuration.
-At the time of this writing, this imported configuration conains a single user named `contact1`
-and having the password `password`.
+At the time of this writing, this imported configuration contains 3 users named `contact11`, `contact12` and `contact21`, 
+all having the password `password`.
 
-The admin user for the Keycloak server is `admin`, identified by the passwong `admin`.
+The admin user for the Keycloak server is `admin`, identified by the password `admin`.
 The Keycloak console is available at http://localhost:8082/auth/.
 
-The standard Angular environment mechanism is used to be specify the URL of the Keycloak server,
+The standard Angular environment mechanism is used to specify the URL of the Keycloak server,
 so the `environment.prod.ts` configuration file should be modified to contain the actual, public-facing
 URL of the Keycloak server.
 

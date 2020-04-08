@@ -30,8 +30,8 @@ describe('AppComponent', () => {
   let tester: AppComponentTester;
 
   beforeEach(() => {
-    const authenticationService = jasmine.createSpyObj<AuthenticationService>('AuthenticationService', ['getUserData']);
-    authenticationService.getUserData.and.returnValue(of(null));
+    const authenticationService = jasmine.createSpyObj<AuthenticationService>('AuthenticationService', ['getCurrentUser']);
+    authenticationService.getCurrentUser.and.returnValue(of(null));
 
     TestBed.configureTestingModule({
       declarations: [AppComponent, ValidationDefaultsComponent, NavbarComponent],

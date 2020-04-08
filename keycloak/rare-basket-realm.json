@@ -1719,12 +1719,56 @@
     "users" : [ {
         "id" : "d5c6dc91-fc50-4e9f-9c31-e4008720e16f",
         "createdTimestamp" : 1586280364268,
-        "username" : "contact1",
+        "username" : "contact11",
         "enabled" : true,
         "totp" : false,
         "emailVerified" : false,
         "credentials" : [ {
             "id" : "69759768-8f30-44f4-96b8-08c2fec81c3a",
+            "type" : "password",
+            "createdDate" : 1586280377852,
+            "secretData" : "{\"value\":\"WAZ8Jk7QfSm6Fkv8/KjhuNCSLnLraxqNCPMi+hkRSzC/HNndUIgeOumxr/9dHbTNtiCl3SZEGYD28iEEhvmtGw==\",\"salt\":\"lQwni8ClLw35Bfx8kI4eNw==\"}",
+            "credentialData" : "{\"hashIterations\":27500,\"algorithm\":\"pbkdf2-sha256\"}"
+        } ],
+        "disableableCredentialTypes" : [ ],
+        "requiredActions" : [ ],
+        "realmRoles" : [ "uma_authorization", "offline_access" ],
+        "clientRoles" : {
+            "account" : [ "manage-account", "view-profile" ]
+        },
+        "notBefore" : 0,
+        "groups" : [ ]
+    }, {
+        "id" : "d5c6dc91-fc50-4e9f-9c31-e4008720e170",
+        "createdTimestamp" : 1586280364268,
+        "username" : "contact12",
+        "enabled" : true,
+        "totp" : false,
+        "emailVerified" : false,
+        "credentials" : [ {
+            "id" : "69759768-8f30-44f4-96b8-08c2fec81c3b",
+            "type" : "password",
+            "createdDate" : 1586280377852,
+            "secretData" : "{\"value\":\"WAZ8Jk7QfSm6Fkv8/KjhuNCSLnLraxqNCPMi+hkRSzC/HNndUIgeOumxr/9dHbTNtiCl3SZEGYD28iEEhvmtGw==\",\"salt\":\"lQwni8ClLw35Bfx8kI4eNw==\"}",
+            "credentialData" : "{\"hashIterations\":27500,\"algorithm\":\"pbkdf2-sha256\"}"
+        } ],
+        "disableableCredentialTypes" : [ ],
+        "requiredActions" : [ ],
+        "realmRoles" : [ "uma_authorization", "offline_access" ],
+        "clientRoles" : {
+            "account" : [ "manage-account", "view-profile" ]
+        },
+        "notBefore" : 0,
+        "groups" : [ ]
+    }, {
+        "id" : "d5c6dc91-fc50-4e9f-9c31-e4008720e171",
+        "createdTimestamp" : 1586280364268,
+        "username" : "contact21",
+        "enabled" : true,
+        "totp" : false,
+        "emailVerified" : false,
+        "credentials" : [ {
+            "id" : "69759768-8f30-44f4-96b8-08c2fec81c3c",
             "type" : "password",
             "createdDate" : 1586280377852,
             "secretData" : "{\"value\":\"WAZ8Jk7QfSm6Fkv8/KjhuNCSLnLraxqNCPMi+hkRSzC/HNndUIgeOumxr/9dHbTNtiCl3SZEGYD28iEEhvmtGw==\",\"salt\":\"lQwni8ClLw35Bfx8kI4eNw==\"}",

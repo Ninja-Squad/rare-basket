@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { AuthenticatedUserData, AuthenticationService } from '../shared/authentication.service';
+import { AuthenticationService } from '../shared/authentication.service';
 import { faPowerOff, faSignInAlt, faUser } from '@fortawesome/free-solid-svg-icons';
+import { User } from '../shared/user.model';
 
 @Component({
   selector: 'rb-navbar',
@@ -9,7 +10,7 @@ import { faPowerOff, faSignInAlt, faUser } from '@fortawesome/free-solid-svg-ico
 })
 export class NavbarComponent implements OnInit {
   collapsed = true;
-  user: AuthenticatedUserData;
+  user: User;
 
   userIcon = faUser;
   loginIcon = faSignInAlt;
@@ -18,8 +19,8 @@ export class NavbarComponent implements OnInit {
   constructor(private authenticationService: AuthenticationService) {}
 
   ngOnInit() {
-    this.authenticationService.getUserData().subscribe(userData => {
-      this.user = userData;
+    this.authenticationService.getCurrentUser().subscribe(user => {
+      this.user = user;
     });
   }
 
@@ -29,5 +30,9 @@ export class NavbarComponent implements OnInit {
 
   logout() {
     this.authenticationService.logout();
+  }
+
+  get showOrders() {
+    return this.user && this.user.permissions.includes('ORDER_MANAGEMENT');
   }
 }
