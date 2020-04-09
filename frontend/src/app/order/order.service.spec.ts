@@ -2,8 +2,10 @@ import { TestBed } from '@angular/core/testing';
 
 import { OrderService } from './order.service';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
-import { Order, OrderCommand } from './order.model';
+import { Document, DocumentCommand, Order, OrderCommand } from './order.model';
 import { Page } from '../shared/page.model';
+import { filter } from 'rxjs/operators';
+import { HttpEventType, HttpResponse } from '@angular/common/http';
 
 describe('OrderService', () => {
   let service: OrderService;
@@ -60,4 +62,56 @@ describe('OrderService', () => {
     testRequest.flush(null);
     expect(done).toBe(true);
   });
+
+  it('should add a document', async () => {
+    let actual: Document = null;
+
+    const command: DocumentCommand = {
+      file: { name: 'foo.txt' } as File,
+      document: {
+        type: 'OTHER',
+        description: 'test'
+      }
+    };
+    service
+      .addDocument(42, command)
+      .pipe(filter(event => event.type === HttpEventType.Response))
+      .subscribe(response => (actual = (response as HttpResponse<Document>).body));
+
+    const testRequest = http.expectOne({ method: 'POST', url: '/api/orders/42/documents' });
+    const formData: FormData = testRequest.request.body;
+    expect(formData.has('file')).toBe(true);
+    const documentCommand = formData.get('document') as Blob;
+    expect(documentCommand.type).toBe('application/json');
+
+    const json = await blobToString(documentCommand);
+    const sentCommand = JSON.parse(json);
+
+    expect(sentCommand).toEqual(command.document);
+    const expected = {} as Document;
+    testRequest.flush(expected);
+    expect(actual).toBe(expected);
+  });
+
+  it('should delete a document', () => {
+    let done = false;
+    service.deleteDocument(42, 54).subscribe(() => (done = true));
+
+    http.expectOne({ url: '/api/orders/42/documents/54', method: 'DELETE' }).flush(null);
+    expect(done).toBe(true);
+  });
+
+  function blobToString(blob: Blob): Promise<string> {
+    // Blob as a text() method, but which does not exist on the old CI browsers. Grrr.
+    return new Promise(resolve => {
+      const reader = new FileReader();
+
+      // This fires after the blob has been read/loaded.
+      reader.addEventListener('loadend', e => {
+        resolve(reader.result as string);
+      });
+
+      reader.readAsText(blob);
+    });
+  }
 });

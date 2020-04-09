@@ -26,6 +26,10 @@
     "language": {
       "fr": "Français",
       "en": "Anglais"
+    },
+    "document-type": {
+      "INVOICE": "Facture",
+      "OTHER": "Autre"
     }
   },
   "navbar": {
@@ -110,6 +114,12 @@
       "edit": "Éditer",
       "cancel": "Annuler la commande",
       "cancel-confirmation": "Voulez-vous vraiment annuler cette commande\u00a0?",
+      "documents": "Documents",
+      "no-document": "Aucun document",
+      "delete-document": "Supprimer ce document",
+      "delete-document-confirmation": "Voulez-vous vraiment supprimer définitivement ce document\u00a0? Cette opération est irréversible\u00a0!",
+      "add-document": "Ajouter un document",
+      "add-document-title": "Ajouter un document",
       "all-orders": "Toutes les commandes"
     },
     "edit-order": {
@@ -121,6 +131,17 @@
       "quantity-error-label": "La quantité",
       "delete-accession": "Enlever cette accession de la commande",
       "add-accession": "Ajouter une accession à la commande",
+      "save": "Enregistrer",
+      "cancel": "Annuler"
+    },
+    "edit-document": {
+      "type": "Type de document",
+      "type-error-label": "Le type de document",
+      "description": "Description",
+      "description-error-label": "La description",
+      "file": "Fichier",
+      "file-placeholder": "Choisissez ou déposez un fichier",
+      "file-error-label": "Le fichier",
       "save": "Enregistrer",
       "cancel": "Annuler"
     }

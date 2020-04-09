@@ -72,10 +72,12 @@ CREATE SEQUENCE accession_order_item_seq START WITH 1001 INCREMENT 50;
 CREATE SEQUENCE accession_order_seq START WITH 1001 INCREMENT 50;
 
 CREATE TABLE document (
-    id               BIGINT PRIMARY KEY,
-    type             VARCHAR NOT NULL,
-    description      VARCHAR,
-    creation_instant TIMESTAMPTZ
+    id                 BIGINT PRIMARY KEY,
+    type               VARCHAR NOT NULL,
+    description        VARCHAR,
+    creation_instant   TIMESTAMPTZ,
+    content_type       VARCHAR NOT NULL,
+    original_file_name VARCHAR NOT NULL
 );
 
 CREATE SEQUENCE document_seq START WITH 1001 INCREMENT 50;

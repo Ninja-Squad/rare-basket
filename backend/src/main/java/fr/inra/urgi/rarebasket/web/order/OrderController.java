@@ -1,9 +1,11 @@
 package fr.inra.urgi.rarebasket.web.order;
 
+import java.io.IOException;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 import fr.inra.urgi.rarebasket.dao.OrderDao;
+import fr.inra.urgi.rarebasket.domain.Document;
 import fr.inra.urgi.rarebasket.domain.Order;
 import fr.inra.urgi.rarebasket.domain.OrderItem;
 import fr.inra.urgi.rarebasket.domain.OrderStatus;
@@ -11,6 +13,7 @@ import fr.inra.urgi.rarebasket.domain.Permission;
 import fr.inra.urgi.rarebasket.exception.BadRequestException;
 import fr.inra.urgi.rarebasket.exception.ForbiddenException;
 import fr.inra.urgi.rarebasket.exception.NotFoundException;
+import fr.inra.urgi.rarebasket.service.storage.DocumentStorage;
 import fr.inra.urgi.rarebasket.service.user.CurrentUser;
 import fr.inra.urgi.rarebasket.web.common.PageDTO;
 import org.springframework.data.domain.Page;
@@ -21,12 +24,15 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 /**
  * Controller used to handle orders. This controller is used by accession holder users.
@@ -41,10 +47,12 @@ public class OrderController {
 
     private final OrderDao orderDao;
     private final CurrentUser currentUser;
+    private final DocumentStorage documentStorage;
 
-    public OrderController(OrderDao orderDao, CurrentUser currentUser) {
+    public OrderController(OrderDao orderDao, CurrentUser currentUser, DocumentStorage documentStorage) {
         this.orderDao = orderDao;
         this.currentUser = currentUser;
+        this.documentStorage = documentStorage;
     }
 
     @GetMapping
@@ -56,18 +64,19 @@ public class OrderController {
         Page<Order> orderPage;
         if (statuses == null || statuses.isEmpty()) {
             orderPage = orderDao.pageByAccessionHolder(getAccessionHolderId(), pageRequest);
-        } else {
+        }
+        else {
             orderPage = orderDao.pageByAccessionHolderAndStatuses(getAccessionHolderId(), statuses, pageRequest);
         }
         return PageDTO.fromPage(orderPage, OrderDTO::new);
     }
 
     @GetMapping("/{orderId}")
-    public OrderDTO get(@PathVariable("orderId") Long orderId) {
+    public DetailedOrderDTO get(@PathVariable("orderId") Long orderId) {
         currentUser.checkPermission(Permission.ORDER_MANAGEMENT);
         Order order = getOrderAndCheckAccessible(orderId);
 
-        return new OrderDTO(order);
+        return new DetailedOrderDTO(order);
     }
 
     @PutMapping("/{orderId}")
@@ -75,10 +84,7 @@ public class OrderController {
     public void update(@PathVariable("orderId") Long orderId,
                        @Validated @RequestBody OrderCommandDTO command) {
         currentUser.checkPermission(Permission.ORDER_MANAGEMENT);
-        Order order = getOrderAndCheckAccessible(orderId);
-        if (order.getStatus() != OrderStatus.DRAFT) {
-            throw new BadRequestException("Only draft orders can be updated");
-        }
+        Order order = getOrderAndCheckAccessibleAndDraft(orderId);
 
         Set<OrderItem> items = command.getItems()
                                       .stream()
@@ -93,12 +99,49 @@ public class OrderController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void cancel(@PathVariable("orderId") Long orderId) {
         currentUser.checkPermission(Permission.ORDER_MANAGEMENT);
-        Order order = getOrderAndCheckAccessible(orderId);
-        if (order.getStatus() != OrderStatus.DRAFT) {
-            throw new BadRequestException("Only draft orders can be cancelled");
-        }
+        Order order = getOrderAndCheckAccessibleAndDraft(orderId);
 
         order.setStatus(OrderStatus.CANCELLED);
+    }
+
+    @PostMapping("/{orderId}/documents")
+    @ResponseStatus(HttpStatus.CREATED)
+    public DocumentDTO create(@PathVariable("orderId") Long orderId,
+                              @RequestPart("file") MultipartFile file,
+                              @RequestPart("document") @Validated DocumentCommandDTO command) throws IOException {
+        currentUser.checkPermission(Permission.ORDER_MANAGEMENT);
+        Order order = getOrderAndCheckAccessibleAndDraft(orderId);
+
+        Document document = new Document();
+        document.setDescription(command.getDescription());
+        document.setType(command.getType());
+        document.setOriginalFileName(file.getOriginalFilename());
+        document.setContentType(file.getContentType());
+
+        order.addDocument(document);
+
+        // to generate the document ID
+        orderDao.flush();
+
+        documentStorage.storeDocument(document.getId(), document.getOriginalFileName(), file.getInputStream());
+        return new DocumentDTO(document);
+    }
+
+    @DeleteMapping("/{orderId}/documents/{documentId}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteDocument(@PathVariable("orderId") Long orderId,
+                               @PathVariable("documentId") Long documentId) throws IOException {
+        currentUser.checkPermission(Permission.ORDER_MANAGEMENT);
+        Order order = getOrderAndCheckAccessibleAndDraft(orderId);
+
+        Document document = order.getDocuments()
+                                 .stream()
+                                 .filter(doc -> doc.getId().equals(documentId))
+                                 .findAny()
+                                 .orElseThrow(NotFoundException::new);
+
+        documentStorage.delete(document.getId(), document.getOriginalFileName());
+        order.removeDocument(document);
     }
 
     private Order getOrderAndCheckAccessible(@PathVariable("orderId") Long orderId) {
@@ -109,7 +152,16 @@ public class OrderController {
         return order;
     }
 
+    private Order getOrderAndCheckAccessibleAndDraft(@PathVariable("orderId") Long orderId) {
+        Order order = getOrderAndCheckAccessible(orderId);
+        if (order.getStatus() != OrderStatus.DRAFT) {
+            throw new BadRequestException("This operation cannot be done on a nn-DRAFT order");
+        }
+        return order;
+    }
+
     private Long getAccessionHolderId() {
-        return currentUser.getAccessionHolderId().orElseThrow(() -> new IllegalStateException("Current user should have an accession holder"));
+        return currentUser.getAccessionHolderId()
+                          .orElseThrow(() -> new IllegalStateException("Current user should have an accession holder"));
     }
 }

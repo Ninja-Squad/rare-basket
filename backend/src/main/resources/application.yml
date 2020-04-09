@@ -4,6 +4,8 @@ rare-basket:
   mail:
     from: noreply@rare-basket.fr
     base-url: http://localhost:4201
+  document-storage:
+    path: /tmp/rare-basket-storage
 
 server:
   compression:

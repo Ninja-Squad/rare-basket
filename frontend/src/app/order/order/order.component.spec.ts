@@ -1,13 +1,13 @@
 import { TestBed } from '@angular/core/testing';
 
 import { OrderComponent } from './order.component';
-import { ComponentTester, fakeRoute, fakeSnapshot, speculoosMatchers } from 'ngx-speculoos';
+import { ComponentTester, fakeRoute, fakeSnapshot, speculoosMatchers, TestButton } from 'ngx-speculoos';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { RouterTestingModule } from '@angular/router/testing';
 import { ActivatedRoute } from '@angular/router';
 import { OrderService } from '../order.service';
-import { EMPTY, of } from 'rxjs';
-import { Order, OrderCommand } from '../order.model';
+import { EMPTY, of, Subject } from 'rxjs';
+import { DetailedOrder, Document, DocumentCommand, OrderCommand } from '../order.model';
 import { LOCALE_ID } from '@angular/core';
 import { SharedModule } from '../../shared/shared.module';
 import { I18nTestingModule } from '../../i18n/i18n-testing.module.spec';
@@ -18,6 +18,10 @@ import { ValdemortModule } from 'ngx-valdemort';
 import { ReactiveFormsModule } from '@angular/forms';
 import { ConfirmationService } from '../../shared/confirmation.service';
 import { OrderStatusEnumPipe } from '../order-status-enum.pipe';
+import { DocumentTypeEnumPipe } from '../document-type-enum.pipe';
+import { EditDocumentComponent } from '../edit-document/edit-document.component';
+import { HttpEvent, HttpEventType, HttpProgressEvent, HttpResponse } from '@angular/common/http';
+import { RbNgbModule } from '../../rb-ngb/rb-ngb.module';
 
 class OrderComponentTester extends ComponentTester<OrderComponent> {
   constructor() {
@@ -43,6 +47,22 @@ class OrderComponentTester extends ComponentTester<OrderComponent> {
   get cancelOrderButton() {
     return this.button('#cancel-order-button');
   }
+
+  get documents() {
+    return this.elements('.document');
+  }
+
+  get deleteDocumentButtons() {
+    return this.elements('.delete-document-button') as Array<TestButton>;
+  }
+
+  get addDocumentButton() {
+    return this.button('#add-document-button');
+  }
+
+  get editDocumentComponent(): EditDocumentComponent | null {
+    return this.debugElement.query(By.directive(EditDocumentComponent))?.componentInstance ?? null;
+  }
 }
 
 describe('OrderComponent', () => {
@@ -50,7 +70,7 @@ describe('OrderComponent', () => {
   let orderService: jasmine.SpyObj<OrderService>;
   let confirmationService: jasmine.SpyObj<ConfirmationService>;
 
-  let order: Order;
+  let order: DetailedOrder;
 
   beforeEach(() => {
     const route = fakeRoute({
@@ -59,12 +79,19 @@ describe('OrderComponent', () => {
       })
     });
 
-    orderService = jasmine.createSpyObj<OrderService>('OrderService', ['get', 'update', 'cancel']);
+    orderService = jasmine.createSpyObj<OrderService>('OrderService', ['get', 'update', 'cancel', 'deleteDocument', 'addDocument']);
     confirmationService = jasmine.createSpyObj<ConfirmationService>('ConfirmationService', ['confirm']);
 
     TestBed.configureTestingModule({
-      declarations: [OrderComponent, LanguageEnumPipe, EditOrderComponent, OrderStatusEnumPipe],
-      imports: [I18nTestingModule, FontAwesomeModule, RouterTestingModule, SharedModule, ReactiveFormsModule, ValdemortModule],
+      declarations: [
+        OrderComponent,
+        LanguageEnumPipe,
+        EditOrderComponent,
+        OrderStatusEnumPipe,
+        DocumentTypeEnumPipe,
+        EditDocumentComponent
+      ],
+      imports: [I18nTestingModule, FontAwesomeModule, RouterTestingModule, SharedModule, ReactiveFormsModule, ValdemortModule, RbNgbModule],
       providers: [
         { provide: ActivatedRoute, useValue: route },
         { provide: OrderService, useValue: orderService },
@@ -107,6 +134,16 @@ describe('OrderComponent', () => {
             identifier: 'violetta1'
           },
           quantity: 5
+        }
+      ],
+      documents: [
+        {
+          id: 543,
+          type: 'OTHER',
+          description: 'first email',
+          creationInstant: '2020-04-10T09:00:00Z',
+          originalFileName: 'mail.txt',
+          contentType: 'text/plain'
         }
       ]
     };
@@ -202,15 +239,6 @@ describe('OrderComponent', () => {
     expect(tester.editOrderComponent).toBeNull();
   });
 
-  it('should have a disabled cancel button when editing the order', () => {
-    orderService.get.and.returnValue(of(order));
-    tester.detectChanges();
-
-    expect(tester.cancelOrderButton.disabled).toBe(false);
-    tester.editOrderButton.click();
-    expect(tester.cancelOrderButton.disabled).toBe(true);
-  });
-
   it('should not have a cancel order button when status is not DRAFT', () => {
     order.status = 'CANCELLED';
     orderService.get.and.returnValue(of(order));
@@ -221,7 +249,7 @@ describe('OrderComponent', () => {
 
   it('should cancel order after confirmation', () => {
     confirmationService.confirm.and.returnValue(of(undefined));
-    const newOrder: Order = { ...order, status: 'CANCELLED' };
+    const newOrder: DetailedOrder = { ...order, status: 'CANCELLED' };
 
     orderService.cancel.and.returnValue(of(undefined));
     orderService.get.and.returnValues(of(order), of(newOrder));
@@ -232,5 +260,138 @@ describe('OrderComponent', () => {
     expect(confirmationService.confirm).toHaveBeenCalled();
     expect(orderService.cancel).toHaveBeenCalledWith(tester.componentInstance.order.id);
     expect(tester.componentInstance.order).toBe(newOrder);
+  });
+
+  it('should display documents', () => {
+    orderService.get.and.returnValue(of(order));
+    tester.detectChanges();
+
+    expect(tester.documents.length).toBe(1);
+    expect(tester.documents[0]).toContainText('mail.txt');
+    expect(tester.documents[0]).toContainText('Autre');
+    expect(tester.documents[0]).toContainText('first email');
+    expect(tester.deleteDocumentButtons.length).toBe(1);
+
+    expect(tester.addDocumentButton).not.toBeNull();
+    expect(tester.editDocumentComponent).toBeNull();
+    expect(tester.deleteDocumentButtons[0].disabled).toBe(false);
+    expect(tester.addDocumentButton.disabled).toBe(false);
+
+    expect(tester.testElement).not.toContainText('Aucun document');
+  });
+
+  it('should not display document delete buttons and add button if not DRAFT', () => {
+    order.status = 'FINALIZED';
+    orderService.get.and.returnValue(of(order));
+    tester.detectChanges();
+
+    expect(tester.deleteDocumentButtons.length).toBe(0);
+    expect(tester.addDocumentButton).toBeNull();
+  });
+
+  it('should disable buttons when editing', () => {
+    orderService.get.and.returnValue(of(order));
+    tester.detectChanges();
+
+    tester.editOrderButton.click();
+
+    expect(tester.cancelOrderButton.disabled).toBe(true);
+    expect(tester.deleteDocumentButtons[0].disabled).toBe(true);
+    expect(tester.addDocumentButton.disabled).toBe(true);
+  });
+
+  it('should disable buttons when adding document', () => {
+    orderService.get.and.returnValue(of(order));
+    tester.detectChanges();
+
+    tester.addDocumentButton.click();
+
+    expect(tester.editOrderButton.disabled).toBe(true);
+    expect(tester.cancelOrderButton.disabled).toBe(true);
+    expect(tester.deleteDocumentButtons[0].disabled).toBe(true);
+  });
+
+  it('should delete document after confirmation', () => {
+    confirmationService.confirm.and.returnValue(of(undefined));
+    const newOrder: DetailedOrder = { ...order, documents: [] };
+
+    orderService.deleteDocument.and.returnValue(of(undefined));
+    orderService.get.and.returnValues(of(order), of(newOrder));
+    tester.detectChanges();
+
+    tester.deleteDocumentButtons[0].click();
+
+    expect(confirmationService.confirm).toHaveBeenCalled();
+    expect(orderService.deleteDocument).toHaveBeenCalledWith(tester.componentInstance.order.id, 543);
+    expect(tester.componentInstance.order).toBe(newOrder);
+    expect(tester.testElement).toContainText('Aucun document');
+  });
+
+  it('should add document', () => {
+    orderService.get.and.returnValue(of(order));
+    tester.detectChanges();
+
+    tester.addDocumentButton.click();
+
+    expect(tester.addDocumentButton).toBeNull();
+    expect(tester.editDocumentComponent).not.toBeNull();
+    expect(tester.editDocumentComponent.uploadProgress).toBeNull();
+  });
+
+  it('should cancel document addition', () => {
+    orderService.get.and.returnValue(of(order));
+    tester.detectChanges();
+
+    tester.addDocumentButton.click();
+
+    tester.editDocumentComponent.cancel();
+    tester.detectChanges();
+
+    expect(tester.addDocumentButton).not.toBeNull();
+    expect(tester.editDocumentComponent).toBeNull();
+  });
+
+  it('should create new document and refresh', () => {
+    const newOrder = { ...order, documents: [order.documents[0], { ...order.documents[0], id: 765 }] };
+    orderService.get.and.returnValues(of(order), of(newOrder));
+    tester.detectChanges();
+
+    tester.addDocumentButton.click();
+
+    const progressSubject = new Subject<HttpEvent<Document>>();
+    orderService.addDocument.and.returnValue(progressSubject.asObservable());
+    const command = {} as DocumentCommand;
+    tester.editDocumentComponent.saved.emit(command);
+    tester.detectChanges();
+
+    expect(orderService.addDocument).toHaveBeenCalledWith(order.id, command);
+
+    const event1: HttpProgressEvent = {
+      loaded: 50,
+      total: 100,
+      type: HttpEventType.UploadProgress
+    };
+    const event2: HttpProgressEvent = {
+      loaded: 100,
+      total: 100,
+      type: HttpEventType.UploadProgress
+    };
+    const event3 = new HttpResponse<Document>();
+
+    progressSubject.next(event1);
+    tester.detectChanges();
+    expect(tester.editDocumentComponent.uploadProgress).toBe(0.5);
+
+    progressSubject.next(event2);
+    tester.detectChanges();
+    expect(tester.editDocumentComponent.uploadProgress).toBe(1);
+
+    progressSubject.next(event3);
+    progressSubject.complete();
+    tester.detectChanges();
+
+    expect(tester.componentInstance.order).toBe(newOrder);
+    expect(tester.documents.length).toBe(2);
+    expect(tester.editDocumentComponent).toBeNull();
   });
 });

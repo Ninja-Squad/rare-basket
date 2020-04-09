@@ -37,7 +37,8 @@ public final class OrderDTO {
                   .stream()
                   .sorted(Comparator.comparing(OrderItem::getAccession))
                   .map(OrderItemDTO::new)
-                  .collect(Collectors.toList()));
+                  .collect(Collectors.toList())
+        );
     }
 
     public Long getId() {

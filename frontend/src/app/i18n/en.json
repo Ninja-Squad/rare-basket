@@ -26,6 +26,10 @@
     "language": {
       "fr": "French",
       "en": "English"
+    },
+    "document-type": {
+      "INVOICE": "Invoice",
+      "OTHER": "Other"
     }
   },
   "navbar": {
@@ -110,6 +114,12 @@
       "edit": "Edit",
       "cancel": "Cancel the order",
       "cancel-confirmation": "Do you really want to cancel this order?",
+      "documents": "Documents",
+      "no-document": "No document",
+      "delete-document": "Delete this document",
+      "delete-document-confirmation": "Do you really want to delete this document? This operation is irreversible!",
+      "add-document": "Add a document",
+      "add-document-title": "Add a document",
       "all-orders": "All the orders"
     },
     "edit-order": {
@@ -122,6 +132,17 @@
       "delete-accession": "Remove this accession from the order",
       "add-accession": "Add an accession to the order",
       "save": "Save",
+      "cancel": "Cancel"
+    },
+    "edit-document": {
+      "type": "Document type",
+      "type-error-label": "The document type",
+      "description": "Description",
+      "description-error-label": "The description",
+      "file": "File",
+      "file-placeholder": "Choose or drop a file",
+      "file-error-label": "The file",
+      "save": "Upload",
       "cancel": "Cancel"
     }
   }

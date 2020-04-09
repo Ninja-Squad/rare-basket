@@ -73,8 +73,9 @@ class OrderDaoTest extends BaseDaoTest {
         assertThat(result.getTotalElements()).isEqualTo(3);
         assertThat(result.getContent()).extracting(Order::getId).containsExactly(3L, 2L);
 
+        pageRequest = PageRequest.of(1, 20);
         result = dao.pageByAccessionHolder(98765L, pageRequest);
-        assertThat(result).isEmpty();
+        assertThat(result.getTotalElements()).isEqualTo(0);
     }
 
     @Test
@@ -89,7 +90,8 @@ class OrderDaoTest extends BaseDaoTest {
         assertThat(result.getTotalElements()).isEqualTo(1);
         assertThat(result.getContent()).extracting(Order::getId).containsExactly(3L);
 
+        pageRequest = PageRequest.of(1, 20);
         result = dao.pageByAccessionHolderAndStatuses(98765L, EnumSet.of(OrderStatus.DRAFT), pageRequest);
-        assertThat(result).isEmpty();
+        assertThat(result.getTotalElements()).isEqualTo(0);
     }
 }

@@ -1,20 +1,24 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { OrderService } from '../order.service';
-import { Order, OrderCommand } from '../order.model';
+import { DetailedOrder, Document, DocumentCommand, OrderCommand } from '../order.model';
 import {
   faAddressCard,
   faAt,
   faChevronLeft,
   faCommentDots,
   faEdit,
+  faFile,
   faHome,
   faMicrophone,
+  faPlus,
+  faTrash,
   faUser,
   faWindowClose
 } from '@fortawesome/free-solid-svg-icons';
-import { switchMap } from 'rxjs/operators';
+import { filter, finalize, switchMap, tap } from 'rxjs/operators';
 import { ConfirmationService } from '../../shared/confirmation.service';
+import { HttpEventType } from '@angular/common/http';
 
 /**
  * Component displaying the details of an order to a GRC user
@@ -25,7 +29,7 @@ import { ConfirmationService } from '../../shared/confirmation.service';
   styleUrls: ['./order.component.scss']
 })
 export class OrderComponent implements OnInit {
-  order: Order;
+  order: DetailedOrder;
 
   nameIcon = faUser;
   emailIcon = faAt;
@@ -36,8 +40,13 @@ export class OrderComponent implements OnInit {
   editIcon = faEdit;
   cancelOrderIcon = faWindowClose;
   allOrdersIcon = faChevronLeft;
+  documentIcon = faFile;
+  addDocumentIcon = faPlus;
+  deleteDocumentIcon = faTrash;
 
-  edited = false;
+  editing = false;
+  addingDocument = false;
+  uploadProgress: number | null = null;
 
   constructor(private route: ActivatedRoute, private orderService: OrderService, private confirmationService: ConfirmationService) {}
 
@@ -47,11 +56,7 @@ export class OrderComponent implements OnInit {
   }
 
   edit() {
-    this.edited = true;
-  }
-
-  editCancelled() {
-    this.edited = false;
+    this.editing = true;
   }
 
   saved(command: OrderCommand) {
@@ -59,7 +64,7 @@ export class OrderComponent implements OnInit {
       .update(this.order.id, command)
       .pipe(switchMap(() => this.orderService.get(this.order.id)))
       .subscribe(order => {
-        this.edited = false;
+        this.editing = false;
         this.order = order;
       });
   }
@@ -74,5 +79,40 @@ export class OrderComponent implements OnInit {
         switchMap(() => this.orderService.get(this.order.id))
       )
       .subscribe(order => (this.order = order));
+  }
+
+  createDocument(command: DocumentCommand) {
+    this.orderService
+      .addDocument(this.order.id, command)
+      .pipe(
+        finalize(() => (this.uploadProgress = null)),
+        tap(progressEvent => {
+          if (progressEvent.type === HttpEventType.UploadProgress) {
+            this.uploadProgress = progressEvent.loaded / progressEvent.total;
+          }
+        }),
+        filter(progressEvent => progressEvent.type === HttpEventType.Response),
+        finalize(() => (this.addingDocument = false)),
+        switchMap(() => this.orderService.get(this.order.id))
+      )
+      .subscribe(order => {
+        this.order = order;
+      });
+  }
+
+  deleteDocument(document: Document) {
+    this.confirmationService
+      .confirm({
+        messageKey: 'order.order.delete-document-confirmation'
+      })
+      .pipe(
+        switchMap(() => this.orderService.deleteDocument(this.order.id, document.id)),
+        switchMap(() => this.orderService.get(this.order.id))
+      )
+      .subscribe(order => (this.order = order));
+  }
+
+  get operationInProgress() {
+    return this.editing || this.addingDocument;
   }
 }

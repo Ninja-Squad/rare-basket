@@ -77,7 +77,7 @@ public class Order {
     /**
      * The documents associated to this order (emails, invoice, etc.)
      */
-    @OneToMany
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinTable(
         name = "accession_order_document",
         joinColumns = @JoinColumn(name = "order_id"),

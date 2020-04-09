@@ -16,6 +16,8 @@ import { LanguageEnumPipe } from './language-enum.pipe';
 import { EditOrderComponent } from './edit-order/edit-order.component';
 import { ReactiveFormsModule } from '@angular/forms';
 import { ValdemortModule } from 'ngx-valdemort';
+import { EditDocumentComponent } from './edit-document/edit-document.component';
+import { DocumentTypeEnumPipe } from './document-type-enum.pipe';
 
 @NgModule({
   declarations: [
@@ -26,7 +28,9 @@ import { ValdemortModule } from 'ngx-valdemort';
     OrdersComponent,
     OrderStatusEnumPipe,
     LanguageEnumPipe,
-    EditOrderComponent
+    EditOrderComponent,
+    EditDocumentComponent,
+    DocumentTypeEnumPipe
   ],
   imports: [
     CommonModule,

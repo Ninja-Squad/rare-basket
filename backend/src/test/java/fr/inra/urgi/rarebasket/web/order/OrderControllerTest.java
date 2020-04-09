@@ -2,8 +2,7 @@ package fr.inra.urgi.rarebasket.web.order;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.tuple;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -21,11 +20,14 @@ import fr.inra.urgi.rarebasket.domain.AccessionHolder;
 import fr.inra.urgi.rarebasket.domain.Basket;
 import fr.inra.urgi.rarebasket.domain.Customer;
 import fr.inra.urgi.rarebasket.domain.CustomerType;
+import fr.inra.urgi.rarebasket.domain.Document;
+import fr.inra.urgi.rarebasket.domain.DocumentType;
 import fr.inra.urgi.rarebasket.domain.Order;
 import fr.inra.urgi.rarebasket.domain.OrderItem;
 import fr.inra.urgi.rarebasket.domain.OrderStatus;
 import fr.inra.urgi.rarebasket.domain.Permission;
 import fr.inra.urgi.rarebasket.domain.SupportedLanguage;
+import fr.inra.urgi.rarebasket.service.storage.DocumentStorage;
 import fr.inra.urgi.rarebasket.service.user.CurrentUser;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -36,6 +38,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
@@ -54,6 +57,9 @@ class OrderControllerTest {
     @MockBean
     private CurrentUser mockCurrentUser;
 
+    @MockBean
+    private DocumentStorage mockDocumentStorage;
+
     @Autowired
     private MockMvc mockMvc;
 
@@ -61,6 +67,7 @@ class OrderControllerTest {
     private ObjectMapper objectMapper;
 
     private Order order;
+    private Document document;
     private final Long accessionHolderId = 65L;
 
     @BeforeEach
@@ -79,6 +86,13 @@ class OrderControllerTest {
         order.addItem(new OrderItem(421L, new Accession("rosa", "rosa1"), 10));
         order.addItem(new OrderItem(422L, new Accession("violetta", "violetta1"), null));
         order.setAccessionHolder(new AccessionHolder(accessionHolderId));
+
+        document = new Document(54L);
+        document.setType(DocumentType.INVOICE);
+        document.setContentType(MediaType.APPLICATION_PDF_VALUE);
+        document.setOriginalFileName("invoice54.pdf");
+        document.setDescription("desc");
+        order.addDocument(document);
 
         when(mockCurrentUser.getAccessionHolderId()).thenReturn(Optional.of(accessionHolderId));
         when(mockOrderDao.findById(order.getId())).thenReturn(Optional.of(order));
@@ -155,8 +169,14 @@ class OrderControllerTest {
     void shouldGet() throws Exception {
         mockMvc.perform(get("/api/orders/{id}", order.getId()))
                .andExpect(status().isOk())
-               .andExpect(jsonPath("$.id").value(order.getId()));
-
+               .andExpect(jsonPath("$.id").value(order.getId()))
+               .andExpect(jsonPath("$.documents.length()").value(1))
+               .andExpect(jsonPath("$.documents[0].id").value(document.getId()))
+               .andExpect(jsonPath("$.documents[0].type").value(document.getType().name()))
+               .andExpect(jsonPath("$.documents[0].description").value(document.getDescription()))
+               .andExpect(jsonPath("$.documents[0].contentType").value(document.getContentType()))
+               .andExpect(jsonPath("$.documents[0].originalFileName").value(document.getOriginalFileName()))
+               .andExpect(jsonPath("$.documents[0].creationInstant").value(document.getCreationInstant().toString()));
         verify(mockCurrentUser).checkPermission(Permission.ORDER_MANAGEMENT);
     }
 
@@ -173,6 +193,7 @@ class OrderControllerTest {
 
         assertThat(order.getItems()).extracting(OrderItem::getAccession, OrderItem::getQuantity, OrderItem::getOrder)
                                     .containsOnly(tuple(newItem.getAccession(), newItem.getQuantity(), order));
+        verify(mockCurrentUser).checkPermission(Permission.ORDER_MANAGEMENT);
     }
 
     @Test
@@ -193,6 +214,7 @@ class OrderControllerTest {
                .andExpect(status().isNoContent());
 
         assertThat(order.getStatus()).isEqualTo(OrderStatus.CANCELLED);
+        verify(mockCurrentUser).checkPermission(Permission.ORDER_MANAGEMENT);
     }
 
     @Test
@@ -200,5 +222,78 @@ class OrderControllerTest {
         order.setStatus(OrderStatus.FINALIZED);
         mockMvc.perform(delete("/api/orders/{id}", order.getId()))
                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void shouldAddDocument() throws Exception {
+        DocumentCommandDTO command = new DocumentCommandDTO(DocumentType.INVOICE, "desc");
+
+        doAnswer(invocation -> {
+            order.getDocuments()
+                 .stream()
+                 .filter(document -> document.getId() == null)
+                 .forEach(document -> document.setId(321L));
+            return null;
+        }).when(mockOrderDao).flush();
+
+        mockMvc.perform(multipart("/api/orders/{orderId}/documents", order.getId())
+                            .file(new MockMultipartFile("file",
+                                                        "foo.txt",
+                                                        MediaType.TEXT_PLAIN_VALUE,
+                                                        "hello".getBytes()))
+                            .file(new MockMultipartFile("document",
+                                                        null,
+                                                        MediaType.APPLICATION_JSON_VALUE,
+                                                        objectMapper.writeValueAsBytes(command))))
+               .andExpect(status().isCreated())
+               .andExpect(jsonPath("$.id").value(321L))
+               .andExpect(jsonPath("$.type").value(command.getType().name()))
+               .andExpect(jsonPath("$.description").value(command.getDescription()))
+               .andExpect(jsonPath("$.contentType").value(MediaType.TEXT_PLAIN_VALUE))
+               .andExpect(jsonPath("$.originalFileName").value("foo.txt"))
+               .andExpect(jsonPath("$.creationInstant").isString());
+
+        assertThat(order.getDocuments()).hasSize(2);
+        verify(mockCurrentUser).checkPermission(Permission.ORDER_MANAGEMENT);
+    }
+
+    @Test
+    void shouldThrowWhenAddingDocumentToNonDraftOrder() throws Exception {
+        order.setStatus(OrderStatus.FINALIZED);
+        DocumentCommandDTO command = new DocumentCommandDTO(DocumentType.INVOICE, "desc");
+
+        mockMvc.perform(multipart("/api/orders/{orderId}/documents", order.getId())
+                            .file(new MockMultipartFile("file",
+                                                        "foo.txt",
+                                                        MediaType.TEXT_PLAIN_VALUE,
+                                                        "hello".getBytes()))
+                            .file(new MockMultipartFile("document",
+                                                        null,
+                                                        MediaType.APPLICATION_JSON_VALUE,
+                                                        objectMapper.writeValueAsBytes(command))))
+               .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void shouldDeleteDocument() throws Exception {
+        mockMvc.perform(delete("/api/orders/{id}/documents/{documentId}", order.getId(), document.getId()))
+               .andExpect(status().isNoContent());
+
+        assertThat(order.getDocuments()).isEmpty();
+        verify(mockDocumentStorage).delete(document.getId(), document.getOriginalFileName());
+        verify(mockCurrentUser).checkPermission(Permission.ORDER_MANAGEMENT);
+    }
+
+    @Test
+    void shouldThrowWhenDeletingDocumentOfNonDraftOrder() throws Exception {
+        order.setStatus(OrderStatus.FINALIZED);
+        mockMvc.perform(delete("/api/orders/{id}/documents/{documentId}", order.getId(), document.getId()))
+               .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void shouldThrowWhenDeletingUnexistingDocument() throws Exception {
+        mockMvc.perform(delete("/api/orders/{id}/documents/{documentId}", order.getId(), 98765L))
+               .andExpect(status().isNotFound());
     }
 }

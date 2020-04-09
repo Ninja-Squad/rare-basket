@@ -11,7 +11,7 @@
     </div>
   </h1>
 
-  <div class="border rounded bg-light p-5 mb-2">
+  <div class="border rounded bg-light p-2 p-md-5 mb-2">
     <p
       class="text-muted"
       translate="order.order.creation-date"
@@ -47,7 +47,7 @@
       </div>
       <div class="col-md">
         <h2 translate="order.order.ordered-accessions"></h2>
-        <div *ngIf="!edited">
+        <div *ngIf="!editing">
           <table class="table table-sm">
             <thead class="thead-light">
               <tr>
@@ -63,20 +63,84 @@
             </tbody>
           </table>
           <div *ngIf="order.status === 'DRAFT'" class="text-right">
-            <button type="button" class="btn btn-sm btn-outline-primary" id="edit-order-button" (click)="edit()">
+            <button
+              type="button"
+              class="btn btn-sm btn-outline-primary"
+              id="edit-order-button"
+              [disabled]="addingDocument"
+              (click)="edit()"
+            >
               <fa-icon [icon]="editIcon" class="mr-1"></fa-icon>
               <span translate="order.order.edit"></span>
             </button>
           </div>
         </div>
-        <rb-edit-order *ngIf="edited" [order]="order" (saved)="saved($event)" (cancelled)="editCancelled()"></rb-edit-order>
+        <rb-edit-order *ngIf="editing" [order]="order" (saved)="saved($event)" (cancelled)="editing = false"></rb-edit-order>
       </div>
+    </div>
+
+    <hr />
+
+    <h2 translate="order.order.documents"></h2>
+
+    <div *ngIf="order.documents.length == 0" class="text-muted my-2" translate="order.order.no-document"></div>
+
+    <div *ngFor="let document of order.documents" class="my-2 document">
+      <div class="d-flex">
+        <div><fa-icon [icon]="documentIcon" class="mr-2"></fa-icon></div>
+        <div class="flex-grow-1 row">
+          <div class="col-md-7 col-lg-8">
+            <div class="file-name">{{ document.originalFileName }}</div>
+            <small class="text-muted">{{ document.creationInstant | date: 'medium' }}</small>
+          </div>
+          <div class="col-md-5 col-lg-4">
+            <div>
+              <span class="badge badge-secondary">{{ document.type | documentTypeEnum }}</span>
+            </div>
+            <small class="text-muted">{{ document.description }}</small>
+          </div>
+        </div>
+        <div *ngIf="order.status === 'DRAFT'" class="ml-2">
+          <button
+            type="button"
+            class="btn btn-sm btn-outline-danger delete-document-button"
+            [disabled]="operationInProgress"
+            (click)="deleteDocument(document)"
+          >
+            <fa-icon [icon]="deleteDocumentIcon"></fa-icon>
+            <span class="sr-only" translate="order.order.delete-document"></span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div>
+      <button
+        *ngIf="order.status === 'DRAFT' && !addingDocument"
+        (click)="addingDocument = true"
+        type="button"
+        class="btn btn-sm btn-outline-primary"
+        [disabled]="operationInProgress"
+        id="add-document-button"
+      >
+        <fa-icon [icon]="addDocumentIcon" class="mr-1"></fa-icon>
+        <span translate="order.order.add-document"></span>
+      </button>
+    </div>
+
+    <div *ngIf="addingDocument" class="border rounded p-3">
+      <h3 translate="order.order.add-document-title"></h3>
+      <rb-edit-document
+        (saved)="createDocument($event)"
+        (cancelled)="addingDocument = false"
+        [uploadProgress]="uploadProgress"
+      ></rb-edit-document>
     </div>
 
     <div *ngIf="order.status === 'DRAFT'">
       <hr />
 
-      <button (click)="cancelOrder()" [disabled]="edited" type="button" class="btn btn-danger" id="cancel-order-button">
+      <button (click)="cancelOrder()" [disabled]="operationInProgress" type="button" class="btn btn-danger" id="cancel-order-button">
         <fa-icon [icon]="cancelOrderIcon" class="mr-1"></fa-icon>
         <span translate="order.order.cancel"></span>
       </button>

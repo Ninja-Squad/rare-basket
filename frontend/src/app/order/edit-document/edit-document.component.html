@@ -1,0 +1,79 @@
+<form [formGroup]="form" (ngSubmit)="save()" #formDirective="ngForm">
+  <div class="form-row">
+    <div class="col-md-6">
+      <div class="form-group">
+        <label translate="order.edit-document.type"></label>
+        <select formControlName="type" class="form-control custom-select-sm" id="document-type">
+          <option [ngValue]="null"></option>
+          <option *ngFor="let documentType of documentTypes" [value]="documentType">{{ documentType | documentTypeEnum }}</option>
+        </select>
+        <val-errors controlName="type" [label]="'order.edit-document.type-error-label' | translate"></val-errors>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <div class="form-group">
+        <label translate="order.edit-document.description"></label>
+        <input formControlName="description" class="form-control form-control-sm" id="document-description" />
+        <val-errors controlName="description" [label]="'order.edit-document.description-error-label' | translate"></val-errors>
+      </div>
+    </div>
+  </div>
+  <div class="form-group">
+    <label translate="order.edit-document.file"></label>
+    <div
+      class="custom-file"
+      [lang]="locale"
+      (drop)="fileDropped($event); highlightFileInput = false"
+      (dragenter)="highlightFileInput = true"
+      (dragleave)="highlightFileInput = false"
+      (dragexit)="highlightFileInput = false"
+      (dragover)="$event.preventDefault()"
+    >
+      <input
+        #fileInput
+        type="file"
+        class="custom-file-input"
+        id="document-file"
+        (change)="fileChanged()"
+        [disabled]="uploadProgress !== null"
+      />
+      <label class="custom-file-label" for="document-file" [class.highlighted]="highlightFileInput" [class.placeholder]="!selectedFile">
+        {{ selectedFile?.name || ('order.edit-document.file-placeholder' | translate) }}
+      </label>
+    </div>
+    <div class="invalid-feedback" [class.d-none]="!formDirective.submitted">
+      <div
+        *ngIf="!selectedFile"
+        translate="common.errors.required"
+        [translateParams]="{ label: 'order.edit-document.file-error-label' | translate }"
+      ></div>
+    </div>
+
+    <div class="mt-2">
+      <ngb-progressbar
+        *ngIf="uploadProgress !== null"
+        [max]="1"
+        [value]="uploadProgress"
+        [animated]="uploadProgress === 1"
+        [striped]="uploadProgress === 1"
+        type="success"
+        [showValue]="false"
+      ></ngb-progressbar>
+    </div>
+  </div>
+
+  <div class="mt-2 text-right">
+    <button class="btn btn-sm btn-primary mr-2" [disabled]="uploadProgress !== null" id="document-save-button">
+      <fa-icon [icon]="saveIcon" class="mr-1"></fa-icon>
+      <span translate="order.edit-document.save"></span>
+    </button>
+    <button
+      (click)="cancel()"
+      type="button"
+      class="btn btn-sm btn-danger"
+      [disabled]="uploadProgress !== null"
+      translate="order.edit-document.cancel"
+      id="document-cancel-button"
+    ></button>
+  </div>
+</form>

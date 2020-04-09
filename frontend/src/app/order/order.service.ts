@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { Order, OrderCommand, OrderStatus } from './order.model';
+import { HttpClient, HttpEvent } from '@angular/common/http';
+import { DetailedOrder, Document, DocumentCommand, Order, OrderCommand, OrderStatus } from './order.model';
 import { Observable } from 'rxjs';
 import { Page } from '../shared/page.model';
 
@@ -10,8 +10,8 @@ import { Page } from '../shared/page.model';
 export class OrderService {
   constructor(private http: HttpClient) {}
 
-  get(orderId: number): Observable<Order> {
-    return this.http.get<Order>(`/api/orders/${orderId}`);
+  get(orderId: number): Observable<DetailedOrder> {
+    return this.http.get<DetailedOrder>(`/api/orders/${orderId}`);
   }
 
   listInProgress(page: number): Observable<Page<Order>> {
@@ -30,5 +30,20 @@ export class OrderService {
 
   cancel(orderId: number): Observable<void> {
     return this.http.delete<void>(`/api/orders/${orderId}`);
+  }
+
+  addDocument(orderId: number, command: DocumentCommand): Observable<HttpEvent<Document>> {
+    const formData = new FormData();
+    formData.append('file', command.file);
+    formData.append('document', new Blob([JSON.stringify(command.document)], { type: 'application/json' }));
+
+    return this.http.post<Document>(`/api/orders/${orderId}/documents`, formData, {
+      reportProgress: true,
+      observe: 'events'
+    });
+  }
+
+  deleteDocument(orderId: number, documentId: number): Observable<void> {
+    return this.http.delete<void>(`/api/orders/${orderId}/documents/${documentId}`);
   }
 }

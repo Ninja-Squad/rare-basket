@@ -8,6 +8,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.SequenceGenerator;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
 /**
@@ -29,8 +30,6 @@ public class Document {
     @Enumerated(EnumType.STRING)
     private DocumentType type;
 
-    // TODO the location can be set here, or can be deduced from its ID for example
-
     /**
      * The description of the document (which can be required, for example if the type is OTHER)
      */
@@ -40,7 +39,26 @@ public class Document {
      * The instant when the document was created, i.e. uploaded
      */
     @NotNull
-    private Instant creationInstant;
+    private Instant creationInstant = Instant.now();
+
+    /**
+     * The content type of the document
+     */
+    @NotBlank
+    private String contentType;
+
+    /**
+     * The original file name of the document
+     */
+    @NotBlank
+    private String originalFileName;
+
+    public Document() {
+    }
+
+    public Document(Long id) {
+        this.id = id;
+    }
 
     public Long getId() {
         return id;
@@ -72,5 +90,21 @@ public class Document {
 
     public void setCreationInstant(Instant creationInstant) {
         this.creationInstant = creationInstant;
+    }
+
+    public String getContentType() {
+        return contentType;
+    }
+
+    public void setContentType(String contentType) {
+        this.contentType = contentType;
+    }
+
+    public String getOriginalFileName() {
+        return originalFileName;
+    }
+
+    public void setOriginalFileName(String originalFileName) {
+        this.originalFileName = originalFileName;
     }
 }

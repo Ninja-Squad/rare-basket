@@ -16,16 +16,18 @@ import org.springframework.data.jpa.repository.Query;
 public interface OrderDao extends JpaRepository<Order, Long> {
 
     @Query(
-        value = "select o from Order o" +
+        value = "select distinct o from Order o" +
             " left join fetch o.basket b" +
+            " left join fetch o.items" +
             " where o.accessionHolder.id = ?1" +
             " order by b.confirmationInstant desc",
-        countQuery = "select count(o.id) from Order o")
+        countQuery = "select count(o.id) from Order o where o.accessionHolder.id = ?1")
     Page<Order> pageByAccessionHolder(Long accessionHolderid, Pageable page);
 
     @Query(
         value = "select o from Order o" +
             " left join fetch o.basket b" +
+            " left join fetch o.items" +
             " where o.accessionHolder.id = ?1" +
             " and o.status in ?2" +
             " order by b.confirmationInstant desc",

@@ -1,0 +1,9 @@
+@import '../../../common';
+
+.highlighted {
+  background-color: lighten($success, 30%);
+}
+
+.placeholder {
+  color: $input-placeholder-color;
+}

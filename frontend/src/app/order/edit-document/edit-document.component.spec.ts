@@ -1,0 +1,181 @@
+import { TestBed } from '@angular/core/testing';
+
+import { EditDocumentComponent } from './edit-document.component';
+import { Component } from '@angular/core';
+import { DocumentCommand } from '../order.model';
+import { ComponentTester, speculoosMatchers } from 'ngx-speculoos';
+import { NgbProgressbar } from '@ng-bootstrap/ng-bootstrap';
+import { By } from '@angular/platform-browser';
+import { DocumentTypeEnumPipe } from '../document-type-enum.pipe';
+import { I18nTestingModule } from '../../i18n/i18n-testing.module.spec';
+import { ReactiveFormsModule } from '@angular/forms';
+import { RbNgbModule } from '../../rb-ngb/rb-ngb.module';
+import { ValdemortModule } from 'ngx-valdemort';
+import { ValidationDefaultsComponent } from '../../validation-defaults/validation-defaults.component';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+
+@Component({
+  template: '<rb-edit-document [uploadProgress]="progress" (saved)="saved = $event" (cancelled)="cancelled = true"></rb-edit-document>'
+})
+class TestComponent {
+  progress: number | null = null;
+  cancelled = false;
+  saved: DocumentCommand = null;
+}
+
+class TestComponentTester extends ComponentTester<TestComponent> {
+  constructor() {
+    super(TestComponent);
+  }
+
+  get editDocumentDomponent(): EditDocumentComponent {
+    return this.debugElement.query(By.directive(EditDocumentComponent)).componentInstance;
+  }
+
+  get type() {
+    return this.select('#document-type');
+  }
+
+  get description() {
+    return this.input('#document-description');
+  }
+
+  get file() {
+    return this.input('#document-file');
+  }
+
+  get errors() {
+    return this.elements('.invalid-feedback div');
+  }
+
+  get saveButton() {
+    return this.button('#document-save-button');
+  }
+
+  get cancelButton() {
+    return this.button('#document-cancel-button');
+  }
+
+  get progressBar(): NgbProgressbar | null {
+    return this.debugElement.query(By.directive(NgbProgressbar))?.componentInstance ?? null;
+  }
+
+  get customFileInput() {
+    return this.element('.custom-file');
+  }
+}
+
+describe('EditDocumentComponent', () => {
+  let tester: TestComponentTester;
+
+  beforeEach(() => {
+    TestBed.configureTestingModule({
+      imports: [I18nTestingModule, FontAwesomeModule, ReactiveFormsModule, RbNgbModule, ValdemortModule],
+      declarations: [TestComponent, EditDocumentComponent, DocumentTypeEnumPipe, ValidationDefaultsComponent]
+    });
+
+    TestBed.createComponent(ValidationDefaultsComponent).detectChanges();
+
+    jasmine.addMatchers(speculoosMatchers);
+    tester = new TestComponentTester();
+    tester.detectChanges();
+  });
+
+  it('should display an empty form', () => {
+    expect(tester.type).toHaveSelectedLabel('');
+    expect(tester.description).toHaveValue('');
+
+    [tester.type, tester.description, tester.file, tester.saveButton, tester.cancelButton].forEach(e => expect(e.disabled).toBe(false));
+
+    expect(tester.progressBar).toBeNull();
+  });
+
+  it('should validate', () => {
+    tester.saveButton.click();
+
+    expect(tester.componentInstance.saved).toBeNull();
+    expect(tester.errors.length).toBe(2); // type, file
+
+    tester.type.selectLabel('Autre');
+    expect(tester.errors.length).toBe(2); // description, file
+
+    tester.type.selectLabel('Facture');
+    expect(tester.errors.length).toBe(1); // file
+  });
+
+  it('should disable everything and display progress bar when uploading', () => {
+    tester.componentInstance.progress = 0.1;
+    tester.detectChanges();
+
+    [tester.type, tester.description, tester.file, tester.saveButton].forEach(e => expect(e.disabled).toBe(true));
+
+    expect(tester.progressBar).not.toBeNull();
+    expect(tester.progressBar.getPercentValue()).toBe(10);
+    expect(tester.progressBar.animated).toBe(false);
+    expect(tester.progressBar.striped).toBe(false);
+
+    tester.componentInstance.progress = 1;
+    tester.detectChanges();
+
+    expect(tester.progressBar.getPercentValue()).toBe(100);
+    expect(tester.progressBar.animated).toBe(true);
+    expect(tester.progressBar.striped).toBe(true);
+
+    tester.componentInstance.progress = null;
+    tester.detectChanges();
+
+    [tester.type, tester.description, tester.file, tester.saveButton].forEach(e => expect(e.disabled).toBe(false));
+  });
+
+  it('should save', () => {
+    tester.type.selectLabel('Autre');
+    tester.description.fillWith('desc');
+
+    const selectedFile = {} as File;
+    spyOnProperty(tester.editDocumentDomponent, 'selectedFile', 'get').and.returnValue(selectedFile);
+
+    tester.saveButton.click();
+    const expectedCommand: DocumentCommand = {
+      file: selectedFile,
+      document: {
+        type: 'OTHER',
+        description: 'desc'
+      }
+    };
+    expect(tester.componentInstance.saved).toEqual(expectedCommand);
+  });
+
+  it('should cancel', () => {
+    tester.cancelButton.click();
+    expect(tester.componentInstance.cancelled).toBe(true);
+  });
+
+  it('should display label based on selected file', () => {
+    expect(tester.customFileInput).toContainText('Choisissez ou déposez un fichier');
+
+    const selectedFile = { name: 'foo.txt' } as File;
+    spyOnProperty(tester.editDocumentDomponent, 'selectedFile', 'get').and.returnValue(selectedFile);
+
+    tester.detectChanges();
+
+    expect(tester.customFileInput).toContainText('foo.txt');
+  });
+
+  it('should drag and drop file on input', () => {
+    const fileLabel = tester.customFileInput.element('label');
+
+    tester.customFileInput.dispatchEvent(new DragEvent('dragenter'));
+    expect(fileLabel).toHaveClass('highlighted');
+
+    tester.customFileInput.dispatchEvent(new DragEvent('dragexit'));
+    expect(fileLabel).not.toHaveClass('highlighted');
+
+    tester.customFileInput.dispatchEvent(new DragEvent('dragenter'));
+    expect(fileLabel).toHaveClass('highlighted');
+
+    tester.customFileInput.dispatchEvent(new DragEvent('dragleave'));
+    expect(fileLabel).not.toHaveClass('highlighted');
+
+    // quite hard to test drop event
+  });
+});
