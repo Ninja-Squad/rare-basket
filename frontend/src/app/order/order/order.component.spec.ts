@@ -16,6 +16,8 @@ import { EditOrderComponent } from '../edit-order/edit-order.component';
 import { By } from '@angular/platform-browser';
 import { ValdemortModule } from 'ngx-valdemort';
 import { ReactiveFormsModule } from '@angular/forms';
+import { ConfirmationService } from '../../shared/confirmation.service';
+import { OrderStatusEnumPipe } from '../order-status-enum.pipe';
 
 class OrderComponentTester extends ComponentTester<OrderComponent> {
   constructor() {
@@ -37,11 +39,16 @@ class OrderComponentTester extends ComponentTester<OrderComponent> {
   get editOrderComponent(): EditOrderComponent | null {
     return this.debugElement.query(By.directive(EditOrderComponent))?.componentInstance ?? null;
   }
+
+  get cancelOrderButton() {
+    return this.button('#cancel-order-button');
+  }
 }
 
 describe('OrderComponent', () => {
   let tester: OrderComponentTester;
   let orderService: jasmine.SpyObj<OrderService>;
+  let confirmationService: jasmine.SpyObj<ConfirmationService>;
 
   let order: Order;
 
@@ -52,14 +59,16 @@ describe('OrderComponent', () => {
       })
     });
 
-    orderService = jasmine.createSpyObj<OrderService>('OrderService', ['get', 'update']);
+    orderService = jasmine.createSpyObj<OrderService>('OrderService', ['get', 'update', 'cancel']);
+    confirmationService = jasmine.createSpyObj<ConfirmationService>('ConfirmationService', ['confirm']);
 
     TestBed.configureTestingModule({
-      declarations: [OrderComponent, LanguageEnumPipe, EditOrderComponent],
+      declarations: [OrderComponent, LanguageEnumPipe, EditOrderComponent, OrderStatusEnumPipe],
       imports: [I18nTestingModule, FontAwesomeModule, RouterTestingModule, SharedModule, ReactiveFormsModule, ValdemortModule],
       providers: [
         { provide: ActivatedRoute, useValue: route },
         { provide: OrderService, useValue: orderService },
+        { provide: ConfirmationService, useValue: confirmationService },
         { provide: LOCALE_ID, useValue: 'fr' }
       ]
     });
@@ -191,5 +200,37 @@ describe('OrderComponent', () => {
     expect(tester.componentInstance.order).toBe(newOrder);
     expect(tester.items.length).toBe(2);
     expect(tester.editOrderComponent).toBeNull();
+  });
+
+  it('should have a disabled cancel button when editing the order', () => {
+    orderService.get.and.returnValue(of(order));
+    tester.detectChanges();
+
+    expect(tester.cancelOrderButton.disabled).toBe(false);
+    tester.editOrderButton.click();
+    expect(tester.cancelOrderButton.disabled).toBe(true);
+  });
+
+  it('should not have a cancel order button when status is not DRAFT', () => {
+    order.status = 'CANCELLED';
+    orderService.get.and.returnValue(of(order));
+    tester.detectChanges();
+
+    expect(tester.cancelOrderButton).toBeNull();
+  });
+
+  it('should cancel order after confirmation', () => {
+    confirmationService.confirm.and.returnValue(of(undefined));
+    const newOrder: Order = { ...order, status: 'CANCELLED' };
+
+    orderService.cancel.and.returnValue(of(undefined));
+    orderService.get.and.returnValues(of(order), of(newOrder));
+    tester.detectChanges();
+
+    tester.cancelOrderButton.click();
+
+    expect(confirmationService.confirm).toHaveBeenCalled();
+    expect(orderService.cancel).toHaveBeenCalledWith(tester.componentInstance.order.id);
+    expect(tester.componentInstance.order).toBe(newOrder);
   });
 });

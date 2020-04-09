@@ -1,7 +1,22 @@
 <div *ngIf="order">
-  <h1 translate="order.order.title" [translateParams]="{ reference: order.basket.reference }"></h1>
+  <h1 class="d-flex align-items-center">
+    <div
+      class="flex-grow-1"
+      translate="order.order.title"
+      [translateParams]="{ reference: order.basket.reference }"
+      [class.cancelled]="order.status === 'CANCELLED'"
+    ></div>
+    <div>
+      <span class="badge badge-secondary ml-2">{{ order.status | orderStatusEnum }}</span>
+    </div>
+  </h1>
 
   <div class="border rounded bg-light p-5 mb-2">
+    <p
+      class="text-muted"
+      translate="order.order.creation-date"
+      [translateParams]="{ date: order.basket.confirmationInstant | date: 'longDate' }"
+    ></p>
     <div class="row">
       <div class="col-md">
         <h2 translate="order.order.customer-information"></h2>
@@ -48,7 +63,7 @@
             </tbody>
           </table>
           <div *ngIf="order.status === 'DRAFT'" class="text-right">
-            <button type="button" class="btn btn-outline-primary" id="edit-order-button" (click)="edit()">
+            <button type="button" class="btn btn-sm btn-outline-primary" id="edit-order-button" (click)="edit()">
               <fa-icon [icon]="editIcon" class="mr-1"></fa-icon>
               <span translate="order.order.edit"></span>
             </button>
@@ -56,6 +71,15 @@
         </div>
         <rb-edit-order *ngIf="edited" [order]="order" (saved)="saved($event)" (cancelled)="editCancelled()"></rb-edit-order>
       </div>
+    </div>
+
+    <div *ngIf="order.status === 'DRAFT'">
+      <hr />
+
+      <button (click)="cancelOrder()" [disabled]="edited" type="button" class="btn btn-danger" id="cancel-order-button">
+        <fa-icon [icon]="cancelOrderIcon" class="mr-1"></fa-icon>
+        <span translate="order.order.cancel"></span>
+      </button>
     </div>
   </div>
 

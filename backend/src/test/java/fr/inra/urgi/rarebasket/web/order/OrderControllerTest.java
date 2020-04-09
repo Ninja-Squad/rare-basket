@@ -4,8 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.tuple;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -185,6 +184,21 @@ class OrderControllerTest {
         mockMvc.perform(put("/api/orders/{id}", order.getId())
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(objectMapper.writeValueAsBytes(command)))
+               .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void shouldCancel() throws Exception {
+        mockMvc.perform(delete("/api/orders/{id}", order.getId()))
+               .andExpect(status().isNoContent());
+
+        assertThat(order.getStatus()).isEqualTo(OrderStatus.CANCELLED);
+    }
+
+    @Test
+    void shouldThrowWhenCancelingNonDraftOrder() throws Exception {
+        order.setStatus(OrderStatus.FINALIZED);
+        mockMvc.perform(delete("/api/orders/{id}", order.getId()))
                .andExpect(status().isBadRequest());
     }
 }

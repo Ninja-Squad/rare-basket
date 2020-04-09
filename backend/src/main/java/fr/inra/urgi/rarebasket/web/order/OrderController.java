@@ -18,6 +18,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -86,6 +87,18 @@ public class OrderController {
                                                                         itemCommand.getQuantity()))
                                       .collect(Collectors.toSet());
         order.setItems(items);
+    }
+
+    @DeleteMapping("/{orderId}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void cancel(@PathVariable("orderId") Long orderId) {
+        currentUser.checkPermission(Permission.ORDER_MANAGEMENT);
+        Order order = getOrderAndCheckAccessible(orderId);
+        if (order.getStatus() != OrderStatus.DRAFT) {
+            throw new BadRequestException("Only draft orders can be cancelled");
+        }
+
+        order.setStatus(OrderStatus.CANCELLED);
     }
 
     private Order getOrderAndCheckAccessible(@PathVariable("orderId") Long orderId) {

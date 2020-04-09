@@ -102,11 +102,14 @@
     },
     "order": {
       "title": "Order {{ reference }}",
+      "creation-date": "Order created on {{ date }}",
       "customer-information": "Customer information",
       "ordered-accessions": "Ordered accessions",
       "accession-heading": "Accession",
       "quantity-heading": "Quantity",
       "edit": "Edit",
+      "cancel": "Cancel the order",
+      "cancel-confirmation": "Do you really want to cancel this order?",
       "all-orders": "All the orders"
     },
     "edit-order": {

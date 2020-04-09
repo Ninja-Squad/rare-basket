@@ -27,4 +27,8 @@ export class OrderService {
   update(orderId: number, command: OrderCommand): Observable<void> {
     return this.http.put<void>(`/api/orders/${orderId}`, command);
   }
+
+  cancel(orderId: number): Observable<void> {
+    return this.http.delete<void>(`/api/orders/${orderId}`);
+  }
 }

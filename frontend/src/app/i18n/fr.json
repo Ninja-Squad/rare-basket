@@ -102,11 +102,14 @@
     },
     "order": {
       "title": "Commande n° {{ reference }}",
+      "creation-date": "Commande créée le {{ date }}",
       "customer-information": "Informations du client",
       "ordered-accessions": "Accessions commandées",
       "accession-heading": "Accession",
       "quantity-heading": "Quantité",
       "edit": "Éditer",
+      "cancel": "Annuler la commande",
+      "cancel-confirmation": "Voulez-vous vraiment annuler cette commande\u00a0?",
       "all-orders": "Toutes les commandes"
     },
     "edit-order": {
