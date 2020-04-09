@@ -2,7 +2,7 @@ import { TestBed } from '@angular/core/testing';
 
 import { OrderService } from './order.service';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
-import { Order } from './order.model';
+import { Order, OrderCommand } from './order.model';
 import { Page } from '../shared/page.model';
 
 describe('OrderService', () => {
@@ -19,7 +19,7 @@ describe('OrderService', () => {
 
   afterEach(() => http.verify());
 
-  it('get an order', () => {
+  it('should get an order', () => {
     let actualOrder: Order = null;
 
     service.get(42).subscribe(order => (actualOrder = order));
@@ -47,5 +47,17 @@ describe('OrderService', () => {
     const expectedOrders = { totalElements: 0 } as Page<Order>;
     http.expectOne({ method: 'GET', url: '/api/orders?status=FINALIZED&status=CANCELLED&page=0' }).flush(expectedOrders);
     expect(actualOrders).toBe(expectedOrders);
+  });
+
+  it('should update an order', () => {
+    let done = false;
+
+    const command = {} as OrderCommand;
+    service.update(42, command).subscribe(() => (done = true));
+
+    const testRequest = http.expectOne({ method: 'PUT', url: '/api/orders/42' });
+    expect(testRequest.request.body).toBe(command);
+    testRequest.flush(null);
+    expect(done).toBe(true);
   });
 });

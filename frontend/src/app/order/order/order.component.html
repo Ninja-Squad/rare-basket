@@ -3,7 +3,7 @@
 
   <div class="border rounded bg-light p-5 mb-2">
     <div class="row">
-      <div class="col-sm">
+      <div class="col-md">
         <h2 translate="order.order.customer-information"></h2>
         <div class="d-flex">
           <div class="mr-2"><fa-icon [icon]="nameIcon" [fixedWidth]="true"></fa-icon></div>
@@ -30,22 +30,31 @@
           <div class="flex-grow-1" style="white-space: pre-wrap;">{{ order.basket.rationale }}</div>
         </div>
       </div>
-      <div class="col-sm">
+      <div class="col-md">
         <h2 translate="order.order.ordered-accessions"></h2>
-        <table class="table table-sm">
-          <thead class="thead-light">
-            <tr>
-              <th translate="order.order.accession-heading"></th>
-              <th translate="order.order.quantity-heading"></th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr *ngFor="let item of order.items" class="order-item">
-              <td><rb-accession [accession]="item.accession"></rb-accession></td>
-              <td>{{ item.quantity | number }}</td>
-            </tr>
-          </tbody>
-        </table>
+        <div *ngIf="!edited">
+          <table class="table table-sm">
+            <thead class="thead-light">
+              <tr>
+                <th translate="order.order.accession-heading"></th>
+                <th translate="order.order.quantity-heading"></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let item of order.items" class="order-item">
+                <td><rb-accession [accession]="item.accession"></rb-accession></td>
+                <td>{{ item.quantity | number }}</td>
+              </tr>
+            </tbody>
+          </table>
+          <div *ngIf="order.status === 'DRAFT'" class="text-right">
+            <button type="button" class="btn btn-outline-primary" id="edit-order-button" (click)="edit()">
+              <fa-icon [icon]="editIcon" class="mr-1"></fa-icon>
+              <span translate="order.order.edit"></span>
+            </button>
+          </div>
+        </div>
+        <rb-edit-order *ngIf="edited" [order]="order" (saved)="saved($event)" (cancelled)="editCancelled()"></rb-edit-order>
       </div>
     </div>
   </div>

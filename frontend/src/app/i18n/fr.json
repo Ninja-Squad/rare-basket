@@ -106,7 +106,20 @@
       "ordered-accessions": "Accessions commandées",
       "accession-heading": "Accession",
       "quantity-heading": "Quantité",
+      "edit": "Éditer",
       "all-orders": "Toutes les commandes"
+    },
+    "edit-order": {
+      "name": "Nom",
+      "name-error-label": "Le nom",
+      "identifier": "Identifiant",
+      "identifier-error-label": "L'identifiant",
+      "quantity": "Quantité",
+      "quantity-error-label": "La quantité",
+      "delete-accession": "Enlever cette accession de la commande",
+      "add-accession": "Ajouter une accession à la commande",
+      "save": "Enregistrer",
+      "cancel": "Annuler"
     }
   }
 }

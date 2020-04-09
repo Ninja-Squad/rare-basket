@@ -106,7 +106,20 @@
       "ordered-accessions": "Ordered accessions",
       "accession-heading": "Accession",
       "quantity-heading": "Quantity",
+      "edit": "Edit",
       "all-orders": "All the orders"
+    },
+    "edit-order": {
+      "name": "Name",
+      "name-error-label": "The name",
+      "identifier": "Identifier",
+      "identifier-error-label": "The identifier",
+      "quantity": "Quantity",
+      "quantity-error-label": "The quantity",
+      "delete-accession": "Remove this accession from the order",
+      "add-accession": "Add an accession to the order",
+      "save": "Save",
+      "cancel": "Cancel"
     }
   }
 }

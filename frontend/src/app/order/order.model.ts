@@ -21,3 +21,12 @@ export interface Order {
   status: OrderStatus;
   items: Array<OrderItem>;
 }
+
+export interface OrderCommand {
+  items: Array<OrderItemCommand>;
+}
+
+export interface OrderItemCommand {
+  accession: Accession;
+  quantity: number | null;
+}

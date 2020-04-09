@@ -1,8 +1,11 @@
 package fr.inra.urgi.rarebasket.web.order;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.tuple;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -10,7 +13,9 @@ import java.time.Instant;
 import java.util.EnumSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import fr.inra.urgi.rarebasket.dao.OrderDao;
 import fr.inra.urgi.rarebasket.domain.Accession;
 import fr.inra.urgi.rarebasket.domain.AccessionHolder;
@@ -31,6 +36,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
@@ -51,6 +57,9 @@ class OrderControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
+
+    @Autowired
+    private ObjectMapper objectMapper;
 
     private Order order;
     private final Long accessionHolderId = 65L;
@@ -94,11 +103,22 @@ class OrderControllerTest {
                .andExpect(jsonPath("$.content[0].status").value(order.getStatus().name()))
                .andExpect(jsonPath("$.content[0].basket.reference").value(order.getBasket().getReference()))
                .andExpect(jsonPath("$.content[0].basket.rationale").value(order.getBasket().getRationale()))
-               .andExpect(jsonPath("$.content[0].basket.customer.name").value(order.getBasket().getCustomer().getName()))
-               .andExpect(jsonPath("$.content[0].basket.customer.email").value(order.getBasket().getCustomer().getEmail()))
-               .andExpect(jsonPath("$.content[0].basket.customer.address").value(order.getBasket().getCustomer().getAddress()))
-               .andExpect(jsonPath("$.content[0].basket.customer.type").value(order.getBasket().getCustomer().getType().name()))
-               .andExpect(jsonPath("$.content[0].basket.confirmationInstant").value(order.getBasket().getConfirmationInstant().toString()))
+               .andExpect(jsonPath("$.content[0].basket.customer.name").value(order.getBasket()
+                                                                                   .getCustomer()
+                                                                                   .getName()))
+               .andExpect(jsonPath("$.content[0].basket.customer.email").value(order.getBasket()
+                                                                                    .getCustomer()
+                                                                                    .getEmail()))
+               .andExpect(jsonPath("$.content[0].basket.customer.address").value(order.getBasket()
+                                                                                      .getCustomer()
+                                                                                      .getAddress()))
+               .andExpect(jsonPath("$.content[0].basket.customer.type").value(order.getBasket()
+                                                                                   .getCustomer()
+                                                                                   .getType()
+                                                                                   .name()))
+               .andExpect(jsonPath("$.content[0].basket.confirmationInstant").value(order.getBasket()
+                                                                                         .getConfirmationInstant()
+                                                                                         .toString()))
                .andExpect(jsonPath("$.content[0].items.length()").value(2))
                .andExpect(jsonPath("$.content[0].items[0].id").value(421L))
                .andExpect(jsonPath("$.content[0].items[0].accession.name").value("rosa"))
@@ -112,8 +132,9 @@ class OrderControllerTest {
     @Test
     void shouldListByStatus() throws Exception {
         Pageable pageable = PageRequest.of(1, OrderController.PAGE_SIZE);
-        when(mockOrderDao.pageByAccessionHolderAndStatuses(accessionHolderId, EnumSet.of(OrderStatus.CANCELLED, OrderStatus.FINALIZED),
-                                         pageable)).thenReturn(
+        when(mockOrderDao.pageByAccessionHolderAndStatuses(accessionHolderId,
+                                                           EnumSet.of(OrderStatus.CANCELLED, OrderStatus.FINALIZED),
+                                                           pageable)).thenReturn(
             new PageImpl<>(List.of(order), pageable, OrderController.PAGE_SIZE + 1)
         );
 
@@ -138,5 +159,32 @@ class OrderControllerTest {
                .andExpect(jsonPath("$.id").value(order.getId()));
 
         verify(mockCurrentUser).checkPermission(Permission.ORDER_MANAGEMENT);
+    }
+
+    @Test
+    void shouldUpdate() throws Exception {
+        OrderItemCommandDTO newItem = new OrderItemCommandDTO(new Accession("bacteria", "bacteria1"), 34);
+        OrderCommandDTO command = new OrderCommandDTO(
+            Set.of(newItem)
+        );
+        mockMvc.perform(put("/api/orders/{id}", order.getId())
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(objectMapper.writeValueAsBytes(command)))
+               .andExpect(status().isNoContent());
+
+        assertThat(order.getItems()).extracting(OrderItem::getAccession, OrderItem::getQuantity, OrderItem::getOrder)
+                                    .containsOnly(tuple(newItem.getAccession(), newItem.getQuantity(), order));
+    }
+
+    @Test
+    void shouldThrowWhenUpdatingNonDraftOrder() throws Exception {
+        order.setStatus(OrderStatus.FINALIZED);
+        OrderCommandDTO command = new OrderCommandDTO(
+            Set.of(new OrderItemCommandDTO(new Accession("rosa", "rosa1"), 34))
+        );
+        mockMvc.perform(put("/api/orders/{id}", order.getId())
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(objectMapper.writeValueAsBytes(command)))
+               .andExpect(status().isBadRequest());
     }
 }

@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Order, OrderStatus } from './order.model';
+import { Order, OrderCommand, OrderStatus } from './order.model';
 import { Observable } from 'rxjs';
 import { Page } from '../shared/page.model';
 
@@ -22,5 +22,9 @@ export class OrderService {
   listDone(page: number): Observable<Page<Order>> {
     const statuses: Array<OrderStatus> = ['FINALIZED', 'CANCELLED'];
     return this.http.get<Page<Order>>('/api/orders', { params: { status: statuses, page: `${page}` } });
+  }
+
+  update(orderId: number, command: OrderCommand): Observable<void> {
+    return this.http.put<void>(`/api/orders/${orderId}`, command);
   }
 }

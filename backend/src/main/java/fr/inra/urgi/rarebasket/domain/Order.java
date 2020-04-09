@@ -143,6 +143,11 @@ public class Order {
         return Collections.unmodifiableSet(documents);
     }
 
+    public void setItems(Set<OrderItem> items) {
+        this.items.clear();
+        items.forEach(this::addItem);
+    }
+
     public void addDocument(Document document) {
         this.documents.add(document);
     }
