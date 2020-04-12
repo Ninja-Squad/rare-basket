@@ -44,6 +44,15 @@ public class DocumentStorage {
         }
     }
 
+    public long documentSize(Long id, String originalFileName) {
+        try {
+            Path destinationFile = pathFor(id, originalFileName);
+            return Files.size(destinationFile);
+        } catch (IOException e) {
+            throw new UncheckedIOException(e);
+        }
+    }
+
     public InputStream documentInputStream(Long id, String originalFileName) {
         try {
             Path destinationFile = pathFor(id, originalFileName);

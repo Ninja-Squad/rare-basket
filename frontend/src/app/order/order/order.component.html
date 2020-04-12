@@ -90,7 +90,12 @@
         <div><fa-icon [icon]="documentIcon" class="mr-2"></fa-icon></div>
         <div class="flex-grow-1 row">
           <div class="col-md-7 col-lg-8">
-            <div class="file-name">{{ document.originalFileName }}</div>
+            <div class="file-name">
+              <button class="btn btn-link p-0 download-button" (click)="download(document, $event)" [disabled]="isDownloading(document)">
+                {{ document.originalFileName }}
+                <fa-icon *ngIf="isDownloading(document)" [icon]="downloadingIcon" [spin]="true" class="ml-1 download-spinner"></fa-icon>
+              </button>
+            </div>
             <small class="text-muted">{{ document.creationInstant | date: 'medium' }}</small>
           </div>
           <div class="col-md-5 col-lg-4">

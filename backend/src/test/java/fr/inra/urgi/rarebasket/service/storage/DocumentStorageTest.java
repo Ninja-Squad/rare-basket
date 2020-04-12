@@ -38,6 +38,12 @@ class DocumentStorageTest {
     }
 
     @Test
+    void shouldReturnFileSize() {
+        storage.storeDocument(123_456L, "foo.txt", new ByteArrayInputStream("hello".getBytes()));
+        assertThat(storage.documentSize(123_456L, "foo.txt")).isEqualTo(5L);
+    }
+
+    @Test
     void shouldDeleteAFile() {
         storage.storeDocument(123_456L, "foo.txt", new ByteArrayInputStream("hello".getBytes()));
         storage.delete(123_456L, "foo.txt");

@@ -4,9 +4,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.tuple;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
+import java.io.ByteArrayInputStream;
 import java.time.Instant;
 import java.util.EnumSet;
 import java.util.List;
@@ -37,6 +37,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.test.context.support.WithMockUser;
@@ -295,5 +296,19 @@ class OrderControllerTest {
     void shouldThrowWhenDeletingUnexistingDocument() throws Exception {
         mockMvc.perform(delete("/api/orders/{id}/documents/{documentId}", order.getId(), 98765L))
                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void shouldDownloadFile() throws Exception {
+        when(mockDocumentStorage.documentSize(document.getId(), document.getOriginalFileName())).thenReturn(5L);
+        when(mockDocumentStorage.documentInputStream(document.getId(), document.getOriginalFileName())).thenReturn(
+            new ByteArrayInputStream("hello".getBytes())
+        );
+
+        mockMvc.perform(get("/api/orders/{id}/documents/{document}/file", order.getId(), document.getId()))
+               .andExpect(status().isOk())
+               .andExpect(header().longValue(HttpHeaders.CONTENT_LENGTH, 5L))
+               .andExpect(header().string(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"invoice54.pdf\""))
+               .andExpect(content().string("hello"));
     }
 }

@@ -12,6 +12,7 @@ import {
   faHome,
   faMicrophone,
   faPlus,
+  faSpinner,
   faTrash,
   faUser,
   faWindowClose
@@ -19,6 +20,7 @@ import {
 import { filter, finalize, switchMap, tap } from 'rxjs/operators';
 import { ConfirmationService } from '../../shared/confirmation.service';
 import { HttpEventType } from '@angular/common/http';
+import { DownloadService } from '../../shared/download.service';
 
 /**
  * Component displaying the details of an order to a GRC user
@@ -43,12 +45,19 @@ export class OrderComponent implements OnInit {
   documentIcon = faFile;
   addDocumentIcon = faPlus;
   deleteDocumentIcon = faTrash;
-
+  downloadingIcon = faSpinner;
   editing = false;
   addingDocument = false;
   uploadProgress: number | null = null;
 
-  constructor(private route: ActivatedRoute, private orderService: OrderService, private confirmationService: ConfirmationService) {}
+  private downloadingDocumentIds = new Set<number>();
+
+  constructor(
+    private route: ActivatedRoute,
+    private orderService: OrderService,
+    private confirmationService: ConfirmationService,
+    private downloadService: DownloadService
+  ) {}
 
   ngOnInit(): void {
     const orderId = +this.route.snapshot.paramMap.get('orderId');
@@ -114,5 +123,19 @@ export class OrderComponent implements OnInit {
 
   get operationInProgress() {
     return this.editing || this.addingDocument;
+  }
+
+  download(document: Document, event: Event) {
+    event.stopPropagation();
+    event.preventDefault();
+    this.downloadingDocumentIds.add(document.id);
+    this.orderService
+      .downloadDocument(this.order.id, document.id)
+      .pipe(finalize(() => this.downloadingDocumentIds.delete(document.id)))
+      .subscribe(response => this.downloadService.download(response, document.originalFileName));
+  }
+
+  isDownloading(document: Document) {
+    return this.downloadingDocumentIds.has(document.id);
   }
 }

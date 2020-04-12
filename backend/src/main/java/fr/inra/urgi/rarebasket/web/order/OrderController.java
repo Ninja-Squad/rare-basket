@@ -16,9 +16,15 @@ import fr.inra.urgi.rarebasket.exception.NotFoundException;
 import fr.inra.urgi.rarebasket.service.storage.DocumentStorage;
 import fr.inra.urgi.rarebasket.service.user.CurrentUser;
 import fr.inra.urgi.rarebasket.web.common.PageDTO;
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.core.io.Resource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.http.ContentDisposition;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -130,7 +136,7 @@ public class OrderController {
     @DeleteMapping("/{orderId}/documents/{documentId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteDocument(@PathVariable("orderId") Long orderId,
-                               @PathVariable("documentId") Long documentId) throws IOException {
+                               @PathVariable("documentId") Long documentId) {
         currentUser.checkPermission(Permission.ORDER_MANAGEMENT);
         Order order = getOrderAndCheckAccessibleAndDraft(orderId);
 
@@ -142,6 +148,38 @@ public class OrderController {
 
         documentStorage.delete(document.getId(), document.getOriginalFileName());
         order.removeDocument(document);
+    }
+
+    @GetMapping("/{orderId}/documents/{documentId}/file")
+    public ResponseEntity<Resource> downloadDocumentFile(@PathVariable("orderId") Long orderId,
+                                                         @PathVariable("documentId") Long documentId) {
+        currentUser.checkPermission(Permission.ORDER_MANAGEMENT);
+        Order order = getOrderAndCheckAccessible(orderId);
+
+        Document document = order.getDocuments()
+                                 .stream()
+                                 .filter(doc -> doc.getId().equals(documentId))
+                                 .findAny()
+                                 .orElseThrow(NotFoundException::new);
+
+        return ResponseEntity.ok()
+                             .contentType(MediaType.parseMediaType(document.getContentType()))
+                             .contentLength(documentStorage.documentSize(document.getId(),
+                                                                         document.getOriginalFileName()))
+                             .headers(httpHeaders -> {
+                                 httpHeaders.add(
+                                     HttpHeaders.CONTENT_DISPOSITION,
+                                     ContentDisposition.builder("attachment")
+                                                       .filename(document.getOriginalFileName())
+                                                       .build()
+                                                       .toString()
+                                 );
+                             })
+                             .body(
+                                 new InputStreamResource(documentStorage.documentInputStream(document.getId(),
+                                                                                             document.getOriginalFileName())
+                                 )
+                             );
     }
 
     private Order getOrderAndCheckAccessible(@PathVariable("orderId") Long orderId) {

@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpEvent } from '@angular/common/http';
+import { HttpClient, HttpEvent, HttpResponse } from '@angular/common/http';
 import { DetailedOrder, Document, DocumentCommand, Order, OrderCommand, OrderStatus } from './order.model';
 import { Observable } from 'rxjs';
 import { Page } from '../shared/page.model';
@@ -45,5 +45,9 @@ export class OrderService {
 
   deleteDocument(orderId: number, documentId: number): Observable<void> {
     return this.http.delete<void>(`/api/orders/${orderId}/documents/${documentId}`);
+  }
+
+  downloadDocument(orderId: number, documentId: number): Observable<HttpResponse<Blob>> {
+    return this.http.get(`/api/orders/${orderId}/documents/${documentId}/file`, { observe: 'response', responseType: 'blob' });
   }
 }

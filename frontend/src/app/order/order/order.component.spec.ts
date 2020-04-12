@@ -22,6 +22,7 @@ import { DocumentTypeEnumPipe } from '../document-type-enum.pipe';
 import { EditDocumentComponent } from '../edit-document/edit-document.component';
 import { HttpEvent, HttpEventType, HttpProgressEvent, HttpResponse } from '@angular/common/http';
 import { RbNgbModule } from '../../rb-ngb/rb-ngb.module';
+import { DownloadService } from '../../shared/download.service';
 
 class OrderComponentTester extends ComponentTester<OrderComponent> {
   constructor() {
@@ -56,6 +57,14 @@ class OrderComponentTester extends ComponentTester<OrderComponent> {
     return this.elements('.delete-document-button') as Array<TestButton>;
   }
 
+  get downloadDocumentButtons() {
+    return this.elements('.download-button') as Array<TestButton>;
+  }
+
+  downloadSpinner(index: number) {
+    return this.documents[index].element('.download-spinner');
+  }
+
   get addDocumentButton() {
     return this.button('#add-document-button');
   }
@@ -69,6 +78,7 @@ describe('OrderComponent', () => {
   let tester: OrderComponentTester;
   let orderService: jasmine.SpyObj<OrderService>;
   let confirmationService: jasmine.SpyObj<ConfirmationService>;
+  let downloadService: jasmine.SpyObj<DownloadService>;
 
   let order: DetailedOrder;
 
@@ -79,8 +89,16 @@ describe('OrderComponent', () => {
       })
     });
 
-    orderService = jasmine.createSpyObj<OrderService>('OrderService', ['get', 'update', 'cancel', 'deleteDocument', 'addDocument']);
+    orderService = jasmine.createSpyObj<OrderService>('OrderService', [
+      'get',
+      'update',
+      'cancel',
+      'deleteDocument',
+      'addDocument',
+      'downloadDocument'
+    ]);
     confirmationService = jasmine.createSpyObj<ConfirmationService>('ConfirmationService', ['confirm']);
+    downloadService = jasmine.createSpyObj<DownloadService>('DownloadService', ['download']);
 
     TestBed.configureTestingModule({
       declarations: [
@@ -96,6 +114,7 @@ describe('OrderComponent', () => {
         { provide: ActivatedRoute, useValue: route },
         { provide: OrderService, useValue: orderService },
         { provide: ConfirmationService, useValue: confirmationService },
+        { provide: DownloadService, useValue: downloadService },
         { provide: LOCALE_ID, useValue: 'fr' }
       ]
     });
@@ -393,5 +412,27 @@ describe('OrderComponent', () => {
     expect(tester.componentInstance.order).toBe(newOrder);
     expect(tester.documents.length).toBe(2);
     expect(tester.editDocumentComponent).toBeNull();
+  });
+
+  it('should download file', () => {
+    orderService.get.and.returnValue(of(order));
+    tester.detectChanges();
+
+    expect(tester.downloadSpinner(0)).toBeNull();
+
+    const response = new HttpResponse<Blob>();
+    const responseSubject = new Subject<HttpResponse<Blob>>();
+    orderService.downloadDocument.and.returnValue(responseSubject);
+
+    tester.downloadDocumentButtons[0].click();
+
+    expect(tester.downloadSpinner(0)).not.toBeNull();
+
+    responseSubject.next(response);
+    responseSubject.complete();
+    tester.detectChanges();
+
+    expect(tester.downloadSpinner(0)).toBeNull();
+    expect(downloadService.download).toHaveBeenCalledWith(response, order.documents[0].originalFileName);
   });
 });
