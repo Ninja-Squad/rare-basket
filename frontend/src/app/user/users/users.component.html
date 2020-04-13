@@ -1,0 +1,30 @@
+<h1 translate="user.users.title"></h1>
+
+<div *ngIf="users">
+  <div *ngFor="let user of users.content">
+    <div class="d-flex">
+      <div><fa-icon [icon]="userIcon" class="mr-2"></fa-icon></div>
+      <div class="flex-grow-1 row user">
+        <div class="col-6 col-md-3">
+          <a [routerLink]="['/user', user.id, 'edit']">{{ user.name }}</a>
+        </div>
+        <div class="col-6 col-md-3">
+          <ng-container *ngIf="user.accessionHolder"> {{ user.accessionHolder.grcName }} - {{ user.accessionHolder.name }} </ng-container>
+        </div>
+        <div class="col-12 col-md-6">
+          {{ permissions(user) }}
+        </div>
+      </div>
+    </div>
+    <hr class="my-2" />
+  </div>
+
+  <rb-pagination class="d-flex justify-content-center mt-4" [page]="users" [navigate]="true"></rb-pagination>
+
+  <div class="text-right">
+    <a class="btn btn-outline-secondary" id="create-user">
+      <fa-icon [icon]="createUserIcon" class="mr-1"></fa-icon>
+      <span translate="user.users.create"></span>
+    </a>
+  </div>
+</div>

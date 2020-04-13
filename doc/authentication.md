@@ -59,8 +59,9 @@ For the authentication to work as expected, the following must be done on the Ke
  
 Note that, during development, all this is done automatically by `docker-compose`, which starts
 a Keycloak server exposed on port 8082, and imports the necessary configuration.
-At the time of this writing, this imported configuration contains 3 users named `contact11`, `contact12` and `contact21`, 
-all having the password `password`.
+At the time of this writing, this imported configuration contains 4 users named `admin`, `contact11`, `contact12` and `contact21`, 
+all having the password `password`. The `admin` user is allowed to manage users. The other three 
+are accession holder users, allowed to manage orders.
 
 The admin user for the Keycloak server is `admin`, identified by the password `admin`.
 The Keycloak console is available at http://localhost:8082/auth/.

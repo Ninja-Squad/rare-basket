@@ -4,7 +4,7 @@ export interface AccessionHolder {
   grcName: string;
 }
 
-export type Permission = 'ORDER_MANAGEMENT';
+export type Permission = 'ORDER_MANAGEMENT' | 'USER_MANAGEMENT';
 
 export interface User {
   id: number;

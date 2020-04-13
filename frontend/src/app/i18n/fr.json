@@ -30,11 +30,16 @@
     "document-type": {
       "INVOICE": "Facture",
       "OTHER": "Autre"
+    },
+    "permission": {
+      "ORDER_MANAGEMENT": "Gestion des commandes",
+      "USER_MANAGEMENT": "Gestion des utilisateurs"
     }
   },
   "navbar": {
     "toggle": "Afficher/maquer la navigation",
     "orders": "Commandes",
+    "users": "Utilisateurs",
     "login": "Connexion",
     "logout": "Déconnexion"
   },
@@ -144,6 +149,12 @@
       "file-error-label": "Le fichier",
       "save": "Enregistrer",
       "cancel": "Annuler"
+    }
+  },
+  "user": {
+    "users": {
+      "title": "Utilisateurs",
+      "create": "Ajouter un utilisateur"
     }
   }
 }

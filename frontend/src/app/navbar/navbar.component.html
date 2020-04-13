@@ -13,8 +13,17 @@
   </button>
   <div class="collapse navbar-collapse" [class.show]="!collapsed">
     <ul class="navbar-nav mr-auto">
-      <li class="nav-item" *ngIf="showOrders" id="navbar-orders">
-        <a class="nav-link" routerLink="/orders" translate="navbar.orders"></a>
+      <li class="nav-item" *ngIf="hasPermission('ORDER_MANAGEMENT')" id="navbar-orders">
+        <a class="nav-link" routerLink="/orders">
+          <fa-icon [icon]="ordersIcon" class="mr-1"></fa-icon>
+          <span translate="navbar.orders"></span>
+        </a>
+      </li>
+      <li class="nav-item" *ngIf="hasPermission('USER_MANAGEMENT')" id="navbar-users">
+        <a class="nav-link" routerLink="/users">
+          <fa-icon [icon]="usersIcon" class="mr-1"></fa-icon>
+          <span translate="navbar.users"></span>
+        </a>
       </li>
     </ul>
     <ul class="navbar-nav">

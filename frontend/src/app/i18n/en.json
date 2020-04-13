@@ -30,11 +30,16 @@
     "document-type": {
       "INVOICE": "Invoice",
       "OTHER": "Other"
+    },
+    "permission": {
+      "ORDER_MANAGEMENT": "Order management",
+      "USER_MANAGEMENT": "User management"
     }
   },
   "navbar": {
     "toggle": "Toggle navigation",
     "orders": "Orders",
+    "users": "Utilisateurs",
     "login": "Log in",
     "logout": "Log out"
   },
@@ -144,6 +149,12 @@
       "file-error-label": "The file",
       "save": "Upload",
       "cancel": "Cancel"
+    }
+  },
+  "user": {
+    "users": {
+      "title": "Users",
+      "create": "Add a user"
     }
   }
 }

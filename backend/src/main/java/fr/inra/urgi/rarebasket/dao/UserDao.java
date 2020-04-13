@@ -27,7 +27,8 @@ public interface UserDao extends JpaRepository<User, Long> {
         value = "select distinct u from User u"
             + " left join fetch u.accessionHolder ah"
             + " left join fetch ah.grc"
-            + " left join fetch u.permissions",
+            + " left join fetch u.permissions"
+            + " order by u.name",
         countQuery = "select count(u.id) from User u")
     Page<User> pageAll(Pageable page);
 }

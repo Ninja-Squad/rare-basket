@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { AuthenticationService } from '../shared/authentication.service';
-import { faPowerOff, faSignInAlt, faUser } from '@fortawesome/free-solid-svg-icons';
-import { User } from '../shared/user.model';
+import { faPowerOff, faShoppingBag, faSignInAlt, faUser, faUsersCog } from '@fortawesome/free-solid-svg-icons';
+import { Permission, User } from '../shared/user.model';
 
 @Component({
   selector: 'rb-navbar',
@@ -12,6 +12,8 @@ export class NavbarComponent implements OnInit {
   collapsed = true;
   user: User;
 
+  ordersIcon = faShoppingBag;
+  usersIcon = faUsersCog;
   userIcon = faUser;
   loginIcon = faSignInAlt;
   logoutIcon = faPowerOff;
@@ -32,7 +34,7 @@ export class NavbarComponent implements OnInit {
     this.authenticationService.logout();
   }
 
-  get showOrders() {
-    return this.user && this.user.permissions.includes('ORDER_MANAGEMENT');
+  hasPermission(permission: Permission): boolean {
+    return this.user && this.user.permissions.includes(permission);
   }
 }

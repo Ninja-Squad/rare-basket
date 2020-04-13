@@ -18,6 +18,10 @@ export const APP_ROUTES: Routes = [
       {
         path: 'orders',
         loadChildren: () => import('./order/order.module').then(m => m.OrderModule)
+      },
+      {
+        path: 'users',
+        loadChildren: () => import('./user/user.module').then(m => m.UserModule)
       }
     ]
   }

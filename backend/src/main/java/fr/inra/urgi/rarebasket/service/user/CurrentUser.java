@@ -76,7 +76,7 @@ public class CurrentUser {
 
         public UserInformation(User user) {
             this.id = user.getId();
-            this.accessionHolderId = user.getAccessionHolder().getId();
+            this.accessionHolderId = user.getAccessionHolder() == null ? null : user.getAccessionHolder().getId();
             this.permissions = user.getPermissions()
                                    .stream()
                                    .map(UserPermission::getPermission)
