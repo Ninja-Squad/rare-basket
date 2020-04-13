@@ -12,6 +12,9 @@ import fr.inra.urgi.rarebasket.domain.User;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
 /**
  * Tests for {@link UserDao}
@@ -57,5 +60,19 @@ class UserDaoTest extends BaseDaoTest {
         Optional<User> jb = dao.findByName("JB");
         assertThat(jb).isNotEmpty();
         assertThat(jb.get().getId()).isEqualTo(1L);
+    }
+
+    @Test
+    void shouldPageAll() {
+        skipNextLaunch();
+        Pageable pageable = PageRequest.of(0, 20);
+        Page<User> result = dao.pageAll(pageable);
+        assertThat(result).hasSize(1);
+        assertThat(result.getTotalElements()).isEqualTo(1);
+
+        pageable = PageRequest.of(1, 20);
+        result = dao.pageAll(pageable);
+        assertThat(result).isEmpty();
+        assertThat(result.getTotalElements()).isEqualTo(1);
     }
 }

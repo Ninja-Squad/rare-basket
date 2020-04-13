@@ -73,7 +73,8 @@ public class User {
     }
 
     public void setPermissions(Set<UserPermission> permissions) {
-        this.permissions = permissions;
+        this.permissions.clear();
+        permissions.forEach(this::addPermission);
     }
 
     public AccessionHolder getAccessionHolder() {
