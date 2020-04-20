@@ -3,3 +3,15 @@
 .invalid-feedback {
   display: block;
 }
+
+body {
+  background-color: $gray-100;
+}
+
+.content {
+  @extend .border;
+  @extend .rounded;
+  @extend .bg-white;
+  @extend .p-2;
+  @extend .p-md-5;
+}

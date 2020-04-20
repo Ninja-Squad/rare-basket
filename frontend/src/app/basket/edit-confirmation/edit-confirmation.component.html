@@ -40,20 +40,24 @@
   </div>
 </div>
 
-<div class="mt-5 d-flex justify-content-center">
-  <form [formGroup]="form" (ngSubmit)="confirm()" class="form-inline">
-    <label for="confirmation-code" class="sr-only" translate="basket.edit-confirmation.confirmation-code"></label>
-    <input
-      formControlName="confirmationCode"
-      id="confirmation-code"
-      class="form-control mb-2 mr-sm-2"
-      [placeholder]="'basket.edit-confirmation.confirmation-code' | translate"
-    />
-    <button class="btn btn-primary mb-2" [disabled]="form.invalid" id="confirm-button">
-      <fa-icon [icon]="confirmIcon" class="mr-1"></fa-icon>
-      <span translate="basket.edit-confirmation.confirm"></span>
-    </button>
-  </form>
-</div>
+<div class="content mt-2">
+  <div class="d-flex justify-content-center">
+    <form [formGroup]="form" (ngSubmit)="confirm()" class="form-inline">
+      <label for="confirmation-code" class="sr-only" translate="basket.edit-confirmation.confirmation-code"></label>
+      <input
+        formControlName="confirmationCode"
+        id="confirmation-code"
+        class="form-control form-control-lg mb-2 mr-sm-2"
+        [placeholder]="'basket.edit-confirmation.confirmation-code' | translate"
+      />
+      <button class="btn btn-primary btn-lg mb-2" [disabled]="form.invalid" id="confirm-button">
+        <fa-icon [icon]="confirmIcon" class="mr-1"></fa-icon>
+        <span translate="basket.edit-confirmation.confirm"></span>
+      </button>
+    </form>
+  </div>
 
-<rb-basket-content [basket]="basket" class="mt-5"></rb-basket-content>
+  <hr />
+
+  <rb-basket-content [basket]="basket" class="mt-5"></rb-basket-content>
+</div>
