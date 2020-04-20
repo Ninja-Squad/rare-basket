@@ -18,6 +18,12 @@
             {{ permissions(user) }}
           </div>
         </div>
+        <div class="text-right">
+          <button (click)="deleteUser(user)" type="button" class="btn btn-outline-danger btn-sm delete-user-button">
+            <fa-icon [icon]="deleteUserIcon"></fa-icon>
+            <span class="sr-only" translate="user.users.delete"></span>
+          </button>
+        </div>
       </div>
       <hr class="my-2" />
     </div>

@@ -154,7 +154,9 @@
   "user": {
     "users": {
       "title": "Utilisateurs",
-      "create": "Ajouter un utilisateur"
+      "create": "Ajouter un utilisateur",
+      "delete": "Supprimer l'utilisateur",
+      "delete-confirmation": "Voulez-vous vraiment supprimer cet utilisateur\u00a0? Notez que l'utilisateur ne sera pas supprimé de Keycloak."
     },
     "edit": {
       "title": {

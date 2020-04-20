@@ -63,4 +63,13 @@ describe('UserService', () => {
     testRequest.flush(null);
     expect(done).toBe(true);
   });
+
+  it('should delete', () => {
+    let done = false;
+
+    service.delete(42).subscribe(() => (done = true));
+
+    http.expectOne({ method: 'DELETE', url: '/api/users/42' }).flush(null);
+    expect(done).toBe(true);
+  });
 });

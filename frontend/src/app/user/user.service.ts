@@ -29,4 +29,8 @@ export class UserService {
   update(userId: number, command: UserCommand): Observable<void> {
     return this.http.put<void>(`/api/users/${userId}`, command);
   }
+
+  delete(userId: number): Observable<void> {
+    return this.http.delete<void>(`/api/users/${userId}`);
+  }
 }

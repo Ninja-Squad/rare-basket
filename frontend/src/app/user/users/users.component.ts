@@ -5,7 +5,9 @@ import { Page } from '../../shared/page.model';
 import { TranslateService } from '@ngx-translate/core';
 import { ActivatedRoute } from '@angular/router';
 import { map, switchMap } from 'rxjs/operators';
-import { faPlus, faUser } from '@fortawesome/free-solid-svg-icons';
+import { faPlus, faTrash, faUser } from '@fortawesome/free-solid-svg-icons';
+import { ConfirmationService } from '../../shared/confirmation.service';
+import { merge, Subject } from 'rxjs';
 
 @Component({
   selector: 'rb-users',
@@ -17,15 +19,21 @@ export class UsersComponent implements OnInit {
 
   userIcon = faUser;
   createUserIcon = faPlus;
+  deleteUserIcon = faTrash;
 
-  constructor(private route: ActivatedRoute, private userService: UserService, private translateService: TranslateService) {}
+  private reloadPage$ = new Subject<number>();
+
+  constructor(
+    private route: ActivatedRoute,
+    private userService: UserService,
+    private translateService: TranslateService,
+    private confirmationService: ConfirmationService
+  ) {}
 
   ngOnInit() {
-    this.route.queryParamMap
-      .pipe(
-        map(params => +(params.get('page') || 0)),
-        switchMap(page => this.userService.list(page))
-      )
+    const navigationPage$ = this.route.queryParamMap.pipe(map(params => +(params.get('page') || 0)));
+    merge(navigationPage$, this.reloadPage$)
+      .pipe(switchMap(page => this.userService.list(page)))
       .subscribe(users => (this.users = users));
   }
 
@@ -34,5 +42,12 @@ export class UsersComponent implements OnInit {
       .map(p => this.translateService.instant(`enums.permission.${p}`))
       .sort()
       .join(', ');
+  }
+
+  deleteUser(user: User) {
+    this.confirmationService
+      .confirm({ messageKey: 'user.users.delete-confirmation' })
+      .pipe(switchMap(() => this.userService.delete(user.id)))
+      .subscribe(() => this.reloadPage$.next(this.users.number));
   }
 }
