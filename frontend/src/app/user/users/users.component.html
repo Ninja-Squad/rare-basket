@@ -6,10 +6,10 @@
       <div><fa-icon [icon]="userIcon" class="mr-2"></fa-icon></div>
       <div class="flex-grow-1 row user">
         <div class="col-6 col-md-3">
-          <a [routerLink]="['/user', user.id, 'edit']">{{ user.name }}</a>
+          <a [routerLink]="['/users', user.id, 'edit']">{{ user.name }}</a>
         </div>
         <div class="col-6 col-md-3">
-          <ng-container *ngIf="user.accessionHolder"> {{ user.accessionHolder.grcName }} - {{ user.accessionHolder.name }} </ng-container>
+          <ng-container *ngIf="user.accessionHolder"> {{ user.accessionHolder.grc.name }} - {{ user.accessionHolder.name }} </ng-container>
         </div>
         <div class="col-12 col-md-6">
           {{ permissions(user) }}
@@ -22,7 +22,7 @@
   <rb-pagination class="d-flex justify-content-center mt-4" [page]="users" [navigate]="true"></rb-pagination>
 
   <div class="text-right">
-    <a class="btn btn-outline-secondary" id="create-user">
+    <a class="btn btn-outline-secondary" id="create-user" routerLink="/users/new">
       <fa-icon [icon]="createUserIcon" class="mr-1"></fa-icon>
       <span translate="user.users.create"></span>
     </a>

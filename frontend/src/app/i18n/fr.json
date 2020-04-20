@@ -155,6 +155,21 @@
     "users": {
       "title": "Utilisateurs",
       "create": "Ajouter un utilisateur"
+    },
+    "edit": {
+      "title": {
+        "create": "Créer un utilisateur",
+        "update": "Modifier un utilisateur"
+      },
+      "name": "Nom",
+      "name-error-label": "Le nom",
+      "name-help": "Le nom saisi ici <strong>doit</strong> être le <em>username</em> d'un utilisateur du <a target='_blank' href='{{ keycloakUrl }}'><em>realm</em> rare-basket de Keycloak</a>",
+      "permissions": "Permissions",
+      "accession-holder": "Gestionnaire d'accessions",
+      "accession-holder-error-label": "Le gestionnaire d'accessions",
+      "accession-holder-help": "Doit être spécifié si l'utilisateur peut gérer des commandes",
+      "save": "Enregistrer",
+      "cancel": "Annuler"
     }
   }
 }

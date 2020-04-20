@@ -9,9 +9,11 @@ import { RbNgbModule } from '../rb-ngb/rb-ngb.module';
 import { ReactiveFormsModule } from '@angular/forms';
 import { ValdemortModule } from 'ngx-valdemort';
 import { USER_ROUTES } from './user.route';
+import { EditUserComponent } from './edit-user/edit-user.component';
+import { PermissionEnumPipe } from './permission-enum.pipe';
 
 @NgModule({
-  declarations: [UsersComponent],
+  declarations: [UsersComponent, EditUserComponent, PermissionEnumPipe],
   imports: [
     CommonModule,
     TranslateModule,

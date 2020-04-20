@@ -155,6 +155,21 @@
     "users": {
       "title": "Users",
       "create": "Add a user"
+    },
+    "edit": {
+      "title": {
+        "create": "Create a user",
+        "update": "Update a user"
+      },
+      "name": "User name",
+      "name-error-label": "The name",
+      "name-help": "The name entered here <strong>must</strong> be the <em>username</em> of a user created in the <a target='_blank' href='{{ keycloakUrl }}'>rare-basket Keycloak realm</a>",
+      "permissions": "Permissions",
+      "accession-holder": "Accession holder",
+      "accession-holder-error-label": "The accession holder",
+      "accession-holder-help": "Must be specified if the user manages orders",
+      "save": "Save",
+      "cancel": "Cancel"
     }
   }
 }

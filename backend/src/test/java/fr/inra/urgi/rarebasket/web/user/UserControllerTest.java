@@ -98,7 +98,7 @@ class UserControllerTest {
                .andExpect(jsonPath("$.permissions[0]").value(Permission.ORDER_MANAGEMENT.name()))
                .andExpect(jsonPath("$.accessionHolder.id").value(user.getAccessionHolder().getId()))
                .andExpect(jsonPath("$.accessionHolder.name").value(user.getAccessionHolder().getName()))
-               .andExpect(jsonPath("$.accessionHolder.grcName").value(user.getAccessionHolder().getGrc().getName()));
+               .andExpect(jsonPath("$.accessionHolder.grc.name").value(user.getAccessionHolder().getGrc().getName()));
     }
 
     @Test
@@ -116,9 +116,22 @@ class UserControllerTest {
                .andExpect(jsonPath("$.content[0].permissions[0]").value(Permission.ORDER_MANAGEMENT.name()))
                .andExpect(jsonPath("$.content[0].accessionHolder.id").value(user.getAccessionHolder().getId()))
                .andExpect(jsonPath("$.content[0].accessionHolder.name").value(user.getAccessionHolder().getName()))
-               .andExpect(jsonPath("$.content[0].accessionHolder.grcName").value(user.getAccessionHolder()
-                                                                                     .getGrc()
-                                                                                     .getName()));
+               .andExpect(jsonPath("$.content[0].accessionHolder.grc.name").value(user.getAccessionHolder().getGrc().getName()));
+
+        verify(mockCurrentUser).checkPermission(Permission.USER_MANAGEMENT);
+    }
+
+    @Test
+    void shouldGet() throws Exception {
+        mockMvc.perform(get("/api/users/{userid}", user.getId()))
+               .andExpect(status().isOk())
+               .andExpect(jsonPath("$.id").value(user.getId()))
+               .andExpect(jsonPath("$.name").value(user.getName()))
+               .andExpect(jsonPath("$.permissions.length()").value(1))
+               .andExpect(jsonPath("$.permissions[0]").value(Permission.ORDER_MANAGEMENT.name()))
+               .andExpect(jsonPath("$.accessionHolder.id").value(user.getAccessionHolder().getId()))
+               .andExpect(jsonPath("$.accessionHolder.name").value(user.getAccessionHolder().getName()))
+               .andExpect(jsonPath("$.accessionHolder.grc.name").value(user.getAccessionHolder().getGrc().getName()));
 
         verify(mockCurrentUser).checkPermission(Permission.USER_MANAGEMENT);
     }

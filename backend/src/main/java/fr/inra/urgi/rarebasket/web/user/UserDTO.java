@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 import fr.inra.urgi.rarebasket.domain.Permission;
 import fr.inra.urgi.rarebasket.domain.User;
 import fr.inra.urgi.rarebasket.domain.UserPermission;
+import fr.inra.urgi.rarebasket.web.accessionholder.AccessionHolderDTO;
 
 /**
  * DTO containing the information about a user

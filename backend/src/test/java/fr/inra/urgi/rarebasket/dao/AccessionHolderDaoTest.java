@@ -41,4 +41,10 @@ class AccessionHolderDaoTest extends BaseDaoTest {
         assertThat(accessionHolderDao.findByEmail("unexisting@mail.com")).isEmpty();
         assertThat(accessionHolderDao.findByEmail("orders@grc1.com")).isNotEmpty();
     }
+
+    @Test
+    void shouldList() {
+        skipNextLaunch();
+        assertThat(accessionHolderDao.list()).hasSize(1);
+    }
 }

@@ -65,6 +65,13 @@ public class UserController {
         return PageDTO.fromPage(users, UserDTO::new);
     }
 
+    @GetMapping("/{userId}")
+    public UserDTO get(@PathVariable("userId") Long userId) {
+        currentUser.checkPermission(Permission.USER_MANAGEMENT);
+        User user = userDao.findById(userId).orElseThrow(NotFoundException::new);
+        return new UserDTO(user);
+    }
+
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public UserDTO create(@Validated @RequestBody UserCommandDTO command) {

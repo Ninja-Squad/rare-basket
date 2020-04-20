@@ -84,7 +84,11 @@ describe('UsersComponent', () => {
           accessionHolder: {
             id: 1,
             name: 'Holder1',
-            grcName: 'GRC1'
+            email: 'holder1@mail.com',
+            grc: {
+              id: 432,
+              name: 'GRC1'
+            }
           },
           permissions: ['USER_MANAGEMENT', 'ORDER_MANAGEMENT']
         }
