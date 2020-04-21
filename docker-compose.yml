@@ -1,8 +1,11 @@
 version: '3.7'
 services:
   postgres:
-    image: postgres:11-alpine
+    # 11-alpine
+    image: postgres@sha256:fdecfb9a2de3bd27ca695cecb79b4519b74f7c9e505fa4f9129a9e72e8ff5193
     container_name: rare-basket-postgres
+    environment:
+      - POSTGRES_HOST_AUTH_METHOD=trust
     # copying the setup.sql file in the /docker-entrypoint-initdb.d/ directory
     # the script run on start by the postgres container
     # and creates the appropriate databases and users
@@ -12,14 +15,16 @@ services:
       - 5432:5432
 
   smtp:
-    image: mailhog/mailhog
+    # latest
+    image: mailhog/mailhog@sha256:98c7e2e6621c897ad86f31610d756d76b8ee622c354c28a76f4ed49fb6ed996f
     container_name: rare-basket-smtp
     ports:
       - 25:1025
       - 8025:8025
 
   keycloak:
-    image: quay.io/keycloak/keycloak:9.0.2
+    # 9.0.2
+    image: quay.io/keycloak/keycloak@sha256:a327f1396a538c2320e5f1016016387b32b93b19dc8fa2a0e2c7de9f5946cb52
     container_name: rare-basket-keycloak
     volumes:
       - ./keycloak:/tmp/keycloak
