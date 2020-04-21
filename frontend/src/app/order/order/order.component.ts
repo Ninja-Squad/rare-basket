@@ -6,6 +6,7 @@ import {
   faAddressCard,
   faAt,
   faChevronLeft,
+  faClipboardList,
   faCommentDots,
   faEdit,
   faFile,
@@ -46,6 +47,8 @@ export class OrderComponent implements OnInit {
   addDocumentIcon = faPlus;
   deleteDocumentIcon = faTrash;
   downloadingIcon = faSpinner;
+  deliveryFormIcon = faClipboardList;
+
   editing = false;
   addingDocument = false;
   uploadProgress: number | null = null;
@@ -137,5 +140,11 @@ export class OrderComponent implements OnInit {
 
   isDownloading(document: Document) {
     return this.downloadingDocumentIds.has(document.id);
+  }
+
+  downloadDeliveryForm() {
+    this.orderService
+      .downloadDeliveryForm(this.order.id)
+      .subscribe(response => this.downloadService.download(response, `bon-de-livraison-${this.order.id}.pdf`));
   }
 }

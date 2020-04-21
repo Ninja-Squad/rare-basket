@@ -49,6 +49,10 @@ class OrderComponentTester extends ComponentTester<OrderComponent> {
     return this.button('#cancel-order-button');
   }
 
+  get deliveryFormButton() {
+    return this.button('#delivery-form-button');
+  }
+
   get documents() {
     return this.elements('.document');
   }
@@ -95,7 +99,8 @@ describe('OrderComponent', () => {
       'cancel',
       'deleteDocument',
       'addDocument',
-      'downloadDocument'
+      'downloadDocument',
+      'downloadDeliveryForm'
     ]);
     confirmationService = jasmine.createSpyObj<ConfirmationService>('ConfirmationService', ['confirm']);
     downloadService = jasmine.createSpyObj<DownloadService>('DownloadService', ['download']);
@@ -436,5 +441,31 @@ describe('OrderComponent', () => {
 
     expect(tester.downloadSpinner(0)).toBeNull();
     expect(downloadService.download).toHaveBeenCalledWith(response, order.documents[0].originalFileName);
+  });
+
+  it('should not have a delivery form button when status is not FINALIZED', () => {
+    orderService.get.and.returnValue(of(order));
+    order.status = 'DRAFT';
+    tester.detectChanges();
+
+    expect(tester.deliveryFormButton).toBeNull();
+
+    order.status = 'CANCELLED';
+    tester.detectChanges();
+
+    expect(tester.deliveryFormButton).toBeNull();
+  });
+
+  it('should download delivery form', () => {
+    orderService.get.and.returnValue(of(order));
+    order.status = 'FINALIZED';
+    tester.detectChanges();
+
+    const response = new HttpResponse<Blob>();
+    orderService.downloadDeliveryForm.and.returnValue(of(response));
+
+    tester.deliveryFormButton.click();
+
+    expect(downloadService.download).toHaveBeenCalledWith(response, 'bon-de-livraison-42.pdf');
   });
 });

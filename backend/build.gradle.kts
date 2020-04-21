@@ -78,12 +78,17 @@ dependencyManagement {
 }
 
 dependencies {
+    val itextVersion = "7.1.10"
+
     implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
     implementation("org.springframework.boot:spring-boot-starter-mail")
     implementation("org.springframework.boot:spring-boot-starter-security")
     implementation("com.samskivert:jmustache")
     implementation("org.keycloak:keycloak-spring-boot-starter")
+    implementation("com.itextpdf:kernel:$itextVersion")
+    implementation("com.itextpdf:io:$itextVersion")
+    implementation("com.itextpdf:layout:$itextVersion")
 
     runtimeOnly("org.postgresql:postgresql")
     runtimeOnly("org.flywaydb:flyway-core")

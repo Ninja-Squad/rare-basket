@@ -142,12 +142,24 @@
       ></rb-edit-document>
     </div>
 
-    <div *ngIf="order.status === 'DRAFT'">
+    <div *ngIf="order.status !== 'CANCELLED'">
       <hr />
 
-      <button (click)="cancelOrder()" [disabled]="operationInProgress" type="button" class="btn btn-danger" id="cancel-order-button">
+      <button
+        *ngIf="order.status === 'DRAFT'"
+        (click)="cancelOrder()"
+        [disabled]="operationInProgress"
+        type="button"
+        class="btn btn-danger"
+        id="cancel-order-button"
+      >
         <fa-icon [icon]="cancelOrderIcon" class="mr-1"></fa-icon>
         <span translate="order.order.cancel"></span>
+      </button>
+
+      <button *ngIf="order.status === 'FINALIZED'" class="btn btn-primary" (click)="downloadDeliveryForm()" id="delivery-form-button">
+        <fa-icon [icon]="deliveryFormIcon" class="mr-1"></fa-icon>
+        <span translate="order.order.delivery-form"></span>
       </button>
     </div>
   </div>

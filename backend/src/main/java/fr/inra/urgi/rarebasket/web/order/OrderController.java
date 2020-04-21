@@ -13,9 +13,11 @@ import fr.inra.urgi.rarebasket.domain.Permission;
 import fr.inra.urgi.rarebasket.exception.BadRequestException;
 import fr.inra.urgi.rarebasket.exception.ForbiddenException;
 import fr.inra.urgi.rarebasket.exception.NotFoundException;
+import fr.inra.urgi.rarebasket.service.order.DeliveryFormGenerator;
 import fr.inra.urgi.rarebasket.service.storage.DocumentStorage;
 import fr.inra.urgi.rarebasket.service.user.CurrentUser;
 import fr.inra.urgi.rarebasket.web.common.PageDTO;
+import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.core.io.Resource;
 import org.springframework.data.domain.Page;
@@ -54,11 +56,16 @@ public class OrderController {
     private final OrderDao orderDao;
     private final CurrentUser currentUser;
     private final DocumentStorage documentStorage;
+    private final DeliveryFormGenerator deliveryFormGenerator;
 
-    public OrderController(OrderDao orderDao, CurrentUser currentUser, DocumentStorage documentStorage) {
+    public OrderController(OrderDao orderDao,
+                           CurrentUser currentUser,
+                           DocumentStorage documentStorage,
+                           DeliveryFormGenerator deliveryFormGenerator) {
         this.orderDao = orderDao;
         this.currentUser = currentUser;
         this.documentStorage = documentStorage;
+        this.deliveryFormGenerator = deliveryFormGenerator;
     }
 
     @GetMapping
@@ -183,7 +190,28 @@ public class OrderController {
                              );
     }
 
-    private Order getOrderAndCheckAccessible(@PathVariable("orderId") Long orderId) {
+    @GetMapping("/{orderId}/delivery-form")
+    public ResponseEntity<Resource> downloadDeliveryForm(@PathVariable("orderId") Long orderId) {
+        currentUser.checkPermission(Permission.ORDER_MANAGEMENT);
+        Order order = getOrderAndCheckAccessibleAndFinalized(orderId);
+
+        byte[] deliveryForm = deliveryFormGenerator.generate(order);
+
+        return ResponseEntity.ok()
+                             .contentType(MediaType.APPLICATION_PDF)
+                             .headers(httpHeaders -> {
+                                 httpHeaders.add(
+                                     HttpHeaders.CONTENT_DISPOSITION,
+                                     ContentDisposition.builder("attachment")
+                                                       .filename("bon-de-livraison-" + order.getId() + ".pdf")
+                                                       .build()
+                                                       .toString()
+                                 );
+                             })
+                             .body(new ByteArrayResource(deliveryForm));
+    }
+
+    private Order getOrderAndCheckAccessible(Long orderId) {
         Order order = orderDao.findById(orderId).orElseThrow(NotFoundException::new);
         if (!order.getAccessionHolder().getId().equals(getAccessionHolderId())) {
             throw new ForbiddenException();
@@ -191,10 +219,18 @@ public class OrderController {
         return order;
     }
 
-    private Order getOrderAndCheckAccessibleAndDraft(@PathVariable("orderId") Long orderId) {
+    private Order getOrderAndCheckAccessibleAndDraft(Long orderId) {
         Order order = getOrderAndCheckAccessible(orderId);
         if (order.getStatus() != OrderStatus.DRAFT) {
-            throw new BadRequestException("This operation cannot be done on a nn-DRAFT order");
+            throw new BadRequestException("This operation cannot be done on a non-DRAFT order");
+        }
+        return order;
+    }
+
+    private Order getOrderAndCheckAccessibleAndFinalized(Long orderId) {
+        Order order = getOrderAndCheckAccessible(orderId);
+        if (order.getStatus() != OrderStatus.FINALIZED) {
+            throw new BadRequestException("This operation cannot be done on a non-FINALIZED order");
         }
         return order;
     }

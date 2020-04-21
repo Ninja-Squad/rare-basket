@@ -101,6 +101,24 @@ describe('OrderService', () => {
     expect(done).toBe(true);
   });
 
+  it('should download a document', () => {
+    let actual: Blob = null;
+    service.downloadDocument(42, 54).subscribe(response => (actual = response.body));
+
+    const expected = new Blob();
+    http.expectOne({ url: '/api/orders/42/documents/54/file', method: 'GET' }).flush(expected);
+    expect(actual).toBe(expected);
+  });
+
+  it('should download delivery form', () => {
+    let actual: Blob = null;
+    service.downloadDeliveryForm(42).subscribe(response => (actual = response.body));
+
+    const expected = new Blob();
+    http.expectOne({ url: '/api/orders/42/delivery-form', method: 'GET' }).flush(expected);
+    expect(actual).toBe(expected);
+  });
+
   function blobToString(blob: Blob): Promise<string> {
     // Blob as a text() method, but which does not exist on the old CI browsers. Grrr.
     return new Promise(resolve => {

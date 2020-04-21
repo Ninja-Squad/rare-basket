@@ -27,6 +27,7 @@ import fr.inra.urgi.rarebasket.domain.OrderItem;
 import fr.inra.urgi.rarebasket.domain.OrderStatus;
 import fr.inra.urgi.rarebasket.domain.Permission;
 import fr.inra.urgi.rarebasket.domain.SupportedLanguage;
+import fr.inra.urgi.rarebasket.service.order.DeliveryFormGenerator;
 import fr.inra.urgi.rarebasket.service.storage.DocumentStorage;
 import fr.inra.urgi.rarebasket.service.user.CurrentUser;
 import org.junit.jupiter.api.BeforeEach;
@@ -60,6 +61,9 @@ class OrderControllerTest {
 
     @MockBean
     private DocumentStorage mockDocumentStorage;
+
+    @MockBean
+    private DeliveryFormGenerator mockDeliveryFormGenerator;
 
     @Autowired
     private MockMvc mockMvc;
@@ -311,6 +315,27 @@ class OrderControllerTest {
                .andExpect(status().isOk())
                .andExpect(header().longValue(HttpHeaders.CONTENT_LENGTH, 5L))
                .andExpect(header().string(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"invoice54.pdf\""))
+               .andExpect(content().contentType(document.getContentType()))
                .andExpect(content().string("hello"));
+    }
+
+    @Test
+    void shouldDownloadDeliveryForm() throws Exception {
+        when(mockDeliveryFormGenerator.generate(order)).thenReturn("pdf".getBytes());
+
+        order.setStatus(OrderStatus.FINALIZED);
+
+        mockMvc.perform(get("/api/orders/{id}/delivery-form", order.getId()))
+               .andExpect(status().isOk())
+               .andExpect(header().longValue(HttpHeaders.CONTENT_LENGTH, 3L))
+               .andExpect(header().string(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"bon-de-livraison-42.pdf\""))
+               .andExpect(content().contentType(MediaType.APPLICATION_PDF))
+               .andExpect(content().string("pdf"));
+    }
+
+    @Test
+    void shouldThrowWhenDownloadingDeliveryFormOnNonFinalizedOrder() throws Exception {
+        mockMvc.perform(get("/api/orders/{id}/delivery-form", order.getId()))
+               .andExpect(status().isBadRequest());
     }
 }
