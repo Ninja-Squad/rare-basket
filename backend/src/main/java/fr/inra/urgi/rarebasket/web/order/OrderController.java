@@ -211,6 +211,19 @@ public class OrderController {
                              .body(new ByteArrayResource(deliveryForm));
     }
 
+    @PutMapping("/{orderId}/finalization")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void finalizeOrder(@PathVariable("orderId") Long orderId) {
+        currentUser.checkPermission(Permission.ORDER_MANAGEMENT);
+        Order order = getOrderAndCheckAccessibleAndDraft(orderId);
+
+        if (order.getItems().stream().anyMatch(item -> item.getQuantity() == null)) {
+            throw new BadRequestException("All quantities are not set");
+        }
+
+        order.setStatus(OrderStatus.FINALIZED);
+    }
+
     private Order getOrderAndCheckAccessible(Long orderId) {
         Order order = orderDao.findById(orderId).orElseThrow(NotFoundException::new);
         if (!order.getAccessionHolder().getId().equals(getAccessionHolderId())) {

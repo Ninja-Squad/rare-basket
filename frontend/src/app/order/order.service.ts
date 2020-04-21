@@ -51,7 +51,11 @@ export class OrderService {
     return this.http.get(`/api/orders/${orderId}/documents/${documentId}/file`, { observe: 'response', responseType: 'blob' });
   }
 
-  downloadDeliveryForm(orderId: number) {
+  downloadDeliveryForm(orderId: number): Observable<HttpResponse<Blob>> {
     return this.http.get(`/api/orders/${orderId}/delivery-form`, { observe: 'response', responseType: 'blob' });
+  }
+
+  finalize(orderId: number): Observable<void> {
+    return this.http.put<void>(`/api/orders/${orderId}/finalization`, null);
   }
 }

@@ -119,6 +119,14 @@ describe('OrderService', () => {
     expect(actual).toBe(expected);
   });
 
+  it('should finalize an order', () => {
+    let done = false;
+    service.finalize(42).subscribe(() => (done = true));
+
+    http.expectOne({ url: '/api/orders/42/finalization', method: 'PUT' }).flush(null);
+    expect(done).toBe(true);
+  });
+
   function blobToString(blob: Blob): Promise<string> {
     // Blob as a text() method, but which does not exist on the old CI browsers. Grrr.
     return new Promise(resolve => {

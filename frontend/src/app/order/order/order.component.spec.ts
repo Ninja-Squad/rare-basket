@@ -45,6 +45,14 @@ class OrderComponentTester extends ComponentTester<OrderComponent> {
     return this.debugElement.query(By.directive(EditOrderComponent))?.componentInstance ?? null;
   }
 
+  get finalizeOrderButton() {
+    return this.button('#finalize-order-button');
+  }
+
+  get finalizationErrors() {
+    return this.elements('.finalization-error');
+  }
+
   get cancelOrderButton() {
     return this.button('#cancel-order-button');
   }
@@ -96,6 +104,7 @@ describe('OrderComponent', () => {
     orderService = jasmine.createSpyObj<OrderService>('OrderService', [
       'get',
       'update',
+      'finalize',
       'cancel',
       'deleteDocument',
       'addDocument',
@@ -265,6 +274,43 @@ describe('OrderComponent', () => {
     expect(tester.editOrderComponent).toBeNull();
   });
 
+  it('should not have a finalize order button when status is not DRAFT', () => {
+    order.status = 'CANCELLED';
+    orderService.get.and.returnValue(of(order));
+    tester.detectChanges();
+
+    expect(tester.finalizeOrderButton).toBeNull();
+  });
+
+  it('should finalize order after confirmation', () => {
+    confirmationService.confirm.and.returnValue(of(undefined));
+    const newOrder: DetailedOrder = { ...order, status: 'FINALIZED' };
+
+    orderService.finalize.and.returnValue(of(undefined));
+    orderService.get.and.returnValues(of(order), of(newOrder));
+    tester.componentInstance.finalizationErrors.push('order.order.missing-quantity-error');
+    tester.detectChanges();
+
+    tester.finalizeOrderButton.click();
+
+    expect(confirmationService.confirm).toHaveBeenCalled();
+    expect(orderService.finalize).toHaveBeenCalledWith(tester.componentInstance.order.id);
+    expect(tester.componentInstance.order).toBe(newOrder);
+    expect(tester.finalizationErrors.length).toBe(0);
+  });
+
+  it('should not finalize order if missing quantity', () => {
+    order.items[0].quantity = null;
+    orderService.get.and.returnValue(of(order));
+    tester.detectChanges();
+
+    tester.finalizeOrderButton.click();
+
+    expect(confirmationService.confirm).not.toHaveBeenCalled();
+    expect(orderService.finalize).not.toHaveBeenCalled();
+    expect(tester.finalizationErrors.length).toBe(1);
+  });
+
   it('should not have a cancel order button when status is not DRAFT', () => {
     order.status = 'CANCELLED';
     orderService.get.and.returnValue(of(order));
@@ -321,6 +367,7 @@ describe('OrderComponent', () => {
 
     tester.editOrderButton.click();
 
+    expect(tester.finalizeOrderButton.disabled).toBe(true);
     expect(tester.cancelOrderButton.disabled).toBe(true);
     expect(tester.deleteDocumentButtons[0].disabled).toBe(true);
     expect(tester.addDocumentButton.disabled).toBe(true);

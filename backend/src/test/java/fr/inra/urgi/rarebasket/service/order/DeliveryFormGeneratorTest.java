@@ -20,7 +20,7 @@ import org.junit.jupiter.api.Test;
 
 /**
  * Unit test for {@link DeliveryFormGenerator}. It doesn't do much except check that it doesn't crash and
- * open it with
+ * open it with PDFReader
  * @author JB Nizet
  */
 class DeliveryFormGeneratorTest {

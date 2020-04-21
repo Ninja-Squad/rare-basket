@@ -147,6 +147,18 @@
 
       <button
         *ngIf="order.status === 'DRAFT'"
+        (click)="finalizeOrder()"
+        [disabled]="operationInProgress"
+        type="button"
+        class="btn btn-primary mr-2"
+        id="finalize-order-button"
+      >
+        <fa-icon [icon]="finalizeOrderIcon" class="mr-1"></fa-icon>
+        <span translate="order.order.finalize"></span>
+      </button>
+
+      <button
+        *ngIf="order.status === 'DRAFT'"
         (click)="cancelOrder()"
         [disabled]="operationInProgress"
         type="button"
@@ -161,6 +173,13 @@
         <fa-icon [icon]="deliveryFormIcon" class="mr-1"></fa-icon>
         <span translate="order.order.delivery-form"></span>
       </button>
+
+      <ul *ngIf="finalizationErrors.length > 0" class="mt-2 list-unstyled">
+        <li *ngFor="let error of finalizationErrors" class="small text-danger finalization-error">
+          <fa-icon [icon]="finalizationErrorIcon" class="mr-1"></fa-icon>
+          <span [translate]="error"></span>
+        </li>
+      </ul>
     </div>
   </div>
 

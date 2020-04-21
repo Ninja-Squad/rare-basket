@@ -5,10 +5,12 @@ import { DetailedOrder, Document, DocumentCommand, OrderCommand } from '../order
 import {
   faAddressCard,
   faAt,
+  faCheckSquare,
   faChevronLeft,
   faClipboardList,
   faCommentDots,
   faEdit,
+  faExclamationCircle,
   faFile,
   faHome,
   faMicrophone,
@@ -41,6 +43,8 @@ export class OrderComponent implements OnInit {
   languageIcon = faMicrophone;
   rationaleIcon = faCommentDots;
   editIcon = faEdit;
+  finalizeOrderIcon = faCheckSquare;
+  finalizationErrorIcon = faExclamationCircle;
   cancelOrderIcon = faWindowClose;
   allOrdersIcon = faChevronLeft;
   documentIcon = faFile;
@@ -52,6 +56,8 @@ export class OrderComponent implements OnInit {
   editing = false;
   addingDocument = false;
   uploadProgress: number | null = null;
+
+  finalizationErrors: Array<string> = [];
 
   private downloadingDocumentIds = new Set<number>();
 
@@ -140,6 +146,27 @@ export class OrderComponent implements OnInit {
 
   isDownloading(document: Document) {
     return this.downloadingDocumentIds.has(document.id);
+  }
+
+  finalizeOrder() {
+    this.finalizationErrors = [];
+    if (this.order.items.some(item => item.quantity === null)) {
+      this.finalizationErrors.push('order.order.missing-quantity-error');
+    }
+
+    if (this.finalizationErrors.length !== 0) {
+      return;
+    }
+
+    this.confirmationService
+      .confirm({
+        messageKey: 'order.order.finalize-confirmation'
+      })
+      .pipe(
+        switchMap(() => this.orderService.finalize(this.order.id)),
+        switchMap(() => this.orderService.get(this.order.id))
+      )
+      .subscribe(order => (this.order = order));
   }
 
   downloadDeliveryForm() {
