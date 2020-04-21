@@ -18,6 +18,7 @@ export interface BasketItem {
   id: number;
   accession: Accession;
   quantity: number | null;
+  unit: string | null;
 }
 
 export interface AccessionHolderBasket {
@@ -50,6 +51,7 @@ export interface CustomerCommand {
 export interface BasketItemCommand {
   accession: Accession;
   quantity: number | null;
+  unit: string | null;
 }
 
 export interface BasketCommand {

@@ -2,9 +2,9 @@
   <div formArrayName="items">
     <div *ngFor="let itemGroup of itemGroups.controls; index as i" [formGroupName]="i" class="my-2 edit-order-item">
       <div class="d-flex">
-        <div class="flex-grow-1 mr-4">
+        <div class="flex-grow-1 mr-3">
           <div class="form-row">
-            <div class="col-lg mb-2 mb-lg-0">
+            <div class="col-lg-3 mb-2 mb-lg-0">
               <label class="sr-only" [for]="'name-' + i" translate="order.edit-order.name"></label>
               <input
                 formControlName="name"
@@ -14,7 +14,7 @@
               />
               <val-errors controlName="name" [label]="'order.edit-order.name-error-label' | translate"></val-errors>
             </div>
-            <div class="col-lg mb-2 mb-lg-0">
+            <div class="col-lg-4 mb-2 mb-lg-0">
               <label class="sr-only" [for]="'identifier-' + i" translate="order.edit-order.name"></label>
               <input
                 formControlName="identifier"
@@ -24,18 +24,26 @@
               />
               <val-errors controlName="identifier" [label]="'order.edit-order.identifier-error-label' | translate"></val-errors>
             </div>
-            <div class="col-lg mb-2 mb-lg-0">
+            <div class="col-lg-2 mb-2 mb-lg-0">
               <label class="sr-only" [for]="'quantity-' + i" translate="order.edit-order.quantity"></label>
               <input
                 formControlName="quantity"
                 type="number"
                 class="form-control form-control-sm"
-                style="width: 6rem;"
                 [id]="'quantity-' + i"
                 [placeholder]="'order.edit-order.quantity' | translate"
                 min="1"
               />
               <val-errors controlName="quantity" [label]="'order.edit-order.quantity-error-label' | translate"></val-errors>
+            </div>
+            <div class="col-lg-3 mb-2 mb-lg-0">
+              <label class="sr-only" [for]="'unit-' + i" translate="order.edit-order.unit"></label>
+              <input
+                formControlName="unit"
+                class="form-control form-control-sm"
+                [id]="'unit-' + i"
+                [placeholder]="'order.edit-order.unit' | translate"
+              />
             </div>
           </div>
         </div>

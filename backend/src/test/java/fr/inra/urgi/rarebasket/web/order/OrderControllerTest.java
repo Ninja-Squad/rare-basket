@@ -84,8 +84,8 @@ class OrderControllerTest {
         order = new Order(42L);
         order.setBasket(basket);
         order.setStatus(OrderStatus.DRAFT);
-        order.addItem(new OrderItem(421L, new Accession("rosa", "rosa1"), 10));
-        order.addItem(new OrderItem(422L, new Accession("violetta", "violetta1"), null));
+        order.addItem(new OrderItem(421L, new Accession("rosa", "rosa1"), 10, "bags"));
+        order.addItem(new OrderItem(422L, new Accession("violetta", "violetta1"), null, null));
         order.setAccessionHolder(new AccessionHolder(accessionHolderId));
 
         document = new Document(54L);
@@ -138,7 +138,9 @@ class OrderControllerTest {
                .andExpect(jsonPath("$.content[0].items[0].accession.name").value("rosa"))
                .andExpect(jsonPath("$.content[0].items[0].accession.identifier").value("rosa1"))
                .andExpect(jsonPath("$.content[0].items[0].quantity").value(10))
-               .andExpect(jsonPath("$.content[0].items[1].quantity").isEmpty());
+               .andExpect(jsonPath("$.content[0].items[0].unit").value("bags"))
+               .andExpect(jsonPath("$.content[0].items[1].quantity").isEmpty())
+               .andExpect(jsonPath("$.content[0].items[1].unit").isEmpty());
 
         verify(mockCurrentUser).checkPermission(Permission.ORDER_MANAGEMENT);
     }
@@ -183,7 +185,7 @@ class OrderControllerTest {
 
     @Test
     void shouldUpdate() throws Exception {
-        OrderItemCommandDTO newItem = new OrderItemCommandDTO(new Accession("bacteria", "bacteria1"), 34);
+        OrderItemCommandDTO newItem = new OrderItemCommandDTO(new Accession("bacteria", "bacteria1"), 34, "seeds");
         OrderCommandDTO command = new OrderCommandDTO(
             Set.of(newItem)
         );
@@ -192,8 +194,8 @@ class OrderControllerTest {
                             .content(objectMapper.writeValueAsBytes(command)))
                .andExpect(status().isNoContent());
 
-        assertThat(order.getItems()).extracting(OrderItem::getAccession, OrderItem::getQuantity, OrderItem::getOrder)
-                                    .containsOnly(tuple(newItem.getAccession(), newItem.getQuantity(), order));
+        assertThat(order.getItems()).extracting(OrderItem::getAccession, OrderItem::getQuantity, OrderItem::getUnit, OrderItem::getOrder)
+                                    .containsOnly(tuple(newItem.getAccession(), newItem.getQuantity(), newItem.getUnit(), order));
         verify(mockCurrentUser).checkPermission(Permission.ORDER_MANAGEMENT);
     }
 
@@ -201,7 +203,7 @@ class OrderControllerTest {
     void shouldThrowWhenUpdatingNonDraftOrder() throws Exception {
         order.setStatus(OrderStatus.FINALIZED);
         OrderCommandDTO command = new OrderCommandDTO(
-            Set.of(new OrderItemCommandDTO(new Accession("rosa", "rosa1"), 34))
+            Set.of(new OrderItemCommandDTO(new Accession("rosa", "rosa1"), 34, null))
         );
         mockMvc.perform(put("/api/orders/{id}", order.getId())
                             .contentType(MediaType.APPLICATION_JSON)

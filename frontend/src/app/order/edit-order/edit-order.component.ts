@@ -8,6 +8,7 @@ export interface FormValue {
     name: string;
     identifier: string;
     quantity: number | null;
+    unit: string | null;
   }>;
 }
 
@@ -37,7 +38,7 @@ export class EditOrderComponent implements OnInit {
     this.form = this.fb.group({
       items: this.fb.array(
         this.order.items.map(orderItem =>
-          this.createItemGroup(orderItem.accession.name, orderItem.accession.identifier, orderItem.quantity)
+          this.createItemGroup(orderItem.accession.name, orderItem.accession.identifier, orderItem.quantity, orderItem.unit)
         )
       )
     });
@@ -58,7 +59,8 @@ export class EditOrderComponent implements OnInit {
           name: item.name,
           identifier: item.identifier
         },
-        quantity: item.quantity
+        quantity: item.quantity,
+        unit: item.unit
       }))
     };
 
@@ -66,7 +68,7 @@ export class EditOrderComponent implements OnInit {
   }
 
   addItem() {
-    this.itemGroups.push(this.createItemGroup('', '', null));
+    this.itemGroups.push(this.createItemGroup('', '', null, null));
   }
 
   delete(index: number) {
@@ -77,11 +79,12 @@ export class EditOrderComponent implements OnInit {
     this.cancelled.emit(undefined);
   }
 
-  private createItemGroup(name: string, identifier: string, quantity: number | null): FormGroup {
+  private createItemGroup(name: string, identifier: string, quantity: number | null, unit: string | null): FormGroup {
     return this.fb.group({
       name: [name, Validators.required],
       identifier: [identifier, Validators.required],
-      quantity: [quantity, Validators.min(1)]
+      quantity: [quantity, Validators.min(1)],
+      unit
     });
   }
 }

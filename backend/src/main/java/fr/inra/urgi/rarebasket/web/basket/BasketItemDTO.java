@@ -11,15 +11,17 @@ public final class BasketItemDTO {
     private final Long id;
     private final Accession accession;
     private final Integer quantity;
+    private final String unit;
 
-    public BasketItemDTO(Long id, Accession accession, Integer quantity) {
+    public BasketItemDTO(Long id, Accession accession, Integer quantity, String unit) {
         this.id = id;
         this.accession = accession;
         this.quantity = quantity;
+        this.unit = unit;
     }
 
     public BasketItemDTO(BasketItem item) {
-        this(item.getId(), item.getAccession(), item.getQuantity());
+        this(item.getId(), item.getAccession(), item.getQuantity(), item.getUnit());
     }
 
     public Long getId() {
@@ -32,5 +34,9 @@ public final class BasketItemDTO {
 
     public Integer getQuantity() {
         return quantity;
+    }
+
+    public String getUnit() {
+        return unit;
     }
 }

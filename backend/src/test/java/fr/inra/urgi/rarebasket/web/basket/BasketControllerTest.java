@@ -104,6 +104,7 @@ class BasketControllerTest {
         rosa = new BasketItem(5L);
         rosa.setAccession(new Accession("rosa", "rosa1"));
         rosa.setQuantity(2);
+        rosa.setUnit("bags");
         rosa.setAccessionHolder(john);
         basket.addItem(rosa);
 
@@ -179,7 +180,7 @@ class BasketControllerTest {
     @Test
     void shouldNotCreateBasketWithInvalidQuantity() throws Exception {
         BasketCommandDTO command = new BasketCommandDTO(
-            List.of(new BasketItemCommandDTO(new Accession("rosa", "rosa1"), john.getEmail(), 0))
+            List.of(new BasketItemCommandDTO(new Accession("rosa", "rosa1"), john.getEmail(), 0, null))
         );
         checkBadRequestWhenCreating(command);
     }
@@ -282,9 +283,9 @@ class BasketControllerTest {
     void shouldCreateACompleteBasket() throws Exception {
         BasketCommandDTO command = new BasketCommandDTO(
             List.of(
-                new BasketItemCommandDTO(new Accession("rosa", "rosa1"), john.getEmail(), 1),
-                new BasketItemCommandDTO(new Accession("violetta", "violetta1"), john.getEmail(), 2),
-                new BasketItemCommandDTO(new Accession("amanita", "amanita1"), alice.getEmail(), 3)
+                new BasketItemCommandDTO(new Accession("rosa", "rosa1"), john.getEmail(), 1, "bags"),
+                new BasketItemCommandDTO(new Accession("violetta", "violetta1"), john.getEmail(), 2, "seeds"),
+                new BasketItemCommandDTO(new Accession("amanita", "amanita1"), alice.getEmail(), 3, null)
             ),
             new CustomerCommandDTO(
                 "Jack",
@@ -314,11 +315,11 @@ class BasketControllerTest {
         assertThat(savedBasket.getCreationInstant()).isNotNull();
         assertThat(savedBasket.getItems()).hasSize(3);
         assertThat(savedBasket.getItems())
-            .extracting(BasketItem::getAccession, BasketItem::getAccessionHolder, BasketItem::getQuantity, BasketItem::getBasket)
+            .extracting(BasketItem::getAccession, BasketItem::getAccessionHolder, BasketItem::getQuantity, BasketItem::getUnit, BasketItem::getBasket)
             .containsOnly(
-                tuple(new Accession("rosa", "rosa1"), john, 1, savedBasket),
-                tuple(new Accession("violetta", "violetta1"), john, 2, savedBasket),
-                tuple(new Accession("amanita", "amanita1"), alice, 3, savedBasket)
+                tuple(new Accession("rosa", "rosa1"), john, 1, "bags", savedBasket),
+                tuple(new Accession("violetta", "violetta1"), john, 2, "seeds", savedBasket),
+                tuple(new Accession("amanita", "amanita1"), alice, 3, null, savedBasket)
             );
         assertThat(savedBasket.getStatus()).isEqualTo(BasketStatus.SAVED);
         assertThat(savedBasket.getCustomer()).isEqualTo(new Customer(command.getCustomer().getName(),
@@ -353,7 +354,8 @@ class BasketControllerTest {
                .andExpect(jsonPath("$.accessionHolderBaskets[1].items[0].id").value(rosa.getId()))
                .andExpect(jsonPath("$.accessionHolderBaskets[1].items[0].accession.name").value(rosa.getAccession().getName()))
                .andExpect(jsonPath("$.accessionHolderBaskets[1].items[0].accession.identifier").value(rosa.getAccession().getIdentifier()))
-               .andExpect(jsonPath("$.accessionHolderBaskets[1].items[0].quantity").value(rosa.getQuantity()));
+               .andExpect(jsonPath("$.accessionHolderBaskets[1].items[0].quantity").value(rosa.getQuantity()))
+               .andExpect(jsonPath("$.accessionHolderBaskets[1].items[0].unit").value(rosa.getUnit()));
     }
 
     @Test
@@ -478,8 +480,8 @@ class BasketControllerTest {
         assertThat(johnsOrder.getBasket()).isEqualTo(basket);
         assertThat(johnsOrder.getStatus()).isEqualTo(OrderStatus.DRAFT);
         assertThat(johnsOrder.getItems())
-            .extracting(OrderItem::getOrder, OrderItem::getAccession, OrderItem::getQuantity)
-            .containsOnly(Tuple.tuple(johnsOrder, rosa.getAccession(), rosa.getQuantity()));
+            .extracting(OrderItem::getOrder, OrderItem::getAccession, OrderItem::getQuantity, OrderItem::getUnit)
+            .containsOnly(Tuple.tuple(johnsOrder, rosa.getAccession(), rosa.getQuantity(), rosa.getUnit()));
 
         verify(mockEventPublisher).publish(new OrderCreated(johnsOrder.getId()));
         verify(mockEventPublisher).publish(new OrderCreated(alicesOrder.getId()));

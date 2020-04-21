@@ -38,6 +38,13 @@ public class BasketItem {
     public Integer quantity;
 
     /**
+     * The unit of the quantity of the accession being ordered.
+     * When coming from RARe, the unit is always null. But in order to make it possible later, or for
+     * other applications, to pre-fill quantities and their units, we keep this field here.
+     */
+    public String unit;
+
+    /**
      * The contact which is in charge of handling this order item
      */
     @NotNull
@@ -80,6 +87,14 @@ public class BasketItem {
 
     public void setQuantity(Integer quantity) {
         this.quantity = quantity;
+    }
+
+    public String getUnit() {
+        return unit;
+    }
+
+    public void setUnit(String unit) {
+        this.unit = unit;
     }
 
     public AccessionHolder getAccessionHolder() {

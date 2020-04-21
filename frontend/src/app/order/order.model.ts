@@ -4,6 +4,7 @@ export interface OrderItem {
   id: number;
   accession: Accession;
   quantity: number | null;
+  unit: string | null;
 }
 
 export type OrderStatus = 'DRAFT' | 'FINALIZED' | 'CANCELLED';
@@ -45,6 +46,7 @@ export interface OrderCommand {
 export interface OrderItemCommand {
   accession: Accession;
   quantity: number | null;
+  unit: string | null;
 }
 
 export interface DocumentCommand {

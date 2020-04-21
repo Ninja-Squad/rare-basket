@@ -18,7 +18,7 @@
       [translateParams]="{ date: order.basket.confirmationInstant | date: 'longDate' }"
     ></p>
     <div class="row">
-      <div class="col-md">
+      <div class="col-md-5">
         <h2 translate="order.order.customer-information"></h2>
         <div class="d-flex">
           <div class="mr-2"><fa-icon [icon]="nameIcon" [fixedWidth]="true"></fa-icon></div>
@@ -45,7 +45,7 @@
           <div class="flex-grow-1" style="white-space: pre-wrap;">{{ order.basket.rationale }}</div>
         </div>
       </div>
-      <div class="col-md">
+      <div class="col-md-7">
         <h2 translate="order.order.ordered-accessions"></h2>
         <div *ngIf="!editing">
           <table class="table table-sm">
@@ -58,7 +58,7 @@
             <tbody>
               <tr *ngFor="let item of order.items" class="order-item">
                 <td><rb-accession [accession]="item.accession"></rb-accession></td>
-                <td>{{ item.quantity | number }}</td>
+                <td>{{ item.quantity | number }} {{ item.unit }}</td>
               </tr>
             </tbody>
           </table>

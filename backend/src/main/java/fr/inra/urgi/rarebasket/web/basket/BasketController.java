@@ -214,6 +214,7 @@ public class BasketController {
         basket.getItems().forEach(item -> {
             BasketItemCommandDTO itemCommand = itemCommandsByAccession.get(item.getAccession());
             item.setQuantity(itemCommand.getQuantity());
+            item.setUnit(itemCommand.getUnit());
         });
     }
 
@@ -253,6 +254,7 @@ public class BasketController {
         OrderItem orderItem = new OrderItem();
         orderItem.setAccession(basketItem.getAccession());
         orderItem.setQuantity(basketItem.getQuantity());
+        orderItem.setUnit(basketItem.getUnit());
         return orderItem;
     }
 }

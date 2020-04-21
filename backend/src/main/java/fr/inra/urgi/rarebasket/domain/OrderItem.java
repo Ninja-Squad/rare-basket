@@ -45,7 +45,13 @@ public class OrderItem {
      * quantity may not be null anymore.
      */
     @Min(1)
-    public Integer quantity;
+    private Integer quantity;
+
+    /**
+     * The unit of the quantity (bags, grams, seeds, etc.)
+     * It's always optional, but can be specified for more clarity.
+     */
+    private String unit;
 
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY)
@@ -54,10 +60,11 @@ public class OrderItem {
     public OrderItem() {
     }
 
-    public OrderItem(Long id, Accession accession, Integer quantity) {
+    public OrderItem(Long id, Accession accession, Integer quantity, String unit) {
         this.id = id;
         this.accession = accession;
         this.quantity = quantity;
+        this.unit = unit;
     }
 
     public Long getId() {
@@ -82,6 +89,14 @@ public class OrderItem {
 
     public void setQuantity(Integer quantity) {
         this.quantity = quantity;
+    }
+
+    public String getUnit() {
+        return unit;
+    }
+
+    public void setUnit(String unit) {
+        this.unit = unit;
     }
 
     public Order getOrder() {

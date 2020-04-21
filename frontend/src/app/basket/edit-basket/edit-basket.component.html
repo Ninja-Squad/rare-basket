@@ -60,7 +60,7 @@
             <tbody>
               <tr *ngFor="let item of accessionHolderBasket.items; index as itemIndex" class="accession">
                 <td><rb-accession [accession]="item.accession"></rb-accession></td>
-                <td *ngIf="quantityDisplayed">{{ item.quantity | number }}</td>
+                <td *ngIf="quantityDisplayed">{{ item.quantity | number }} {{ item.unit }}</td>
                 <td class="text-right">
                   <button
                     [disabled]="deleteItemDisabled"

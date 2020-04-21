@@ -37,6 +37,7 @@ CREATE TABLE basket_item (
     accession_name       VARCHAR NOT NULL,
     accession_identifier VARCHAR NOT NULL,
     quantity             INT,
+    unit                 VARCHAR,
     basket_id            BIGINT  NOT NULL
         CONSTRAINT basket_item_fk1 REFERENCES basket(id),
     accession_holder_id  BIGINT  NOT NULL
@@ -62,6 +63,7 @@ CREATE TABLE accession_order_item (
     accession_name       VARCHAR NOT NULL,
     accession_identifier VARCHAR NOT NULL,
     quantity             INT,
+    unit                 VARCHAR,
     order_id             BIGINT  NOT NULL
         CONSTRAINT accession_order_item_fk1 REFERENCES accession_order(id)
 );

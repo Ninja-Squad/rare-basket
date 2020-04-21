@@ -115,7 +115,8 @@ describe('EditBasketComponent', () => {
                   name: 'Rosa',
                   identifier: 'rosa1'
                 },
-                quantity: null
+                quantity: null,
+                unit: null
               },
               {
                 id: 2,
@@ -123,7 +124,8 @@ describe('EditBasketComponent', () => {
                   name: 'Violetta',
                   identifier: 'violetta1'
                 },
-                quantity: null
+                quantity: null,
+                unit: null
               }
             ]
           },
@@ -137,7 +139,8 @@ describe('EditBasketComponent', () => {
                   name: 'Bacteria',
                   identifier: 'bacteria1'
                 },
-                quantity: null
+                quantity: null,
+                unit: null
               }
             ]
           }
@@ -170,6 +173,7 @@ describe('EditBasketComponent', () => {
 
     it('should display quantities if at least one is set', () => {
       tester.componentInstance.basket.accessionHolderBaskets[0].items[0].quantity = 10;
+      tester.componentInstance.basket.accessionHolderBaskets[0].items[0].unit = 'bags';
       tester.detectChanges();
 
       expect(tester.accessionsHeadings(0).length).toBe(3);
@@ -177,7 +181,7 @@ describe('EditBasketComponent', () => {
       expect(tester.accessionsHeadings(0)[0]).toHaveText('Accession');
       expect(tester.accessionsHeadings(0)[1]).toHaveText('Quantité');
       expect(tester.accessionsHeadings(0)[2]).toHaveText('');
-      expect(tester.accessions[0]).toContainText('10');
+      expect(tester.accessions[0]).toContainText('10 bags');
     });
 
     it('should validate and not save', () => {
@@ -194,6 +198,7 @@ describe('EditBasketComponent', () => {
 
     it('should save', () => {
       tester.componentInstance.basket.accessionHolderBaskets[0].items[0].quantity = 10;
+      tester.componentInstance.basket.accessionHolderBaskets[0].items[0].unit = 'bags';
       tester.detectChanges();
 
       tester.customerName.fillWith('John');
@@ -220,21 +225,24 @@ describe('EditBasketComponent', () => {
               name: 'Rosa',
               identifier: 'rosa1'
             },
-            quantity: 10
+            quantity: 10,
+            unit: 'bags'
           },
           {
             accession: {
               name: 'Violetta',
               identifier: 'violetta1'
             },
-            quantity: null
+            quantity: null,
+            unit: null
           },
           {
             accession: {
               name: 'Bacteria',
               identifier: 'bacteria1'
             },
-            quantity: null
+            quantity: null,
+            unit: null
           }
         ],
         complete: true
@@ -292,7 +300,8 @@ describe('EditBasketComponent', () => {
                   name: 'Rosa',
                   identifier: 'rosa1'
                 },
-                quantity: null
+                quantity: null,
+                unit: null
               }
             ]
           }

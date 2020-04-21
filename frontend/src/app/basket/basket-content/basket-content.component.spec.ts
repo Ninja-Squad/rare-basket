@@ -35,7 +35,8 @@ class TestComponent {
               name: 'Rosa',
               identifier: 'rosa1'
             },
-            quantity: 1234
+            quantity: 1234,
+            unit: 'bags'
           },
           {
             id: 2,
@@ -43,7 +44,8 @@ class TestComponent {
               name: 'Violetta',
               identifier: 'violetta1'
             },
-            quantity: 5
+            quantity: 5,
+            unit: null
           }
         ]
       },
@@ -57,7 +59,8 @@ class TestComponent {
               name: 'Bacteria',
               identifier: 'bacteria1'
             },
-            quantity: null
+            quantity: null,
+            unit: null
           }
         ]
       }
@@ -127,7 +130,7 @@ describe('BasketContentComponent', () => {
     expect(tester.items.length).toBe(3);
     expect(tester.items[0]).toContainText('Rosa');
     expect(tester.items[0]).toContainText('rosa1');
-    expect(tester.items[0]).toContainText('1 234');
+    expect(tester.items[0]).toContainText('1 234 bags');
     expect(tester.items[1]).toContainText('Violetta');
     expect(tester.items[1]).toContainText('violetta1');
 

@@ -144,7 +144,8 @@ describe('OrderComponent', () => {
             name: 'Rosa',
             identifier: 'rosa1'
           },
-          quantity: 1234
+          quantity: 1234,
+          unit: 'bags'
         },
         {
           id: 2,
@@ -152,7 +153,8 @@ describe('OrderComponent', () => {
             name: 'Violetta',
             identifier: 'violetta1'
           },
-          quantity: 5
+          quantity: 5,
+          unit: null
         }
       ],
       documents: [
@@ -203,7 +205,7 @@ describe('OrderComponent', () => {
 
     expect(tester.items.length).toBe(2);
     expect(tester.items[0]).toContainText('Rosa');
-    expect(tester.items[0]).toContainText('1 234');
+    expect(tester.items[0]).toContainText('1 234 bags');
     expect(tester.items[1]).toContainText('Violetta');
 
     expect(tester.editOrderComponent).toBeNull();

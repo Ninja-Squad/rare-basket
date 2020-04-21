@@ -134,6 +134,7 @@
       "identifier-error-label": "L'identifiant",
       "quantity": "Quantité",
       "quantity-error-label": "La quantité",
+      "unit": "Unité",
       "delete-accession": "Enlever cette accession de la commande",
       "add-accession": "Ajouter une accession à la commande",
       "save": "Enregistrer",

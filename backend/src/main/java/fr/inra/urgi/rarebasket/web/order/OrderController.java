@@ -96,7 +96,8 @@ public class OrderController {
                                       .stream()
                                       .map(itemCommand -> new OrderItem(null,
                                                                         itemCommand.getAccession(),
-                                                                        itemCommand.getQuantity()))
+                                                                        itemCommand.getQuantity(),
+                                                                        itemCommand.getUnit()))
                                       .collect(Collectors.toSet());
         order.setItems(items);
     }

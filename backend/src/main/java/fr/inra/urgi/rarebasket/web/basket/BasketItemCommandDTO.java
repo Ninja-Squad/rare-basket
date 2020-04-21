@@ -35,23 +35,27 @@ public final class BasketItemCommandDTO {
     @Min(value = 1)
     private Integer quantity;
 
+    private String unit;
+
     @JsonCreator
     public BasketItemCommandDTO(@JsonProperty("accession") Accession accession,
                                 @JsonProperty("contactEmail") String contactEmail,
-                                @JsonProperty("quantity") Integer quantity) {
+                                @JsonProperty("quantity") Integer quantity,
+                                @JsonProperty("unit") String unit) {
         this.accession = accession;
         this.contactEmail = contactEmail;
         this.quantity = quantity;
+        this.unit = unit;
     }
 
     public BasketItemCommandDTO(Accession accession,
                                 String contactEmail) {
-        this(accession, contactEmail, null);
+        this(accession, contactEmail, null, null);
     }
 
     public BasketItemCommandDTO(Accession accession,
                                 Integer quantity) {
-        this(accession, null, quantity);
+        this(accession, null, quantity, null);
     }
 
     public Accession getAccession() {
@@ -66,6 +70,10 @@ public final class BasketItemCommandDTO {
         return quantity;
     }
 
+    public String getUnit() {
+        return unit;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -77,20 +85,22 @@ public final class BasketItemCommandDTO {
         BasketItemCommandDTO that = (BasketItemCommandDTO) o;
         return Objects.equals(accession, that.accession) &&
             Objects.equals(contactEmail, that.contactEmail) &&
-            Objects.equals(quantity, that.quantity);
+            Objects.equals(quantity, that.quantity) &&
+            Objects.equals(unit, that.unit);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(accession, contactEmail, quantity);
+        return Objects.hash(accession, contactEmail, quantity, unit);
     }
 
     @Override
     public String toString() {
         return "BasketItemCommandDTO{" +
-            "accession='" + accession + '\'' +
+            "accession=" + accession +
             ", contactEmail='" + contactEmail + '\'' +
             ", quantity=" + quantity +
+            ", unit='" + unit + '\'' +
             '}';
     }
 }

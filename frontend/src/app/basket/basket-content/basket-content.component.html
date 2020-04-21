@@ -38,7 +38,7 @@
         <tbody>
           <tr *ngFor="let item of accessionHolderBasket.items" class="basket-item">
             <td><rb-accession [accession]="item.accession"></rb-accession></td>
-            <td *ngIf="quantityDisplayed">{{ item.quantity | number }}</td>
+            <td *ngIf="quantityDisplayed">{{ item.quantity | number }} {{ item.unit }}</td>
           </tr>
         </tbody>
       </table>

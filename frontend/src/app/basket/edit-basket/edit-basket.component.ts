@@ -75,7 +75,8 @@ export class EditBasketComponent implements OnInit {
       accessionHolderBasket.items.forEach(item => {
         itemCommands.push({
           accession: item.accession,
-          quantity: item.quantity
+          quantity: item.quantity,
+          unit: item.unit
         });
       });
     });

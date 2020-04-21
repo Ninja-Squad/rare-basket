@@ -33,7 +33,8 @@ class TestComponent {
           name: 'violetta',
           identifier: 'violetta1'
         },
-        quantity: 12
+        quantity: 12,
+        unit: 'bags'
       }
     ]
   } as Order;
@@ -58,6 +59,10 @@ class TestComponentTester extends ComponentTester<TestComponent> {
 
   quantity(index: number) {
     return this.input(`#quantity-${index}`);
+  }
+
+  unit(index: number) {
+    return this.input(`#unit-${index}`);
   }
 
   deleteButton(index: number) {
@@ -103,11 +108,13 @@ describe('EditOrderComponent', () => {
     expect(tester.name(0)).toHaveValue('rosa');
     expect(tester.identifier(0)).toHaveValue('rosa1');
     expect(tester.quantity(0)).toHaveValue('');
+    expect(tester.unit(0)).toHaveValue('');
     expect(tester.deleteButton(1).disabled).toBe(false);
 
     expect(tester.name(1)).toHaveValue('violetta');
     expect(tester.identifier(1)).toHaveValue('violetta1');
     expect(tester.quantity(1)).toHaveValue('12');
+    expect(tester.unit(1)).toHaveValue('bags');
     expect(tester.deleteButton(1).disabled).toBe(false);
   });
 
@@ -118,6 +125,7 @@ describe('EditOrderComponent', () => {
     expect(tester.name(2)).toHaveValue('');
     expect(tester.identifier(2)).toHaveValue('');
     expect(tester.quantity(2)).toHaveValue('');
+    expect(tester.unit(2)).toHaveValue('');
   });
 
   it('should delete an item', () => {
@@ -127,6 +135,7 @@ describe('EditOrderComponent', () => {
     expect(tester.name(0)).toHaveValue('violetta');
     expect(tester.identifier(0)).toHaveValue('violetta1');
     expect(tester.quantity(0)).toHaveValue('12');
+    expect(tester.unit(0)).toHaveValue('bags');
     expect(tester.deleteButton(0).disabled).toBe(true); // last item: not deletable
   });
 
@@ -161,14 +170,16 @@ describe('EditOrderComponent', () => {
             name: 'VIOLETTA',
             identifier: 'violetta1'
           },
-          quantity: 12
+          quantity: 12,
+          unit: 'bags'
         },
         {
           accession: {
             name: 'bacteria',
             identifier: 'bacteria1'
           },
-          quantity: null
+          quantity: null,
+          unit: null
         }
       ]
     });
