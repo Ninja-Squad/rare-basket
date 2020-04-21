@@ -39,7 +39,8 @@
   "navbar": {
     "toggle": "Toggle navigation",
     "orders": "Orders",
-    "users": "Utilisateurs",
+    "users": "Users",
+    "accession-holders": "Accession holders",
     "login": "Log in",
     "logout": "Log out"
   },
@@ -176,6 +177,14 @@
       "accession-holder-help": "Must be specified if the user manages orders",
       "save": "Save",
       "cancel": "Cancel"
+    }
+  },
+  "accession-holder": {
+    "accession-holders": {
+      "title": "Accession holders",
+      "create": "Add an accession holder",
+      "delete": "Delete the accession holder",
+      "delete-confirmation": "Do you really want to delete this accession holder? If it's referenced by an other entity in the system, the deletion will fail."
     }
   }
 }

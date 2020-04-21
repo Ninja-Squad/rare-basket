@@ -5,6 +5,7 @@ import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { UserService } from '../user.service';
 import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environment';
+import { AccessionHolderService } from '../../shared/accession-holder.service';
 
 interface FormValue {
   name: string;
@@ -31,7 +32,13 @@ export class EditUserComponent implements OnInit {
   grcOptionGroups: Array<GrcOptionGroup>;
   keycloakUrl = `${environment.keycloakUrl}/auth/admin/master/console/#/realms/rare-basket/users`;
 
-  constructor(private route: ActivatedRoute, fb: FormBuilder, private userService: UserService, private router: Router) {
+  constructor(
+    private route: ActivatedRoute,
+    fb: FormBuilder,
+    private userService: UserService,
+    private accessionHolderService: AccessionHolderService,
+    private router: Router
+  ) {
     this.form = fb.group({
       name: ['', Validators.required],
       permissions: fb.array(
@@ -64,9 +71,7 @@ export class EditUserComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.userService
-      .listAccessionHolders()
-      .subscribe(accessionHolders => (this.grcOptionGroups = this.toGrcOptionGroups(accessionHolders)));
+    this.accessionHolderService.list().subscribe(accessionHolders => (this.grcOptionGroups = this.toGrcOptionGroups(accessionHolders)));
 
     const userId = this.route.snapshot.paramMap.get('userId');
     if (userId) {

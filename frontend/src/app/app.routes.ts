@@ -22,6 +22,10 @@ export const APP_ROUTES: Routes = [
       {
         path: 'users',
         loadChildren: () => import('./user/user.module').then(m => m.UserModule)
+      },
+      {
+        path: 'accession-holders',
+        loadChildren: () => import('./accession-holder/accession-holder.module').then(m => m.AccessionHolderModule)
       }
     ]
   }

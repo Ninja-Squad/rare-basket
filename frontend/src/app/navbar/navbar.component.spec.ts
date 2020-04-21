@@ -22,6 +22,14 @@ class NavbarComponentTester extends ComponentTester<NavbarComponent> {
     return this.element('#navbar-user');
   }
 
+  get users() {
+    return this.element('#navbar-users');
+  }
+
+  get accessionHolders() {
+    return this.element('#navbar-accession-holders');
+  }
+
   get login() {
     return this.element('#navbar-login') as TestHtmlElement<HTMLAnchorElement>;
   }
@@ -55,6 +63,8 @@ describe('NavbarComponent', () => {
   it('should display elements depending on user presence and permissions', () => {
     expect(tester.user).toBeNull();
     expect(tester.orders).toBeNull();
+    expect(tester.users).toBeNull();
+    expect(tester.accessionHolders).toBeNull();
     expect(tester.logout).toBeNull();
     expect(tester.login).not.toBeNull();
 
@@ -63,6 +73,8 @@ describe('NavbarComponent', () => {
 
     expect(tester.user).toContainText('JB');
     expect(tester.orders).not.toBeNull();
+    expect(tester.users).toBeNull();
+    expect(tester.accessionHolders).toBeNull();
     expect(tester.logout).not.toBeNull();
     expect(tester.login).toBeNull();
 
@@ -71,6 +83,8 @@ describe('NavbarComponent', () => {
 
     expect(tester.user).toBeNull();
     expect(tester.orders).toBeNull();
+    expect(tester.users).toBeNull();
+    expect(tester.accessionHolders).toBeNull();
     expect(tester.logout).toBeNull();
     expect(tester.login).not.toBeNull();
 
@@ -79,6 +93,18 @@ describe('NavbarComponent', () => {
 
     expect(tester.user).toContainText('JB');
     expect(tester.orders).toBeNull();
+    expect(tester.users).toBeNull();
+    expect(tester.accessionHolders).toBeNull();
+    expect(tester.logout).not.toBeNull();
+    expect(tester.login).toBeNull();
+
+    userSubject.next({ name: 'JB', permissions: ['USER_MANAGEMENT'] } as User);
+    tester.detectChanges();
+
+    expect(tester.user).toContainText('JB');
+    expect(tester.orders).toBeNull();
+    expect(tester.users).not.toBeNull();
+    expect(tester.accessionHolders).not.toBeNull();
     expect(tester.logout).not.toBeNull();
     expect(tester.login).toBeNull();
   });

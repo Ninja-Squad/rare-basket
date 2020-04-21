@@ -12,6 +12,7 @@ import { UserService } from '../user.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ValidationDefaultsComponent } from '../../validation-defaults/validation-defaults.component';
 import { of } from 'rxjs';
+import { AccessionHolderService } from '../../shared/accession-holder.service';
 
 class EditUserComponentTester extends ComponentTester<EditUserComponent> {
   constructor() {
@@ -61,16 +62,19 @@ class EditUserComponentTester extends ComponentTester<EditUserComponent> {
 describe('EditUserComponent', () => {
   let tester: EditUserComponentTester;
   let userService: jasmine.SpyObj<UserService>;
+  let accessionHolderService: jasmine.SpyObj<AccessionHolderService>;
   let router: Router;
 
   function prepare(route: ActivatedRoute) {
-    userService = jasmine.createSpyObj<UserService>('UserService', ['get', 'create', 'update', 'listAccessionHolders']);
+    userService = jasmine.createSpyObj<UserService>('UserService', ['get', 'create', 'update']);
+    accessionHolderService = jasmine.createSpyObj<AccessionHolderService>('AccessionHolderService', ['list']);
 
     TestBed.configureTestingModule({
       imports: [I18nTestingModule, ReactiveFormsModule, ValdemortModule, RouterTestingModule],
       declarations: [EditUserComponent, PermissionEnumPipe, ValidationDefaultsComponent],
       providers: [
         { provide: UserService, useValue: userService },
+        { provide: AccessionHolderService, useValue: accessionHolderService },
         { provide: ActivatedRoute, useValue: route }
       ]
     });
@@ -82,7 +86,7 @@ describe('EditUserComponent', () => {
 
     jasmine.addMatchers(speculoosMatchers);
 
-    userService.listAccessionHolders.and.returnValue(
+    accessionHolderService.list.and.returnValue(
       of([
         {
           id: 11,

@@ -40,6 +40,7 @@
     "toggle": "Afficher/maquer la navigation",
     "orders": "Commandes",
     "users": "Utilisateurs",
+    "accession-holders": "Gestionnaires d'accessions",
     "login": "Connexion",
     "logout": "Déconnexion"
   },
@@ -177,6 +178,14 @@
       "accession-holder-help": "Doit être spécifié si l'utilisateur peut gérer des commandes",
       "save": "Enregistrer",
       "cancel": "Annuler"
+    }
+  },
+  "accession-holder": {
+    "accession-holders": {
+      "title": "Gestionnaires d'accessions",
+      "create": "Ajouter un gestionnaire d'accessions",
+      "delete": "Supprimer le gestionnaire d'accessions",
+      "delete-confirmation": "Voulez-vous vraiment supprimer ce gestionnaire d'accessions\u00a0? Si il est utilisé par une autre entité dans le système, la suppression échouera."
     }
   }
 }

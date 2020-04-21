@@ -25,6 +25,12 @@
           <span translate="navbar.users"></span>
         </a>
       </li>
+      <li class="nav-item" *ngIf="hasPermission('USER_MANAGEMENT')" id="navbar-accession-holders">
+        <a class="nav-link" routerLink="/accession-holders">
+          <fa-icon [icon]="accessionHolderIcon" class="mr-1"></fa-icon>
+          <span translate="navbar.accession-holders"></span>
+        </a>
+      </li>
     </ul>
     <ul class="navbar-nav">
       <li class="nav-item" *ngIf="user" class="mr-2" id="navbar-user">

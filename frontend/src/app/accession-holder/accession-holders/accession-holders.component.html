@@ -1,0 +1,36 @@
+<h1 translate="accession-holder.accession-holders.title"></h1>
+
+<div *ngIf="accessionHolders">
+  <div class="content mt-2">
+    <div *ngFor="let accessionHolder of accessionHolders">
+      <div class="d-flex">
+        <div><fa-icon [icon]="accessionHolderIcon" class="mr-2"></fa-icon></div>
+        <div class="flex-grow-1 row accession-holder">
+          <div class="col-6 col-md-4">
+            <a [routerLink]="['/accession-holders', accessionHolder.id, 'edit']">{{ accessionHolder.name }}</a>
+          </div>
+          <div class="col-6 col-md-4">{{ accessionHolder.email }}</div>
+          <div class="col-12 col-md-4">{{ accessionHolder.grc.name }}</div>
+        </div>
+        <div class="text-right">
+          <button
+            (click)="deleteAccessionHolder(accessionHolder)"
+            type="button"
+            class="btn btn-outline-danger btn-sm delete-accession-holder-button"
+          >
+            <fa-icon [icon]="deleteAccessionHolderIcon"></fa-icon>
+            <span class="sr-only" translate="accession-holder.accession-holders.delete"></span>
+          </button>
+        </div>
+      </div>
+      <hr class="my-2" />
+    </div>
+  </div>
+
+  <div class="text-right mt-2">
+    <a class="btn btn-outline-secondary" id="create-accession-holder" routerLink="/accession-holders/new">
+      <fa-icon [icon]="createAccessionHolderIcon" class="mr-1"></fa-icon>
+      <span translate="accession-holder.accession-holders.create"></span>
+    </a>
+  </div>
+</div>

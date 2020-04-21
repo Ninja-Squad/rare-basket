@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { AccessionHolder, User, UserCommand } from '../shared/user.model';
+import { User, UserCommand } from '../shared/user.model';
 import { Page } from '../shared/page.model';
 
 @Injectable({
@@ -12,10 +12,6 @@ export class UserService {
 
   list(page: number): Observable<Page<User>> {
     return this.http.get<Page<User>>('/api/users', { params: { page: `${page}` } });
-  }
-
-  listAccessionHolders(): Observable<Array<AccessionHolder>> {
-    return this.http.get<Array<AccessionHolder>>('/api/accession-holders');
   }
 
   get(userId: number): Observable<User> {
