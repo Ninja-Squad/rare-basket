@@ -15,8 +15,15 @@
   },
   "enums": {
     "customer-type": {
+      "INRAE_RESEARCHER": "INRAE researcher",
+      "FR_RESEARCHER": "Researcher from another French academic institute",
+      "FOREIGN_RESEARCHER": "Researcher from a non French academic institute",
+      "FR_COMPANY": "French private company",
+      "FOREIGN_COMPANY": "Non French private company",
       "FARMER": "Farmer",
-      "BIOLOGIST": "Biologist"
+      "NGO": "NGO, non-profit organization",
+      "CITIZEN": "Citizen",
+      "OTHER": "Other"
     },
     "order-status": {
       "DRAFT": "In progress",

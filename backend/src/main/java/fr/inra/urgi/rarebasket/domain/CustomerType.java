@@ -5,6 +5,13 @@ package fr.inra.urgi.rarebasket.domain;
  * @author JB Nizet
  */
 public enum CustomerType {
+    INRAE_RESEARCHER,
+    FR_RESEARCHER,
+    FOREIGN_RESEARCHER,
+    FR_COMPANY,
+    FOREIGN_COMPANY,
     FARMER,
-    BIOLOGIST
+    NGO,
+    CITIZEN,
+    OTHER
 }

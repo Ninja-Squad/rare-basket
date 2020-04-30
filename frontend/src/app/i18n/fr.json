@@ -15,8 +15,15 @@
   },
   "enums": {
     "customer-type": {
+      "INRAE_RESEARCHER": "Chercheur INRAE",
+      "FR_RESEARCHER": "Chercheur d'un établissement public français hors INRAE",
+      "FOREIGN_RESEARCHER": "Chercheur d'un établissement public étranger",
+      "FR_COMPANY": "Entreprise privée française",
+      "FOREIGN_COMPANY": "Entreprise privée étrangère",
       "FARMER": "Agriculteur",
-      "BIOLOGIST": "Biologiste"
+      "NGO": "Organisation à but non lucratif",
+      "CITIZEN": "Citoyen",
+      "OTHER": "Autre"
     },
     "order-status": {
       "DRAFT": "En cours",

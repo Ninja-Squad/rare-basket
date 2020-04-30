@@ -1,4 +1,14 @@
-export const ALL_CUSTOMER_TYPES = ['FARMER', 'BIOLOGIST'] as const;
+export const ALL_CUSTOMER_TYPES = [
+  'INRAE_RESEARCHER',
+  'FR_RESEARCHER',
+  'FOREIGN_RESEARCHER',
+  'FR_COMPANY',
+  'FOREIGN_COMPANY',
+  'FARMER',
+  'NGO',
+  'CITIZEN',
+  'OTHER'
+] as const;
 export type CustomerType = typeof ALL_CUSTOMER_TYPES[number];
 
 export interface Accession {

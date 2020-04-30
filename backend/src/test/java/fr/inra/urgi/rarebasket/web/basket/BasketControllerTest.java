@@ -291,7 +291,7 @@ class BasketControllerTest {
                 "Jack",
                 "jack@mail.com",
                 "21 Jump street",
-                CustomerType.BIOLOGIST,
+                CustomerType.CITIZEN,
                 SupportedLanguage.ENGLISH
             ),
             "because...",
@@ -407,7 +407,7 @@ class BasketControllerTest {
                 "Jack",
                 "jack@mail.com",
                 "21 Jump street",
-                CustomerType.BIOLOGIST,
+                CustomerType.CITIZEN,
                 SupportedLanguage.ENGLISH
             ),
             "because...",

@@ -144,7 +144,7 @@ describe('OrderComponent', () => {
           name: 'John Doe',
           email: 'john@mail.com',
           address: 'Av. du Centre\n75000 Paris',
-          type: 'BIOLOGIST',
+          type: 'CITIZEN',
           language: 'en'
         },
         rationale: 'Why not?',
@@ -208,7 +208,7 @@ describe('OrderComponent', () => {
     expect(tester.testElement).toContainText('John');
     expect(tester.testElement).toContainText('john@mail.com');
     expect(tester.testElement).toContainText('Av. du Centre\n75000 Paris');
-    expect(tester.testElement).toContainText('Biologiste');
+    expect(tester.testElement).toContainText('Citoyen');
     expect(tester.testElement).toContainText('Anglais');
     expect(tester.testElement).toContainText('Why not?');
   });

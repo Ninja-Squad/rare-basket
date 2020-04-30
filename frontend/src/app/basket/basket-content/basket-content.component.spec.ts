@@ -21,7 +21,7 @@ class TestComponent {
       name: 'John Doe',
       email: 'john@mail.com',
       address: 'Av. du Centre\n75000 Paris',
-      type: 'BIOLOGIST'
+      type: 'CITIZEN'
     },
     rationale: 'Why not?',
     accessionHolderBaskets: [
@@ -110,7 +110,7 @@ describe('BasketContentComponent', () => {
     expect(tester.testElement).toContainText('John');
     expect(tester.testElement).toContainText('john@mail.com');
     expect(tester.testElement).toContainText('Av. du Centre\n75000 Paris');
-    expect(tester.testElement).toContainText('Biologiste');
+    expect(tester.testElement).toContainText('Citoyen');
     expect(tester.testElement).toContainText('Why not?');
   });
 

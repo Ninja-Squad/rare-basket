@@ -32,7 +32,7 @@ class TestComponent {
           reference: 'ABCDEFGH',
           confirmationInstant: '2020-04-02T12:00:00Z',
           customer: {
-            type: 'BIOLOGIST',
+            type: 'CITIZEN',
             name: 'John Doe'
           }
         },
@@ -92,7 +92,7 @@ describe('OrdersComponent', () => {
   it('should have rows of data', () => {
     expect(tester.rows.length).toBe(2);
     expect(tester.rows[0]).toContainText('ABCDEFGH');
-    expect(tester.rows[0]).toContainText('John Doe, Biologiste');
+    expect(tester.rows[0]).toContainText('John Doe, Citoyen');
     expect(tester.rows[0]).toContainText('2 avr. 2020');
     expect(tester.rows[0]).toContainText('2 accessions');
     expect(tester.rows[0]).toContainText('En cours');

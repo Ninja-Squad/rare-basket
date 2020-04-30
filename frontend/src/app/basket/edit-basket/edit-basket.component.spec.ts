@@ -204,7 +204,7 @@ describe('EditBasketComponent', () => {
       tester.customerName.fillWith('John');
       tester.customerEmail.fillWith('john@mail.com');
       tester.customerAddress.fillWith('21 Jump Street');
-      tester.customerType.selectLabel('Biologiste');
+      tester.customerType.selectLabel('Citoyen');
       tester.rationale.fillWith('Because');
 
       tester.saveButton.click();
@@ -215,7 +215,7 @@ describe('EditBasketComponent', () => {
           name: 'John',
           email: 'john@mail.com',
           address: '21 Jump Street',
-          type: 'BIOLOGIST',
+          type: 'CITIZEN',
           language: 'fr'
         },
         rationale: 'Because',
@@ -284,7 +284,7 @@ describe('EditBasketComponent', () => {
           name: 'John',
           email: 'john@mail.com',
           address: '21 Jump Street',
-          type: 'BIOLOGIST',
+          type: 'CITIZEN',
           language: 'en'
         },
         rationale: 'Because',
@@ -315,7 +315,7 @@ describe('EditBasketComponent', () => {
       expect(tester.customerName).toHaveValue('John');
       expect(tester.customerEmail).toHaveValue('john@mail.com');
       expect(tester.customerAddress).toHaveValue('21 Jump Street');
-      expect(tester.customerType).toHaveSelectedLabel('Biologiste');
+      expect(tester.customerType).toHaveSelectedLabel('Citoyen');
       expect(tester.rationale).toHaveValue('Because');
     });
   });

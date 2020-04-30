@@ -4,8 +4,8 @@ import { testEnumPipe } from './base-enum-pipe.spec';
 describe('CustomerTypeEnumPipe', () => {
   it('should translate customer types', () => {
     testEnumPipe(ts => new CustomerTypeEnumPipe(ts), {
-      FARMER: 'Agriculteur',
-      BIOLOGIST: 'Biologiste'
+      INRAE_RESEARCHER: 'Chercheur INRAE',
+      FARMER: 'Agriculteur'
     });
   });
 });
