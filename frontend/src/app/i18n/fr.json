@@ -79,6 +79,10 @@
       "quantity-heading": "Quantité",
       "delete-accession": "Supprimer l'accession {{ name }} - {{ identifier }} de la commande",
       "confirm-accession-deletion": "Voulez-vous vraiment supprimer cette accession de votre commande\u00a0?",
+      "data-collection": "Nous collectons des données personnelles (nom, e-mail, adresse postale) afin de gérer votre commande.",
+      "data-collection-link": "En savoir plus sur la gestion de vos données et vos droits",
+      "gpdr-agreement": "Je note que je peux accéder aux données me concernant, les rectifier, demander leur effacement ou exercer mon droit à la limitation du traitement de mes données.",
+      "gpdr-agreement-required": "Vous devez cocher cette case pour pouvoir finaliser votre commande",
       "save": "Finaliser ma commande"
     },
     "basket-confirmation": {

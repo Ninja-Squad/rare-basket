@@ -86,11 +86,32 @@
       </div>
     </div>
 
-    <div class="text-center mt-4">
-      <button class="btn btn-primary" id="save">
-        <fa-icon [icon]="saveIcon" class="mr-1"></fa-icon>
-        <span translate="basket.edit-basket.save"></span>
-      </button>
+    <div class="mt-2">
+      <div class="border rounded p-2 bg-light small">
+        <div>
+          <span translate="basket.edit-basket.data-collection"></span>&ngsp;
+          <a
+            href="https://urgi.versailles.inra.fr/rare/legal#personal-data"
+            target="_blank"
+            translate="basket.edit-basket.data-collection-link"
+          ></a>
+        </div>
+
+        <div class="form-group form-check mb-0">
+          <input formControlName="gpdrAgreement" type="checkbox" class="form-check-input" id="gpdr-agreement" />
+          <label class="form-check-label" for="gpdr-agreement" translate="basket.edit-basket.gpdr-agreement"></label>
+          <val-errors controlName="gpdrAgreement">
+            <ng-template valError="agreementRequired"><span translate="basket.edit-basket.gpdr-agreement-required"></span></ng-template>
+          </val-errors>
+        </div>
+      </div>
+
+      <div class="text-center mt-4">
+        <button class="btn btn-primary" id="save">
+          <fa-icon [icon]="saveIcon" class="mr-1"></fa-icon>
+          <span translate="basket.edit-basket.save"></span>
+        </button>
+      </div>
     </div>
   </form>
 </div>

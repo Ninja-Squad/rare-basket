@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Inject, Input, LOCALE_ID, OnInit, Output } from '@angular/core';
 import { ALL_CUSTOMER_TYPES, Basket, BasketCommand, BasketItemCommand, CustomerType, Language } from '../basket.model';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { faCheck, faTrash } from '@fortawesome/free-solid-svg-icons';
 import { ConfirmationService } from '../../shared/confirmation.service';
 
@@ -13,6 +13,7 @@ interface FormValue {
     language: Language;
   };
   rationale: string;
+  rgpdAgreement: boolean;
 }
 
 @Component({
@@ -36,6 +37,10 @@ export class EditBasketComponent implements OnInit {
 
   constructor(private fb: FormBuilder, private confirmationService: ConfirmationService, @Inject(LOCALE_ID) private language: Language) {}
 
+  private static agreementRequired(control: FormControl) {
+    return control.value ? null : { agreementRequired: true };
+  }
+
   ngOnInit(): void {
     const customer = this.basket.customer;
     this.form = this.fb.group({
@@ -46,7 +51,8 @@ export class EditBasketComponent implements OnInit {
         type: [customer?.type ?? null, Validators.required],
         language: this.language
       }),
-      rationale: [this.basket.rationale]
+      rationale: [this.basket.rationale],
+      gpdrAgreement: [false, EditBasketComponent.agreementRequired]
     });
     this.quantityDisplayed = this.shouldDisplayQuantity();
     this.deleteItemDisabled = this.shouldDisableDeleteItem();
@@ -81,7 +87,13 @@ export class EditBasketComponent implements OnInit {
       });
     });
 
-    const command: BasketCommand = { ...(this.form.value as FormValue), complete: true, items: itemCommands };
+    const value: FormValue = this.form.value as FormValue;
+    const command: BasketCommand = {
+      customer: value.customer,
+      rationale: value.rationale,
+      complete: true,
+      items: itemCommands
+    };
     this.basketSaved.emit(command);
   }
 

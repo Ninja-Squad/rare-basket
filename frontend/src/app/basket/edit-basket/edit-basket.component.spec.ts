@@ -47,6 +47,10 @@ class TestComponentTester extends ComponentTester<TestComponent> {
     return this.textarea('#rationale');
   }
 
+  get gpdrAgreement() {
+    return this.input('#gpdr-agreement');
+  }
+
   get saveButton() {
     return this.button('#save');
   }
@@ -169,6 +173,7 @@ describe('EditBasketComponent', () => {
       expect(tester.accessions[0]).toContainText('rosa1');
       expect(tester.accessions[1]).toContainText('Violetta');
       expect(tester.accessions[1]).toContainText('violetta1');
+      expect(tester.gpdrAgreement).not.toBeChecked();
     });
 
     it('should display quantities if at least one is set', () => {
@@ -189,11 +194,12 @@ describe('EditBasketComponent', () => {
 
       tester.saveButton.click();
       expect(tester.componentInstance.savedCommand).toBeNull();
-      expect(tester.errors.length).toBe(4);
+      expect(tester.errors.length).toBe(5);
       expect(tester.testElement).toContainText('Le nom est obligatoire');
       expect(tester.testElement).toContainText(`L'adresse courriel est obligatoire`);
       expect(tester.testElement).toContainText(`L'adresse postale est obligatoire`);
       expect(tester.testElement).toContainText(`La catégorie est obligatoire`);
+      expect(tester.testElement).toContainText(`Vous devez cocher cette case pour pouvoir finaliser votre commande`);
     });
 
     it('should save', () => {
@@ -206,6 +212,7 @@ describe('EditBasketComponent', () => {
       tester.customerAddress.fillWith('21 Jump Street');
       tester.customerType.selectLabel('Citoyen');
       tester.rationale.fillWith('Because');
+      tester.gpdrAgreement.check();
 
       tester.saveButton.click();
       expect(tester.errors.length).toBe(0);
