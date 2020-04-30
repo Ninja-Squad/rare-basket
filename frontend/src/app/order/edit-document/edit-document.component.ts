@@ -1,6 +1,6 @@
 import { Component, ElementRef, EventEmitter, Inject, Input, LOCALE_ID, OnChanges, Output, SimpleChanges, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { ALL_DOCUMENT_TYPES, DocumentCommand, DocumentType } from '../order.model';
+import { ALL_DOCUMENT_TYPES, DetailedOrder, DocumentCommand, DocumentType, isDocumentTypeUnique } from '../order.model';
 import { faFileUpload } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
@@ -11,10 +11,11 @@ import { faFileUpload } from '@fortawesome/free-solid-svg-icons';
 export class EditDocumentComponent implements OnChanges {
   form: FormGroup;
 
-  documentTypes = ALL_DOCUMENT_TYPES;
-
   @ViewChild('fileInput')
   fileInput: ElementRef<HTMLInputElement>;
+
+  @Input()
+  order: DetailedOrder;
 
   @Input()
   uploadProgress: number;
@@ -26,7 +27,7 @@ export class EditDocumentComponent implements OnChanges {
   readonly saved = new EventEmitter<DocumentCommand>();
 
   highlightFileInput = false;
-
+  documentTypes: Array<DocumentType>;
   saveIcon = faFileUpload;
 
   constructor(fb: FormBuilder, @Inject(LOCALE_ID) public locale: string) {
@@ -50,6 +51,12 @@ export class EditDocumentComponent implements OnChanges {
       } else {
         this.form.enable();
       }
+    }
+
+    if (changes.order) {
+      this.documentTypes = ALL_DOCUMENT_TYPES.filter(
+        documentType => !isDocumentTypeUnique(documentType) || !this.order.documents.some(doc => doc.type === documentType)
+      );
     }
   }
 

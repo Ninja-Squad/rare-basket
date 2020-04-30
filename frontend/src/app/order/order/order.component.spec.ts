@@ -409,6 +409,7 @@ describe('OrderComponent', () => {
     expect(tester.addDocumentButton).toBeNull();
     expect(tester.editDocumentComponent).not.toBeNull();
     expect(tester.editDocumentComponent.uploadProgress).toBeNull();
+    expect(tester.editDocumentComponent.order).toBe(order);
   });
 
   it('should cancel document addition', () => {

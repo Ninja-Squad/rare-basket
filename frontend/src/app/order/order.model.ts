@@ -16,8 +16,12 @@ export interface BasketInformation {
   confirmationInstant: string;
 }
 
-export const ALL_DOCUMENT_TYPES = ['INVOICE', 'OTHER'] as const;
+export const ALL_DOCUMENT_TYPES = ['EMAIL', 'MTA', 'SANITARY_PASSPORT', 'INVOICE', 'OTHER'] as const;
 export type DocumentType = typeof ALL_DOCUMENT_TYPES[number];
+
+export function isDocumentTypeUnique(documentType: DocumentType): boolean {
+  return documentType === 'INVOICE';
+}
 
 export interface Document {
   id: number;

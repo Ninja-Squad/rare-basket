@@ -233,7 +233,7 @@ class OrderControllerTest {
 
     @Test
     void shouldAddDocument() throws Exception {
-        DocumentCommandDTO command = new DocumentCommandDTO(DocumentType.INVOICE, "desc");
+        DocumentCommandDTO command = new DocumentCommandDTO(DocumentType.EMAIL, "desc");
 
         doAnswer(invocation -> {
             order.getDocuments()
@@ -262,12 +262,31 @@ class OrderControllerTest {
 
         assertThat(order.getDocuments()).hasSize(2);
         verify(mockCurrentUser).checkPermission(Permission.ORDER_MANAGEMENT);
+        verify(mockDocumentStorage).storeDocument(eq(321L), eq("foo.txt"), any());
+    }
+
+    @Test
+    void shouldThrowWhenAddingSecondDocumentOfUniqueType() throws Exception {
+        DocumentCommandDTO command = new DocumentCommandDTO(DocumentType.INVOICE, "desc");
+
+        mockMvc.perform(multipart("/api/orders/{orderId}/documents", order.getId())
+                            .file(new MockMultipartFile("file",
+                                                        "foo.txt",
+                                                        MediaType.TEXT_PLAIN_VALUE,
+                                                        "hello".getBytes()))
+                            .file(new MockMultipartFile("document",
+                                                        null,
+                                                        MediaType.APPLICATION_JSON_VALUE,
+                                                        objectMapper.writeValueAsBytes(command))))
+               .andExpect(status().isBadRequest());
+
+        assertThat(order.getDocuments()).hasSize(1);
     }
 
     @Test
     void shouldThrowWhenAddingDocumentToNonDraftOrder() throws Exception {
         order.setStatus(OrderStatus.FINALIZED);
-        DocumentCommandDTO command = new DocumentCommandDTO(DocumentType.INVOICE, "desc");
+        DocumentCommandDTO command = new DocumentCommandDTO(DocumentType.EMAIL, "desc");
 
         mockMvc.perform(multipart("/api/orders/{orderId}/documents", order.getId())
                             .file(new MockMultipartFile("file",

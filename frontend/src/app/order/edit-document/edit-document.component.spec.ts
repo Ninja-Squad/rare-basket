@@ -2,7 +2,7 @@ import { TestBed } from '@angular/core/testing';
 
 import { EditDocumentComponent } from './edit-document.component';
 import { Component } from '@angular/core';
-import { DocumentCommand } from '../order.model';
+import { ALL_DOCUMENT_TYPES, DetailedOrder, Document, DocumentCommand } from '../order.model';
 import { ComponentTester, speculoosMatchers } from 'ngx-speculoos';
 import { NgbProgressbar } from '@ng-bootstrap/ng-bootstrap';
 import { By } from '@angular/platform-browser';
@@ -15,9 +15,13 @@ import { ValidationDefaultsComponent } from '../../validation-defaults/validatio
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 
 @Component({
-  template: '<rb-edit-document [uploadProgress]="progress" (saved)="saved = $event" (cancelled)="cancelled = true"></rb-edit-document>'
+  template:
+    '<rb-edit-document [order]="order" [uploadProgress]="progress" (saved)="saved = $event" (cancelled)="cancelled = true"></rb-edit-document>'
 })
 class TestComponent {
+  order = {
+    documents: []
+  } as DetailedOrder;
   progress: number | null = null;
   cancelled = false;
   saved: DocumentCommand = null;
@@ -28,7 +32,7 @@ class TestComponentTester extends ComponentTester<TestComponent> {
     super(TestComponent);
   }
 
-  get editDocumentDomponent(): EditDocumentComponent {
+  get editDocumentComponent(): EditDocumentComponent {
     return this.debugElement.query(By.directive(EditDocumentComponent)).componentInstance;
   }
 
@@ -83,11 +87,31 @@ describe('EditDocumentComponent', () => {
 
   it('should display an empty form', () => {
     expect(tester.type).toHaveSelectedLabel('');
+    expect(tester.type.optionLabels.length).toBe(ALL_DOCUMENT_TYPES.length + 1);
+    expect(tester.type.optionLabels).toContain('Facture');
     expect(tester.description).toHaveValue('');
 
     [tester.type, tester.description, tester.file, tester.saveButton, tester.cancelButton].forEach(e => expect(e.disabled).toBe(false));
 
     expect(tester.progressBar).toBeNull();
+  });
+
+  it('should filter out unique document types if they are present in the order', () => {
+    expect(tester.type.optionLabels.length).toBe(ALL_DOCUMENT_TYPES.length + 1);
+    expect(tester.type.optionLabels).toContain('Facture');
+
+    tester.componentInstance.order = {
+      ...tester.componentInstance.order,
+      documents: [
+        {
+          type: 'INVOICE'
+        } as Document
+      ]
+    };
+    tester.detectChanges();
+
+    expect(tester.type.optionLabels.length).toBe(ALL_DOCUMENT_TYPES.length);
+    expect(tester.type.optionLabels).not.toContain('Facture');
   });
 
   it('should validate', () => {
@@ -132,7 +156,7 @@ describe('EditDocumentComponent', () => {
     tester.description.fillWith('desc');
 
     const selectedFile = {} as File;
-    spyOnProperty(tester.editDocumentDomponent, 'selectedFile', 'get').and.returnValue(selectedFile);
+    spyOnProperty(tester.editDocumentComponent, 'selectedFile', 'get').and.returnValue(selectedFile);
 
     tester.saveButton.click();
     const expectedCommand: DocumentCommand = {
@@ -154,7 +178,7 @@ describe('EditDocumentComponent', () => {
     expect(tester.customFileInput).toContainText('Choisissez ou déposez un fichier');
 
     const selectedFile = { name: 'foo.txt' } as File;
-    spyOnProperty(tester.editDocumentDomponent, 'selectedFile', 'get').and.returnValue(selectedFile);
+    spyOnProperty(tester.editDocumentComponent, 'selectedFile', 'get').and.returnValue(selectedFile);
 
     tester.detectChanges();
 

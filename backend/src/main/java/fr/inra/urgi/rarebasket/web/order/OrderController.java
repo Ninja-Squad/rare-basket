@@ -126,6 +126,10 @@ public class OrderController {
         currentUser.checkPermission(Permission.ORDER_MANAGEMENT);
         Order order = getOrderAndCheckAccessibleAndDraft(orderId);
 
+        if (command.getType().isUnique() && order.getDocuments().stream().anyMatch(doc -> doc.getType() == command.getType())) {
+            throw new BadRequestException("The order already has a document of that type, and may have at most one");
+        }
+
         Document document = new Document();
         document.setDescription(command.getDescription());
         document.setType(command.getType());

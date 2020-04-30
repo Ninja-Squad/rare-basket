@@ -100,7 +100,7 @@
           </div>
           <div class="col-md-5 col-lg-4">
             <div>
-              <span class="badge badge-secondary">{{ document.type | documentTypeEnum }}</span>
+              <span class="badge badge-secondary document-type">{{ document.type | documentTypeEnum }}</span>
             </div>
             <small class="text-muted">{{ document.description }}</small>
           </div>
@@ -138,6 +138,7 @@
       <rb-edit-document
         (saved)="createDocument($event)"
         (cancelled)="addingDocument = false"
+        [order]="order"
         [uploadProgress]="uploadProgress"
       ></rb-edit-document>
     </div>

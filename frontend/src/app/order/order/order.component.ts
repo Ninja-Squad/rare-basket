@@ -113,9 +113,7 @@ export class OrderComponent implements OnInit {
         finalize(() => (this.addingDocument = false)),
         switchMap(() => this.orderService.get(this.order.id))
       )
-      .subscribe(order => {
-        this.order = order;
-      });
+      .subscribe(order => (this.order = order));
   }
 
   deleteDocument(document: Document) {
