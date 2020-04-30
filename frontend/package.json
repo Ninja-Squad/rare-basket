@@ -8,7 +8,8 @@
     "test": "ng test --code-coverage --no-progress --no-watch",
     "lint": "ng lint > tslint-result.txt",
     "format": "prettier --write \"{src,e2e}/**/*.+(ts|js|json|html|scss)\"",
-    "format:check": "prettier --check \"{src,e2e}/**/*.+(ts|js|json|html|scss)\" > prettier-result.txt"
+    "format:check": "prettier --check \"{src,e2e}/**/*.+(ts|js|json|html|scss)\" > prettier-result.txt",
+    "postinstall": "echo 'Replacing moment.js by empty file since it is optional and not used'; echo '' > node_modules/moment/moment.js"
   },
   "private": true,
   "dependencies": {
@@ -27,6 +28,7 @@
     "@ngx-translate/core": "12.1.2",
     "angular-auth-oidc-client": "10.0.15",
     "bootstrap": "4.4.1",
+    "chart.js": "2.9.3",
     "ngx-valdemort": "3.0.0",
     "rxjs": "6.5.4",
     "tslib": "1.11.1",
@@ -37,6 +39,7 @@
     "@angular/cli": "9.1.0",
     "@angular/compiler-cli": "9.1.0",
     "@angular/language-service": "9.1.0",
+    "@types/chart.js": "2.9.20",
     "@types/jasmine": "3.5.9",
     "@types/jasminewd2": "2.0.8",
     "@types/node": "12.12.30",

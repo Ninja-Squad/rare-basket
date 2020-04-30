@@ -401,4 +401,30 @@ class OrderControllerTest {
                .andExpect(content().contentType("text/csv"))
                .andExpect(content().string("foo;bar"));
     }
+
+    @Test
+    void shouldGetStatistics() throws Exception {
+        LocalDate from = LocalDate.of(2020, 1, 1);
+        LocalDate to = LocalDate.of(2021, 1, 1);
+
+        Instant expectedFromInstant = Instant.parse("2019-12-31T23:00:00.000Z"); // French TZ
+        Instant expectedToInstant = Instant.parse("2020-12-31T23:00:00.000Z");
+
+        List<OrderStatusStatisticsDTO> orderStatusStatistics =
+            List.of(new OrderStatusStatisticsDTO(OrderStatus.DRAFT, 1L));
+        List<CustomerTypeStatisticsDTO> customerTypeStatistics =
+            List.of(new CustomerTypeStatisticsDTO(CustomerType.FARMER, 2L));
+
+        when(mockOrderDao.findOrderStatusStatistics(expectedFromInstant, expectedToInstant, accessionHolderId))
+            .thenReturn(orderStatusStatistics);
+        when(mockOrderDao.findCustomerTypeStatistics(expectedFromInstant, expectedToInstant, accessionHolderId))
+            .thenReturn(customerTypeStatistics);
+
+        mockMvc.perform(get("/api/orders/statistics").param("from", from.toString()).param("to", to.toString()))
+               .andExpect(status().isOk())
+               .andExpect(jsonPath("$.orderStatusStatistics[0].orderStatus").value(OrderStatus.DRAFT.name()))
+               .andExpect(jsonPath("$.orderStatusStatistics[0].orderCount").value(1L))
+               .andExpect(jsonPath("$.customerTypeStatistics[0].customerType").value(CustomerType.FARMER.name()))
+               .andExpect(jsonPath("$.customerTypeStatistics[0].accessionCount").value(2L));
+    }
 }

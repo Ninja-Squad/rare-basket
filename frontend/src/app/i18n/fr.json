@@ -25,6 +25,17 @@
       "CITIZEN": "Citoyen",
       "OTHER": "Autre"
     },
+    "short-customer-type": {
+      "INRAE_RESEARCHER": "Chercheur INRAE",
+      "FR_RESEARCHER": "Chercheur français",
+      "FOREIGN_RESEARCHER": "Chercheur étranger",
+      "FR_COMPANY": "Entreprise française",
+      "FOREIGN_COMPANY": "Entreprise étrangère",
+      "FARMER": "Agriculteur",
+      "NGO": "Organisation",
+      "CITIZEN": "Citoyen",
+      "OTHER": "Autre"
+    },
     "order-status": {
       "DRAFT": "En cours",
       "FINALIZED": "Finalisée",
@@ -118,7 +129,9 @@
     "orders-container": {
       "title": "Commandes",
       "in-progress": "En cours",
-      "done": "Terminées"
+      "done": "Terminées",
+      "export": "Exporter",
+      "statistics": "Statistiques"
     },
     "orders": {
       "one-accession": "1 accession",
@@ -176,6 +189,16 @@
       "to": "et le",
       "export": "Exporter",
       "invalid-date-range": "La plage de dates est invalide"
+    },
+    "statistics": {
+      "year": "Année",
+      "customer-types-title": "Nombre d'accessions distinctes livrées par type de client pour l'année {{ year }}",
+      "customer-type": "Type de client",
+      "accession-count": "Nb. d'accessions",
+      "total": "Total",
+      "order-status-title": "Nombre de commandes par état pour l'année {{ year }}",
+      "order-status": "État",
+      "order-count": "Nb. de commandes"
     }
   },
   "user": {

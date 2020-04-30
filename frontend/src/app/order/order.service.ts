@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpEvent, HttpResponse } from '@angular/common/http';
-import { DetailedOrder, Document, DocumentCommand, Order, OrderCommand, OrderStatus } from './order.model';
+import { DetailedOrder, Document, DocumentCommand, Order, OrderCommand, OrderStatistics, OrderStatus } from './order.model';
 import { Observable } from 'rxjs';
 import { Page } from '../shared/page.model';
 
@@ -61,5 +61,11 @@ export class OrderService {
 
   exportReport(from: string, to: string): Observable<HttpResponse<Blob>> {
     return this.http.get(`/api/orders/report`, { observe: 'response', responseType: 'blob', params: { from, to } });
+  }
+
+  getStatistics(year: number): Observable<OrderStatistics> {
+    const from = `${year}-01-01`;
+    const to = `${year + 1}-01-01`;
+    return this.http.get<OrderStatistics>(`/api/orders/statistics`, { params: { from, to } });
   }
 }

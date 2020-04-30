@@ -19,6 +19,8 @@ import { ValdemortModule } from 'ngx-valdemort';
 import { EditDocumentComponent } from './edit-document/edit-document.component';
 import { DocumentTypeEnumPipe } from './document-type-enum.pipe';
 import { ExportOrdersComponent } from './export-orders/export-orders.component';
+import { ChartModule } from '../chart/chart.module';
+import { FIRST_YEAR, StatisticsComponent } from './statistics/statistics.component';
 
 @NgModule({
   declarations: [
@@ -32,7 +34,8 @@ import { ExportOrdersComponent } from './export-orders/export-orders.component';
     EditOrderComponent,
     EditDocumentComponent,
     DocumentTypeEnumPipe,
-    ExportOrdersComponent
+    ExportOrdersComponent,
+    StatisticsComponent
   ],
   imports: [
     CommonModule,
@@ -42,7 +45,9 @@ import { ExportOrdersComponent } from './export-orders/export-orders.component';
     FontAwesomeModule,
     RbNgbModule,
     ReactiveFormsModule,
-    ValdemortModule
-  ]
+    ValdemortModule,
+    ChartModule
+  ],
+  providers: [{ provide: FIRST_YEAR, useValue: 2019 }]
 })
 export class OrderModule {}

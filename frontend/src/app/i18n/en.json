@@ -25,6 +25,17 @@
       "CITIZEN": "Citizen",
       "OTHER": "Other"
     },
+    "short-customer-type": {
+      "INRAE_RESEARCHER": "INRAE researcher",
+      "FR_RESEARCHER": "French acedemic",
+      "FOREIGN_RESEARCHER": "Foraign academic",
+      "FR_COMPANY": "French company",
+      "FOREIGN_COMPANY": "Foreign company",
+      "FARMER": "Farmer",
+      "NGO": "Organization",
+      "CITIZEN": "Citizen",
+      "OTHER": "Other"
+    },
     "order-status": {
       "DRAFT": "In progress",
       "FINALIZED": "Finalized",
@@ -118,7 +129,9 @@
     "orders-container": {
       "title": "Orders",
       "in-progress": "In progress",
-      "done": "Done"
+      "done": "Done",
+      "export": "Export",
+      "statistics": "Statistics"
     },
     "orders": {
       "one-accession": "1 accession",
@@ -175,6 +188,16 @@
       "to": "and",
       "export": "Export",
       "invalid-date-range": "The date range is invalid"
+    },
+    "statistics": {
+      "year": "Year",
+      "customer-types-title": "# of distinct delivered accessions per customer type for year {{ year }}",
+      "customer-type": "Customer type",
+      "accession-count": "# of accessions",
+      "total": "Total",
+      "order-status-title": "# of orders per status for year {{ year }}",
+      "order-status": "Order Status",
+      "order-count": "# of orders"
     }
   },
   "user": {

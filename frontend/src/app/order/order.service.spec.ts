@@ -2,7 +2,7 @@ import { TestBed } from '@angular/core/testing';
 
 import { OrderService } from './order.service';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
-import { Document, DocumentCommand, Order, OrderCommand } from './order.model';
+import { Document, DocumentCommand, Order, OrderCommand, OrderStatistics } from './order.model';
 import { Page } from '../shared/page.model';
 import { filter } from 'rxjs/operators';
 import { HttpEventType, HttpResponse } from '@angular/common/http';
@@ -125,6 +125,24 @@ describe('OrderService', () => {
 
     http.expectOne({ url: '/api/orders/42/finalization', method: 'PUT' }).flush(null);
     expect(done).toBe(true);
+  });
+
+  it('should export a report', () => {
+    let actual: Blob = null;
+    service.exportReport('2020-01-01', '2021-01-01').subscribe(response => (actual = response.body));
+
+    const expected = new Blob();
+    http.expectOne({ url: '/api/orders/report?from=2020-01-01&to=2021-01-01', method: 'GET' }).flush(expected);
+    expect(actual).toBe(expected);
+  });
+
+  it('should get statistics for a year', () => {
+    let actual: OrderStatistics = null;
+    service.getStatistics(2020).subscribe(stats => (actual = stats));
+
+    const expected = {} as OrderStatistics;
+    http.expectOne({ url: '/api/orders/statistics?from=2020-01-01&to=2021-01-01', method: 'GET' }).flush(expected);
+    expect(actual).toBe(expected);
   });
 
   function blobToString(blob: Blob): Promise<string> {

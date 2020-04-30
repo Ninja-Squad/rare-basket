@@ -16,7 +16,7 @@ import org.springframework.data.repository.query.Param;
  * DAO for the {@link Order} entity
  * @author JB Nizet
  */
-public interface OrderDao extends JpaRepository<Order, Long> {
+public interface OrderDao extends JpaRepository<Order, Long>, CustomOrderDao {
 
     @Query(
         value = "select distinct o from Order o" +
@@ -72,4 +72,5 @@ public interface OrderDao extends JpaRepository<Order, Long> {
     Stream<Object[]> reportBetween(@Param("fromInstant") Instant fromInstant,
                                    @Param("toInstant") Instant toInstant,
                                    @Param("accessionHolderId") Long accessionHolderId);
+
 }

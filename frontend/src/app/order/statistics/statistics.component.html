@@ -1,0 +1,68 @@
+<form [formGroup]="form" class="form-inline">
+  <label for="year" class="mb-2 mr-sm-2" translate="order.statistics.year"></label>
+  <select formControlName="year" class="form-control custom-select mb-2 mr-sm-2" id="year">
+    <option *ngFor="let year of years" [ngValue]="year">{{ year | number }}</option>
+  </select>
+</form>
+
+<div *ngIf="stats">
+  <h2 translate="order.statistics.customer-types-title" [translateParams]="{ year: form.value.year | number }"></h2>
+
+  <div class="row align-items-center">
+    <div class="col-md mb-2 mb-md-2">
+      <rb-chart [configuration]="customerTypeBar" id="customer-types-chart"></rb-chart>
+    </div>
+    <div class="col-md">
+      <table class="table table-sm">
+        <thead class="thead-light">
+          <tr>
+            <th translate="order.statistics.customer-type"></th>
+            <th translate="order.statistics.accession-count"></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let stat of stats.customerTypeStatistics; index as index" class="customer-type-stat">
+            <td>
+              <span [style.backgroundColor]="colors[index]" class="color-square"></span>
+              {{ stat.customerType | customerTypeEnum }}
+            </td>
+            <td>{{ stat.accessionCount | number }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <h2 translate="order.statistics.order-status-title" [translateParams]="{ year: form.value.year | number }"></h2>
+
+  <div class="row align-items-center">
+    <div class="col-md mb-2 mb-md-2">
+      <rb-chart [configuration]="orderStatusDoughnut" id="order-status-chart"></rb-chart>
+    </div>
+    <div class="col-md">
+      <table class="table table-sm">
+        <thead class="thead-light">
+          <tr>
+            <th translate="order.statistics.order-status"></th>
+            <th translate="order.statistics.order-count"></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let stat of stats.orderStatusStatistics; index as index" class="order-status-stat">
+            <td>
+              <span [style.backgroundColor]="colors[index]" class="color-square"></span>
+              {{ stat.orderStatus | orderStatusEnum }}
+            </td>
+            <td>{{ stat.orderCount | number }} ({{ orderCountRatio(stat) | percent: '.0-0' }})</td>
+          </tr>
+        </tbody>
+        <tfoot>
+          <tr>
+            <td><strong translate="order.statistics.total"></strong></td>
+            <td>{{ totalOrderCount | number }}</td>
+          </tr>
+        </tfoot>
+      </table>
+    </div>
+  </div>
+</div>

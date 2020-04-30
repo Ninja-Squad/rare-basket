@@ -4,6 +4,7 @@ import { OrdersContainerComponent } from './orders-container/orders-container.co
 import { InProgressOrdersComponent } from './in-progress-orders/in-progress-orders.component';
 import { DoneOrdersComponent } from './done-orders/done-orders.component';
 import { ExportOrdersComponent } from './export-orders/export-orders.component';
+import { StatisticsComponent } from './statistics/statistics.component';
 
 export const ORDER_ROUTES: Routes = [
   {
@@ -26,6 +27,10 @@ export const ORDER_ROUTES: Routes = [
       {
         path: 'export',
         component: ExportOrdersComponent
+      },
+      {
+        path: 'stats',
+        component: StatisticsComponent
       }
     ]
   },

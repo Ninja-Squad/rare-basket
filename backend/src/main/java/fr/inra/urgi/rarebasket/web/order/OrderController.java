@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.time.Instant;
 import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -260,6 +261,22 @@ public class OrderController {
         order.setStatus(OrderStatus.FINALIZED);
         order.setClosingInstant(Instant.now());
     }
+
+    @GetMapping("/statistics")
+    public OrderStatisticsDTO getStatistics(@RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate from,
+                                            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate to) {
+        // FIXME check the right permission (VIEW_ORDERS), determine perimeter based on user
+        currentUser.checkPermission(Permission.ORDER_MANAGEMENT);
+
+        ZoneId frenchZoneId = ZoneId.of("Europe/Paris");
+        Instant fromInstant = from.atStartOfDay(frenchZoneId).toInstant();
+        Instant toInstant = to.atStartOfDay(frenchZoneId).toInstant();
+        return new OrderStatisticsDTO(
+            orderDao.findOrderStatusStatistics(fromInstant, toInstant, getAccessionHolderId()),
+            orderDao.findCustomerTypeStatistics(fromInstant, toInstant, getAccessionHolderId())
+        );
+    }
+
 
     private Order getOrderAndCheckAccessible(Long orderId) {
         Order order = orderDao.findById(orderId).orElseThrow(NotFoundException::new);

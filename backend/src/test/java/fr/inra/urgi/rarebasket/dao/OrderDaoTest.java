@@ -6,13 +6,19 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.util.EnumSet;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import com.ninja_squad.dbsetup.Operations;
 import com.ninja_squad.dbsetup.generator.ValueGenerators;
 import com.ninja_squad.dbsetup.operation.Operation;
 import fr.inra.urgi.rarebasket.domain.BasketStatus;
+import fr.inra.urgi.rarebasket.domain.CustomerType;
 import fr.inra.urgi.rarebasket.domain.Order;
 import fr.inra.urgi.rarebasket.domain.OrderStatus;
+import fr.inra.urgi.rarebasket.web.order.CustomerTypeStatisticsDTO;
+import fr.inra.urgi.rarebasket.web.order.OrderStatusStatisticsDTO;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,11 +52,12 @@ class OrderDaoTest extends BaseDaoTest {
                 .withDefaultValue("status", BasketStatus.CONFIRMED)
                 .withDefaultValue("creation_instant", Instant.parse("2020-03-19T09:00:00Z"))
                 .withGeneratedValue("reference", ValueGenerators.stringSequence("A"))
-                .withGeneratedValue("confirmation_instant", ValueGenerators.dateSequence().startingAt(LocalDate.of(2020, 3, 20)))
-                .columns("id")
-                .values(1L)
-                .values(2L)
-                .values(3L)
+                .withGeneratedValue("confirmation_instant",
+                                    ValueGenerators.dateSequence().startingAt(LocalDate.of(2020, 3, 20)))
+                .columns("id", "customer_type")
+                .values(1L, CustomerType.FARMER)
+                .values(2L, CustomerType.CITIZEN)
+                .values(3L, CustomerType.INRAE_RESEARCHER)
                 .build();
 
         Operation orders =
@@ -65,10 +72,10 @@ class OrderDaoTest extends BaseDaoTest {
         Operation orderItems =
             insertInto("accession_order_item")
                 .columns("id", "order_id", "accession_name", "accession_identifier", "quantity", "unit")
-                .values(1L, 1L, "rosa", "rosa1", 12, "bags")
-                .values(2L, 2L, "violatta", "violetta1", 10, null)
+                .values(11L, 1L, "rosa", "rosa1", 12, "bags")
+                .values(12L, 1L, "rosa", "rosa2", 10, "bags")
+                .values(21L, 2L, "violetta", "violetta1", 10, null)
                 .build();
-
 
         executeIfNecessary(Operations.sequenceOf(grcs, accessionHolders, baskets, orders, orderItems));
     }
@@ -90,7 +97,10 @@ class OrderDaoTest extends BaseDaoTest {
     void shouldPageByAccessionHolderAndStatuses() {
         skipNextLaunch();
         PageRequest pageRequest = PageRequest.of(0, 2);
-        Page<Order> result = dao.pageByAccessionHolderAndStatuses(1L, EnumSet.of(OrderStatus.CANCELLED, OrderStatus.FINALIZED), pageRequest);
+        Page<Order> result = dao.pageByAccessionHolderAndStatuses(1L,
+                                                                  EnumSet.of(OrderStatus.CANCELLED,
+                                                                             OrderStatus.FINALIZED),
+                                                                  pageRequest);
         assertThat(result.getTotalElements()).isEqualTo(2);
         assertThat(result.getContent()).extracting(Order::getId).containsExactly(2L, 1L);
 
@@ -118,10 +128,93 @@ class OrderDaoTest extends BaseDaoTest {
         // ok
         assertThat(dao.reportBetween(Instant.parse("2020-03-20T00:00:00Z"),
                                      Instant.parse("2020-03-21T00:00:00Z"),
-                                     1L)).hasSize(1);
+                                     1L)).hasSize(2);
         // wrong accession holder
         assertThat(dao.reportBetween(Instant.parse("2020-03-20T00:00:00Z"),
                                      Instant.parse("2020-03-21T00:00:00Z"),
                                      2L)).isEmpty();
+    }
+
+    @Test
+    void shouldFindCustomerTypeStatistics() {
+        skipNextLaunch();
+
+        // ok
+        List<CustomerTypeStatisticsDTO> result = dao.findCustomerTypeStatistics(Instant.parse("2020-01-01T00:00:00Z"),
+                                                                                Instant.parse("2021-01-01T00:00:00Z"),
+                                                                                1L);
+        checkCustomerTypeStatistics(result, Set.of(new CustomerTypeStatisticsDTO(CustomerType.FARMER, 2L)));
+
+        // too soon
+        result = dao.findCustomerTypeStatistics(Instant.parse("2019-01-01T00:00:00Z"),
+                                                Instant.parse("2020-01-01T00:00:00Z"),
+                                                1L);
+        checkCustomerTypeStatistics(result, Set.of());
+
+        // too late
+        result = dao.findCustomerTypeStatistics(Instant.parse("2021-01-01T00:00:00Z"),
+                                                Instant.parse("2022-01-01T00:00:00Z"),
+                                                1L);
+        checkCustomerTypeStatistics(result, Set.of());
+
+        // wrong accession holder
+        result = dao.findCustomerTypeStatistics(Instant.parse("2020-01-01T00:00:00Z"),
+                                                Instant.parse("2021-01-01T00:00:00Z"),
+                                                3456L);
+        checkCustomerTypeStatistics(result, Set.of());
+    }
+
+    @Test
+    void shouldFindOrderStatusStatistics() {
+        skipNextLaunch();
+        // ok
+        List<OrderStatusStatisticsDTO> result = dao.findOrderStatusStatistics(Instant.parse("2020-01-01T00:00:00Z"),
+                                                                              Instant.parse("2021-01-01T00:00:00Z"),
+                                                                              1L);
+        assertThat(result).containsOnly(
+            new OrderStatusStatisticsDTO(OrderStatus.FINALIZED, 1L),
+            new OrderStatusStatisticsDTO(OrderStatus.DRAFT, 1L),
+            new OrderStatusStatisticsDTO(OrderStatus.CANCELLED, 1L)
+        );
+
+        Set<OrderStatusStatisticsDTO> allZeroes = Set.of(
+            new OrderStatusStatisticsDTO(OrderStatus.FINALIZED, 0L),
+            new OrderStatusStatisticsDTO(OrderStatus.DRAFT, 0L),
+            new OrderStatusStatisticsDTO(OrderStatus.CANCELLED, 0L)
+        );
+
+        // too soon
+        result = dao.findOrderStatusStatistics(Instant.parse("2019-01-01T00:00:00Z"),
+                                               Instant.parse("2020-01-01T00:00:00Z"),
+                                               1L);
+        assertThat(result).containsOnlyElementsOf(allZeroes);
+
+        // too late
+        result = dao.findOrderStatusStatistics(Instant.parse("2021-01-01T00:00:00Z"),
+                                               Instant.parse("2022-01-01T00:00:00Z"),
+                                               1L);
+        assertThat(result).containsOnlyElementsOf(allZeroes);
+
+        // wrong accession holder
+        result = dao.findOrderStatusStatistics(Instant.parse("2020-01-01T00:00:00Z"),
+                                               Instant.parse("2021-01-01T00:00:00Z"),
+                                               3456L);
+        assertThat(result).containsOnlyElementsOf(allZeroes);
+    }
+
+    private void checkCustomerTypeStatistics(List<CustomerTypeStatisticsDTO> actual,
+                                             Set<CustomerTypeStatisticsDTO> expectedNonZeroStats) {
+        assertThat(actual).hasSize(CustomerType.values().length);
+        assertThat(actual).containsAll(expectedNonZeroStats);
+
+        Set<CustomerType> nonZeroCustomerTypes =
+            expectedNonZeroStats.stream()
+                                .map(CustomerTypeStatisticsDTO::getCustomerType)
+                                .collect(Collectors.toSet());
+        for (CustomerType customerType : CustomerType.values()) {
+            if (!nonZeroCustomerTypes.contains(customerType)) {
+                assertThat(actual).contains(new CustomerTypeStatisticsDTO(customerType, 0L));
+            }
+        }
     }
 }
