@@ -169,6 +169,13 @@
       "file-error-label": "Le fichier",
       "save": "Enregistrer",
       "cancel": "Annuler"
+    },
+    "export-orders": {
+      "message": "Exporter au format CSV les commandes finalisées",
+      "from": "entre le",
+      "to": "et le",
+      "export": "Exporter",
+      "invalid-date-range": "La plage de dates est invalide"
     }
   },
   "user": {

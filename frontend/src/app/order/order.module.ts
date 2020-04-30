@@ -18,6 +18,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { ValdemortModule } from 'ngx-valdemort';
 import { EditDocumentComponent } from './edit-document/edit-document.component';
 import { DocumentTypeEnumPipe } from './document-type-enum.pipe';
+import { ExportOrdersComponent } from './export-orders/export-orders.component';
 
 @NgModule({
   declarations: [
@@ -30,7 +31,8 @@ import { DocumentTypeEnumPipe } from './document-type-enum.pipe';
     LanguageEnumPipe,
     EditOrderComponent,
     EditDocumentComponent,
-    DocumentTypeEnumPipe
+    DocumentTypeEnumPipe,
+    ExportOrdersComponent
   ],
   imports: [
     CommonModule,

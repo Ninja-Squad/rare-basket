@@ -1,6 +1,9 @@
 package fr.inra.urgi.rarebasket.web.order;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.time.Instant;
+import java.time.LocalDate;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -14,6 +17,7 @@ import fr.inra.urgi.rarebasket.exception.BadRequestException;
 import fr.inra.urgi.rarebasket.exception.ForbiddenException;
 import fr.inra.urgi.rarebasket.exception.NotFoundException;
 import fr.inra.urgi.rarebasket.service.order.DeliveryFormGenerator;
+import fr.inra.urgi.rarebasket.service.order.OrderCsvExporter;
 import fr.inra.urgi.rarebasket.service.storage.DocumentStorage;
 import fr.inra.urgi.rarebasket.service.user.CurrentUser;
 import fr.inra.urgi.rarebasket.web.common.PageDTO;
@@ -22,6 +26,7 @@ import org.springframework.core.io.InputStreamResource;
 import org.springframework.core.io.Resource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ContentDisposition;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -57,15 +62,18 @@ public class OrderController {
     private final CurrentUser currentUser;
     private final DocumentStorage documentStorage;
     private final DeliveryFormGenerator deliveryFormGenerator;
+    private final OrderCsvExporter orderCsvExporter;
 
     public OrderController(OrderDao orderDao,
                            CurrentUser currentUser,
                            DocumentStorage documentStorage,
-                           DeliveryFormGenerator deliveryFormGenerator) {
+                           DeliveryFormGenerator deliveryFormGenerator,
+                           OrderCsvExporter orderCsvExporter) {
         this.orderDao = orderDao;
         this.currentUser = currentUser;
         this.documentStorage = documentStorage;
         this.deliveryFormGenerator = deliveryFormGenerator;
+        this.orderCsvExporter = orderCsvExporter;
     }
 
     @GetMapping
@@ -82,6 +90,29 @@ public class OrderController {
             orderPage = orderDao.pageByAccessionHolderAndStatuses(getAccessionHolderId(), statuses, pageRequest);
         }
         return PageDTO.fromPage(orderPage, OrderDTO::new);
+    }
+
+    @GetMapping("/report")
+    @Transactional(readOnly = true)
+    public ResponseEntity<Resource> csvReport(@RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate from,
+                                              @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate to) {
+        // FIXME check the right permission (VIEW_ORDERS), determine perimeter based on user
+        currentUser.checkPermission(Permission.ORDER_MANAGEMENT);
+
+        InputStream report = orderCsvExporter.export(from, to, getAccessionHolderId());
+
+        return ResponseEntity.ok()
+                             .contentType(MediaType.parseMediaType("text/csv"))
+                             .headers(httpHeaders -> {
+                                 httpHeaders.add(
+                                     HttpHeaders.CONTENT_DISPOSITION,
+                                     ContentDisposition.builder("attachment")
+                                                       .filename("orders_" + from + "_" + to + ".csv")
+                                                       .build()
+                                                       .toString()
+                                 );
+                             })
+                             .body(new InputStreamResource(report));
     }
 
     @GetMapping("/{orderId}")
@@ -116,6 +147,7 @@ public class OrderController {
         Order order = getOrderAndCheckAccessibleAndDraft(orderId);
 
         order.setStatus(OrderStatus.CANCELLED);
+        order.setClosingInstant(Instant.now());
     }
 
     @PostMapping("/{orderId}/documents")
@@ -226,6 +258,7 @@ public class OrderController {
         }
 
         order.setStatus(OrderStatus.FINALIZED);
+        order.setClosingInstant(Instant.now());
     }
 
     private Order getOrderAndCheckAccessible(Long orderId) {

@@ -58,4 +58,8 @@ export class OrderService {
   finalize(orderId: number): Observable<void> {
     return this.http.put<void>(`/api/orders/${orderId}/finalization`, null);
   }
+
+  exportReport(from: string, to: string): Observable<HttpResponse<Blob>> {
+    return this.http.get(`/api/orders/report`, { observe: 'response', responseType: 'blob', params: { from, to } });
+  }
 }

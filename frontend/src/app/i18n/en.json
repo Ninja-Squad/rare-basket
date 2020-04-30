@@ -168,6 +168,13 @@
       "file-error-label": "The file",
       "save": "Upload",
       "cancel": "Cancel"
+    },
+    "export-orders": {
+      "message": "Export, in CSV format, the orders finalized",
+      "from": "between",
+      "to": "and",
+      "export": "Export",
+      "invalid-date-range": "The date range is invalid"
     }
   },
   "user": {

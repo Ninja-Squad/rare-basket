@@ -1,6 +1,8 @@
 package fr.inra.urgi.rarebasket.dao;
 
+import java.time.Instant;
 import java.util.Set;
+import java.util.stream.Stream;
 
 import fr.inra.urgi.rarebasket.domain.Order;
 import fr.inra.urgi.rarebasket.domain.OrderStatus;
@@ -8,6 +10,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 /**
  * DAO for the {@link Order} entity
@@ -35,4 +38,38 @@ public interface OrderDao extends JpaRepository<Order, Long> {
             " where o.accessionHolder.id = ?1" +
             " and o.status in ?2")
     Page<Order> pageByAccessionHolderAndStatuses(Long accessionHolderId, Set<OrderStatus> statuses, Pageable page);
+
+    /**
+     * Generates the rows of the order CSV report.
+     * @see fr.inra.urgi.rarebasket.service.order.OrderCsvExporter
+     */
+    @Query(
+        "select basket.reference," +
+            " basket.customer.name," +
+            " basket.customer.email," +
+            " basket.customer.address," +
+            " basket.customer.type," +
+            " basket.customer.language," +
+            " basket.confirmationInstant," +
+            " grc.name," +
+            " accessionHolder.name," +
+            " o.closingInstant," +
+            " orderItem.accession.name," +
+            " orderItem.accession.identifier," +
+            " orderItem.quantity," +
+            " orderItem.unit" +
+            " from OrderItem orderItem" +
+            " join orderItem.order o" +
+            " join o.basket basket" +
+            " join o.accessionHolder accessionHolder" +
+            " join accessionHolder.grc grc" +
+            " where o.status = fr.inra.urgi.rarebasket.domain.OrderStatus.FINALIZED" +
+            " and o.closingInstant >= :fromInstant" +
+            " and o.closingInstant < :toInstant" +
+            " and accessionHolder.id = :accessionHolderId" +
+            " order by o.closingInstant, orderItem.accession.name, orderItem.accession.identifier"
+    )
+    Stream<Object[]> reportBetween(@Param("fromInstant") Instant fromInstant,
+                                   @Param("toInstant") Instant toInstant,
+                                   @Param("accessionHolderId") Long accessionHolderId);
 }

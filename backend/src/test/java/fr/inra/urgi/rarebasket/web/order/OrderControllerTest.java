@@ -8,6 +8,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import java.io.ByteArrayInputStream;
 import java.time.Instant;
+import java.time.LocalDate;
 import java.util.EnumSet;
 import java.util.List;
 import java.util.Optional;
@@ -28,6 +29,7 @@ import fr.inra.urgi.rarebasket.domain.OrderStatus;
 import fr.inra.urgi.rarebasket.domain.Permission;
 import fr.inra.urgi.rarebasket.domain.SupportedLanguage;
 import fr.inra.urgi.rarebasket.service.order.DeliveryFormGenerator;
+import fr.inra.urgi.rarebasket.service.order.OrderCsvExporter;
 import fr.inra.urgi.rarebasket.service.storage.DocumentStorage;
 import fr.inra.urgi.rarebasket.service.user.CurrentUser;
 import org.junit.jupiter.api.BeforeEach;
@@ -64,6 +66,9 @@ class OrderControllerTest {
 
     @MockBean
     private DeliveryFormGenerator mockDeliveryFormGenerator;
+
+    @MockBean
+    private OrderCsvExporter mockOrderCsvExporter;
 
     @Autowired
     private MockMvc mockMvc;
@@ -221,6 +226,7 @@ class OrderControllerTest {
                .andExpect(status().isNoContent());
 
         assertThat(order.getStatus()).isEqualTo(OrderStatus.CANCELLED);
+        assertThat(order.getClosingInstant()).isNotNull();
         verify(mockCurrentUser).checkPermission(Permission.ORDER_MANAGEMENT);
     }
 
@@ -366,6 +372,7 @@ class OrderControllerTest {
                .andExpect(status().isNoContent());
 
         assertThat(order.getStatus()).isEqualTo(OrderStatus.FINALIZED);
+        assertThat(order.getClosingInstant()).isNotNull();
     }
 
     @Test
@@ -380,5 +387,18 @@ class OrderControllerTest {
         order.setStatus(OrderStatus.CANCELLED);
         mockMvc.perform(put("/api/orders/{id}/finalization", order.getId()))
                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void shouldReport() throws Exception {
+        LocalDate from = LocalDate.of(2020, 1, 1);
+        LocalDate to = LocalDate.of(2020, 4, 1);
+
+        when(mockOrderCsvExporter.export(from, to, accessionHolderId)).thenReturn(new ByteArrayInputStream("foo;bar".getBytes()));
+
+        mockMvc.perform(get("/api/orders/report").param("from", from.toString()).param("to", to.toString()))
+               .andExpect(status().isOk())
+               .andExpect(content().contentType("text/csv"))
+               .andExpect(content().string("foo;bar"));
     }
 }

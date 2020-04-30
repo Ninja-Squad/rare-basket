@@ -56,13 +56,21 @@ class OrderDaoTest extends BaseDaoTest {
         Operation orders =
             insertInto("accession_order")
                 .withDefaultValue("accession_holder_id", 1L)
-                .columns("id", "basket_id", "status")
-                .values(3L, 3L, OrderStatus.DRAFT)
-                .values(2L, 2L, OrderStatus.CANCELLED)
-                .values(1L, 1L, OrderStatus.FINALIZED)
+                .columns("id", "basket_id", "status", "closing_instant")
+                .values(3L, 3L, OrderStatus.DRAFT, null)
+                .values(2L, 2L, OrderStatus.CANCELLED, Instant.parse("2020-03-20T10:00:00Z"))
+                .values(1L, 1L, OrderStatus.FINALIZED, Instant.parse("2020-03-20T11:00:00Z"))
                 .build();
 
-        executeIfNecessary(Operations.sequenceOf(grcs, accessionHolders, baskets, orders));
+        Operation orderItems =
+            insertInto("accession_order_item")
+                .columns("id", "order_id", "accession_name", "accession_identifier", "quantity", "unit")
+                .values(1L, 1L, "rosa", "rosa1", 12, "bags")
+                .values(2L, 2L, "violatta", "violetta1", 10, null)
+                .build();
+
+
+        executeIfNecessary(Operations.sequenceOf(grcs, accessionHolders, baskets, orders, orderItems));
     }
 
     @Test
@@ -93,5 +101,27 @@ class OrderDaoTest extends BaseDaoTest {
         pageRequest = PageRequest.of(1, 20);
         result = dao.pageByAccessionHolderAndStatuses(98765L, EnumSet.of(OrderStatus.DRAFT), pageRequest);
         assertThat(result.getTotalElements()).isEqualTo(0);
+    }
+
+    @Test
+    void shouldReportBetween() {
+        skipNextLaunch();
+
+        // too soon
+        assertThat(dao.reportBetween(Instant.parse("2020-03-19T00:00:00Z"),
+                                     Instant.parse("2020-03-20T00:00:00Z"),
+                                     1L)).isEmpty();
+        // too late
+        assertThat(dao.reportBetween(Instant.parse("2020-03-21T00:00:00Z"),
+                                     Instant.parse("2020-03-22T00:00:00Z"),
+                                     1L)).isEmpty();
+        // ok
+        assertThat(dao.reportBetween(Instant.parse("2020-03-20T00:00:00Z"),
+                                     Instant.parse("2020-03-21T00:00:00Z"),
+                                     1L)).hasSize(1);
+        // wrong accession holder
+        assertThat(dao.reportBetween(Instant.parse("2020-03-20T00:00:00Z"),
+                                     Instant.parse("2020-03-21T00:00:00Z"),
+                                     2L)).isEmpty();
     }
 }

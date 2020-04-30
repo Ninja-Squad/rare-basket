@@ -89,6 +89,7 @@ dependencies {
     implementation("com.itextpdf:kernel:$itextVersion")
     implementation("com.itextpdf:io:$itextVersion")
     implementation("com.itextpdf:layout:$itextVersion")
+    implementation("net.sf.supercsv:super-csv:2.4.0")
 
     runtimeOnly("org.postgresql:postgresql")
     runtimeOnly("org.flywaydb:flyway-core")
