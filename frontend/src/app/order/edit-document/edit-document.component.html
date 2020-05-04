@@ -34,6 +34,7 @@
         type="file"
         class="custom-file-input"
         id="document-file"
+        [accept]="fileAccept"
         (change)="fileChanged()"
         [disabled]="uploadProgress !== null"
       />
@@ -46,6 +47,11 @@
         *ngIf="!selectedFile"
         translate="common.errors.required"
         [translateParams]="{ label: 'order.edit-document.file-error-label' | translate }"
+      ></div>
+      <div
+        *ngIf="!selectedFileValid()"
+        translate="order.edit-document.invalid-file"
+        [translateParams]="{ acceptedExtensions: acceptedExtensions }"
       ></div>
     </div>
 

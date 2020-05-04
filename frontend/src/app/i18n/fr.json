@@ -180,6 +180,7 @@
       "file": "Fichier",
       "file-placeholder": "Choisissez ou déposez un fichier",
       "file-error-label": "Le fichier",
+      "invalid-file": "Le fichier doit avoir l'une des extensions suivantes\u00a0: {{ acceptedExtensions }}",
       "save": "Enregistrer",
       "cancel": "Annuler"
     },

@@ -3,6 +3,8 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ALL_DOCUMENT_TYPES, DetailedOrder, DocumentCommand, DocumentType, isDocumentTypeUnique } from '../order.model';
 import { faFileUpload } from '@fortawesome/free-solid-svg-icons';
 
+const validExtensions = ['.pdf', '.txt', '.eml', '.pst', '.ost'];
+
 @Component({
   selector: 'rb-edit-document',
   templateUrl: './edit-document.component.html',
@@ -73,7 +75,7 @@ export class EditDocumentComponent implements OnChanges {
   }
 
   save() {
-    if (this.form.invalid || !this.selectedFile) {
+    if (this.form.invalid || !this.selectedFile || !this.selectedFileValid()) {
       return;
     }
 
@@ -84,6 +86,23 @@ export class EditDocumentComponent implements OnChanges {
 
   cancel() {
     this.cancelled.emit(undefined);
+  }
+
+  selectedFileValid() {
+    if (!this.selectedFile) {
+      return true;
+    }
+
+    const lowercaseName = this.selectedFile.name.toLowerCase();
+    return validExtensions.some(extension => lowercaseName.endsWith(extension));
+  }
+
+  get fileAccept() {
+    return validExtensions.join(',');
+  }
+
+  get acceptedExtensions() {
+    return validExtensions.join(', ');
   }
 
   get selectedFile(): File | null {

@@ -58,12 +58,14 @@ import org.springframework.web.multipart.MultipartFile;
 public class OrderController {
 
     public static final int PAGE_SIZE = 20;
+    private static final Set<String> VALID_FILE_EXTENSIONS = Set.of(".pdf", ".txt", ".eml", ".pst", ".ost");
 
     private final OrderDao orderDao;
     private final CurrentUser currentUser;
     private final DocumentStorage documentStorage;
     private final DeliveryFormGenerator deliveryFormGenerator;
     private final OrderCsvExporter orderCsvExporter;
+
 
     public OrderController(OrderDao orderDao,
                            CurrentUser currentUser,
@@ -161,6 +163,9 @@ public class OrderController {
 
         if (command.getType().isUnique() && order.getDocuments().stream().anyMatch(doc -> doc.getType() == command.getType())) {
             throw new BadRequestException("The order already has a document of that type, and may have at most one");
+        }
+        if (VALID_FILE_EXTENSIONS.stream().noneMatch(extension -> file.getOriginalFilename().toLowerCase().endsWith(extension))) {
+            throw new BadRequestException("The file must have one of these extensions: " + VALID_FILE_EXTENSIONS);
         }
 
         Document document = new Document();

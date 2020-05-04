@@ -290,6 +290,22 @@ class OrderControllerTest {
     }
 
     @Test
+    void shouldThrowWhenAddingDocumentWithInvalidExtension() throws Exception {
+        DocumentCommandDTO command = new DocumentCommandDTO(DocumentType.EMAIL, "desc");
+
+        mockMvc.perform(multipart("/api/orders/{orderId}/documents", order.getId())
+                            .file(new MockMultipartFile("file",
+                                                        "foo.exe",
+                                                        MediaType.TEXT_PLAIN_VALUE,
+                                                        "hello".getBytes()))
+                            .file(new MockMultipartFile("document",
+                                                        null,
+                                                        MediaType.APPLICATION_JSON_VALUE,
+                                                        objectMapper.writeValueAsBytes(command))))
+               .andExpect(status().isBadRequest());
+    }
+
+    @Test
     void shouldThrowWhenAddingDocumentToNonDraftOrder() throws Exception {
         order.setStatus(OrderStatus.FINALIZED);
         DocumentCommandDTO command = new DocumentCommandDTO(DocumentType.EMAIL, "desc");

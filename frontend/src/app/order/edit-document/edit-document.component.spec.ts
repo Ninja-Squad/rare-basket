@@ -125,6 +125,13 @@ describe('EditDocumentComponent', () => {
 
     tester.type.selectLabel('Facture');
     expect(tester.errors.length).toBe(1); // file
+
+    const selectedFile = { name: 'foo.exe' } as File;
+    spyOnProperty(tester.editDocumentComponent, 'selectedFile', 'get').and.returnValue(selectedFile);
+    tester.detectChanges();
+
+    expect(tester.testElement).toContainText(`Le fichier doit avoir l'une des extensions suivantes\u00a0: .pdf, .txt, .eml, .pst, .ost`);
+    expect(tester.errors.length).toBe(1); // file invalid
   });
 
   it('should disable everything and display progress bar when uploading', () => {
@@ -155,7 +162,7 @@ describe('EditDocumentComponent', () => {
     tester.type.selectLabel('Autre');
     tester.description.fillWith('desc');
 
-    const selectedFile = {} as File;
+    const selectedFile = { name: 'foo.txt' } as File;
     spyOnProperty(tester.editDocumentComponent, 'selectedFile', 'get').and.returnValue(selectedFile);
 
     tester.saveButton.click();

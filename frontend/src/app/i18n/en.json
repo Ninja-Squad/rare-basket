@@ -179,6 +179,7 @@
       "file": "File",
       "file-placeholder": "Choose or drop a file",
       "file-error-label": "The file",
+      "invalid-file": "The file must have one of these extensions: {{ acceptedExtensions }}",
       "save": "Upload",
       "cancel": "Cancel"
     },
