@@ -10,7 +10,6 @@ import {
   faClipboardList,
   faCommentDots,
   faEdit,
-  faExclamationCircle,
   faFile,
   faHome,
   faMicrophone,
@@ -24,6 +23,10 @@ import { filter, finalize, switchMap, tap } from 'rxjs/operators';
 import { ConfirmationService } from '../../shared/confirmation.service';
 import { HttpEventType } from '@angular/common/http';
 import { DownloadService } from '../../shared/download.service';
+import { TranslateService } from '@ngx-translate/core';
+import { FinalizationWarningsModalComponent } from '../finalization-warnings-modal/finalization-warnings-modal.component';
+import { Observable } from 'rxjs';
+import { ModalService } from '../../shared/modal.service';
 
 /**
  * Component displaying the details of an order to a GRC user
@@ -44,7 +47,6 @@ export class OrderComponent implements OnInit {
   rationaleIcon = faCommentDots;
   editIcon = faEdit;
   finalizeOrderIcon = faCheckSquare;
-  finalizationErrorIcon = faExclamationCircle;
   cancelOrderIcon = faWindowClose;
   allOrdersIcon = faChevronLeft;
   documentIcon = faFile;
@@ -57,15 +59,15 @@ export class OrderComponent implements OnInit {
   addingDocument = false;
   uploadProgress: number | null = null;
 
-  finalizationErrors: Array<string> = [];
-
   private downloadingDocumentIds = new Set<number>();
 
   constructor(
     private route: ActivatedRoute,
     private orderService: OrderService,
     private confirmationService: ConfirmationService,
-    private downloadService: DownloadService
+    private downloadService: DownloadService,
+    private translateService: TranslateService,
+    private modalService: ModalService
   ) {}
 
   ngOnInit(): void {
@@ -147,19 +149,33 @@ export class OrderComponent implements OnInit {
   }
 
   finalizeOrder() {
-    this.finalizationErrors = [];
+    let result$: Observable<void>;
+
+    const warnings: Array<string> = [];
+    if (!this.order.documents.some(doc => doc.type === 'MTA')) {
+      warnings.push(this.translateService.instant('order.order.missing-mta-warning'));
+    }
+    if (!this.order.documents.some(doc => doc.type === 'SANITARY_PASSPORT')) {
+      warnings.push(this.translateService.instant('order.order.missing-sanitary-passport-warning'));
+    }
     if (this.order.items.some(item => item.quantity === null)) {
-      this.finalizationErrors.push('order.order.missing-quantity-error');
+      warnings.push(this.translateService.instant('order.order.missing-quantity-warning'));
+    }
+    if (this.order.items.some(item => item.unit === null)) {
+      warnings.push(this.translateService.instant('order.order.missing-unit-warning'));
     }
 
-    if (this.finalizationErrors.length !== 0) {
-      return;
-    }
-
-    this.confirmationService
-      .confirm({
+    if (warnings.length > 0) {
+      const modal = this.modalService.open(FinalizationWarningsModalComponent, { size: 'lg' });
+      modal.componentInstance.init(warnings);
+      result$ = modal.result;
+    } else {
+      result$ = this.confirmationService.confirm({
         messageKey: 'order.order.finalize-confirmation'
-      })
+      });
+    }
+
+    result$
       .pipe(
         switchMap(() => this.orderService.finalize(this.order.id)),
         switchMap(() => this.orderService.get(this.order.id))

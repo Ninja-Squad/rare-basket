@@ -23,6 +23,8 @@ import { EditDocumentComponent } from '../edit-document/edit-document.component'
 import { HttpEvent, HttpEventType, HttpProgressEvent, HttpResponse } from '@angular/common/http';
 import { RbNgbModule } from '../../rb-ngb/rb-ngb.module';
 import { DownloadService } from '../../shared/download.service';
+import { MockModalService, ModalTestingModule } from '../../shared/mock-modal.service.spec';
+import { FinalizationWarningsModalComponent } from '../finalization-warnings-modal/finalization-warnings-modal.component';
 
 class OrderComponentTester extends ComponentTester<OrderComponent> {
   constructor() {
@@ -47,10 +49,6 @@ class OrderComponentTester extends ComponentTester<OrderComponent> {
 
   get finalizeOrderButton() {
     return this.button('#finalize-order-button');
-  }
-
-  get finalizationErrors() {
-    return this.elements('.finalization-error');
   }
 
   get cancelOrderButton() {
@@ -91,6 +89,7 @@ describe('OrderComponent', () => {
   let orderService: jasmine.SpyObj<OrderService>;
   let confirmationService: jasmine.SpyObj<ConfirmationService>;
   let downloadService: jasmine.SpyObj<DownloadService>;
+  let modalService: MockModalService<FinalizationWarningsModalComponent>;
 
   let order: DetailedOrder;
 
@@ -123,7 +122,16 @@ describe('OrderComponent', () => {
         DocumentTypeEnumPipe,
         EditDocumentComponent
       ],
-      imports: [I18nTestingModule, FontAwesomeModule, RouterTestingModule, SharedModule, ReactiveFormsModule, ValdemortModule, RbNgbModule],
+      imports: [
+        I18nTestingModule,
+        FontAwesomeModule,
+        RouterTestingModule,
+        SharedModule,
+        ReactiveFormsModule,
+        ValdemortModule,
+        RbNgbModule,
+        ModalTestingModule
+      ],
       providers: [
         { provide: ActivatedRoute, useValue: route },
         { provide: OrderService, useValue: orderService },
@@ -132,6 +140,8 @@ describe('OrderComponent', () => {
         { provide: LOCALE_ID, useValue: 'fr' }
       ]
     });
+
+    modalService = TestBed.inject(MockModalService);
 
     tester = new OrderComponentTester();
     jasmine.addMatchers(speculoosMatchers);
@@ -282,13 +292,20 @@ describe('OrderComponent', () => {
     expect(tester.finalizeOrderButton).toBeNull();
   });
 
-  it('should finalize order after confirmation', () => {
+  it('should finalize order after confirmation if no warning', () => {
+    order.items.forEach(item => (item.unit = 'bags'));
+    order.documents.push({
+      type: 'MTA'
+    } as Document);
+    order.documents.push({
+      type: 'SANITARY_PASSPORT'
+    } as Document);
+
     confirmationService.confirm.and.returnValue(of(undefined));
     const newOrder: DetailedOrder = { ...order, status: 'FINALIZED' };
 
     orderService.finalize.and.returnValue(of(undefined));
     orderService.get.and.returnValues(of(order), of(newOrder));
-    tester.componentInstance.finalizationErrors.push('order.order.missing-quantity-error');
     tester.detectChanges();
 
     tester.finalizeOrderButton.click();
@@ -296,19 +313,30 @@ describe('OrderComponent', () => {
     expect(confirmationService.confirm).toHaveBeenCalled();
     expect(orderService.finalize).toHaveBeenCalledWith(tester.componentInstance.order.id);
     expect(tester.componentInstance.order).toBe(newOrder);
-    expect(tester.finalizationErrors.length).toBe(0);
   });
 
-  it('should not finalize order if missing quantity', () => {
+  it('should finalize order after confirmation with warnings', () => {
     order.items[0].quantity = null;
-    orderService.get.and.returnValue(of(order));
+
+    const newOrder: DetailedOrder = { ...order, status: 'FINALIZED' };
+    orderService.finalize.and.returnValue(of(undefined));
+    orderService.get.and.returnValues(of(order), of(newOrder));
+
     tester.detectChanges();
+
+    const warningsComponent = jasmine.createSpyObj<FinalizationWarningsModalComponent>(['init']);
+    modalService.mockClosedModal(warningsComponent);
 
     tester.finalizeOrderButton.click();
 
-    expect(confirmationService.confirm).not.toHaveBeenCalled();
-    expect(orderService.finalize).not.toHaveBeenCalled();
-    expect(tester.finalizationErrors.length).toBe(1);
+    expect(warningsComponent.init).toHaveBeenCalledWith([
+      `La commande n'a pas d'ATM (accord de transfert de matériel)`,
+      `La commande n'a pas de passeport sanitaire`,
+      `Certaines des accessions commandées n'ont pas de quantité spécifiée`,
+      `Certaines des accessions commandées n'ont pas d'unité spécifiée`
+    ]);
+    expect(orderService.finalize).toHaveBeenCalledWith(tester.componentInstance.order.id);
+    expect(tester.componentInstance.order).toBe(newOrder);
   });
 
   it('should not have a cancel order button when status is not DRAFT', () => {

@@ -382,19 +382,11 @@ class OrderControllerTest {
 
     @Test
     void shouldFinalize() throws Exception {
-        order.getItems().forEach(item -> item.setQuantity(10));
-
         mockMvc.perform(put("/api/orders/{id}/finalization", order.getId()))
                .andExpect(status().isNoContent());
 
         assertThat(order.getStatus()).isEqualTo(OrderStatus.FINALIZED);
         assertThat(order.getClosingInstant()).isNotNull();
-    }
-
-    @Test
-    void shouldThrowWhenFinalizingIncompleteOrder() throws Exception {
-        mockMvc.perform(put("/api/orders/{id}/finalization", order.getId()))
-               .andExpect(status().isBadRequest());
     }
 
     @Test

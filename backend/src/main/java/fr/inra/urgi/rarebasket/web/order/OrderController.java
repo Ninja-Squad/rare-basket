@@ -259,10 +259,6 @@ public class OrderController {
         currentUser.checkPermission(Permission.ORDER_MANAGEMENT);
         Order order = getOrderAndCheckAccessibleAndDraft(orderId);
 
-        if (order.getItems().stream().anyMatch(item -> item.getQuantity() == null)) {
-            throw new BadRequestException("All quantities are not set");
-        }
-
         order.setStatus(OrderStatus.FINALIZED);
         order.setClosingInstant(Instant.now());
     }

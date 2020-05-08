@@ -53,11 +53,11 @@ export class MockModalService<T> {
  * It replaces ModalService by a MockModalService, that you can inject to emulate a closed or dismissed modal.
  * Import the module to your testing module to use it
  * ```
- * imports: [MockModalModule]
+ * imports: [ModalTestingModule]
  * ```
  * It will replace the `ModalService` with the mock one, that you can manually control.
  */
 @NgModule({
   providers: [MockModalService, { provide: ModalService, useExisting: MockModalService }]
 })
-export class MockModalModule {}
+export class ModalTestingModule {}

@@ -147,7 +147,10 @@
       "edit": "Éditer",
       "finalize": "Finaliser la commande",
       "finalize-confirmation": "Voulez-vous vraiment finaliser cette commande\u00a0?",
-      "missing-quantity-error": "Toutes les accessions commandées doivent avoir une quantité pour pouvoir finaliser la commande",
+      "missing-mta-warning": "La commande n'a pas d'ATM (accord de transfert de matériel)",
+      "missing-sanitary-passport-warning": "La commande n'a pas de passeport sanitaire",
+      "missing-quantity-warning": "Certaines des accessions commandées n'ont pas de quantité spécifiée",
+      "missing-unit-warning": "Certaines des accessions commandées n'ont pas d'unité spécifiée",
       "cancel": "Annuler la commande",
       "cancel-confirmation": "Voulez-vous vraiment annuler cette commande\u00a0?",
       "delivery-form": "Bon de livraison",
@@ -200,6 +203,10 @@
       "order-status-title": "Nombre de commandes par état pour l'année {{ year }}",
       "order-status": "État",
       "order-count": "Nb. de commandes"
+    },
+    "finalization-warnings-modal": {
+      "message": "La commande n'est pas complète\u00a0:",
+      "confirm": "Voulez-vous néanmoins finaliser cette commande\u00a0?"
     }
   },
   "user": {

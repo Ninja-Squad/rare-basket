@@ -21,6 +21,7 @@ import { DocumentTypeEnumPipe } from './document-type-enum.pipe';
 import { ExportOrdersComponent } from './export-orders/export-orders.component';
 import { ChartModule } from '../chart/chart.module';
 import { FIRST_YEAR, StatisticsComponent } from './statistics/statistics.component';
+import { FinalizationWarningsModalComponent } from './finalization-warnings-modal/finalization-warnings-modal.component';
 
 @NgModule({
   declarations: [
@@ -35,7 +36,8 @@ import { FIRST_YEAR, StatisticsComponent } from './statistics/statistics.compone
     EditDocumentComponent,
     DocumentTypeEnumPipe,
     ExportOrdersComponent,
-    StatisticsComponent
+    StatisticsComponent,
+    FinalizationWarningsModalComponent
   ],
   imports: [
     CommonModule,

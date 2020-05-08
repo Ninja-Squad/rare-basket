@@ -147,7 +147,10 @@
       "edit": "Edit",
       "finalize": "Finalize the order",
       "finalize-confirmation": "Do you really want to finalize this order?",
-      "missing-quantity-error": "All the ordered accessions must have a quantity to finalize the order",
+      "missing-mta-warning": "The order has no MTA (material transfer agreement)",
+      "missing-sanitary-passport-warning": "The order has no sanitary passport",
+      "missing-quantity-warning": "Some of the ordered accessions have no quantity",
+      "missing-unit-warning": "Some of the ordered accessions have no unit",
       "cancel": "Cancel the order",
       "cancel-confirmation": "Do you really want to cancel this order?",
       "delivery-form": "Delivery form",
@@ -199,6 +202,10 @@
       "order-status-title": "# of orders per status for year {{ year }}",
       "order-status": "Order Status",
       "order-count": "# of orders"
+    },
+    "finalization-warnings-modal": {
+      "message": "The order is not complete\u00a0:",
+      "confirm": "Do you want to finalize this order anyway?"
     }
   },
   "user": {

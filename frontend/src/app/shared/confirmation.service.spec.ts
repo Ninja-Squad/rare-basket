@@ -2,7 +2,7 @@ import { TestBed } from '@angular/core/testing';
 import { ConfirmationModalComponent } from './confirmation-modal/confirmation-modal.component';
 import { ConfirmationOptions, ConfirmationService } from './confirmation.service';
 import { RbNgbModule } from '../rb-ngb/rb-ngb.module';
-import { MockModalModule, MockModalService } from './mock-modal.service.spec';
+import { ModalTestingModule, MockModalService } from './mock-modal.service.spec';
 import { I18nTestingModule } from '../i18n/i18n-testing.module.spec';
 
 describe('ConfirmationService', () => {
@@ -14,7 +14,7 @@ describe('ConfirmationService', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       declarations: [ConfirmationModalComponent],
-      imports: [I18nTestingModule, RbNgbModule, MockModalModule]
+      imports: [I18nTestingModule, RbNgbModule, ModalTestingModule]
     });
     mockModalService = TestBed.inject(MockModalService);
     confirmationService = TestBed.inject(ConfirmationService);

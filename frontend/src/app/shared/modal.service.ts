@@ -1,5 +1,5 @@
 import { Injectable, Type } from '@angular/core';
-import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
+import { NgbModal, NgbModalOptions, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 import { EMPTY, from, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 
@@ -8,7 +8,7 @@ import { catchError } from 'rxjs/operators';
  * If `errorOnClose` is true, then canceling the modal makes the returned observable emit an error.
  * Otherwise, the observable just doesn't emit anything and completes.
  */
-export interface ModalOptions {
+export interface ModalOptions extends NgbModalOptions {
   errorOnClose?: boolean;
 }
 

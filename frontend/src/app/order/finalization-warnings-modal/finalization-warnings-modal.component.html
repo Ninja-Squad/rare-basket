@@ -1,0 +1,21 @@
+<div class="modal-header">
+  <h4 class="modal-title" translate="common.confirmation-modal-title"></h4>
+</div>
+<div class="modal-body">
+  <div class="d-flex">
+    <div class="m-2 text-warning">
+      <fa-icon [icon]="warningIcon" size="3x"></fa-icon>
+    </div>
+    <div class="m-2 flex-grow-1">
+      <p translate="order.finalization-warnings-modal.message"></p>
+      <ul>
+        <li *ngFor="let message of messages">{{ message }}</li>
+      </ul>
+      <p translate="order.finalization-warnings-modal.confirm"></p>
+    </div>
+  </div>
+</div>
+<div class="modal-footer">
+  <button type="button" class="btn btn-danger" (click)="activeModal.close()" id="yes-button" translate="common.yes"></button>
+  <button type="button" class="btn btn-primary" (click)="activeModal.dismiss()" id="no-button" translate="common.no" ngbAutofocus></button>
+</div>
