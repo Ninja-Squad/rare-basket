@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Inject, Input, LOCALE_ID, OnInit, Output } from '@angular/core';
 import { ALL_CUSTOMER_TYPES, Basket, BasketCommand, BasketItemCommand, CustomerType, Language } from '../basket.model';
-import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { faCheck, faTrash } from '@fortawesome/free-solid-svg-icons';
 import { ConfirmationService } from '../../shared/confirmation.service';
 import { environment } from '../../../environments/environment';
@@ -39,10 +39,6 @@ export class EditBasketComponent implements OnInit {
 
   constructor(private fb: FormBuilder, private confirmationService: ConfirmationService, @Inject(LOCALE_ID) private language: Language) {}
 
-  private static agreementRequired(control: FormControl) {
-    return control.value ? null : { agreementRequired: true };
-  }
-
   ngOnInit(): void {
     const customer = this.basket.customer;
     this.form = this.fb.group({
@@ -54,7 +50,7 @@ export class EditBasketComponent implements OnInit {
         language: this.language
       }),
       rationale: [this.basket.rationale],
-      gdprAgreement: [false, EditBasketComponent.agreementRequired]
+      gdprAgreement: [false, Validators.requiredTrue]
     });
     this.quantityDisplayed = this.shouldDisplayQuantity();
     this.deleteItemDisabled = this.shouldDisableDeleteItem();
