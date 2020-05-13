@@ -1,3 +1,12 @@
+---
+
+stages:
+ - test
+ - build
+ - deploy-beta
+ - deploy-staging
+ - deploy-production
+
 image: circleci/openjdk:11-browsers
 
 # Disable the Gradle daemon for Continuous Integration servers as correctness
@@ -6,6 +15,7 @@ image: circleci/openjdk:11-browsers
 # isolated from any previous builds.
 variables:
  POSTGRES_HOST_AUTH_METHOD: trust
+ APP_NAME: rare-basket
 
 test:
  services:
@@ -19,3 +29,122 @@ test:
   # create the test db before running the tests
   - psql -h postgres -U postgres -f backend/database/setup/setup.sql
   - ./gradlew check build --no-daemon --parallel
+ cache:
+  key: "${CI_COMMIT_REF_NAME}"
+  policy: pull-push
+  paths:
+   - .gradle
+   - frontend/.gradle/
+   - frontend/node_modules/
+
+build:
+ stage: build
+ tags:
+  - openstack
+ script:
+  - ./gradlew assemble --no-daemon --parallel
+ artifacts:
+  paths:
+   - backend/build/libs/rare-basket.jar
+  expire_in: 1 month
+ cache:
+  key: "${CI_COMMIT_REF_NAME}"
+  policy: pull-push
+  paths:
+   - .gradle
+   - frontend/.gradle/
+   - frontend/node_modules/
+ only:
+  changes:
+   - backend/src/**/*
+   - backend/build.gradle.kts
+   - frontend/**/*
+   - build.gradle.kts
+   - docker.env
+ allow_failure: false
+
+.deploy-to-vm: &deploy-to-vm
+ tags:
+  - openstack
+ retry: 1
+ script:
+  # SSH initialization
+  - eval $(ssh-agent -s)
+  - ssh-add <(echo "${SSH_PRIVATE_KEY}")
+  - ssh -o StrictHostKeyChecking=no ${SERVER_USER}@${SERVER_IP} 'echo "Successfully connected on $(hostname)"'
+  # Copy jar to the server
+  - scp ./backend/build/libs/${APP_NAME}.jar ${SERVER_USER}@${SERVER_IP}:/tmp/${APP_NAME}-${ENV}.jar
+  - ssh ${SERVER_USER}@${SERVER_IP} "sudo mv /tmp/${APP_NAME}-${ENV}.jar /opt/bootapp/${APP_NAME}-${ENV}.jar ; sudo chown -R bootapp:bootapp /opt/bootapp/"
+  # Restarting service with the updated jar and the according Spring profiles enabled
+  - ssh ${SERVER_USER}@${SERVER_IP} "sudo systemctl restart bootapp@${APP_NAME}-${ENV}"
+  - eval $(ssh-agent -k)
+  - echo "Deploy and index done. Application should be available at http://${SERVER_IP}:${APP_PORT}/${APP_CONTEXT}"
+
+.variables-beta: &variables-beta
+ variables:
+  ENV: beta
+  APP_PORT: ${BETA_PORT}
+  APP_CONTEXT: ${APP_NAME}-${ENV}
+
+.variables-staging: &variables-staging
+ variables:
+  ENV: staging
+  APP_PORT: ${STAGING_PORT}
+  APP_CONTEXT: ${APP_NAME}-${ENV}
+
+# ALPHA
+.variables-prod: &variables-prod
+ variables:
+  ENV: prod
+  APP_PORT: ${PROD_PORT}
+  APP_CONTEXT: ${APP_NAME}
+
+deploy-to-beta:
+ stage: deploy-beta
+ tags:
+  - openstack
+ <<: *variables-beta
+ <<: *deploy-to-vm
+ only:
+  changes:
+   - backend/src/**/*
+   - frontend/**/*
+  refs:
+   - branches
+ except:
+  refs:
+   - master
+ allow_failure: false # mandatory to block the execution of the pipeline
+
+deploy-to-staging:
+ stage: deploy-staging
+ tags:
+  - openstack
+ <<: *variables-staging
+ <<: *deploy-to-vm
+ only:
+  changes:
+   - backend/src/**/*
+   - frontend/**/*
+  refs:
+   - branches
+ except:
+  refs:
+   - master
+ when: manual
+
+# ALPHA
+deploy-to-prod:
+ stage: deploy-production
+ tags:
+  - openstack
+ <<: *variables-prod
+ <<: *deploy-to-vm
+ only:
+  changes:
+   - backend/src/**/*
+   - frontend/**/*
+  refs:
+   - master
+ when: manual
+ allow_failure: false
