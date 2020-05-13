@@ -2,7 +2,6 @@
 
 stages:
  - test
- - build
  - deploy-beta
  - deploy-staging
  - deploy-production
@@ -31,7 +30,11 @@ test:
   - sudo apt-get install -y postgresql-client
   # create the test db before running the tests
   - psql -h postgres -U postgres -f backend/database/setup/setup.sql
-  - ./gradlew check test --no-daemon --parallel
+  - ./gradlew check build --no-daemon --parallel
+ artifacts:
+  paths:
+   - backend/build/libs/rare-basket.jar
+  expire_in: 1 month
  cache:
   key: "${CI_COMMIT_REF_NAME}"
   policy: pull-push
@@ -39,34 +42,6 @@ test:
    - .gradle
    - frontend/.gradle/
    - frontend/node_modules/
- allow_failure: false
-
-build:
- stage: build
- tags:
-  - openstack
- script:
-  - ./gradlew assemble --no-daemon --parallel
- artifacts:
-  paths:
-   - backend/build/libs/rare-basket.jar
-  expire_in: 1 month
- cache:
-  key: "${CI_COMMIT_REF_NAME}"
-  policy: pull
-  paths:
-   - .gradle
-   - frontend/.gradle/
-   - frontend/node_modules/
- only:
-  changes:
-   - backend/src/**/*
-   - backend/database/**/*
-   - backend/build.gradle.kts
-   - frontend/**/*
-   - build.gradle.kts
-   - .gitlab-ci.yml
-
  allow_failure: false
 
 .deploy-to-vm: &deploy-to-vm
