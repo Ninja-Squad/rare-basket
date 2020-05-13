@@ -18,9 +18,12 @@ variables:
  APP_NAME: rare-basket
 
 test:
+ stage: test
  services:
   - name: postgres:12.2-alpine
     alias: postgres
+ tags:
+  - openstack
  script:
   # I know this looks weird, but apt-get update is consistently failing the first time...
   # running it twice fixes the issue
@@ -28,7 +31,7 @@ test:
   - sudo apt-get install -y postgresql-client
   # create the test db before running the tests
   - psql -h postgres -U postgres -f backend/database/setup/setup.sql
-  - ./gradlew check build --no-daemon --parallel
+  - ./gradlew check test --no-daemon --parallel
  cache:
   key: "${CI_COMMIT_REF_NAME}"
   policy: pull-push
@@ -36,6 +39,7 @@ test:
    - .gradle
    - frontend/.gradle/
    - frontend/node_modules/
+ allow_failure: false
 
 build:
  stage: build
@@ -49,7 +53,7 @@ build:
   expire_in: 1 month
  cache:
   key: "${CI_COMMIT_REF_NAME}"
-  policy: pull-push
+  policy: pull
   paths:
    - .gradle
    - frontend/.gradle/
@@ -57,10 +61,12 @@ build:
  only:
   changes:
    - backend/src/**/*
+   - backend/database/**/*
    - backend/build.gradle.kts
    - frontend/**/*
    - build.gradle.kts
-   - docker.env
+   - .gitlab-ci.yml
+
  allow_failure: false
 
 .deploy-to-vm: &deploy-to-vm
