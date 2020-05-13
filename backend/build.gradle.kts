@@ -36,6 +36,7 @@ tasks {
                 from("${project(":frontend").projectDir}/dist/rare-basket-frontend")
             }
         }
+        launchScript()
     }
 
     test {
