@@ -90,6 +90,7 @@ deploy-to-beta:
   changes:
    - backend/src/**/*
    - frontend/**/*
+   - .gitlab-ci.yml
   refs:
    - branches
  except:
@@ -107,6 +108,7 @@ deploy-to-staging:
   changes:
    - backend/src/**/*
    - frontend/**/*
+   - .gitlab-ci.yml
   refs:
    - branches
  except:
@@ -125,6 +127,7 @@ deploy-to-prod:
   changes:
    - backend/src/**/*
    - frontend/**/*
+   - .gitlab-ci.yml
   refs:
    - master
  when: manual
