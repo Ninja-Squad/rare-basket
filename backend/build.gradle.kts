@@ -86,6 +86,7 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-mail")
     implementation("org.springframework.boot:spring-boot-starter-security")
     implementation("org.springframework.boot:spring-boot-starter-validation")
+    implementation("org.springframework.cloud:spring-cloud-starter-config")
     implementation("com.samskivert:jmustache")
     implementation("org.keycloak:keycloak-spring-boot-starter")
     implementation("com.itextpdf:kernel:$itextVersion")
