@@ -36,6 +36,12 @@ spring:
     password:
     port: 25
 
+logging.level:
+  root: ERROR
+  org.springframework:
+    boot.web.embedded.tomcat.TomcatWebServer: INFO
+    web.client.RestTemplate: INFO
+
 # These settings are documented here: https://www.keycloak.org/docs/latest/securing_apps/index.html#_java_adapter_config
 keycloak:
   realm: rare-basket
