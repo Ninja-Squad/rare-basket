@@ -12,9 +12,9 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.Instant;
 import java.time.LocalDate;
-import java.time.ZoneId;
 import java.util.stream.Stream;
 
+import fr.inra.urgi.rarebasket.config.Constants;
 import fr.inra.urgi.rarebasket.dao.OrderDao;
 import org.springframework.stereotype.Component;
 import org.supercsv.io.CsvListWriter;
@@ -53,9 +53,8 @@ public class OrderCsvExporter {
 
     public InputStream export(LocalDate from, LocalDate to, Long accessionHolderId) {
         try {
-            ZoneId franceTimeZone = ZoneId.of("Europe/Paris");
-            Instant fromInstant = from.atStartOfDay(franceTimeZone).toInstant();
-            Instant toInstant = to.plusDays(1).atStartOfDay(franceTimeZone).toInstant();
+            Instant fromInstant = from.atStartOfDay(Constants.FRANCE_TIMEZONE).toInstant();
+            Instant toInstant = to.plusDays(1).atStartOfDay(Constants.FRANCE_TIMEZONE).toInstant();
 
             try (Stream<Object[]> rows = orderDao.reportBetween(fromInstant, toInstant, accessionHolderId)) {
                 return toCsv(rows);

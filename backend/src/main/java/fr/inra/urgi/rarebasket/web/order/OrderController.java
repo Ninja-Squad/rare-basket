@@ -4,10 +4,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.time.Instant;
 import java.time.LocalDate;
-import java.time.ZoneId;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import fr.inra.urgi.rarebasket.config.Constants;
 import fr.inra.urgi.rarebasket.dao.OrderDao;
 import fr.inra.urgi.rarebasket.domain.Document;
 import fr.inra.urgi.rarebasket.domain.Order;
@@ -269,9 +269,8 @@ public class OrderController {
         // FIXME check the right permission (VIEW_ORDERS), determine perimeter based on user
         currentUser.checkPermission(Permission.ORDER_MANAGEMENT);
 
-        ZoneId frenchZoneId = ZoneId.of("Europe/Paris");
-        Instant fromInstant = from.atStartOfDay(frenchZoneId).toInstant();
-        Instant toInstant = to.atStartOfDay(frenchZoneId).toInstant();
+        Instant fromInstant = from.atStartOfDay(Constants.FRANCE_TIMEZONE).toInstant();
+        Instant toInstant = to.atStartOfDay(Constants.FRANCE_TIMEZONE).toInstant();
         return new OrderStatisticsDTO(
             orderDao.findOrderStatusStatistics(fromInstant, toInstant, getAccessionHolderId()),
             orderDao.findCustomerTypeStatistics(fromInstant, toInstant, getAccessionHolderId())
