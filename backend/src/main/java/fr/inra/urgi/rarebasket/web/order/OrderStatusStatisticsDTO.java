@@ -5,7 +5,7 @@ import java.util.Objects;
 import fr.inra.urgi.rarebasket.domain.OrderStatus;
 
 /**
- * TODO include class javadoc here
+ * DTO containing an element of the order status statistics
  * @author JB Nizet
  */
 public final class OrderStatusStatisticsDTO {

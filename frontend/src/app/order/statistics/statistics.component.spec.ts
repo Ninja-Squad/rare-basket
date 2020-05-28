@@ -121,7 +121,7 @@ describe('StatisticsComponent', () => {
     queryParamsSubject.next({ year: '2019' });
     tester.detectChanges();
 
-    expect(tester.year).toHaveSelectedLabel('2 019');
+    expect(tester.year).toHaveSelectedLabel('2019');
     expect(orderService.getStatistics).toHaveBeenCalledWith(2019);
   });
 
@@ -136,7 +136,7 @@ describe('StatisticsComponent', () => {
     queryParamsSubject.next({});
     tester.detectChanges();
 
-    tester.year.selectLabel('2 019');
+    tester.year.selectLabel('2019');
 
     expect(router.navigate).toHaveBeenCalledWith(['.'], {
       queryParams: { year: '2019' },

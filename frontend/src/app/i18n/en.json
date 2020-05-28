@@ -27,8 +27,8 @@
     },
     "short-customer-type": {
       "INRAE_RESEARCHER": "INRAE researcher",
-      "FR_RESEARCHER": "French acedemic",
-      "FOREIGN_RESEARCHER": "Foraign academic",
+      "FR_RESEARCHER": "French academic",
+      "FOREIGN_RESEARCHER": "Foreign academic",
       "FR_COMPANY": "French company",
       "FOREIGN_COMPANY": "Foreign company",
       "FARMER": "Farmer",

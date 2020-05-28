@@ -1,12 +1,12 @@
 <form [formGroup]="form" class="form-inline">
   <label for="year" class="mb-2 mr-sm-2" translate="order.statistics.year"></label>
   <select formControlName="year" class="form-control custom-select mb-2 mr-sm-2" id="year">
-    <option *ngFor="let year of years" [ngValue]="year">{{ year | number }}</option>
+    <option *ngFor="let year of years" [ngValue]="year">{{ year }}</option>
   </select>
 </form>
 
 <div *ngIf="stats">
-  <h2 translate="order.statistics.customer-types-title" [translateParams]="{ year: form.value.year | number }"></h2>
+  <h2 translate="order.statistics.customer-types-title" [translateParams]="{ year: form.value.year }"></h2>
 
   <div class="row align-items-center">
     <div class="col-md mb-2 mb-md-2">
@@ -33,7 +33,7 @@
     </div>
   </div>
 
-  <h2 translate="order.statistics.order-status-title" [translateParams]="{ year: form.value.year | number }"></h2>
+  <h2 translate="order.statistics.order-status-title" [translateParams]="{ year: form.value.year }"></h2>
 
   <div class="row align-items-center">
     <div class="col-md mb-2 mb-md-2">

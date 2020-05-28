@@ -5,7 +5,7 @@ import java.util.Objects;
 import fr.inra.urgi.rarebasket.domain.CustomerType;
 
 /**
- * TODO include class javadoc here
+ * DTO containing an element of the customer type statistics
  * @author JB Nizet
  */
 public final class CustomerTypeStatisticsDTO {
