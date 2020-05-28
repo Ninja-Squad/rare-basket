@@ -34,6 +34,13 @@ public class Grc {
     @NotBlank
     private String address;
 
+    public Grc() {
+    }
+
+    public Grc(Long id) {
+        this.id = id;
+    }
+
     public Long getId() {
         return id;
     }

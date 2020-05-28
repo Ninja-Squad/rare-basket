@@ -105,14 +105,6 @@ public class UserController {
     }
 
     private void copyCommandToUser(UserCommandDTO command, User user) {
-        userDao.findByName(command.getName())
-               .filter(u -> !u.equals(user))
-               .ifPresent(u -> {
-                   throw new BadRequestException("A user with that name already exists");
-               });
-
-        // TODO check that the name is a valid keycloak name,
-        //  or better, use the keycloak user ID and get the name from keycloak
         if (command.getPermissions().contains(Permission.ORDER_MANAGEMENT) && command.getAccessionHolderId() == null) {
             throw new BadRequestException("An accession holder is mandatory for permission " + Permission.ORDER_MANAGEMENT);
         }
@@ -120,7 +112,7 @@ public class UserController {
             command.getAccessionHolderId() == null
                 ? null
                 : accessionHolderDao.findById(command.getAccessionHolderId()).orElseThrow(
-                () -> new BadRequestException("No accesssion holder with ID " + command.getAccessionHolderId())
+                () -> new BadRequestException("No accession holder with ID " + command.getAccessionHolderId())
             );
 
         user.setAccessionHolder(accessionHolder);
