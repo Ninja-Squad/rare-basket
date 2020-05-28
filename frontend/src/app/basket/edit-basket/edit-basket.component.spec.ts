@@ -47,8 +47,8 @@ class TestComponentTester extends ComponentTester<TestComponent> {
     return this.textarea('#rationale');
   }
 
-  get gpdrAgreement() {
-    return this.input('#gpdr-agreement');
+  get gdprAgreement() {
+    return this.input('#gdpr-agreement');
   }
 
   get saveButton() {
@@ -173,7 +173,7 @@ describe('EditBasketComponent', () => {
       expect(tester.accessions[0]).toContainText('rosa1');
       expect(tester.accessions[1]).toContainText('Violetta');
       expect(tester.accessions[1]).toContainText('violetta1');
-      expect(tester.gpdrAgreement).not.toBeChecked();
+      expect(tester.gdprAgreement).not.toBeChecked();
     });
 
     it('should display quantities if at least one is set', () => {
@@ -212,7 +212,7 @@ describe('EditBasketComponent', () => {
       tester.customerAddress.fillWith('21 Jump Street');
       tester.customerType.selectLabel('Citoyen');
       tester.rationale.fillWith('Because');
-      tester.gpdrAgreement.check();
+      tester.gdprAgreement.check();
 
       tester.saveButton.click();
       expect(tester.errors.length).toBe(0);

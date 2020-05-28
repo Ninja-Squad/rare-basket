@@ -4,7 +4,8 @@
 
 export const environment = {
   production: false,
-  keycloakUrl: 'http://localhost:8082'
+  keycloakUrl: 'http://localhost:8082',
+  gdprDetailsUrl: 'https://urgi.versailles.inra.fr/rare/legal#personal-data'
 };
 
 /*

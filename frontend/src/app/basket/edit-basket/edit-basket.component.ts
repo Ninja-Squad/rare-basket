@@ -3,6 +3,7 @@ import { ALL_CUSTOMER_TYPES, Basket, BasketCommand, BasketItemCommand, CustomerT
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { faCheck, faTrash } from '@fortawesome/free-solid-svg-icons';
 import { ConfirmationService } from '../../shared/confirmation.service';
+import { environment } from '../../../environments/environment';
 
 interface FormValue {
   customer: {
@@ -26,6 +27,7 @@ export class EditBasketComponent implements OnInit {
 
   @Output() readonly basketSaved = new EventEmitter<BasketCommand>();
 
+  gdprDetailsUrl = environment.gdprDetailsUrl;
   customerTypes = ALL_CUSTOMER_TYPES;
   form: FormGroup;
 
@@ -52,7 +54,7 @@ export class EditBasketComponent implements OnInit {
         language: this.language
       }),
       rationale: [this.basket.rationale],
-      gpdrAgreement: [false, EditBasketComponent.agreementRequired]
+      gdprAgreement: [false, EditBasketComponent.agreementRequired]
     });
     this.quantityDisplayed = this.shouldDisplayQuantity();
     this.deleteItemDisabled = this.shouldDisableDeleteItem();
