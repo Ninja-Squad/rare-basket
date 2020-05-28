@@ -98,7 +98,12 @@ class BasketControllerTest {
         basket = new Basket(42L);
         basket.setReference("ref");
         basket.setStatus(BasketStatus.DRAFT);
-        basket.setCustomer(new Customer("jb", "jb@mail.com", "Saint Just", CustomerType.FARMER, SupportedLanguage.FRENCH));
+        basket.setCustomer(new Customer("jb",
+                                        "Ninja Squad",
+                                        "jb@mail.com",
+                                        "Saint Just",
+                                        CustomerType.FARMER,
+                                        SupportedLanguage.FRENCH));
         basket.setRationale("why not?");
 
         rosa = new BasketItem(5L);
@@ -162,6 +167,7 @@ class BasketControllerTest {
         CustomerCommandDTO customer =
             new CustomerCommandDTO(
                 "validName",
+                null,
                 "notAnEmail",
                 "address",
                 CustomerType.FARMER,
@@ -190,6 +196,7 @@ class BasketControllerTest {
         List<CustomerCommandDTO> invalidCustomers = List.of(
             new CustomerCommandDTO(
                 "",
+                "org",
                 "foo@bar.com",
                 "address",
                 CustomerType.FARMER,
@@ -197,6 +204,7 @@ class BasketControllerTest {
             ),
             new CustomerCommandDTO(
                 "validName",
+                "org",
                 null,
                 "address",
                 CustomerType.FARMER,
@@ -204,6 +212,7 @@ class BasketControllerTest {
             ),
             new CustomerCommandDTO(
                 "validName",
+                "org",
                 "notAnEmail",
                 "address",
                 CustomerType.FARMER,
@@ -211,6 +220,7 @@ class BasketControllerTest {
             ),
             new CustomerCommandDTO(
                 "validName",
+                "org",
                 "foo@bar.com",
                 "",
                 CustomerType.FARMER,
@@ -218,6 +228,7 @@ class BasketControllerTest {
             ),
             new CustomerCommandDTO(
                 "validName",
+                "org",
                 "foo@bar.com",
                 "",
                 null,
@@ -225,6 +236,7 @@ class BasketControllerTest {
             ),
             new CustomerCommandDTO(
                 "validName",
+                "org",
                 "foo@bar.com",
                 "",
                 CustomerType.FARMER,
@@ -289,6 +301,7 @@ class BasketControllerTest {
             ),
             new CustomerCommandDTO(
                 "Jack",
+                "org",
                 "jack@mail.com",
                 "21 Jump street",
                 CustomerType.CITIZEN,
@@ -323,6 +336,7 @@ class BasketControllerTest {
             );
         assertThat(savedBasket.getStatus()).isEqualTo(BasketStatus.SAVED);
         assertThat(savedBasket.getCustomer()).isEqualTo(new Customer(command.getCustomer().getName(),
+                                                                     command.getCustomer().getOrganization(),
                                                                      command.getCustomer().getEmail(),
                                                                      command.getCustomer().getAddress(),
                                                                      command.getCustomer().getType(),
@@ -341,6 +355,7 @@ class BasketControllerTest {
                .andExpect(jsonPath("$.status").value(basket.getStatus().name()))
                .andExpect(jsonPath("$.rationale").value(basket.getRationale()))
                .andExpect(jsonPath("$.customer.name").value(basket.getCustomer().getName()))
+               .andExpect(jsonPath("$.customer.organization").value(basket.getCustomer().getOrganization()))
                .andExpect(jsonPath("$.customer.email").value(basket.getCustomer().getEmail()))
                .andExpect(jsonPath("$.customer.address").value(basket.getCustomer().getAddress()))
                .andExpect(jsonPath("$.customer.type").value(basket.getCustomer().getType().name()))
@@ -405,6 +420,7 @@ class BasketControllerTest {
             ),
             new CustomerCommandDTO(
                 "Jack",
+                "org",
                 "jack@mail.com",
                 "21 Jump street",
                 CustomerType.CITIZEN,
@@ -424,6 +440,7 @@ class BasketControllerTest {
         assertThat(violetta.getAccessionHolder()).isEqualTo(alice);
         assertThat(basket.getStatus()).isEqualTo(BasketStatus.SAVED);
         assertThat(basket.getCustomer()).isEqualTo(new Customer(command.getCustomer().getName(),
+                                                                command.getCustomer().getOrganization(),
                                                                 command.getCustomer().getEmail(),
                                                                 command.getCustomer().getAddress(),
                                                                 command.getCustomer().getType(),

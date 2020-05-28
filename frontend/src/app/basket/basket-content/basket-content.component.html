@@ -6,6 +6,10 @@
       <div class="flex-grow-1">{{ basket.customer.name }}</div>
     </div>
     <div class="d-flex">
+      <div class="mr-2"><fa-icon [icon]="organizationIcon" [fixedWidth]="true"></fa-icon></div>
+      <div class="flex-grow-1">{{ basket.customer.organization }}</div>
+    </div>
+    <div class="d-flex">
       <div class="mr-2"><fa-icon [icon]="emailIcon" [fixedWidth]="true"></fa-icon></div>
       <div class="flex-grow-1">{{ basket.customer.email }}</div>
     </div>

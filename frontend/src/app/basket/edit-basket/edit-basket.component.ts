@@ -8,6 +8,7 @@ import { environment } from '../../../environments/environment';
 interface FormValue {
   customer: {
     name: string;
+    organization: string;
     email: string;
     address: string;
     type: CustomerType;
@@ -44,6 +45,7 @@ export class EditBasketComponent implements OnInit {
     this.form = this.fb.group({
       customer: this.fb.group({
         name: [customer?.name ?? null, Validators.required],
+        organization: [customer?.organization ?? null],
         email: [customer?.email ?? null, [Validators.required, Validators.email]],
         address: [customer?.address ?? null, Validators.required],
         type: [customer?.type ?? null, Validators.required],

@@ -38,6 +38,7 @@ class BasketConfirmationMailerTest {
         basket.setConfirmationCode("ZYXWVUTS");
         basket.setCustomer(
             new Customer("John",
+                         "Wheat SA",
                          "john@mail.com",
                          "address",
                          CustomerType.FARMER,

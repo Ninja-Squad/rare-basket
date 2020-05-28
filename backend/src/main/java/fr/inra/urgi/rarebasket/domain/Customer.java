@@ -16,6 +16,9 @@ public class Customer {
     @Column(name = "customer_name")
     private String name;
 
+    @Column(name = "customer_organization")
+    private String organization;
+
     @Email
     @Column(name = "customer_email")
     private String email;
@@ -35,11 +38,13 @@ public class Customer {
     }
 
     public Customer(String name,
+                    String organization,
                     String email,
                     String address,
                     CustomerType type,
                     SupportedLanguage language) {
         this.name = name;
+        this.organization = organization;
         this.email = email;
         this.address = address;
         this.type = type;
@@ -52,6 +57,14 @@ public class Customer {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getOrganization() {
+        return organization;
+    }
+
+    public void setOrganization(String organization) {
+        this.organization = organization;
     }
 
     public String getEmail() {
@@ -96,6 +109,7 @@ public class Customer {
         }
         Customer customer = (Customer) o;
         return Objects.equals(name, customer.name) &&
+            Objects.equals(organization, customer.organization) &&
             Objects.equals(email, customer.email) &&
             Objects.equals(address, customer.address) &&
             type == customer.type &&
@@ -104,6 +118,6 @@ public class Customer {
 
     @Override
     public int hashCode() {
-        return Objects.hash(name, email, address, type, language);
+        return Objects.hash(name, organization, email, address, type, language);
     }
 }

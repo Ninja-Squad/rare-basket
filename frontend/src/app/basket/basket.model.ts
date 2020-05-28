@@ -18,6 +18,7 @@ export interface Accession {
 
 export interface Customer {
   name: string | null;
+  organization: string | null;
   email: string | null;
   address: string | null;
   type: CustomerType | null;
@@ -52,6 +53,7 @@ export type Language = 'en' | 'fr';
 
 export interface CustomerCommand {
   name: string;
+  organization: string | null;
   email: string;
   address: string;
   type: CustomerType;

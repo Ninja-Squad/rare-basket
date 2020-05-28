@@ -74,6 +74,7 @@
       "personal-information": "Personal information",
       "name": "Your name",
       "name-error-label": "The name",
+      "organization": "Your company or organization (if any)",
       "email": "Your email address",
       "email-error-label": "The email address",
       "address": "Your postal address",

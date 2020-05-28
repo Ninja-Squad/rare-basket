@@ -18,6 +18,8 @@ public final class CustomerCommandDTO {
     @NotBlank(groups = BasketCommandDTO.Complete.class)
     private final String name;
 
+    private final String organization;
+
     @NotNull(groups = BasketCommandDTO.Complete.class)
     @Email
     private final String email;
@@ -33,11 +35,13 @@ public final class CustomerCommandDTO {
 
     @JsonCreator
     public CustomerCommandDTO(@JsonProperty("name") String name,
+                              @JsonProperty("organization") String organization,
                               @JsonProperty("email") String email,
                               @JsonProperty("address") String address,
                               @JsonProperty("type") CustomerType type,
                               @JsonProperty("language") SupportedLanguage language) {
         this.name = name;
+        this.organization = organization;
         this.email = email;
         this.address = address;
         this.type = type;
@@ -46,6 +50,10 @@ public final class CustomerCommandDTO {
 
     public String getName() {
         return name;
+    }
+
+    public String getOrganization() {
+        return organization;
     }
 
     public String getEmail() {
@@ -74,6 +82,7 @@ public final class CustomerCommandDTO {
         }
         CustomerCommandDTO that = (CustomerCommandDTO) o;
         return Objects.equals(name, that.name) &&
+            Objects.equals(organization, that.organization) &&
             Objects.equals(email, that.email) &&
             Objects.equals(address, that.address) &&
             type == that.type &&
@@ -82,13 +91,14 @@ public final class CustomerCommandDTO {
 
     @Override
     public int hashCode() {
-        return Objects.hash(name, email, address, type, language);
+        return Objects.hash(name, organization, email, address, type, language);
     }
 
     @Override
     public String toString() {
         return "CustomerCommandDTO{" +
             "name='" + name + '\'' +
+            ", organization='" + organization + '\'' +
             ", email='" + email + '\'' +
             ", address='" + address + '\'' +
             ", type=" + type +

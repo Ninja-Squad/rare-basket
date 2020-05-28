@@ -152,6 +152,7 @@ describe('OrderComponent', () => {
       basket: {
         customer: {
           name: 'John Doe',
+          organization: 'Wheat SA',
           email: 'john@mail.com',
           address: 'Av. du Centre\n75000 Paris',
           type: 'CITIZEN',
@@ -216,6 +217,7 @@ describe('OrderComponent', () => {
     tester.detectChanges();
 
     expect(tester.testElement).toContainText('John');
+    expect(tester.testElement).toContainText('Wheat SA');
     expect(tester.testElement).toContainText('john@mail.com');
     expect(tester.testElement).toContainText('Av. du Centre\n75000 Paris');
     expect(tester.testElement).toContainText('Citoyen');

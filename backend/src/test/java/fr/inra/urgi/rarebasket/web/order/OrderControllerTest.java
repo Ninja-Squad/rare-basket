@@ -85,7 +85,7 @@ class OrderControllerTest {
         Basket basket = new Basket(34L);
         basket.setReference("ref");
         basket.setCustomer(
-            new Customer("jb", "jb@mail.com", "Saint Just", CustomerType.FARMER, SupportedLanguage.FRENCH)
+            new Customer("jb", "org", "jb@mail.com", "Saint Just", CustomerType.FARMER, SupportedLanguage.FRENCH)
         );
         basket.setRationale("why not?");
         basket.setConfirmationInstant(Instant.parse("2020-04-02T10:43:00Z"));
@@ -132,6 +132,9 @@ class OrderControllerTest {
                .andExpect(jsonPath("$.content[0].basket.customer.email").value(order.getBasket()
                                                                                     .getCustomer()
                                                                                     .getEmail()))
+               .andExpect(jsonPath("$.content[0].basket.customer.organization").value(order.getBasket()
+                                                                                    .getCustomer()
+                                                                                    .getOrganization()))
                .andExpect(jsonPath("$.content[0].basket.customer.address").value(order.getBasket()
                                                                                       .getCustomer()
                                                                                       .getAddress()))

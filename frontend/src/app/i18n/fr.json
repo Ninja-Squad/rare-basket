@@ -74,6 +74,7 @@
       "personal-information": "Informations personnelles",
       "name": "Votre nom",
       "name-error-label": "Le nom",
+      "organization": "Votre entreprise ou organisation (si applicable)",
       "email": "Votre adresse courriel",
       "email-error-label": "L'adresse courriel",
       "address": "Votre adresse postale",

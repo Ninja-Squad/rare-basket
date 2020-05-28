@@ -31,6 +31,10 @@ class TestComponentTester extends ComponentTester<TestComponent> {
     return this.input('#name');
   }
 
+  get customerOrganization() {
+    return this.input('#organization');
+  }
+
   get customerEmail() {
     return this.input('#email');
   }
@@ -208,6 +212,7 @@ describe('EditBasketComponent', () => {
       tester.detectChanges();
 
       tester.customerName.fillWith('John');
+      tester.customerOrganization.fillWith('Wheat SA');
       tester.customerEmail.fillWith('john@mail.com');
       tester.customerAddress.fillWith('21 Jump Street');
       tester.customerType.selectLabel('Citoyen');
@@ -220,6 +225,7 @@ describe('EditBasketComponent', () => {
       const expectedCommand: BasketCommand = {
         customer: {
           name: 'John',
+          organization: 'Wheat SA',
           email: 'john@mail.com',
           address: '21 Jump Street',
           type: 'CITIZEN',
@@ -289,6 +295,7 @@ describe('EditBasketComponent', () => {
         reference: 'ABCDEFGH',
         customer: {
           name: 'John',
+          organization: 'Wheat SA',
           email: 'john@mail.com',
           address: '21 Jump Street',
           type: 'CITIZEN',
@@ -320,6 +327,7 @@ describe('EditBasketComponent', () => {
 
     it('should display a filled form', () => {
       expect(tester.customerName).toHaveValue('John');
+      expect(tester.customerOrganization).toHaveValue('Wheat SA');
       expect(tester.customerEmail).toHaveValue('john@mail.com');
       expect(tester.customerAddress).toHaveValue('21 Jump Street');
       expect(tester.customerType).toHaveSelectedLabel('Citoyen');

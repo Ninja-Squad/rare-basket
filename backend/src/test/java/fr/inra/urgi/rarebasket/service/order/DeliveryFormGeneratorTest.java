@@ -30,6 +30,7 @@ class DeliveryFormGeneratorTest {
         Basket basket = new Basket();
         basket.setCustomer(new Customer(
             "John Doe",
+            "Wheat SA",
             "john.doe@mail.com",
             "5, main street\n76543 New York",
             CustomerType.FARMER,

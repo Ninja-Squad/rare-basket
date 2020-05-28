@@ -14,6 +14,7 @@ import {
   faHome,
   faMicrophone,
   faPlus,
+  faSitemap,
   faSpinner,
   faTrash,
   faUser,
@@ -40,6 +41,7 @@ export class OrderComponent implements OnInit {
   order: DetailedOrder;
 
   nameIcon = faUser;
+  organizationIcon = faSitemap;
   emailIcon = faAt;
   addressIcon = faHome;
   customerTypeIcon = faAddressCard;
