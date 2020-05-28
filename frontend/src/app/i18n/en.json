@@ -183,6 +183,7 @@
       "file-placeholder": "Choose or drop a file",
       "file-error-label": "The file",
       "invalid-file": "The file must have one of these extensions: {{ acceptedExtensions }}",
+      "invalid-file-size": "The file is too large. It must be at most {{ max }}\u00a0MB",
       "save": "Upload",
       "cancel": "Cancel"
     },

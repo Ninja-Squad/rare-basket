@@ -25,6 +25,7 @@ spring:
     password: rarebasket
   servlet:
     multipart:
+      # if you change this, it also needs to be changed in the frontend code, which checks the file size before uploading
       max-file-size: 10MB
       max-request-size: 20MB
   mail:

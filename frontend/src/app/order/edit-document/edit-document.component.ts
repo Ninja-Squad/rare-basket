@@ -4,6 +4,7 @@ import { ALL_DOCUMENT_TYPES, DetailedOrder, DocumentCommand, DocumentType, isDoc
 import { faFileUpload } from '@fortawesome/free-solid-svg-icons';
 
 const validExtensions = ['.pdf', '.txt', '.eml', '.pst', '.ost'];
+const maxFileSize = 10 * 1024 * 1024; // 10 MB
 
 @Component({
   selector: 'rb-edit-document',
@@ -74,8 +75,12 @@ export class EditDocumentComponent implements OnChanges {
     // do nothing: the event is just there to trick Angular into detecting changes
   }
 
+  hasFileError() {
+    return !this.selectedFile || !this.selectedFileValid() || !this.selectedFileSizeValid();
+  }
+
   save() {
-    if (this.form.invalid || !this.selectedFile || !this.selectedFileValid()) {
+    if (this.form.invalid || this.hasFileError()) {
       return;
     }
 
@@ -95,6 +100,18 @@ export class EditDocumentComponent implements OnChanges {
 
     const lowercaseName = this.selectedFile.name.toLowerCase();
     return validExtensions.some(extension => lowercaseName.endsWith(extension));
+  }
+
+  selectedFileSizeValid() {
+    if (!this.selectedFile) {
+      return true;
+    }
+
+    return this.selectedFile.size <= maxFileSize;
+  }
+
+  get maxFileSizeInMB() {
+    return maxFileSize / (1024 * 1024);
   }
 
   get fileAccept() {

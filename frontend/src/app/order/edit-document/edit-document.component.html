@@ -37,6 +37,7 @@
         [accept]="fileAccept"
         (change)="fileChanged()"
         [disabled]="uploadProgress !== null"
+        [class.is-invalid]="formDirective.submitted && hasFileError()"
       />
       <label class="custom-file-label" for="document-file" [class.highlighted]="highlightFileInput" [class.placeholder]="!selectedFile">
         {{ selectedFile?.name || ('order.edit-document.file-placeholder' | translate) }}
@@ -52,6 +53,11 @@
         *ngIf="!selectedFileValid()"
         translate="order.edit-document.invalid-file"
         [translateParams]="{ acceptedExtensions: acceptedExtensions }"
+      ></div>
+      <div
+        *ngIf="selectedFileValid() && !selectedFileSizeValid()"
+        translate="order.edit-document.invalid-file-size"
+        [translateParams]="{ max: maxFileSizeInMB | number }"
       ></div>
     </div>
 

@@ -126,12 +126,19 @@ describe('EditDocumentComponent', () => {
     tester.type.selectLabel('Facture');
     expect(tester.errors.length).toBe(1); // file
 
-    const selectedFile = { name: 'foo.exe' } as File;
+    const mockFile = { name: 'foo.exe', size: 11 * 1024 * 1024 };
+    const selectedFile = mockFile as File;
     spyOnProperty(tester.editDocumentComponent, 'selectedFile', 'get').and.returnValue(selectedFile);
     tester.detectChanges();
 
     expect(tester.testElement).toContainText(`Le fichier doit avoir l'une des extensions suivantes\u00a0: .pdf, .txt, .eml, .pst, .ost`);
     expect(tester.errors.length).toBe(1); // file invalid
+
+    mockFile.name = 'foo.pdf';
+    tester.detectChanges();
+
+    expect(tester.testElement).toContainText('Le fichier est trop volumineux. Il ne doit pas dépasser 10\u00a0MB');
+    expect(tester.errors.length).toBe(1); // file size invalid
   });
 
   it('should disable everything and display progress bar when uploading', () => {
@@ -162,7 +169,7 @@ describe('EditDocumentComponent', () => {
     tester.type.selectLabel('Autre');
     tester.description.fillWith('desc');
 
-    const selectedFile = { name: 'foo.txt' } as File;
+    const selectedFile = { name: 'foo.txt', size: 100 } as File;
     spyOnProperty(tester.editDocumentComponent, 'selectedFile', 'get').and.returnValue(selectedFile);
 
     tester.saveButton.click();
