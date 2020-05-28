@@ -67,7 +67,7 @@ class GrcControllerTest {
 
     @Test
     void shouldList() throws Exception {
-        when(mockGrcDao.findAll()).thenReturn(List.of(grc));
+        when(mockGrcDao.list()).thenReturn(List.of(grc));
 
         mockMvc.perform(get("/api/grcs"))
                .andExpect(status().isOk())
