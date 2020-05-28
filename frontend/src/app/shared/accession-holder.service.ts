@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { AccessionHolder } from './user.model';
+import { AccessionHolder, AccessionHolderCommand } from './user.model';
 
 @Injectable({
   providedIn: 'root'
@@ -15,6 +15,18 @@ export class AccessionHolderService {
    */
   list(): Observable<Array<AccessionHolder>> {
     return this.http.get<Array<AccessionHolder>>('/api/accession-holders');
+  }
+
+  get(accessionHolderId: number): Observable<AccessionHolder> {
+    return this.http.get<AccessionHolder>(`/api/accession-holders/${accessionHolderId}`);
+  }
+
+  create(command: AccessionHolderCommand): Observable<AccessionHolder> {
+    return this.http.post<AccessionHolder>('/api/accession-holders', command);
+  }
+
+  update(accessionHolderId: number, command: AccessionHolderCommand): Observable<void> {
+    return this.http.put<void>(`/api/accession-holders/${accessionHolderId}`, command);
   }
 
   delete(accessionHolderId: number): Observable<void> {

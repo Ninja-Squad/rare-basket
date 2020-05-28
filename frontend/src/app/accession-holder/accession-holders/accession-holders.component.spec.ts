@@ -65,6 +65,7 @@ describe('AccessionHoldersComponent', () => {
         id: 1,
         name: 'Holder1',
         email: 'holder1@mail.com',
+        phone: '',
         grc: {
           id: 432,
           name: 'GRC1'
@@ -74,6 +75,7 @@ describe('AccessionHoldersComponent', () => {
         id: 2,
         name: 'Holder2',
         email: 'holder2@mail.com',
+        phone: '',
         grc: {
           id: 433,
           name: 'GRC2'
@@ -100,6 +102,7 @@ describe('AccessionHoldersComponent', () => {
         id: 1,
         name: 'Holder1',
         email: 'holder1@mail.com',
+        phone: '',
         grc: {
           id: 432,
           name: 'GRC1'
@@ -109,6 +112,7 @@ describe('AccessionHoldersComponent', () => {
         id: 2,
         name: 'Holder2',
         email: 'holder2@mail.com',
+        phone: '',
         grc: {
           id: 433,
           name: 'GRC2'

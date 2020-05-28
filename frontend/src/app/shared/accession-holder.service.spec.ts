@@ -2,7 +2,7 @@ import { TestBed } from '@angular/core/testing';
 
 import { AccessionHolderService } from './accession-holder.service';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
-import { AccessionHolder } from './user.model';
+import { AccessionHolder, AccessionHolderCommand } from './user.model';
 
 describe('AccessionHolderService', () => {
   let service: AccessionHolderService;
@@ -26,6 +26,41 @@ describe('AccessionHolderService', () => {
     const expected = [] as Array<AccessionHolder>;
     http.expectOne({ method: 'GET', url: '/api/accession-holders' }).flush(expected);
     expect(actual).toBe(expected);
+  });
+
+  it('should get', () => {
+    let actual: AccessionHolder = null;
+
+    service.get(42).subscribe(accessionHolder => (actual = accessionHolder));
+
+    const expected = { id: 42 } as AccessionHolder;
+    http.expectOne({ method: 'GET', url: '/api/accession-holders/42' }).flush(expected);
+    expect(actual).toBe(expected);
+  });
+
+  it('should create', () => {
+    let actual: AccessionHolder = null;
+
+    const command = { name: 'foo' } as AccessionHolderCommand;
+    service.create(command).subscribe(accessionHolder => (actual = accessionHolder));
+
+    const expected = { id: 42 } as AccessionHolder;
+    const testRequest = http.expectOne({ method: 'POST', url: '/api/accession-holders' });
+    expect(testRequest.request.body).toBe(command);
+    testRequest.flush(expected);
+    expect(actual).toBe(expected);
+  });
+
+  it('should update', () => {
+    let done = false;
+
+    const command = { name: 'foo' } as AccessionHolderCommand;
+    service.update(42, command).subscribe(() => (done = true));
+
+    const testRequest = http.expectOne({ method: 'PUT', url: '/api/accession-holders/42' });
+    expect(testRequest.request.body).toBe(command);
+    testRequest.flush(null);
+    expect(done).toBe(true);
   });
 
   it('should delete', () => {

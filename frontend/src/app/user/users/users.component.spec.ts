@@ -93,6 +93,7 @@ describe('UsersComponent', () => {
             id: 1,
             name: 'Holder1',
             email: 'holder1@mail.com',
+            phone: '',
             grc: {
               id: 432,
               name: 'GRC1'
