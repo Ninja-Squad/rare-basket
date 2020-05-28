@@ -1,6 +1,8 @@
 export interface Grc {
   id: number;
   name: string;
+  institution: string;
+  address: string;
 }
 
 export interface AccessionHolder {

@@ -239,6 +239,22 @@
       "create": "Ajouter un gestionnaire d'accessions",
       "delete": "Supprimer le gestionnaire d'accessions",
       "delete-confirmation": "Voulez-vous vraiment supprimer ce gestionnaire d'accessions\u00a0? Si il est utilisé par une autre entité dans le système, la suppression échouera."
+    },
+    "edit": {
+      "title": {
+        "create": "Créer un gestionnaire d'accessions",
+        "update": "Modifier un gestionnaire d'accessions"
+      },
+      "name": "Nom",
+      "name-error-label": "Le nom",
+      "email": "Courriel",
+      "email-error-label": "Le courriel",
+      "phone": "Téléphone",
+      "phone-error-label": "Le téléphone",
+      "grc": "CRB",
+      "grc-error-label": "Le CRB",
+      "save": "Enregistrer",
+      "cancel": "Annuler"
     }
   }
 }

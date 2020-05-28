@@ -96,7 +96,9 @@ describe('UsersComponent', () => {
             phone: '',
             grc: {
               id: 432,
-              name: 'GRC1'
+              name: 'GRC1',
+              institution: '',
+              address: ''
             }
           },
           permissions: ['USER_MANAGEMENT', 'ORDER_MANAGEMENT']

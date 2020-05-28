@@ -238,6 +238,22 @@
       "create": "Add an accession holder",
       "delete": "Delete the accession holder",
       "delete-confirmation": "Do you really want to delete this accession holder? If it's referenced by an other entity in the system, the deletion will fail."
+    },
+    "edit": {
+      "title": {
+        "create": "Create an accession holder",
+        "update": "Update an accession holder"
+      },
+      "name": "Name",
+      "name-error-label": "The name",
+      "email": "Email",
+      "email-error-label": "The email",
+      "phone": "phone",
+      "phone-error-label": "The phone",
+      "grc": "GRC",
+      "grc-error-label": "The GRC",
+      "save": "Save",
+      "cancel": "Cancel"
     }
   }
 }

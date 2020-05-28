@@ -1,6 +1,7 @@
 package fr.inra.urgi.rarebasket.web.accessionholder;
 
 import fr.inra.urgi.rarebasket.domain.AccessionHolder;
+import fr.inra.urgi.rarebasket.web.grc.GrcDTO;
 
 /**
  * DTO containing information about an accession holder

@@ -9,9 +9,10 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { ValdemortModule } from 'ngx-valdemort';
 import { AccessionHoldersComponent } from './accession-holders/accession-holders.component';
 import { ACCESSION_HOLDER_ROUTES } from './accession-holder.route';
+import { EditAccessionHolderComponent } from './edit-accession-holder/edit-accession-holder.component';
 
 @NgModule({
-  declarations: [AccessionHoldersComponent],
+  declarations: [AccessionHoldersComponent, EditAccessionHolderComponent],
   imports: [
     CommonModule,
     TranslateModule,

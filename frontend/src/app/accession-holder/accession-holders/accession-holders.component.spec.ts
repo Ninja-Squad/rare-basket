@@ -68,7 +68,9 @@ describe('AccessionHoldersComponent', () => {
         phone: '',
         grc: {
           id: 432,
-          name: 'GRC1'
+          name: 'GRC1',
+          institution: '',
+          address: ''
         }
       },
       {
@@ -78,7 +80,9 @@ describe('AccessionHoldersComponent', () => {
         phone: '',
         grc: {
           id: 433,
-          name: 'GRC2'
+          name: 'GRC2',
+          institution: '',
+          address: ''
         }
       }
     ];
@@ -105,7 +109,9 @@ describe('AccessionHoldersComponent', () => {
         phone: '',
         grc: {
           id: 432,
-          name: 'GRC1'
+          name: 'GRC1',
+          institution: '',
+          address: ''
         }
       },
       {
@@ -115,7 +121,9 @@ describe('AccessionHoldersComponent', () => {
         phone: '',
         grc: {
           id: 433,
-          name: 'GRC2'
+          name: 'GRC2',
+          institution: '',
+          address: ''
         }
       }
     ];
