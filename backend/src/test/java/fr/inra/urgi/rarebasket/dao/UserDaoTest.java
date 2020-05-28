@@ -28,14 +28,14 @@ class UserDaoTest extends BaseDaoTest {
     void prepare() {
         Operation grcs =
             insertInto("grc")
-                .columns("id", "name")
-                .values(1L, "GRC1")
+                .columns("id", "name", "institution", "address")
+                .values(1L, "GRC1", "INRAE", "address")
                 .build();
 
         Operation accessionHolders =
             insertInto("accession_holder")
-                .columns("id", "email", "name", "grc_id")
-                .values(1L, "orders@grc1.com", "GRC1 Orders", 1L)
+                .columns("id", "email", "name", "phone", "grc_id")
+                .values(1L, "orders@grc1.com", "GRC1 Orders", "0123456789", 1L)
                 .build();
 
         Operation users =

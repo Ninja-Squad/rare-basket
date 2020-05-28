@@ -1,6 +1,8 @@
 CREATE TABLE grc (
-    id   BIGINT PRIMARY KEY,
-    name VARCHAR NOT NULL UNIQUE
+    id          BIGINT PRIMARY KEY,
+    name        VARCHAR NOT NULL UNIQUE,
+    institution VARCHAR NOT NULL,
+    address     VARCHAR NOT NULL
 );
 
 CREATE SEQUENCE grc_seq START WITH 1001 INCREMENT 50;
@@ -9,6 +11,7 @@ CREATE TABLE accession_holder (
     id     BIGINT PRIMARY KEY,
     name   VARCHAR NOT NULL,
     email  VARCHAR NOT NULL UNIQUE,
+    phone  VARCHAR NOT NULL,
     grc_id BIGINT  NOT NULL
         CONSTRAINT accession_holder_fk1 REFERENCES grc(id)
 );

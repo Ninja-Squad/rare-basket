@@ -33,6 +33,12 @@ public class AccessionHolder {
     private String email;
 
     /**
+     * The phone number of the accession holder, displayed in delivery notices
+     */
+    @NotBlank
+    private String phone;
+
+    /**
      * The GRC which this contact belongs to
      */
     @NotNull
@@ -68,6 +74,14 @@ public class AccessionHolder {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
     }
 
     public Grc getGrc() {

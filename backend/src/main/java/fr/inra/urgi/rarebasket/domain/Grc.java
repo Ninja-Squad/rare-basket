@@ -22,6 +22,18 @@ public class Grc {
     @NotBlank
     private String name;
 
+    /**
+     * The institution of the GRC, displayed in delivery notices
+     */
+    @NotBlank
+    private String institution;
+
+    /**
+     * The address of the GRC, displayed in delivery notices
+     */
+    @NotBlank
+    private String address;
+
     public Long getId() {
         return id;
     }
@@ -36,5 +48,21 @@ public class Grc {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getInstitution() {
+        return institution;
+    }
+
+    public void setInstitution(String institution) {
+        this.institution = institution;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
     }
 }

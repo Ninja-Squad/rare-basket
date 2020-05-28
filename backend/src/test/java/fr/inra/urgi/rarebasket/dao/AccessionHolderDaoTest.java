@@ -22,14 +22,14 @@ class AccessionHolderDaoTest extends BaseDaoTest {
         Long grc1Id = 1L;
         Operation grcs =
             insertInto("grc")
-                .columns("id", "name")
-                .values(grc1Id, "GRC1")
+                .columns("id", "name", "institution", "address")
+                .values(grc1Id, "GRC1", "INRAE", "address")
                 .build();
 
         Operation accessionHolders =
             insertInto("accession_holder")
-                .columns("id", "email", "name", "grc_id")
-                .values(1L, "orders@grc1.com", "GRC1 Orders", grc1Id)
+                .columns("id", "email", "name", "phone", "grc_id")
+                .values(1L, "orders@grc1.com", "GRC1 Orders", "0123456789", grc1Id)
                 .build();
 
         executeIfNecessary(Operations.sequenceOf(grcs, accessionHolders));
