@@ -15,8 +15,15 @@
       "prefix": "rb",
       "architect": {
         "build": {
-          "builder": "@angular-devkit/build-angular:browser",
+          // use a custom builder to provide an extra webpack config
+          // allwoing to get rid of moment.js (dragged in by chart.js)
+          // see https://github.com/just-jeb/angular-builders/tree/master/packages/custom-webpack#Custom-webpack-browser
+          "builder": "@angular-builders/custom-webpack:browser",
           "options": {
+            // this is the custom Webpack config
+            "customWebpackConfig": {
+              "path": "./extra-webpack.config.js"
+            },
             "outputPath": "dist/rare-basket-frontend",
             "index": "src/index.html",
             "main": "src/main.ts",
@@ -64,7 +71,10 @@
           }
         },
         "serve": {
-          "builder": "@angular-devkit/build-angular:dev-server",
+          // use a custom builder to provide an extra webpack config
+          // allwoing to get rid of moment.js (dragged in by chart.js)
+          // see https://github.com/just-jeb/angular-builders/tree/master/packages/custom-webpack#Custom-webpack-browser
+          "builder": "@angular-builders/custom-webpack:dev-server",
           "options": {
             "browserTarget": "rare-basket-frontend:build",
             "proxyConfig": "proxy.conf.json",
