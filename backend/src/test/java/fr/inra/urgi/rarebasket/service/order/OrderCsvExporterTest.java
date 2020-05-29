@@ -11,10 +11,12 @@ import java.nio.charset.StandardCharsets;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import fr.inra.urgi.rarebasket.dao.OrderDao;
+import fr.inra.urgi.rarebasket.service.user.VisualizationPerimeter;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -28,14 +30,37 @@ class OrderCsvExporterTest {
         OrderCsvExporter exporter = new OrderCsvExporter(mockOrderDao);
 
         when(mockOrderDao.reportBetween(Instant.parse("2019-12-31T23:00:00Z"),
-                                        Instant.parse("2020-04-30T22:00:00Z"),
-                                        42L)).thenReturn(
+                                        Instant.parse("2020-04-30T22:00:00Z"))).thenReturn(
             Stream.of(new Object[] { "a", "b" }, new Object[] { "c", "d", "e;f" })
         );
 
         InputStream result = exporter.export(LocalDate.of(2020, 1, 1),
                                              LocalDate.of(2020, 4, 30),
-                                             42L);
+                                             VisualizationPerimeter.global());
+
+        try (Stream<String> stream = new BufferedReader(new InputStreamReader(result, StandardCharsets.UTF_8)).lines()) {
+            List<String> rows = stream.collect(Collectors.toList());
+            assertThat(rows).hasSize(3);
+            // the second cell is the email, and is thus hashed
+            assertThat(rows.get(1)).isEqualTo("a;PiPoFgA5WUoziU9lZOGxNIu9egCI1CxKy3PurtWcAJ0=");
+            assertThat(rows.get(2)).isEqualTo("c;GKw+c0PwFokMUQ6T+TUmEWnZ4/VlQ2Qpgw+vCTT0+OQ=;\"e;f\"");
+        }
+    }
+
+    @Test
+    void shouldExportForConstrainedPerimeter() {
+        OrderDao mockOrderDao = mock(OrderDao.class);
+        OrderCsvExporter exporter = new OrderCsvExporter(mockOrderDao);
+
+        when(mockOrderDao.reportBetween(Instant.parse("2019-12-31T23:00:00Z"),
+                                        Instant.parse("2020-04-30T22:00:00Z"),
+                                        Set.of(1L, 2L))).thenReturn(
+            Stream.of(new Object[] { "a", "b" }, new Object[] { "c", "d", "e;f" })
+        );
+
+        InputStream result = exporter.export(LocalDate.of(2020, 1, 1),
+                                             LocalDate.of(2020, 4, 30),
+                                             VisualizationPerimeter.constrained(Set.of(1L, 2L)));
 
         try (Stream<String> stream = new BufferedReader(new InputStreamReader(result, StandardCharsets.UTF_8)).lines()) {
             List<String> rows = stream.collect(Collectors.toList());

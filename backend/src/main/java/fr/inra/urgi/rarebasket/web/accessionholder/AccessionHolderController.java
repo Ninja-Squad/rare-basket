@@ -45,7 +45,7 @@ public class AccessionHolderController {
 
     @GetMapping
     public List<AccessionHolderDTO> list() {
-        currentUser.checkPermission(Permission.USER_MANAGEMENT);
+        currentUser.checkPermission(Permission.ADMINISTRATION);
         return this.accessionHolderDao.list()
                                       .stream()
                                       .map(AccessionHolderDTO::new)
@@ -55,14 +55,14 @@ public class AccessionHolderController {
     @DeleteMapping("/{accessionHolderId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable("accessionHolderId") Long accessionHolderId) {
-        currentUser.checkPermission(Permission.USER_MANAGEMENT);
+        currentUser.checkPermission(Permission.ADMINISTRATION);
         AccessionHolder accessionHolder = accessionHolderDao.findById(accessionHolderId).orElseThrow(NotFoundException::new);
         accessionHolderDao.delete(accessionHolder);
     }
 
     @GetMapping("/{accessionHolderId}")
     public AccessionHolderDTO get(@PathVariable("accessionHolderId") Long accessionHolderId) {
-        currentUser.checkPermission(Permission.USER_MANAGEMENT);
+        currentUser.checkPermission(Permission.ADMINISTRATION);
         AccessionHolder accessionHolder = accessionHolderDao.findById(accessionHolderId).orElseThrow(NotFoundException::new);
         return new AccessionHolderDTO(accessionHolder);
     }
@@ -70,7 +70,7 @@ public class AccessionHolderController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public AccessionHolderDTO create(@Validated @RequestBody AccessionHolderCommandDTO command) {
-        currentUser.checkPermission(Permission.USER_MANAGEMENT);
+        currentUser.checkPermission(Permission.ADMINISTRATION);
         validateAccessionHolderEmail(command.getEmail(), null);
 
         AccessionHolder accessionHolder = new AccessionHolder();
@@ -84,7 +84,7 @@ public class AccessionHolderController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void update(@PathVariable("accessionHolderId") Long accessionHolderId,
                        @Validated @RequestBody AccessionHolderCommandDTO command) {
-        currentUser.checkPermission(Permission.USER_MANAGEMENT);
+        currentUser.checkPermission(Permission.ADMINISTRATION);
         AccessionHolder accessionHolder = accessionHolderDao.findById(accessionHolderId)
                                                             .orElseThrow(NotFoundException::new);
         validateAccessionHolderEmail(command.getEmail(), accessionHolder);

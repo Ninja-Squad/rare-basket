@@ -2,17 +2,17 @@
 
 <div class="content mt-2">
   <ul class="nav nav-tabs mb-4">
-    <li class="nav-item">
+    <li *ngIf="hasPermission('ORDER_MANAGEMENT') | async" class="nav-item">
       <a class="nav-link" routerLink="in-progress" routerLinkActive="active" translate="order.orders-container.in-progress"></a>
     </li>
-    <li class="nav-item">
+    <li *ngIf="hasPermission('ORDER_MANAGEMENT') | async" class="nav-item">
       <a class="nav-link" routerLink="done" routerLinkActive="active" translate="order.orders-container.done"></a>
     </li>
-    <li class="nav-item">
-      <a class="nav-link" routerLink="export" routerLinkActive="active" translate="order.orders-container.export"></a>
-    </li>
-    <li class="nav-item">
+    <li *ngIf="hasPermission('ORDER_VISUALIZATION') | async" class="nav-item">
       <a class="nav-link" routerLink="stats" routerLinkActive="active" translate="order.orders-container.statistics"></a>
+    </li>
+    <li *ngIf="hasPermission('ORDER_VISUALIZATION') | async" class="nav-item">
+      <a class="nav-link" routerLink="export" routerLinkActive="active" translate="order.orders-container.export"></a>
     </li>
   </ul>
 

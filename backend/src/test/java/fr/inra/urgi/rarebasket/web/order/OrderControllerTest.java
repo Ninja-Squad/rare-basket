@@ -32,6 +32,7 @@ import fr.inra.urgi.rarebasket.service.order.DeliveryFormGenerator;
 import fr.inra.urgi.rarebasket.service.order.OrderCsvExporter;
 import fr.inra.urgi.rarebasket.service.storage.DocumentStorage;
 import fr.inra.urgi.rarebasket.service.user.CurrentUser;
+import fr.inra.urgi.rarebasket.service.user.VisualizationPerimeter;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -105,6 +106,7 @@ class OrderControllerTest {
         order.addDocument(document);
 
         when(mockCurrentUser.getAccessionHolderId()).thenReturn(Optional.of(accessionHolderId));
+        when(mockCurrentUser.getVisualizationPerimeter()).thenReturn(VisualizationPerimeter.constrained(Set.of(1L, 2L)));
         when(mockOrderDao.findById(order.getId())).thenReturn(Optional.of(order));
     }
 
@@ -407,12 +409,15 @@ class OrderControllerTest {
         LocalDate from = LocalDate.of(2020, 1, 1);
         LocalDate to = LocalDate.of(2020, 4, 1);
 
-        when(mockOrderCsvExporter.export(from, to, accessionHolderId)).thenReturn(new ByteArrayInputStream("foo;bar".getBytes()));
+        when(mockOrderCsvExporter.export(from, to, mockCurrentUser.getVisualizationPerimeter()))
+            .thenReturn(new ByteArrayInputStream("foo;bar".getBytes()));
 
         mockMvc.perform(get("/api/orders/report").param("from", from.toString()).param("to", to.toString()))
                .andExpect(status().isOk())
                .andExpect(content().contentType("text/csv"))
                .andExpect(content().string("foo;bar"));
+
+        verify(mockCurrentUser).checkPermission(Permission.ORDER_VISUALIZATION);
     }
 
     @Test
@@ -428,9 +433,9 @@ class OrderControllerTest {
         List<CustomerTypeStatisticsDTO> customerTypeStatistics =
             List.of(new CustomerTypeStatisticsDTO(CustomerType.FARMER, 2L));
 
-        when(mockOrderDao.findOrderStatusStatistics(expectedFromInstant, expectedToInstant, accessionHolderId))
+        when(mockOrderDao.findOrderStatusStatistics(expectedFromInstant, expectedToInstant, mockCurrentUser.getVisualizationPerimeter()))
             .thenReturn(orderStatusStatistics);
-        when(mockOrderDao.findCustomerTypeStatistics(expectedFromInstant, expectedToInstant, accessionHolderId))
+        when(mockOrderDao.findCustomerTypeStatistics(expectedFromInstant, expectedToInstant, mockCurrentUser.getVisualizationPerimeter()))
             .thenReturn(customerTypeStatistics);
 
         mockMvc.perform(get("/api/orders/statistics").param("from", from.toString()).param("to", to.toString()))
@@ -439,5 +444,7 @@ class OrderControllerTest {
                .andExpect(jsonPath("$.orderStatusStatistics[0].orderCount").value(1L))
                .andExpect(jsonPath("$.customerTypeStatistics[0].customerType").value(CustomerType.FARMER.name()))
                .andExpect(jsonPath("$.customerTypeStatistics[0].accessionCount").value(2L));
+
+        verify(mockCurrentUser).checkPermission(Permission.ORDER_VISUALIZATION);
     }
 }

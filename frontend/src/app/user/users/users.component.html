@@ -5,16 +5,11 @@
     <div *ngFor="let user of users.content">
       <div class="d-flex">
         <div><fa-icon [icon]="userIcon" class="mr-2"></fa-icon></div>
-        <div class="flex-grow-1 row user">
-          <div class="col-6 col-md-3">
+        <div class="flex-grow-1 row user mr-2">
+          <div class="col-md-3">
             <a [routerLink]="['/users', user.id, 'edit']">{{ user.name }}</a>
           </div>
-          <div class="col-6 col-md-3">
-            <ng-container *ngIf="user.accessionHolder">
-              {{ user.accessionHolder.grc.name }} - {{ user.accessionHolder.name }}
-            </ng-container>
-          </div>
-          <div class="col-12 col-md-6">
+          <div class="col-md-9">
             {{ permissions(user) }}
           </div>
         </div>

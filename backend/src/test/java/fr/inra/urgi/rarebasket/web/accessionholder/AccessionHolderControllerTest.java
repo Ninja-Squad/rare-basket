@@ -97,7 +97,7 @@ class AccessionHolderControllerTest {
                .andExpect(jsonPath("$[0].phone").value(accessionHolder.getPhone()))
                .andExpect(jsonPath("$[0].grc.name").value(grc.getName()));
 
-        verify(mockCurrentUser).checkPermission(Permission.USER_MANAGEMENT);
+        verify(mockCurrentUser).checkPermission(Permission.ADMINISTRATION);
     }
 
     @Test
@@ -108,7 +108,7 @@ class AccessionHolderControllerTest {
                .andExpect(status().isNoContent());
 
         verify(mockAccessionHolderDao).delete(accessionHolder);
-        verify(mockCurrentUser).checkPermission(Permission.USER_MANAGEMENT);
+        verify(mockCurrentUser).checkPermission(Permission.ADMINISTRATION);
     }
 
     @Test
@@ -131,7 +131,7 @@ class AccessionHolderControllerTest {
                .andExpect(jsonPath("$.phone").value(accessionHolder.getPhone()))
                .andExpect(jsonPath("$.grc.name").value(grc.getName()));
 
-        verify(mockCurrentUser).checkPermission(Permission.USER_MANAGEMENT);
+        verify(mockCurrentUser).checkPermission(Permission.ADMINISTRATION);
     }
 
     @Test
@@ -159,7 +159,7 @@ class AccessionHolderControllerTest {
         assertThat(createdAccessionHolder.getPhone()).isEqualTo(command.getPhone());
         assertThat(createdAccessionHolder.getGrc()).isEqualTo(grc);
 
-        verify(mockCurrentUser).checkPermission(Permission.USER_MANAGEMENT);
+        verify(mockCurrentUser).checkPermission(Permission.ADMINISTRATION);
     }
 
     @Test
@@ -220,7 +220,7 @@ class AccessionHolderControllerTest {
         assertThat(accessionHolder.getPhone()).isEqualTo(command.getPhone());
         assertThat(accessionHolder.getGrc()).isEqualTo(grc);
 
-        verify(mockCurrentUser).checkPermission(Permission.USER_MANAGEMENT);
+        verify(mockCurrentUser).checkPermission(Permission.ADMINISTRATION);
     }
 
     @Test

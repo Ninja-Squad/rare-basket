@@ -29,7 +29,7 @@ public class GrcController {
 
     @GetMapping
     public List<GrcDTO> list() {
-        currentUser.checkPermission(Permission.USER_MANAGEMENT);
+        currentUser.checkPermission(Permission.ADMINISTRATION);
         return this.grcDao.list()
                           .stream()
                           .map(GrcDTO::new)

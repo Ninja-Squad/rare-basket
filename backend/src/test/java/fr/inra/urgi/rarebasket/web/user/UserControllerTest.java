@@ -8,6 +8,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -15,6 +16,7 @@ import java.util.Set;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import fr.inra.urgi.rarebasket.MoreAnswers;
 import fr.inra.urgi.rarebasket.dao.AccessionHolderDao;
+import fr.inra.urgi.rarebasket.dao.GrcDao;
 import fr.inra.urgi.rarebasket.dao.UserDao;
 import fr.inra.urgi.rarebasket.domain.AccessionHolder;
 import fr.inra.urgi.rarebasket.domain.Grc;
@@ -55,6 +57,9 @@ class UserControllerTest {
     @MockBean
     private AccessionHolderDao mockAccessionHolderDao;
 
+    @MockBean
+    private GrcDao mockGrcDao;
+
     @Autowired
     private MockMvc mockMvc;
 
@@ -68,20 +73,27 @@ class UserControllerTest {
     private ArgumentCaptor<User> userCaptor;
 
     private User user;
+    private Grc grc;
     private AccessionHolder accessionHolder;
 
     @BeforeEach
     void prepare() {
+        grc = new Grc(1L);
+        grc.setName("GRC1");
+        when(mockGrcDao.findById(grc.getId())).thenReturn(Optional.of(grc));
+
         accessionHolder = new AccessionHolder(54L);
         accessionHolder.setName("Contact1");
-        accessionHolder.setGrc(new Grc());
-        accessionHolder.getGrc().setName("GRC1");
+        accessionHolder.setGrc(grc);
         when(mockAccessionHolderDao.findById(accessionHolder.getId())).thenReturn(Optional.of(accessionHolder));
 
         user = new User(42L);
         user.setName("JB");
         user.addPermission(new UserPermission(Permission.ORDER_MANAGEMENT));
+        user.addPermission(new UserPermission(Permission.ORDER_VISUALIZATION));
         user.setAccessionHolder(accessionHolder);
+        user.setVisualizationGrcs(Set.of(accessionHolder.getGrc()));
+
         when(mockUserDao.findById(user.getId())).thenReturn(Optional.of(user));
         when(mockUserDao.findByName(user.getName())).thenReturn(Optional.of(user));
 
@@ -94,11 +106,15 @@ class UserControllerTest {
                .andExpect(status().isOk())
                .andExpect(jsonPath("$.id").value(user.getId()))
                .andExpect(jsonPath("$.name").value(user.getName()))
-               .andExpect(jsonPath("$.permissions.length()").value(1))
+               .andExpect(jsonPath("$.permissions.length()").value(2))
                .andExpect(jsonPath("$.permissions[0]").value(Permission.ORDER_MANAGEMENT.name()))
+               .andExpect(jsonPath("$.permissions[1]").value(Permission.ORDER_VISUALIZATION.name()))
                .andExpect(jsonPath("$.accessionHolder.id").value(user.getAccessionHolder().getId()))
                .andExpect(jsonPath("$.accessionHolder.name").value(user.getAccessionHolder().getName()))
-               .andExpect(jsonPath("$.accessionHolder.grc.name").value(user.getAccessionHolder().getGrc().getName()));
+               .andExpect(jsonPath("$.accessionHolder.grc.name").value(user.getAccessionHolder().getGrc().getName()))
+               .andExpect(jsonPath("$.globalVisualization").value(false))
+               .andExpect(jsonPath("$.visualizationGrcs.length()").value(1))
+               .andExpect(jsonPath("$.visualizationGrcs[0].id").value(grc.getId()));
     }
 
     @Test
@@ -112,13 +128,17 @@ class UserControllerTest {
                .andExpect(status().isOk())
                .andExpect(jsonPath("$.content[0].id").value(user.getId()))
                .andExpect(jsonPath("$.content[0].name").value(user.getName()))
-               .andExpect(jsonPath("$.content[0].permissions.length()").value(1))
+               .andExpect(jsonPath("$.content[0].permissions.length()").value(2))
                .andExpect(jsonPath("$.content[0].permissions[0]").value(Permission.ORDER_MANAGEMENT.name()))
+               .andExpect(jsonPath("$.content[0].permissions[1]").value(Permission.ORDER_VISUALIZATION.name()))
                .andExpect(jsonPath("$.content[0].accessionHolder.id").value(user.getAccessionHolder().getId()))
                .andExpect(jsonPath("$.content[0].accessionHolder.name").value(user.getAccessionHolder().getName()))
-               .andExpect(jsonPath("$.content[0].accessionHolder.grc.name").value(user.getAccessionHolder().getGrc().getName()));
+               .andExpect(jsonPath("$.content[0].accessionHolder.grc.name").value(user.getAccessionHolder().getGrc().getName()))
+               .andExpect(jsonPath("$.content[0].globalVisualization").value(false))
+               .andExpect(jsonPath("$.content[0].visualizationGrcs.length()").value(1))
+               .andExpect(jsonPath("$.content[0].visualizationGrcs[0].id").value(grc.getId()));
 
-        verify(mockCurrentUser).checkPermission(Permission.USER_MANAGEMENT);
+        verify(mockCurrentUser).checkPermission(Permission.ADMINISTRATION);
     }
 
     @Test
@@ -127,20 +147,26 @@ class UserControllerTest {
                .andExpect(status().isOk())
                .andExpect(jsonPath("$.id").value(user.getId()))
                .andExpect(jsonPath("$.name").value(user.getName()))
-               .andExpect(jsonPath("$.permissions.length()").value(1))
+               .andExpect(jsonPath("$.permissions.length()").value(2))
                .andExpect(jsonPath("$.permissions[0]").value(Permission.ORDER_MANAGEMENT.name()))
+               .andExpect(jsonPath("$.permissions[1]").value(Permission.ORDER_VISUALIZATION.name()))
                .andExpect(jsonPath("$.accessionHolder.id").value(user.getAccessionHolder().getId()))
                .andExpect(jsonPath("$.accessionHolder.name").value(user.getAccessionHolder().getName()))
-               .andExpect(jsonPath("$.accessionHolder.grc.name").value(user.getAccessionHolder().getGrc().getName()));
+               .andExpect(jsonPath("$.accessionHolder.grc.name").value(user.getAccessionHolder().getGrc().getName()))
+               .andExpect(jsonPath("$.globalVisualization").value(false))
+               .andExpect(jsonPath("$.visualizationGrcs.length()").value(1))
+               .andExpect(jsonPath("$.visualizationGrcs[0].id").value(grc.getId()));
 
-        verify(mockCurrentUser).checkPermission(Permission.USER_MANAGEMENT);
+        verify(mockCurrentUser).checkPermission(Permission.ADMINISTRATION);
     }
 
     @Test
     void shouldCreate() throws Exception {
         UserCommandDTO command = new UserCommandDTO("Claire",
-                                                    Set.of(Permission.ORDER_MANAGEMENT, Permission.USER_MANAGEMENT),
-                                                    accessionHolder.getId());
+                                                    Set.of(Permission.ORDER_MANAGEMENT, Permission.ORDER_VISUALIZATION),
+                                                    accessionHolder.getId(),
+                                                    false,
+                                                    Set.of(grc.getId()));
 
         when(mockUserDao.save(any())).thenAnswer(MoreAnswers.<User>firstArgWith(u -> u.setId(763L)));
 
@@ -158,16 +184,20 @@ class UserControllerTest {
         assertThat(createdUser.getPermissions()).hasSize(2);
         assertThat(createdUser.getPermissions()).extracting(UserPermission::getPermission, UserPermission::getUser)
             .containsOnly(tuple(Permission.ORDER_MANAGEMENT, createdUser),
-                          tuple(Permission.USER_MANAGEMENT, createdUser));
+                          tuple(Permission.ORDER_VISUALIZATION, createdUser));
+        assertThat(createdUser.isGlobalVisualization()).isFalse();
+        assertThat(createdUser.getVisualizationGrcs()).containsOnly(grc);
 
-        verify(mockCurrentUser).checkPermission(Permission.USER_MANAGEMENT);
+        verify(mockCurrentUser).checkPermission(Permission.ADMINISTRATION);
     }
 
     @Test
     void shouldThrowWhenCreatingWithAlreadyExistingName() {
         UserCommandDTO command = new UserCommandDTO(user.getName(),
-                                                    Set.of(Permission.ORDER_MANAGEMENT, Permission.USER_MANAGEMENT),
-                                                    accessionHolder.getId());
+                                                    Set.of(Permission.ORDER_MANAGEMENT, Permission.ORDER_VISUALIZATION),
+                                                    accessionHolder.getId(),
+                                                    false,
+                                                    Set.of(grc.getId()));
         assertThatExceptionOfType(BadRequestException.class).isThrownBy(
             () -> controller.create(command)
         );
@@ -176,8 +206,10 @@ class UserControllerTest {
     @Test
     void shouldThrowWhenCreatingWithNonExistingAccessionHolder() {
         UserCommandDTO command = new UserCommandDTO("Claire",
-                                                    Set.of(Permission.ORDER_MANAGEMENT, Permission.USER_MANAGEMENT),
-                                                    9765432L);
+                                                    Set.of(Permission.ORDER_MANAGEMENT, Permission.ORDER_VISUALIZATION),
+                                                    9765432L,
+                                                    false,
+                                                    Set.of(grc.getId()));
         assertThatExceptionOfType(BadRequestException.class).isThrownBy(
             () -> controller.create(command)
         );
@@ -186,8 +218,10 @@ class UserControllerTest {
     @Test
     void shouldThrowWhenCreatingWithMissingAccessionHolder() {
         UserCommandDTO command = new UserCommandDTO("Claire",
-                                                    Set.of(Permission.ORDER_MANAGEMENT, Permission.USER_MANAGEMENT),
-                                                    null);
+                                                    Set.of(Permission.ORDER_MANAGEMENT, Permission.ORDER_VISUALIZATION),
+                                                    null,
+                                                    false,
+                                                    Set.of(grc.getId()));
         assertThatExceptionOfType(BadRequestException.class).isThrownBy(
             () -> controller.create(command)
         );
@@ -196,16 +230,44 @@ class UserControllerTest {
     @Test
     void shouldNotThrowWhenCreatingWithMissingAccessionHolderIfNotOrderManager() {
         UserCommandDTO command = new UserCommandDTO("Claire",
-                                                    Set.of(Permission.USER_MANAGEMENT),
-                                                    null);
+                                                    Set.of(Permission.ORDER_VISUALIZATION),
+                                                    null,
+                                                    false,
+                                                    Set.of(grc.getId()));
         assertThatCode(() -> controller.create(command)).doesNotThrowAnyException();
+    }
+
+    @Test
+    void shouldThrowWhenCreatingWithNoVisualizationGrc() {
+        UserCommandDTO command = new UserCommandDTO(user.getName(),
+                                                    Set.of(Permission.ORDER_MANAGEMENT, Permission.ORDER_VISUALIZATION),
+                                                    accessionHolder.getId(),
+                                                    false,
+                                                    Collections.emptySet());
+        assertThatExceptionOfType(BadRequestException.class).isThrownBy(
+            () -> controller.create(command)
+        );
+    }
+
+    @Test
+    void shouldThrowWhenCreatingWithInvalidVisualizationGrc() {
+        UserCommandDTO command = new UserCommandDTO(user.getName(),
+                                                    Set.of(Permission.ORDER_MANAGEMENT, Permission.ORDER_VISUALIZATION),
+                                                    accessionHolder.getId(),
+                                                    false,
+                                                    Set.of(45678L));
+        assertThatExceptionOfType(BadRequestException.class).isThrownBy(
+            () -> controller.create(command)
+        );
     }
 
     @Test
     void shouldUpdate() throws Exception {
         UserCommandDTO command = new UserCommandDTO("Claire",
-                                                    Set.of(Permission.ORDER_MANAGEMENT, Permission.USER_MANAGEMENT),
-                                                    accessionHolder.getId());
+                                                    Set.of(Permission.ORDER_MANAGEMENT, Permission.ORDER_VISUALIZATION),
+                                                    accessionHolder.getId(),
+                                                    true,
+                                                    Collections.emptySet());
 
         mockMvc.perform(put("/api/users/{id}", user.getId())
                             .contentType(MediaType.APPLICATION_JSON)
@@ -217,9 +279,10 @@ class UserControllerTest {
         assertThat(user.getPermissions()).hasSize(2);
         assertThat(user.getPermissions()).extracting(UserPermission::getPermission, UserPermission::getUser)
                                          .containsOnly(tuple(Permission.ORDER_MANAGEMENT, user),
-                                                       tuple(Permission.USER_MANAGEMENT, user));
-
-        verify(mockCurrentUser).checkPermission(Permission.USER_MANAGEMENT);
+                                                       tuple(Permission.ORDER_VISUALIZATION, user));
+        assertThat(user.isGlobalVisualization()).isTrue();
+        assertThat(user.getVisualizationGrcs()).isEmpty();
+        verify(mockCurrentUser).checkPermission(Permission.ADMINISTRATION);
     }
 
     @Test
@@ -228,8 +291,10 @@ class UserControllerTest {
         otherUser.setName("Claire");
         when(mockUserDao.findByName(otherUser.getName())).thenReturn(Optional.of(otherUser));
         UserCommandDTO command = new UserCommandDTO(otherUser.getName(),
-                                                    Set.of(Permission.ORDER_MANAGEMENT, Permission.USER_MANAGEMENT),
-                                                    accessionHolder.getId());
+                                                    Set.of(Permission.ORDER_MANAGEMENT, Permission.ADMINISTRATION),
+                                                    accessionHolder.getId(),
+                                                    false,
+                                                    Collections.emptySet());
         assertThatExceptionOfType(BadRequestException.class).isThrownBy(
             () -> controller.update(user.getId(), command)
         );
@@ -238,8 +303,10 @@ class UserControllerTest {
     @Test
     void shouldNotThrowWhenUpdatingWithSameName() {
         UserCommandDTO command = new UserCommandDTO(user.getName(),
-                                                    Set.of(Permission.ORDER_MANAGEMENT, Permission.USER_MANAGEMENT),
-                                                    accessionHolder.getId());
+                                                    Set.of(Permission.ORDER_MANAGEMENT, Permission.ADMINISTRATION),
+                                                    accessionHolder.getId(),
+                                                    false,
+                                                    Collections.emptySet());
         assertThatCode(() -> controller.update(user.getId(), command)).doesNotThrowAnyException();
     }
 
@@ -249,6 +316,6 @@ class UserControllerTest {
                .andExpect(status().isNoContent());
 
         verify(mockUserDao).delete(user);
-        verify(mockCurrentUser).checkPermission(Permission.USER_MANAGEMENT);
+        verify(mockCurrentUser).checkPermission(Permission.ADMINISTRATION);
     }
 }

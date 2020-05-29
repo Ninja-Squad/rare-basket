@@ -1,8 +1,8 @@
 import { TestBed } from '@angular/core/testing';
 
 import { EditUserComponent } from './edit-user.component';
-import { ComponentTester, fakeRoute, fakeSnapshot, speculoosMatchers } from 'ngx-speculoos';
-import { AccessionHolder, ALL_PERMISSIONS, Permission, User, UserCommand } from '../../shared/user.model';
+import { ComponentTester, fakeRoute, fakeSnapshot, speculoosMatchers, TestInput } from 'ngx-speculoos';
+import { AccessionHolder, Grc, User, UserCommand } from '../../shared/user.model';
 import { I18nTestingModule } from '../../i18n/i18n-testing.module.spec';
 import { ReactiveFormsModule } from '@angular/forms';
 import { ValdemortModule } from 'ngx-valdemort';
@@ -13,6 +13,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { ValidationDefaultsComponent } from '../../validation-defaults/validation-defaults.component';
 import { of } from 'rxjs';
 import { AccessionHolderService } from '../../shared/accession-holder.service';
+import { GrcService } from '../../shared/grc.service';
 
 class EditUserComponentTester extends ComponentTester<EditUserComponent> {
   constructor() {
@@ -27,16 +28,32 @@ class EditUserComponentTester extends ComponentTester<EditUserComponent> {
     return this.input('#name');
   }
 
-  get permissions() {
-    return this.elements('.form-check-input');
+  get orderManagement() {
+    return this.input('#order-management');
   }
 
-  permission(permission: Permission) {
-    return this.input(`#permission-${permission}`);
+  get orderVisualization() {
+    return this.input('#order-visualization');
+  }
+
+  get administration() {
+    return this.input('#administration');
   }
 
   get accessionHolder() {
     return this.select('#accession-holder');
+  }
+
+  get noGlobalVisualization() {
+    return this.input('#no-global-visualization');
+  }
+
+  get globalVisualization() {
+    return this.input('#global-visualization');
+  }
+
+  get visualizationGrcs() {
+    return this.elements('.grcs input') as Array<TestInput>;
   }
 
   get errors() {
@@ -63,11 +80,13 @@ describe('EditUserComponent', () => {
   let tester: EditUserComponentTester;
   let userService: jasmine.SpyObj<UserService>;
   let accessionHolderService: jasmine.SpyObj<AccessionHolderService>;
+  let grcService: jasmine.SpyObj<GrcService>;
   let router: Router;
 
   function prepare(route: ActivatedRoute) {
     userService = jasmine.createSpyObj<UserService>('UserService', ['get', 'create', 'update']);
     accessionHolderService = jasmine.createSpyObj<AccessionHolderService>('AccessionHolderService', ['list']);
+    grcService = jasmine.createSpyObj<GrcService>('GrcService', ['list']);
 
     TestBed.configureTestingModule({
       imports: [I18nTestingModule, ReactiveFormsModule, ValdemortModule, RouterTestingModule],
@@ -75,6 +94,7 @@ describe('EditUserComponent', () => {
       providers: [
         { provide: UserService, useValue: userService },
         { provide: AccessionHolderService, useValue: accessionHolderService },
+        { provide: GrcService, useValue: grcService },
         { provide: ActivatedRoute, useValue: route }
       ]
     });
@@ -115,6 +135,19 @@ describe('EditUserComponent', () => {
       ] as Array<AccessionHolder>)
     );
 
+    grcService.list.and.returnValue(
+      of([
+        {
+          id: 1,
+          name: 'GRC1'
+        },
+        {
+          id: 2,
+          name: 'GRC2'
+        }
+      ] as Array<Grc>)
+    );
+
     tester = new EditUserComponentTester();
   }
 
@@ -135,18 +168,36 @@ describe('EditUserComponent', () => {
 
     it('should display an empty form', () => {
       expect(tester.name).toHaveValue('');
-      expect(tester.permissions.length).toBe(ALL_PERMISSIONS.length);
-      ALL_PERMISSIONS.forEach(p => expect(tester.permission(p)).not.toBeChecked());
-      expect(tester.accessionHolder).toHaveSelectedLabel('');
+      expect(tester.orderManagement).not.toBeChecked();
+      expect(tester.orderVisualization).not.toBeChecked();
+      expect(tester.administration).not.toBeChecked();
+
+      expect(tester.accessionHolder).toBeNull();
+      expect(tester.noGlobalVisualization).toBeNull();
+      expect(tester.globalVisualization).toBeNull();
+      expect(tester.visualizationGrcs.length).toBe(0);
+
+      tester.orderManagement.check();
+
+      expect(tester.accessionHolder).not.toBeNull();
 
       expect(tester.grcOptionGroups.length).toBe(2);
       expect(tester.grcOptionGroups[0].attr('label')).toBe('GRC1');
       expect(tester.grcOptionGroups[1].attr('label')).toBe('GRC2');
-
       expect(tester.accessionHolderOptions('GRC1').length).toBe(2);
       expect(tester.accessionHolderOptions('GRC2').length).toBe(1);
-
       expect(tester.accessionHolder.optionLabels).toEqual(['', 'Contact11', 'Contact12', 'Contact21']);
+
+      tester.orderVisualization.check();
+
+      expect(tester.noGlobalVisualization).not.toBeNull();
+      expect(tester.globalVisualization).not.toBeNull();
+      expect(tester.noGlobalVisualization).toBeChecked();
+      expect(tester.globalVisualization).not.toBeChecked();
+      expect(tester.visualizationGrcs.length).toBe(2);
+
+      tester.globalVisualization.check();
+      expect(tester.visualizationGrcs.length).toBe(0);
     });
 
     it('should not save if error', () => {
@@ -156,33 +207,55 @@ describe('EditUserComponent', () => {
 
       expect(tester.errors.length).toBe(1);
       expect(tester.errors[0]).toContainText('Le nom est obligatoire');
+      tester.name.fillWith('Test');
+      expect(tester.componentInstance.form.valid).toBe(true);
 
-      tester.permission('ORDER_MANAGEMENT').check();
-
-      expect(tester.errors.length).toBe(2);
-      expect(tester.errors[1]).toContainText(`Le gestionnaire d'accessions est obligatoire`);
-
-      tester.permission('ORDER_MANAGEMENT').uncheck();
+      tester.orderManagement.check();
+      expect(tester.componentInstance.form.valid).toBe(false);
 
       expect(tester.errors.length).toBe(1);
+      expect(tester.errors[0]).toContainText(`Le gestionnaire d'accessions est obligatoire`);
+
+      tester.orderManagement.uncheck();
+      expect(tester.componentInstance.form.valid).toBe(true);
+      expect(tester.errors.length).toBe(0);
+
+      tester.orderVisualization.check();
+      expect(tester.componentInstance.form.valid).toBe(false);
+      expect(tester.errors.length).toBe(1);
+      expect(tester.errors[0]).toContainText(`Au moins un CRB doit être sélectionné`);
+
+      tester.globalVisualization.check();
+      expect(tester.componentInstance.form.valid).toBe(true);
+      expect(tester.errors.length).toBe(0);
+
+      tester.noGlobalVisualization.check();
+      expect(tester.componentInstance.form.valid).toBe(false);
+
+      tester.orderVisualization.uncheck();
+      expect(tester.componentInstance.form.valid).toBe(true);
 
       expect(userService.create).not.toHaveBeenCalled();
     });
 
     it('should create user', () => {
       tester.name.fillWith('Test');
-      tester.permission('ORDER_MANAGEMENT').check();
+      tester.orderManagement.check();
       tester.accessionHolder.selectLabel('Contact12');
-
       expect(tester.accessionHolder).toHaveSelectedLabel('GRC1 - Contact12');
+
+      tester.orderVisualization.check();
+      tester.visualizationGrcs[1].check();
 
       userService.create.and.returnValue(of({} as User));
       tester.saveButton.click();
 
       const expectedCommand: UserCommand = {
         name: 'Test',
-        permissions: ['ORDER_MANAGEMENT'],
-        accessionHolderId: 12
+        permissions: ['ORDER_MANAGEMENT', 'ORDER_VISUALIZATION'],
+        accessionHolderId: 12,
+        globalVisualization: false,
+        visualizationGrcIds: [2]
       };
       expect(userService.create).toHaveBeenCalledWith(expectedCommand);
       expect(router.navigate).toHaveBeenCalledWith(['/users']);
@@ -202,10 +275,16 @@ describe('EditUserComponent', () => {
         of({
           id: 42,
           name: 'Test',
-          permissions: ['ORDER_MANAGEMENT'],
+          permissions: ['ORDER_MANAGEMENT', 'ORDER_VISUALIZATION'],
           accessionHolder: {
             id: 12
-          }
+          },
+          globalVisualization: false,
+          visualizationGrcs: [
+            {
+              id: 2
+            }
+          ]
         } as User)
       );
 
@@ -213,32 +292,36 @@ describe('EditUserComponent', () => {
     });
 
     it('should have a title', () => {
-      expect(tester.title).toContainText('Modifier un utilisateur');
+      expect(tester.title).toContainText(`Modifier l'utilisateur Test`);
     });
 
     it('should display a filled form', () => {
       expect(tester.name).toHaveValue('Test');
-      expect(tester.permissions.length).toBe(ALL_PERMISSIONS.length);
-      expect(tester.permission('ORDER_MANAGEMENT')).toBeChecked();
-      expect(tester.permission('USER_MANAGEMENT')).not.toBeChecked();
+      expect(tester.orderManagement).toBeChecked();
       expect(tester.accessionHolder).toHaveSelectedLabel('GRC1 - Contact12');
-
-      expect(tester.accessionHolder.optionLabels).toEqual(['', 'Contact11', 'GRC1 - Contact12', 'Contact21']);
+      expect(tester.orderVisualization).toBeChecked();
+      expect(tester.noGlobalVisualization).toBeChecked();
+      expect(tester.globalVisualization).not.toBeChecked();
+      expect(tester.visualizationGrcs[0]).not.toBeChecked();
+      expect(tester.visualizationGrcs[1]).toBeChecked();
+      expect(tester.administration).not.toBeChecked();
     });
 
     it('should update user', () => {
       tester.name.fillWith('Test2');
-      tester.permission('ORDER_MANAGEMENT').uncheck();
-      tester.permission('USER_MANAGEMENT').check();
-      tester.accessionHolder.selectLabel('');
+      tester.orderManagement.uncheck();
+      tester.orderVisualization.uncheck();
+      tester.administration.check();
 
       userService.update.and.returnValue(of(undefined));
       tester.saveButton.click();
 
       const expectedCommand: UserCommand = {
         name: 'Test2',
-        permissions: ['USER_MANAGEMENT'],
-        accessionHolderId: null
+        permissions: ['ADMINISTRATION'],
+        accessionHolderId: null,
+        globalVisualization: false,
+        visualizationGrcIds: []
       };
       expect(userService.update).toHaveBeenCalledWith(42, expectedCommand);
       expect(router.navigate).toHaveBeenCalledWith(['/users']);

@@ -54,7 +54,8 @@
     },
     "permission": {
       "ORDER_MANAGEMENT": "Gestion des commandes",
-      "USER_MANAGEMENT": "Gestion des utilisateurs"
+      "ORDER_VISUALIZATION": "Visualisation des commandes (export, statistiques)",
+      "ADMINISTRATION": "Administration"
     }
   },
   "navbar": {
@@ -225,7 +226,7 @@
     "edit": {
       "title": {
         "create": "Créer un utilisateur",
-        "update": "Modifier un utilisateur"
+        "update": "Modifier l'utilisateur {{ user.name }}"
       },
       "name": "Nom",
       "name-error-label": "Le nom",
@@ -233,7 +234,10 @@
       "permissions": "Permissions",
       "accession-holder": "Gestionnaire d'accessions",
       "accession-holder-error-label": "Le gestionnaire d'accessions",
-      "accession-holder-help": "Doit être spécifié si l'utilisateur peut gérer des commandes",
+      "some-grcs": "Pour certains CRBs seulement",
+      "all-grcs": "Pour tous les CRBs",
+      "visualization-grcs": "CRBs consultables",
+      "grc-required": "Au moins un CRB doit être sélectionné",
       "save": "Enregistrer",
       "cancel": "Annuler"
     }

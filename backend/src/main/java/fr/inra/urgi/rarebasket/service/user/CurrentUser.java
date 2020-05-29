@@ -4,10 +4,10 @@ import java.security.Principal;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
-
 import javax.servlet.http.HttpServletRequest;
 
 import fr.inra.urgi.rarebasket.dao.UserDao;
+import fr.inra.urgi.rarebasket.domain.Grc;
 import fr.inra.urgi.rarebasket.domain.Permission;
 import fr.inra.urgi.rarebasket.domain.User;
 import fr.inra.urgi.rarebasket.domain.UserPermission;
@@ -55,6 +55,12 @@ public class CurrentUser {
         }
     }
 
+    public VisualizationPerimeter getVisualizationPerimeter() {
+        return this.loadIfNecessary()
+                   .map(UserInformation::getVisualizationPerimeter)
+                   .orElse(VisualizationPerimeter.empty());
+    }
+
     private Optional<UserInformation> loadIfNecessary() {
         Principal principal = request.getUserPrincipal();
         if (principal == null || principal.getName() == null) {
@@ -73,6 +79,7 @@ public class CurrentUser {
         private final Long id;
         private final Long accessionHolderId;
         private final Set<Permission> permissions;
+        private final VisualizationPerimeter visualizationPerimeter;
 
         public UserInformation(User user) {
             this.id = user.getId();
@@ -81,6 +88,14 @@ public class CurrentUser {
                                    .stream()
                                    .map(UserPermission::getPermission)
                                    .collect(Collectors.toUnmodifiableSet());
+            this.visualizationPerimeter =
+                user.isGlobalVisualization()
+                    ? VisualizationPerimeter.global()
+                    : VisualizationPerimeter.constrained(
+                        user.getVisualizationGrcs()
+                                           .stream()
+                                           .map(Grc::getId)
+                                           .collect(Collectors.toSet()));
         }
 
         public Long getId() {
@@ -93,6 +108,10 @@ public class CurrentUser {
 
         public Set<Permission> getPermissions() {
             return permissions;
+        }
+
+        public VisualizationPerimeter getVisualizationPerimeter() {
+            return visualizationPerimeter;
         }
     }
 }

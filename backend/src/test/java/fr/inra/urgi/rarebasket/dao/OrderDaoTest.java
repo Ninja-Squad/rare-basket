@@ -17,6 +17,7 @@ import fr.inra.urgi.rarebasket.domain.BasketStatus;
 import fr.inra.urgi.rarebasket.domain.CustomerType;
 import fr.inra.urgi.rarebasket.domain.Order;
 import fr.inra.urgi.rarebasket.domain.OrderStatus;
+import fr.inra.urgi.rarebasket.service.user.VisualizationPerimeter;
 import fr.inra.urgi.rarebasket.web.order.CustomerTypeStatisticsDTO;
 import fr.inra.urgi.rarebasket.web.order.OrderStatusStatisticsDTO;
 import org.junit.jupiter.api.BeforeEach;
@@ -119,20 +120,35 @@ class OrderDaoTest extends BaseDaoTest {
 
         // too soon
         assertThat(dao.reportBetween(Instant.parse("2020-03-19T00:00:00Z"),
+                                     Instant.parse("2020-03-20T00:00:00Z"))).isEmpty();
+        // too late
+        assertThat(dao.reportBetween(Instant.parse("2020-03-21T00:00:00Z"),
+                                     Instant.parse("2020-03-22T00:00:00Z"))).isEmpty();
+        // ok
+        assertThat(dao.reportBetween(Instant.parse("2020-03-20T00:00:00Z"),
+                                     Instant.parse("2020-03-21T00:00:00Z"))).hasSize(2);
+    }
+
+    @Test
+    void shouldReportBetweenWithGrcs() {
+        skipNextLaunch();
+
+        // too soon
+        assertThat(dao.reportBetween(Instant.parse("2020-03-19T00:00:00Z"),
                                      Instant.parse("2020-03-20T00:00:00Z"),
-                                     1L)).isEmpty();
+                                     Set.of(1L, 2L))).isEmpty();
         // too late
         assertThat(dao.reportBetween(Instant.parse("2020-03-21T00:00:00Z"),
                                      Instant.parse("2020-03-22T00:00:00Z"),
-                                     1L)).isEmpty();
+                                     Set.of(1L, 2L))).isEmpty();
         // ok
         assertThat(dao.reportBetween(Instant.parse("2020-03-20T00:00:00Z"),
                                      Instant.parse("2020-03-21T00:00:00Z"),
-                                     1L)).hasSize(2);
-        // wrong accession holder
+                                     Set.of(1L, 2L))).hasSize(2);
+        // wrong GRCs
         assertThat(dao.reportBetween(Instant.parse("2020-03-20T00:00:00Z"),
                                      Instant.parse("2020-03-21T00:00:00Z"),
-                                     2L)).isEmpty();
+                                     Set.of(2L))).isEmpty();
     }
 
     @Test
@@ -142,25 +158,31 @@ class OrderDaoTest extends BaseDaoTest {
         // ok
         List<CustomerTypeStatisticsDTO> result = dao.findCustomerTypeStatistics(Instant.parse("2020-01-01T00:00:00Z"),
                                                                                 Instant.parse("2021-01-01T00:00:00Z"),
-                                                                                1L);
+                                                                                VisualizationPerimeter.global());
+        checkCustomerTypeStatistics(result, Set.of(new CustomerTypeStatisticsDTO(CustomerType.FARMER, 2L)));
+
+        // ok
+        result = dao.findCustomerTypeStatistics(Instant.parse("2020-01-01T00:00:00Z"),
+                                                Instant.parse("2021-01-01T00:00:00Z"),
+                                                VisualizationPerimeter.constrained(Set.of(1L, 2L)));
         checkCustomerTypeStatistics(result, Set.of(new CustomerTypeStatisticsDTO(CustomerType.FARMER, 2L)));
 
         // too soon
         result = dao.findCustomerTypeStatistics(Instant.parse("2019-01-01T00:00:00Z"),
                                                 Instant.parse("2020-01-01T00:00:00Z"),
-                                                1L);
+                                                VisualizationPerimeter.global());
         checkCustomerTypeStatistics(result, Set.of());
 
         // too late
         result = dao.findCustomerTypeStatistics(Instant.parse("2021-01-01T00:00:00Z"),
                                                 Instant.parse("2022-01-01T00:00:00Z"),
-                                                1L);
+                                                VisualizationPerimeter.global());
         checkCustomerTypeStatistics(result, Set.of());
 
-        // wrong accession holder
+        // wrong perimeter
         result = dao.findCustomerTypeStatistics(Instant.parse("2020-01-01T00:00:00Z"),
                                                 Instant.parse("2021-01-01T00:00:00Z"),
-                                                3456L);
+                                                VisualizationPerimeter.constrained(Set.of(2L)));
         checkCustomerTypeStatistics(result, Set.of());
     }
 
@@ -170,7 +192,16 @@ class OrderDaoTest extends BaseDaoTest {
         // ok
         List<OrderStatusStatisticsDTO> result = dao.findOrderStatusStatistics(Instant.parse("2020-01-01T00:00:00Z"),
                                                                               Instant.parse("2021-01-01T00:00:00Z"),
-                                                                              1L);
+                                                                              VisualizationPerimeter.global());
+        assertThat(result).containsOnly(
+            new OrderStatusStatisticsDTO(OrderStatus.FINALIZED, 1L),
+            new OrderStatusStatisticsDTO(OrderStatus.DRAFT, 1L),
+            new OrderStatusStatisticsDTO(OrderStatus.CANCELLED, 1L)
+        );
+
+        result = dao.findOrderStatusStatistics(Instant.parse("2020-01-01T00:00:00Z"),
+                                               Instant.parse("2021-01-01T00:00:00Z"),
+                                               VisualizationPerimeter.constrained(Set.of(1L, 2L)));
         assertThat(result).containsOnly(
             new OrderStatusStatisticsDTO(OrderStatus.FINALIZED, 1L),
             new OrderStatusStatisticsDTO(OrderStatus.DRAFT, 1L),
@@ -186,19 +217,19 @@ class OrderDaoTest extends BaseDaoTest {
         // too soon
         result = dao.findOrderStatusStatistics(Instant.parse("2019-01-01T00:00:00Z"),
                                                Instant.parse("2020-01-01T00:00:00Z"),
-                                               1L);
+                                               VisualizationPerimeter.global());
         assertThat(result).containsOnlyElementsOf(allZeroes);
 
         // too late
         result = dao.findOrderStatusStatistics(Instant.parse("2021-01-01T00:00:00Z"),
                                                Instant.parse("2022-01-01T00:00:00Z"),
-                                               1L);
+                                               VisualizationPerimeter.global());
         assertThat(result).containsOnlyElementsOf(allZeroes);
 
-        // wrong accession holder
+        // wrong perimeter
         result = dao.findOrderStatusStatistics(Instant.parse("2020-01-01T00:00:00Z"),
                                                Instant.parse("2021-01-01T00:00:00Z"),
-                                               3456L);
+                                               VisualizationPerimeter.constrained(Set.of(2L)));
         assertThat(result).containsOnlyElementsOf(allZeroes);
     }
 

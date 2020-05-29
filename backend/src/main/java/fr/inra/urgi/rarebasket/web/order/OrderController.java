@@ -99,10 +99,9 @@ public class OrderController {
     @Transactional(readOnly = true)
     public ResponseEntity<Resource> csvReport(@RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate from,
                                               @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate to) {
-        // FIXME check the right permission (VIEW_ORDERS), determine perimeter based on user
-        currentUser.checkPermission(Permission.ORDER_MANAGEMENT);
+        currentUser.checkPermission(Permission.ORDER_VISUALIZATION);
 
-        InputStream report = orderCsvExporter.export(from, to, getAccessionHolderId());
+        InputStream report = orderCsvExporter.export(from, to, currentUser.getVisualizationPerimeter());
 
         return ResponseEntity.ok()
                              .contentType(MediaType.parseMediaType("text/csv"))
@@ -267,14 +266,14 @@ public class OrderController {
     @GetMapping("/statistics")
     public OrderStatisticsDTO getStatistics(@RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate from,
                                             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate to) {
-        // FIXME check the right permission (VIEW_ORDERS), determine perimeter based on user
-        currentUser.checkPermission(Permission.ORDER_MANAGEMENT);
+        currentUser.checkPermission(Permission.ORDER_VISUALIZATION);
 
         Instant fromInstant = from.atStartOfDay(Constants.FRANCE_TIMEZONE).toInstant();
         Instant toInstant = to.atStartOfDay(Constants.FRANCE_TIMEZONE).toInstant();
+
         return new OrderStatisticsDTO(
-            orderDao.findOrderStatusStatistics(fromInstant, toInstant, getAccessionHolderId()),
-            orderDao.findCustomerTypeStatistics(fromInstant, toInstant, getAccessionHolderId())
+            orderDao.findOrderStatusStatistics(fromInstant, toInstant, currentUser.getVisualizationPerimeter()),
+            orderDao.findCustomerTypeStatistics(fromInstant, toInstant, currentUser.getVisualizationPerimeter())
         );
     }
 

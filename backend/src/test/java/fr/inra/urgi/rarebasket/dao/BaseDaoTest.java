@@ -37,6 +37,7 @@ public class BaseDaoTest {
                                          "basket_item",
                                          "basket",
                                          "user_permission",
+                                         "user_visualization_grc",
                                          "app_user",
                                          "accession_holder",
                                          "grc"),

@@ -98,13 +98,23 @@ describe('NavbarComponent', () => {
     expect(tester.logout).not.toBeNull();
     expect(tester.login).toBeNull();
 
-    userSubject.next({ name: 'JB', permissions: ['USER_MANAGEMENT'] } as User);
+    userSubject.next({ name: 'JB', permissions: ['ADMINISTRATION'] } as User);
     tester.detectChanges();
 
     expect(tester.user).toContainText('JB');
     expect(tester.orders).toBeNull();
     expect(tester.users).not.toBeNull();
     expect(tester.accessionHolders).not.toBeNull();
+    expect(tester.logout).not.toBeNull();
+    expect(tester.login).toBeNull();
+
+    userSubject.next({ name: 'JB', permissions: ['ORDER_VISUALIZATION'] } as User);
+    tester.detectChanges();
+
+    expect(tester.user).toContainText('JB');
+    expect(tester.orders).not.toBeNull();
+    expect(tester.users).toBeNull();
+    expect(tester.accessionHolders).toBeNull();
     expect(tester.logout).not.toBeNull();
     expect(tester.login).toBeNull();
   });

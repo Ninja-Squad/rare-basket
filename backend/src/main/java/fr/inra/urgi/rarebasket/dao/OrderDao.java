@@ -40,36 +40,52 @@ public interface OrderDao extends JpaRepository<Order, Long>, CustomOrderDao {
     Page<Order> pageByAccessionHolderAndStatuses(Long accessionHolderId, Set<OrderStatus> statuses, Pageable page);
 
     /**
-     * Generates the rows of the order CSV report.
+     * Generates the rows of the order CSV report for the global perimeter.
      * @see fr.inra.urgi.rarebasket.service.order.OrderCsvExporter
      */
-    @Query(
-        "select basket.reference," +
-            " basket.customer.email," +
-            " basket.customer.type," +
-            " basket.customer.language," +
-            " basket.confirmationInstant," +
-            " grc.name," +
-            " accessionHolder.name," +
-            " o.status," +
-            " o.closingInstant," +
-            " orderItem.accession.name," +
-            " orderItem.accession.identifier," +
-            " orderItem.quantity," +
-            " orderItem.unit" +
-            " from OrderItem orderItem" +
-            " join orderItem.order o" +
-            " join o.basket basket" +
-            " join o.accessionHolder accessionHolder" +
-            " join accessionHolder.grc grc" +
-            " where o.status = fr.inra.urgi.rarebasket.domain.OrderStatus.FINALIZED" +
-            " and o.closingInstant >= :fromInstant" +
-            " and o.closingInstant < :toInstant" +
-            " and accessionHolder.id = :accessionHolderId" +
-            " order by o.closingInstant, orderItem.accession.name, orderItem.accession.identifier"
-    )
+    @Query(ReportQueries.REPORT_QUERY)
+    Stream<Object[]> reportBetween(@Param("fromInstant") Instant fromInstant,
+                                   @Param("toInstant") Instant toInstant);
+
+    /**
+     * Generates the rows of the order CSV report for the given perimeter.
+     * @see fr.inra.urgi.rarebasket.service.order.OrderCsvExporter
+     */
+    @Query(ReportQueries.GRC_REPORT_QUERY)
     Stream<Object[]> reportBetween(@Param("fromInstant") Instant fromInstant,
                                    @Param("toInstant") Instant toInstant,
-                                   @Param("accessionHolderId") Long accessionHolderId);
+                                   @Param("grcIds") Set<Long> grcIds);
 
+}
+
+class ReportQueries {
+    private static final String BEGINNING = "select basket.reference," +
+        " basket.customer.email," +
+        " basket.customer.type," +
+        " basket.customer.language," +
+        " basket.confirmationInstant," +
+        " grc.name," +
+        " accessionHolder.name," +
+        " o.status," +
+        " o.closingInstant," +
+        " orderItem.accession.name," +
+        " orderItem.accession.identifier," +
+        " orderItem.quantity," +
+        " orderItem.unit" +
+        " from OrderItem orderItem" +
+        " join orderItem.order o" +
+        " join o.basket basket" +
+        " join o.accessionHolder accessionHolder" +
+        " join accessionHolder.grc grc" +
+        " where o.status = fr.inra.urgi.rarebasket.domain.OrderStatus.FINALIZED" +
+        " and o.closingInstant >= :fromInstant" +
+        " and o.closingInstant < :toInstant";
+    private static final String END =
+        " order by o.closingInstant, orderItem.accession.name, orderItem.accession.identifier";
+
+    static final String REPORT_QUERY = BEGINNING + END;
+    static final String GRC_REPORT_QUERY =
+        BEGINNING +
+            " and grc.id in :grcIds"
+            + END;
 }

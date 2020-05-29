@@ -54,7 +54,8 @@
     },
     "permission": {
       "ORDER_MANAGEMENT": "Order management",
-      "USER_MANAGEMENT": "User management"
+      "ORDER_VISUALIZATION": "Order visualization (export, statistics)",
+      "ADMINISTRATION": "Administration"
     }
   },
   "navbar": {
@@ -224,7 +225,7 @@
     "edit": {
       "title": {
         "create": "Create a user",
-        "update": "Update a user"
+        "update": "Update the user {{ user.name }}"
       },
       "name": "User name",
       "name-error-label": "The name",
@@ -232,7 +233,10 @@
       "permissions": "Permissions",
       "accession-holder": "Accession holder",
       "accession-holder-error-label": "The accession holder",
-      "accession-holder-help": "Must be specified if the user manages orders",
+      "some-grcs": "For some GRCs only",
+      "all-grcs": "For all GRCs",
+      "visualization-grcs": "Visualizable GRCs",
+      "grc-required": "At least one GRC must be selected",
       "save": "Save",
       "cancel": "Cancel"
     }

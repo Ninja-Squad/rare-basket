@@ -76,6 +76,6 @@ class GrcControllerTest {
                .andExpect(jsonPath("$[0].address").value(grc.getAddress()))
                .andExpect(jsonPath("$[0].institution").value(grc.getInstitution()));
 
-        verify(mockCurrentUser).checkPermission(Permission.USER_MANAGEMENT);
+        verify(mockCurrentUser).checkPermission(Permission.ADMINISTRATION);
     }
 }

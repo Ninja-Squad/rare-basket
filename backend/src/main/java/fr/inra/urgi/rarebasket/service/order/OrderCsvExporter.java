@@ -19,6 +19,7 @@ import java.util.stream.Stream;
 
 import fr.inra.urgi.rarebasket.config.Constants;
 import fr.inra.urgi.rarebasket.dao.OrderDao;
+import fr.inra.urgi.rarebasket.service.user.VisualizationPerimeter;
 import org.springframework.stereotype.Component;
 import org.supercsv.io.CsvListWriter;
 import org.supercsv.prefs.CsvPreference;
@@ -60,12 +61,15 @@ public class OrderCsvExporter {
         }
     }
 
-    public InputStream export(LocalDate from, LocalDate to, Long accessionHolderId) {
+    public InputStream export(LocalDate from, LocalDate to, VisualizationPerimeter perimeter) {
         try {
             Instant fromInstant = from.atStartOfDay(Constants.FRANCE_TIMEZONE).toInstant();
             Instant toInstant = to.plusDays(1).atStartOfDay(Constants.FRANCE_TIMEZONE).toInstant();
 
-            try (Stream<Object[]> rows = orderDao.reportBetween(fromInstant, toInstant, accessionHolderId)) {
+            try (Stream<Object[]> rows = perimeter.isGlobal()
+                ? orderDao.reportBetween(fromInstant, toInstant)
+                : orderDao.reportBetween(fromInstant, toInstant, perimeter.getGrcIds())) {
+
                 return toCsv(rows);
             }
         }
@@ -73,6 +77,7 @@ public class OrderCsvExporter {
             throw new UncheckedIOException(e);
         }
     }
+
 
     private InputStream toCsv(Stream<Object[]> rows) throws IOException {
         Path tempFile = Files.createTempFile("rare-order-report", ".csv");

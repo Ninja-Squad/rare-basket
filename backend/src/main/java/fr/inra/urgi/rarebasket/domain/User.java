@@ -9,6 +9,8 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
@@ -16,7 +18,7 @@ import javax.persistence.Table;
 import javax.validation.constraints.NotBlank;
 
 /**
- * A user of the application, that can be linked to an accession holder and have permissions.
+ * A user of the application, that has permissions.
  * @author JB Nizet
  */
 @Entity
@@ -34,11 +36,35 @@ public class User {
     @NotBlank
     private String name;
 
+    /**
+     * The set of permissions of the user
+     */
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<UserPermission> permissions = new HashSet<>();
 
+    /**
+     * The accession holder for which the user manages orders, if the permission ORDER_MANAGEMENT is present
+     */
     @ManyToOne(fetch = FetchType.LAZY)
     private AccessionHolder accessionHolder;
+
+    /**
+     * If true, and if the user has the permission ORDER_VISUALIZATION, then the user can visualize orders
+     * of all the GRCs
+     */
+    private boolean globalVisualization;
+
+    /**
+     * If the user has the permission ORDER_VISUALIZATION and if {@link #globalVisualization} is false, then the user
+     * can visualize orders of these GRCs
+     */
+    @OneToMany
+    @JoinTable(
+        name = "user_visualization_grc",
+        joinColumns = @JoinColumn(name = "user_id"),
+        inverseJoinColumns = @JoinColumn(name = "grc_id")
+    )
+    private Set<Grc> visualizationGrcs = new HashSet<>();
 
     public User() {
     }
@@ -83,5 +109,26 @@ public class User {
 
     public void setAccessionHolder(AccessionHolder accessionHolder) {
         this.accessionHolder = accessionHolder;
+    }
+
+    public boolean isGlobalVisualization() {
+        return globalVisualization;
+    }
+
+    public void setGlobalVisualization(boolean globalVisualization) {
+        this.globalVisualization = globalVisualization;
+    }
+
+    public Set<Grc> getVisualizationGrcs() {
+        return Collections.unmodifiableSet(visualizationGrcs);
+    }
+
+    public void setVisualizationGrcs(Set<Grc> grcs) {
+        this.visualizationGrcs.clear();
+        this.visualizationGrcs.addAll(grcs);
+    }
+
+    public void clearVisualizationGrcs() {
+        this.visualizationGrcs.clear();
     }
 }

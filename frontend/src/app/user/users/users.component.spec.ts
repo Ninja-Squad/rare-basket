@@ -83,27 +83,14 @@ describe('UsersComponent', () => {
         {
           id: 1,
           name: 'admin',
-          accessionHolder: null,
-          permissions: ['USER_MANAGEMENT']
+          permissions: ['ADMINISTRATION']
         },
         {
           id: 2,
           name: 'John',
-          accessionHolder: {
-            id: 1,
-            name: 'Holder1',
-            email: 'holder1@mail.com',
-            phone: '',
-            grc: {
-              id: 432,
-              name: 'GRC1',
-              institution: '',
-              address: ''
-            }
-          },
-          permissions: ['USER_MANAGEMENT', 'ORDER_MANAGEMENT']
+          permissions: ['ADMINISTRATION', 'ORDER_MANAGEMENT']
         }
-      ]
+      ] as Array<User>
     };
 
     userService.list.and.returnValue(of(users));
@@ -111,10 +98,9 @@ describe('UsersComponent', () => {
 
     expect(tester.users.length).toBe(2);
     expect(tester.users[0]).toContainText('admin');
-    expect(tester.users[0]).toContainText('Gestion des utilisateurs');
+    expect(tester.users[0]).toContainText('Administration');
     expect(tester.users[1]).toContainText('John');
-    expect(tester.users[1]).toContainText('Gestion des commandes, Gestion des utilisateurs');
-    expect(tester.users[1]).toContainText('GRC1 - Holder1');
+    expect(tester.users[1]).toContainText('Administration, Gestion des commandes');
     expect(tester.paginationComponent.navigate).toBe(true);
     expect(tester.createLink).not.toBeNull();
   });
@@ -129,16 +115,14 @@ describe('UsersComponent', () => {
         {
           id: 1,
           name: 'admin',
-          accessionHolder: null,
-          permissions: ['USER_MANAGEMENT']
+          permissions: ['ADMINISTRATION']
         },
         {
           id: 2,
           name: 'John',
-          accessionHolder: null,
-          permissions: ['USER_MANAGEMENT']
+          permissions: ['ADMINISTRATION']
         }
-      ]
+      ] as Array<User>
     };
 
     userService.list.and.returnValues(of(users), of({ ...users, totalElements: 21, content: [users.content[1]] }));

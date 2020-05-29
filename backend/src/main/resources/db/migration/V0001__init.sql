@@ -98,9 +98,10 @@ CREATE TABLE accession_order_document (
 );
 
 CREATE TABLE app_user (
-    id                  BIGINT PRIMARY KEY,
-    name                VARCHAR NOT NULL UNIQUE,
-    accession_holder_id BIGINT
+    id                   BIGINT PRIMARY KEY,
+    name                 VARCHAR NOT NULL UNIQUE,
+    global_visualization BOOLEAN NOT NULL,
+    accession_holder_id  BIGINT
         CONSTRAINT app_user_fk1 REFERENCES accession_holder(id)
 );
 
@@ -114,3 +115,11 @@ CREATE TABLE user_permission (
 );
 
 CREATE SEQUENCE user_permission_seq START WITH 1001 INCREMENT 50;
+
+CREATE TABLE user_visualization_grc (
+    user_id BIGINT NOT NULL
+        CONSTRAINT user_visualization_grc_fk1 REFERENCES app_user(id),
+    grc_id  BIGINT NOT NULL
+        CONSTRAINT user_visualization_grc_fk2 REFERENCES grc(id),
+    PRIMARY KEY (user_id, grc_id)
+)

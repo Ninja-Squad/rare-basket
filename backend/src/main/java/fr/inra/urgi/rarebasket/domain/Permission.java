@@ -12,7 +12,13 @@ public enum Permission {
     ORDER_MANAGEMENT,
 
     /**
-     * The user can manage other users and their permissions.
+     * The user can download and see statistics about orders. To have that permission, the user must have
+     * a visualization perimeter, which is either global or is a set of GRCs
      */
-    USER_MANAGEMENT
+    ORDER_VISUALIZATION,
+
+    /**
+     * The user can manage other users and their permissions, GRCs, accession holders.
+     */
+    ADMINISTRATION
 }

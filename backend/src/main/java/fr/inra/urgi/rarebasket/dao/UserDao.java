@@ -19,6 +19,7 @@ public interface UserDao extends JpaRepository<User, Long> {
         + " left join fetch u.accessionHolder ah"
         + " left join fetch ah.grc"
         + " left join fetch u.permissions"
+        + " left join fetch u.visualizationGrcs"
         + " where u.name = :name"
     )
     Optional<User> findByName(@Param("name") String name);

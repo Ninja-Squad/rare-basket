@@ -5,6 +5,7 @@ import { InProgressOrdersComponent } from './in-progress-orders/in-progress-orde
 import { DoneOrdersComponent } from './done-orders/done-orders.component';
 import { ExportOrdersComponent } from './export-orders/export-orders.component';
 import { StatisticsComponent } from './statistics/statistics.component';
+import { OrdersGuard } from './orders.guard';
 
 export const ORDER_ROUTES: Routes = [
   {
@@ -14,7 +15,7 @@ export const ORDER_ROUTES: Routes = [
       {
         path: '',
         pathMatch: 'full',
-        redirectTo: 'in-progress'
+        canActivate: [OrdersGuard]
       },
       {
         path: 'in-progress',

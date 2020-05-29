@@ -20,7 +20,7 @@ export interface AccessionHolderCommand {
   grcId: number;
 }
 
-export const ALL_PERMISSIONS = ['ORDER_MANAGEMENT', 'USER_MANAGEMENT'] as const;
+export const ALL_PERMISSIONS = ['ORDER_MANAGEMENT', 'ORDER_VISUALIZATION', 'ADMINISTRATION'] as const;
 export type Permission = typeof ALL_PERMISSIONS[number];
 
 export interface User {
@@ -28,10 +28,14 @@ export interface User {
   name: string;
   permissions: Array<Permission>;
   accessionHolder: AccessionHolder | null;
+  globalVisualization: boolean;
+  visualizationGrcs: Array<Grc>;
 }
 
 export interface UserCommand {
   name: string;
   permissions: Array<Permission>;
   accessionHolderId: number | null;
+  globalVisualization: boolean;
+  visualizationGrcIds: Array<number>;
 }

@@ -1,10 +1,14 @@
 package fr.inra.urgi.rarebasket.web.user;
 
+import java.util.Collections;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import fr.inra.urgi.rarebasket.dao.AccessionHolderDao;
+import fr.inra.urgi.rarebasket.dao.GrcDao;
 import fr.inra.urgi.rarebasket.dao.UserDao;
 import fr.inra.urgi.rarebasket.domain.AccessionHolder;
+import fr.inra.urgi.rarebasket.domain.Grc;
 import fr.inra.urgi.rarebasket.domain.Permission;
 import fr.inra.urgi.rarebasket.domain.User;
 import fr.inra.urgi.rarebasket.domain.UserPermission;
@@ -42,13 +46,16 @@ public class UserController {
     private final CurrentUser currentUser;
     private final UserDao userDao;
     private final AccessionHolderDao accessionHolderDao;
+    private final GrcDao grcDao;
 
     public UserController(CurrentUser currentUser,
                           UserDao userDao,
-                          AccessionHolderDao accessionHolderDao) {
+                          AccessionHolderDao accessionHolderDao,
+                          GrcDao grcDao) {
         this.currentUser = currentUser;
         this.userDao = userDao;
         this.accessionHolderDao = accessionHolderDao;
+        this.grcDao = grcDao;
     }
 
     @GetMapping("/me")
@@ -60,14 +67,14 @@ public class UserController {
 
     @GetMapping
     public PageDTO<UserDTO> list(@RequestParam(defaultValue = "0") int page) {
-        currentUser.checkPermission(Permission.USER_MANAGEMENT);
+        currentUser.checkPermission(Permission.ADMINISTRATION);
         Page<User> users = userDao.pageAll(PageRequest.of(page, PAGE_SIZE));
         return PageDTO.fromPage(users, UserDTO::new);
     }
 
     @GetMapping("/{userId}")
     public UserDTO get(@PathVariable("userId") Long userId) {
-        currentUser.checkPermission(Permission.USER_MANAGEMENT);
+        currentUser.checkPermission(Permission.ADMINISTRATION);
         User user = userDao.findById(userId).orElseThrow(NotFoundException::new);
         return new UserDTO(user);
     }
@@ -75,7 +82,7 @@ public class UserController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public UserDTO create(@Validated @RequestBody UserCommandDTO command) {
-        currentUser.checkPermission(Permission.USER_MANAGEMENT);
+        currentUser.checkPermission(Permission.ADMINISTRATION);
         validateUserName(command.getName(), null);
 
         User user = new User();
@@ -89,7 +96,7 @@ public class UserController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void update(@PathVariable("userId") Long userId,
                        @Validated @RequestBody UserCommandDTO command) {
-        currentUser.checkPermission(Permission.USER_MANAGEMENT);
+        currentUser.checkPermission(Permission.ADMINISTRATION);
         User user = userDao.findById(userId).orElseThrow(NotFoundException::new);
         validateUserName(command.getName(), user);
 
@@ -99,7 +106,7 @@ public class UserController {
     @DeleteMapping("/{userId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable("userId") Long userId) {
-        currentUser.checkPermission(Permission.USER_MANAGEMENT);
+        currentUser.checkPermission(Permission.ADMINISTRATION);
         User user = userDao.findById(userId).orElseThrow(NotFoundException::new);
         userDao.delete(user);
     }
@@ -118,6 +125,24 @@ public class UserController {
         user.setAccessionHolder(accessionHolder);
         user.setName(command.getName());
         user.setPermissions(command.getPermissions().stream().map(UserPermission::new).collect(Collectors.toSet()));
+        user.setGlobalVisualization(false);
+        user.setVisualizationGrcs(Collections.emptySet());
+
+        if (command.getPermissions().contains(Permission.ORDER_VISUALIZATION)) {
+            if (!command.isGlobalVisualization() && command.getVisualizationGrcIds().isEmpty()) {
+                throw new BadRequestException("At least one visualization GRC must be provided");
+            }
+
+            user.setGlobalVisualization(command.isGlobalVisualization());
+            if (!command.isGlobalVisualization()) {
+                Set<Grc> visualizationGrcs =
+                    command.getVisualizationGrcIds()
+                           .stream()
+                           .map(grcId -> grcDao.findById(grcId).orElseThrow(() -> new BadRequestException("No GRC with ID " + grcId)))
+                           .collect(Collectors.toSet());
+                user.setVisualizationGrcs(visualizationGrcs);
+            }
+        }
     }
 
     private void validateUserName(String name, User user) {

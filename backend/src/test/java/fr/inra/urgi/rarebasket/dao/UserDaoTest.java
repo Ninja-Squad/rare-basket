@@ -40,8 +40,8 @@ class UserDaoTest extends BaseDaoTest {
 
         Operation users =
             insertInto("app_user")
-                .columns("id", "name", "accession_holder_id")
-                .values(1L, "JB", 1L)
+                .columns("id", "name", "accession_holder_id", "global_visualization")
+                .values(1L, "JB", 1L, true)
                 .build();
 
         Operation userPermissions =
