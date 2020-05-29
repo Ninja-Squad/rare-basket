@@ -10,8 +10,11 @@ import java.io.UncheckedIOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.time.Instant;
 import java.time.LocalDate;
+import java.util.Base64;
 import java.util.stream.Stream;
 
 import fr.inra.urgi.rarebasket.config.Constants;
@@ -30,14 +33,13 @@ public class OrderCsvExporter {
     // if you change the columns or their order, you must also change the query of OrderDao.reportBetween
     private static final String[] HEADER = {
         "Référence Panier",
-        "Nom client",
         "Email client",
-        "Adresse client",
         "Type client",
         "Langue client",
         "Date confirmation panier",
         "GRC",
         "Gestionnaire d'accessions",
+        "État",
         "Date finalisation",
         "Nom accession",
         "Identifiant accession",
@@ -46,9 +48,16 @@ public class OrderCsvExporter {
     };
 
     private final OrderDao orderDao;
+    private final MessageDigest emailHasher;
 
     public OrderCsvExporter(OrderDao orderDao) {
         this.orderDao = orderDao;
+        try {
+            this.emailHasher = MessageDigest.getInstance("SHA-256");
+        }
+        catch (NoSuchAlgorithmException e) {
+            throw new IllegalStateException(e);
+        }
     }
 
     public InputStream export(LocalDate from, LocalDate to, Long accessionHolderId) {
@@ -74,6 +83,8 @@ public class OrderCsvExporter {
             listWriter.writeHeader(HEADER);
             rows.forEachOrdered(row -> {
                 try {
+                    // hash the email to anonymize the data
+                    row[1] = hash((String) row[1]);
                     listWriter.write(row);
                 } catch (IOException e) {
                     throw new UncheckedIOException(e);
@@ -82,5 +93,9 @@ public class OrderCsvExporter {
         }
 
         return new BufferedInputStream(new FileInputStream(tempFile.toFile()));
+    }
+
+    private String hash(String email) {
+        return Base64.getEncoder().encodeToString(emailHasher.digest(email.getBytes(StandardCharsets.UTF_8)));
     }
 }

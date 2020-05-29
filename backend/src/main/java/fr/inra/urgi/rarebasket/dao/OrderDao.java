@@ -45,14 +45,13 @@ public interface OrderDao extends JpaRepository<Order, Long>, CustomOrderDao {
      */
     @Query(
         "select basket.reference," +
-            " basket.customer.name," +
             " basket.customer.email," +
-            " basket.customer.address," +
             " basket.customer.type," +
             " basket.customer.language," +
             " basket.confirmationInstant," +
             " grc.name," +
             " accessionHolder.name," +
+            " o.status," +
             " o.closingInstant," +
             " orderItem.accession.name," +
             " orderItem.accession.identifier," +
