@@ -159,44 +159,7 @@ public class DeliveryFormGenerator {
                     .add(formatInstant(Instant.now(), order))
             );
 
-        // TODO fix this document collection
-        List<fr.inra.urgi.rarebasket.domain.Document> documents =
-            order.getDocuments().stream().filter(d -> d.getType() != DocumentType.EMAIL).collect(Collectors.toList());
-        if (!documents.isEmpty()) {
-            cell.add(
-                new Paragraph()
-                    .add(new Text(messageSource.getMessage(
-                        "delivery-form.documents",
-                        null,
-                        order.getBasket().getCustomer().getLanguage().getLocale())).setBold())
-            );
-        }
-        Map<DocumentType, List<fr.inra.urgi.rarebasket.domain.Document>> documentsByType =
-            documents.stream()
-                     .sorted(Comparator.comparing(fr.inra.urgi.rarebasket.domain.Document::getCreationInstant))
-                     .collect(Collectors.groupingBy(fr.inra.urgi.rarebasket.domain.Document::getType,
-                                                    TreeMap::new,
-                                                    Collectors.toList()));
-
-        com.itextpdf.layout.element.List documentList = new com.itextpdf.layout.element.List().setFontSize(10F);
-        documentsByType.forEach((docType, docs) -> {
-            for (int i = 0; i < docs.size(); i++) {
-                StringBuilder text = new StringBuilder(
-                    messageSource.getMessage(
-                        "delivery-form.document-type." + docType.name(),
-                        null,
-                        order.getBasket().getCustomer().getLanguage().getLocale())
-                );
-                if (docs.size() > 1) {
-                    text.append(" (").append(i + 1).append(')');
-                }
-                if (StringUtils.hasText(docs.get(i).getDescription())) {
-                    text.append(" – ").append(docs.get(i).getDescription());
-                }
-                documentList.add(new ListItem(text.toString()));
-            }
-        });
-        cell.add(documentList);
+        addDocuments(cell, order);
 
         cell.add(
                 new Paragraph(
@@ -219,6 +182,46 @@ public class DeliveryFormGenerator {
             .add(new Paragraph(order.getBasket().getCustomer().getEmail()));
 
         return cell;
+    }
+
+    private void addDocuments(Cell cell, Order order) {
+        Map<DocumentType, List<fr.inra.urgi.rarebasket.domain.Document>> documentsByType =
+            order.getDocuments()
+                 .stream()
+                 .filter(fr.inra.urgi.rarebasket.domain.Document::isOnDeliveryForm)
+                 .sorted(Comparator.comparing(fr.inra.urgi.rarebasket.domain.Document::getCreationInstant))
+                 .collect(Collectors.groupingBy(fr.inra.urgi.rarebasket.domain.Document::getType,
+                                                TreeMap::new,
+                                                Collectors.toList()));
+        if (!documentsByType.isEmpty()) {
+            cell.add(
+                new Paragraph()
+                    .add(new Text(messageSource.getMessage(
+                        "delivery-form.documents",
+                        null,
+                        order.getBasket().getCustomer().getLanguage().getLocale())).setBold())
+            );
+
+            com.itextpdf.layout.element.List documentList = new com.itextpdf.layout.element.List().setFontSize(10F);
+            documentsByType.forEach((docType, docs) -> {
+                for (int i = 0; i < docs.size(); i++) {
+                    StringBuilder text = new StringBuilder(
+                        messageSource.getMessage(
+                            "delivery-form.document-type." + docType.name(),
+                            null,
+                            order.getBasket().getCustomer().getLanguage().getLocale())
+                    );
+                    if (docs.size() > 1) {
+                        text.append(" (").append(i + 1).append(')');
+                    }
+                    if (StringUtils.hasText(docs.get(i).getDescription())) {
+                        text.append(" – ").append(docs.get(i).getDescription());
+                    }
+                    documentList.add(new ListItem(text.toString()));
+                }
+            });
+            cell.add(documentList);
+        }
     }
 
     private Table createAccessionTable(Order order) {

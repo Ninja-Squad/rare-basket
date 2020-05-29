@@ -83,7 +83,8 @@ CREATE TABLE document (
     description        VARCHAR,
     creation_instant   TIMESTAMPTZ,
     content_type       VARCHAR NOT NULL,
-    original_file_name VARCHAR NOT NULL
+    original_file_name VARCHAR NOT NULL,
+    on_delivery_form   BOOLEAN NOT NULL
 );
 
 CREATE SEQUENCE document_seq START WITH 1001 INCREMENT 50;

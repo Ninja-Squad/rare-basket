@@ -171,6 +171,7 @@ public class OrderController {
         Document document = new Document();
         document.setDescription(command.getDescription());
         document.setType(command.getType());
+        document.setOnDeliveryForm(command.isOnDeliveryForm());
         document.setOriginalFileName(file.getOriginalFilename());
         document.setContentType(file.getContentType());
 

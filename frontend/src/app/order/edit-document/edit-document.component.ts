@@ -38,7 +38,8 @@ export class EditDocumentComponent implements OnChanges {
     const descriptionControl = fb.control('');
     this.form = fb.group({
       type: typeControl,
-      description: descriptionControl
+      description: descriptionControl,
+      onDeliveryForm: false
     });
 
     typeControl.valueChanges.subscribe((newType: DocumentType) => {

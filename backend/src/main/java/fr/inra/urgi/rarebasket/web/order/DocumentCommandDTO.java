@@ -15,12 +15,15 @@ public final class DocumentCommandDTO {
     @NotNull
     private final DocumentType type;
     private final String description;
+    private boolean onDeliveryForm;
 
     @JsonCreator
     public DocumentCommandDTO(@JsonProperty("type") DocumentType type,
-                              @JsonProperty("description") String description) {
+                              @JsonProperty("description") String description,
+                              @JsonProperty("onDeliveryForm") boolean onDeliveryForm) {
         this.type = type;
         this.description = description;
+        this.onDeliveryForm = onDeliveryForm;
     }
 
     public DocumentType getType() {
@@ -29,6 +32,10 @@ public final class DocumentCommandDTO {
 
     public String getDescription() {
         return description;
+    }
+
+    public boolean isOnDeliveryForm() {
+        return onDeliveryForm;
     }
 
     @Override
@@ -40,13 +47,14 @@ public final class DocumentCommandDTO {
             return false;
         }
         DocumentCommandDTO that = (DocumentCommandDTO) o;
-        return type == that.type &&
+        return onDeliveryForm == that.onDeliveryForm &&
+            type == that.type &&
             Objects.equals(description, that.description);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(type, description);
+        return Objects.hash(type, description, onDeliveryForm);
     }
 
     @Override
@@ -54,6 +62,7 @@ public final class DocumentCommandDTO {
         return "DocumentCommandDTO{" +
             "type=" + type +
             ", description='" + description + '\'' +
+            ", onDeliveryForm=" + onDeliveryForm +
             '}';
     }
 }

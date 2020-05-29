@@ -12,7 +12,7 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
 /**
- * A document (of an order typically, but it could be part of another entity if needed).
+ * A document of an order.
  * Its actual content is saved in a file on the file system.
  * @author JB Nizet
  */
@@ -52,6 +52,11 @@ public class Document {
      */
     @NotBlank
     private String originalFileName;
+
+    /**
+     * Indicates if the document must be listed in the delivery form of the order
+     */
+    private boolean onDeliveryForm;
 
     public Document() {
     }
@@ -106,5 +111,13 @@ public class Document {
 
     public void setOriginalFileName(String originalFileName) {
         this.originalFileName = originalFileName;
+    }
+
+    public boolean isOnDeliveryForm() {
+        return onDeliveryForm;
+    }
+
+    public void setOnDeliveryForm(boolean onDeliveryForm) {
+        this.onDeliveryForm = onDeliveryForm;
     }
 }

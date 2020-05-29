@@ -11,6 +11,7 @@ import {
   faCommentDots,
   faEdit,
   faFile,
+  faFileMedical,
   faHome,
   faMicrophone,
   faPlus,
@@ -51,7 +52,8 @@ export class OrderComponent implements OnInit {
   finalizeOrderIcon = faCheckSquare;
   cancelOrderIcon = faWindowClose;
   allOrdersIcon = faChevronLeft;
-  documentIcon = faFile;
+  documentOnDeliveryFormIcon = faFileMedical;
+  documentNotOnDeliveryFormIcon = faFile;
   addDocumentIcon = faPlus;
   deleteDocumentIcon = faTrash;
   downloadingIcon = faSpinner;
@@ -189,5 +191,9 @@ export class OrderComponent implements OnInit {
     this.orderService
       .downloadDeliveryForm(this.order.id)
       .subscribe(response => this.downloadService.download(response, `bon-de-livraison-${this.order.id}.pdf`));
+  }
+
+  documentTooltipKey(document: Document) {
+    return `order.order.document-${document.onDeliveryForm ? '' : 'not-'}on-delivery-form`;
   }
 }

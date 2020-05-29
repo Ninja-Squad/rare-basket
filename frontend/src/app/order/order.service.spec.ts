@@ -70,7 +70,8 @@ describe('OrderService', () => {
       file: { name: 'foo.txt' } as File,
       document: {
         type: 'OTHER',
-        description: 'test'
+        description: 'test',
+        onDeliveryForm: false
       }
     };
     service

@@ -16,18 +16,22 @@ public final class DocumentDTO {
     private final Instant creationInstant;
     private final String originalFileName;
     private final String contentType;
+    private final boolean onDeliveryForm;
 
     public DocumentDTO(Long id,
                        DocumentType type,
                        String description,
                        Instant creationInstant,
-                       String originalFileName, String contentType) {
+                       String originalFileName,
+                       String contentType,
+                       boolean onDeliveryForm) {
         this.id = id;
         this.type = type;
         this.description = description;
         this.creationInstant = creationInstant;
         this.originalFileName = originalFileName;
         this.contentType = contentType;
+        this.onDeliveryForm = onDeliveryForm;
     }
 
     public DocumentDTO(Document document) {
@@ -36,7 +40,8 @@ public final class DocumentDTO {
              document.getDescription(),
              document.getCreationInstant(),
              document.getOriginalFileName(),
-             document.getContentType());
+             document.getContentType(),
+             document.isOnDeliveryForm());
     }
 
     public Long getId() {
@@ -61,5 +66,9 @@ public final class DocumentDTO {
 
     public String getContentType() {
         return contentType;
+    }
+
+    public boolean isOnDeliveryForm() {
+        return onDeliveryForm;
     }
 }

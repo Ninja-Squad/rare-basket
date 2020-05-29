@@ -91,7 +91,10 @@
 
     <div *ngFor="let document of order.documents" class="my-2 document">
       <div class="d-flex">
-        <div><fa-icon [icon]="documentIcon" class="mr-2"></fa-icon></div>
+        <div class="mr-2">
+          <fa-icon *ngIf="document.onDeliveryForm" [icon]="documentOnDeliveryFormIcon"></fa-icon>
+          <fa-icon *ngIf="!document.onDeliveryForm" [icon]="documentNotOnDeliveryFormIcon"></fa-icon>
+        </div>
         <div class="flex-grow-1 row">
           <div class="col-md-7 col-lg-8">
             <div class="file-name">
@@ -100,7 +103,12 @@
                 <fa-icon *ngIf="isDownloading(document)" [icon]="downloadingIcon" [spin]="true" class="ml-1 download-spinner"></fa-icon>
               </button>
             </div>
-            <small class="text-muted">{{ document.creationInstant | date: 'medium' }}</small>
+            <small class="text-muted">
+              <span>{{ document.creationInstant | date: 'medium' }}</span>
+              &ngsp;&mdash;&ngsp;
+              <span *ngIf="document.onDeliveryForm" translate="order.order.document-on-delivery-form"></span>
+              <span *ngIf="!document.onDeliveryForm" translate="order.order.document-not-on-delivery-form"></span>
+            </small>
           </div>
           <div class="col-md-5 col-lg-4">
             <div>

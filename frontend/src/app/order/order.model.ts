@@ -30,6 +30,7 @@ export interface Document {
   creationInstant: string;
   originalFileName: string;
   contentType: string;
+  onDeliveryForm: boolean;
 }
 
 export interface Order {
@@ -57,6 +58,7 @@ export interface DocumentCommand {
   document: {
     type: DocumentType;
     description: string;
+    onDeliveryForm: boolean;
   };
   file: File;
 }

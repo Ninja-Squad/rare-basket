@@ -157,6 +157,8 @@
       "delivery-form": "Delivery form",
       "documents": "Documents",
       "no-document": "No document",
+      "document-on-delivery-form": "Listed on the delivery notice",
+      "document-not-on-delivery-form": "Not listed on the delivery notice",
       "delete-document": "Delete this document",
       "delete-document-confirmation": "Do you really want to delete this document? This operation is irreversible!",
       "add-document": "Add a document",
@@ -185,6 +187,8 @@
       "file-error-label": "The file",
       "invalid-file": "The file must have one of these extensions: {{ acceptedExtensions }}",
       "invalid-file-size": "The file is too large. It must be at most {{ max }}\u00a0MB",
+      "delivery-form": "Delivery notice",
+      "on-delivery-form": "Include the document on the delivery notice",
       "save": "Upload",
       "cancel": "Cancel"
     },

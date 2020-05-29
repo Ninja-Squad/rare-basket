@@ -48,6 +48,10 @@ class TestComponentTester extends ComponentTester<TestComponent> {
     return this.input('#document-file');
   }
 
+  get onDeliveryForm() {
+    return this.input('#on-delivery-form');
+  }
+
   get errors() {
     return this.elements('.invalid-feedback div');
   }
@@ -90,6 +94,7 @@ describe('EditDocumentComponent', () => {
     expect(tester.type.optionLabels.length).toBe(ALL_DOCUMENT_TYPES.length + 1);
     expect(tester.type.optionLabels).toContain('Facture');
     expect(tester.description).toHaveValue('');
+    expect(tester.onDeliveryForm).not.toBeChecked();
 
     [tester.type, tester.description, tester.file, tester.saveButton, tester.cancelButton].forEach(e => expect(e.disabled).toBe(false));
 
@@ -145,7 +150,7 @@ describe('EditDocumentComponent', () => {
     tester.componentInstance.progress = 0.1;
     tester.detectChanges();
 
-    [tester.type, tester.description, tester.file, tester.saveButton].forEach(e => expect(e.disabled).toBe(true));
+    [tester.type, tester.description, tester.file, tester.onDeliveryForm, tester.saveButton].forEach(e => expect(e.disabled).toBe(true));
 
     expect(tester.progressBar).not.toBeNull();
     expect(tester.progressBar.getPercentValue()).toBe(10);
@@ -168,6 +173,7 @@ describe('EditDocumentComponent', () => {
   it('should save', () => {
     tester.type.selectLabel('Autre');
     tester.description.fillWith('desc');
+    tester.onDeliveryForm.check();
 
     const selectedFile = { name: 'foo.txt', size: 100 } as File;
     spyOnProperty(tester.editDocumentComponent, 'selectedFile', 'get').and.returnValue(selectedFile);
@@ -177,7 +183,8 @@ describe('EditDocumentComponent', () => {
       file: selectedFile,
       document: {
         type: 'OTHER',
-        description: 'desc'
+        description: 'desc',
+        onDeliveryForm: true
       }
     };
     expect(tester.componentInstance.saved).toEqual(expectedCommand);

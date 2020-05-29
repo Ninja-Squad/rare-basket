@@ -191,7 +191,8 @@ class OrderControllerTest {
                .andExpect(jsonPath("$.documents[0].description").value(document.getDescription()))
                .andExpect(jsonPath("$.documents[0].contentType").value(document.getContentType()))
                .andExpect(jsonPath("$.documents[0].originalFileName").value(document.getOriginalFileName()))
-               .andExpect(jsonPath("$.documents[0].creationInstant").value(document.getCreationInstant().toString()));
+               .andExpect(jsonPath("$.documents[0].creationInstant").value(document.getCreationInstant().toString()))
+               .andExpect(jsonPath("$.documents[0].onDeliveryForm").value(document.isOnDeliveryForm()));
         verify(mockCurrentUser).checkPermission(Permission.ORDER_MANAGEMENT);
     }
 
@@ -242,7 +243,7 @@ class OrderControllerTest {
 
     @Test
     void shouldAddDocument() throws Exception {
-        DocumentCommandDTO command = new DocumentCommandDTO(DocumentType.EMAIL, "desc");
+        DocumentCommandDTO command = new DocumentCommandDTO(DocumentType.EMAIL, "desc", true);
 
         doAnswer(invocation -> {
             order.getDocuments()
@@ -265,6 +266,7 @@ class OrderControllerTest {
                .andExpect(jsonPath("$.id").value(321L))
                .andExpect(jsonPath("$.type").value(command.getType().name()))
                .andExpect(jsonPath("$.description").value(command.getDescription()))
+               .andExpect(jsonPath("$.onDeliveryForm").value(command.isOnDeliveryForm()))
                .andExpect(jsonPath("$.contentType").value(MediaType.TEXT_PLAIN_VALUE))
                .andExpect(jsonPath("$.originalFileName").value("foo.txt"))
                .andExpect(jsonPath("$.creationInstant").isString());
@@ -276,7 +278,7 @@ class OrderControllerTest {
 
     @Test
     void shouldThrowWhenAddingSecondDocumentOfUniqueType() throws Exception {
-        DocumentCommandDTO command = new DocumentCommandDTO(DocumentType.INVOICE, "desc");
+        DocumentCommandDTO command = new DocumentCommandDTO(DocumentType.INVOICE, "desc", true);
 
         mockMvc.perform(multipart("/api/orders/{orderId}/documents", order.getId())
                             .file(new MockMultipartFile("file",
@@ -294,7 +296,7 @@ class OrderControllerTest {
 
     @Test
     void shouldThrowWhenAddingDocumentWithInvalidExtension() throws Exception {
-        DocumentCommandDTO command = new DocumentCommandDTO(DocumentType.EMAIL, "desc");
+        DocumentCommandDTO command = new DocumentCommandDTO(DocumentType.EMAIL, "desc", true);
 
         mockMvc.perform(multipart("/api/orders/{orderId}/documents", order.getId())
                             .file(new MockMultipartFile("file",
@@ -311,7 +313,7 @@ class OrderControllerTest {
     @Test
     void shouldThrowWhenAddingDocumentToNonDraftOrder() throws Exception {
         order.setStatus(OrderStatus.FINALIZED);
-        DocumentCommandDTO command = new DocumentCommandDTO(DocumentType.EMAIL, "desc");
+        DocumentCommandDTO command = new DocumentCommandDTO(DocumentType.EMAIL, "desc", true);
 
         mockMvc.perform(multipart("/api/orders/{orderId}/documents", order.getId())
                             .file(new MockMultipartFile("file",

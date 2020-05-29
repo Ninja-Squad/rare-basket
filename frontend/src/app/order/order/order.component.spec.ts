@@ -189,7 +189,8 @@ describe('OrderComponent', () => {
           description: 'first email',
           creationInstant: '2020-04-10T09:00:00Z',
           originalFileName: 'mail.txt',
-          contentType: 'text/plain'
+          contentType: 'text/plain',
+          onDeliveryForm: false
         }
       ]
     };
