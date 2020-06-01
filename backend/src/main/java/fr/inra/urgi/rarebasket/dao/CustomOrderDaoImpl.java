@@ -1,5 +1,6 @@
 package fr.inra.urgi.rarebasket.dao;
 
+import java.time.Duration;
 import java.time.Instant;
 import java.util.List;
 import java.util.Map;
@@ -7,7 +8,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import javax.persistence.EntityManager;
-import javax.persistence.Query;
+import javax.persistence.TypedQuery;
 
 import fr.inra.urgi.rarebasket.domain.CustomerType;
 import fr.inra.urgi.rarebasket.domain.OrderStatus;
@@ -31,29 +32,33 @@ public class CustomOrderDaoImpl implements CustomOrderDao {
     public List<CustomerTypeStatisticsDTO> findCustomerTypeStatistics(Instant fromInstant,
                                                                       Instant toInstant,
                                                                       VisualizationPerimeter perimeter) {
-        String sql = "select basket.customer_type, count(distinct(item.accession_name, item.accession_identifier))" +
-            " from accession_order_item item" +
-            " inner join accession_order o on item.order_id = o.id" +
-            " inner join basket on o.basket_id = basket.id" +
-            " inner join accession_holder on o.accession_holder_id = accession_holder.id" +
-            " inner join grc on accession_holder.grc_id = grc.id" +
-            " where o.status = '" + OrderStatus.FINALIZED.name() + "'" +
-            " and o.closing_instant >= :fromInstant" +
-            " and o.closing_instant < :toInstant";
+        String jpql =
+            "select basket.customer.type, count(o.id)" +
+                " from Order o" +
+                " inner join o.basket basket";
         if (perimeter.isConstrained()) {
-            sql += " and grc.id in :grcIds";
+            jpql +=
+                " inner join o.accessionHolder accessionHolder" +
+                    " inner join accessionHolder.grc grc";
         }
-        sql += " group by basket.customer_type";
-        Query query = entityManager.createNativeQuery(sql)
-                                   .setParameter("fromInstant", fromInstant)
-                                   .setParameter("toInstant", toInstant);
+        jpql +=
+            " where o.status = fr.inra.urgi.rarebasket.domain.OrderStatus.FINALIZED" +
+                " and o.closingInstant >= :fromInstant" +
+                " and o.closingInstant < :toInstant";
+        if (perimeter.isConstrained()) {
+            jpql += " and grc.id in :grcIds";
+        }
+        jpql += " group by basket.customer.type";
+        TypedQuery<Object[]> query = entityManager.createQuery(jpql, Object[].class)
+                                                  .setParameter("fromInstant", fromInstant)
+                                                  .setParameter("toInstant", toInstant);
         if (perimeter.isConstrained()) {
             query.setParameter("grcIds", perimeter.getGrcIds());
         }
         List<Object[]> rows = query.getResultList();
         Map<CustomerType, CustomerTypeStatisticsDTO> statsByCustomerType =
             rows.stream()
-                .map(row -> new CustomerTypeStatisticsDTO(CustomerType.valueOf((String) row[0]),
+                .map(row -> new CustomerTypeStatisticsDTO((CustomerType) row[0],
                                                           ((Number) row[1]).longValue()))
                 .collect(Collectors.toMap(CustomerTypeStatisticsDTO::getCustomerType, Function.identity()));
 
@@ -69,32 +74,125 @@ public class CustomOrderDaoImpl implements CustomOrderDao {
     public List<OrderStatusStatisticsDTO> findOrderStatusStatistics(Instant fromInstant,
                                                                     Instant toInstant,
                                                                     VisualizationPerimeter perimeter) {
-        String sql = "select o.status, count(o.id)" +
-            " from accession_order o" +
-            " inner join basket on o.basket_id = basket.id" +
-            " inner join accession_holder on o.accession_holder_id = accession_holder.id" +
-            " inner join grc on accession_holder.grc_id = grc.id" +
-            " where basket.confirmation_instant >= :fromInstant" +
-            " and basket.confirmation_instant < :toInstant";
+        String jpql =
+            "select o.status, count(o.id)" +
+                " from Order o" +
+                " inner join o.basket basket";
         if (perimeter.isConstrained()) {
-            sql += " and grc.id in :grcIds";
+            jpql +=
+                " inner join o.accessionHolder accessionHolder" +
+                    " inner join accessionHolder.grc grc";
         }
-        sql +=" group by o.status";
-        Query query = entityManager.createNativeQuery(sql)
-                                   .setParameter("fromInstant", fromInstant)
-                                   .setParameter("toInstant", toInstant);
+        jpql +=
+            " where basket.confirmationInstant >= :fromInstant" +
+                " and basket.confirmationInstant < :toInstant";
+        if (perimeter.isConstrained()) {
+            jpql += " and grc.id in :grcIds";
+        }
+        jpql += " group by o.status";
+        TypedQuery<Object[]> query = entityManager.createQuery(jpql, Object[].class)
+                                                  .setParameter("fromInstant", fromInstant)
+                                                  .setParameter("toInstant", toInstant);
         if (perimeter.isConstrained()) {
             query.setParameter("grcIds", perimeter.getGrcIds());
         }
         List<Object[]> resultList = query.getResultList();
         Map<OrderStatus, OrderStatusStatisticsDTO> statsByOrderStatus =
             resultList.stream()
-                      .map(row -> new OrderStatusStatisticsDTO(OrderStatus.valueOf((String) row[0]),
+                      .map(row -> new OrderStatusStatisticsDTO((OrderStatus) row[0],
                                                                ((Number) row[1]).longValue()))
                       .collect(Collectors.toMap(OrderStatusStatisticsDTO::getOrderStatus, Function.identity()));
 
         return Stream.of(OrderStatus.values())
-            .map(status -> statsByOrderStatus.computeIfAbsent(status, s -> new OrderStatusStatisticsDTO(s, 0L)))
-            .collect(Collectors.toList());
+                     .map(status -> statsByOrderStatus.computeIfAbsent(status,
+                                                                       s -> new OrderStatusStatisticsDTO(s, 0L)))
+                     .collect(Collectors.toList());
+    }
+
+    @Override
+    public long countCancelledOrders(Instant fromInstant, Instant toInstant, VisualizationPerimeter perimeter) {
+        String jpql =
+            "select count(o.id)" +
+                " from Order o";
+        if (perimeter.isConstrained()) {
+            jpql +=
+                " inner join o.accessionHolder accessionHolder" +
+                    " inner join accessionHolder.grc grc";
+        }
+        jpql +=
+            " where o.status = fr.inra.urgi.rarebasket.domain.OrderStatus.CANCELLED" +
+                " and o.closingInstant >= :fromInstant" +
+                " and o.closingInstant < :toInstant";
+        if (perimeter.isConstrained()) {
+            jpql += " and grc.id in :grcIds";
+        };
+        TypedQuery<Number> query = entityManager.createQuery(jpql, Number.class)
+                                                .setParameter("fromInstant", fromInstant)
+                                                .setParameter("toInstant", toInstant);
+        if (perimeter.isConstrained()) {
+            query.setParameter("grcIds", perimeter.getGrcIds());
+        }
+        Number count = query.getSingleResult();
+        return count.longValue();
+    }
+
+    @Override
+    public long countDistinctCustomersOfFinalizedOrders(Instant fromInstant,
+                                                        Instant toInstant,
+                                                        VisualizationPerimeter perimeter) {
+        String jpql =
+            "select count(distinct basket.customer.email)" +
+                " from Order o" +
+                " inner join o.basket basket";
+        if (perimeter.isConstrained()) {
+            jpql +=
+                " inner join o.accessionHolder accessionHolder" +
+                    " inner join accessionHolder.grc grc";
+        }
+        jpql +=
+            " where o.status = fr.inra.urgi.rarebasket.domain.OrderStatus.FINALIZED" +
+                " and o.closingInstant >= :fromInstant" +
+                " and o.closingInstant < :toInstant";
+        if (perimeter.isConstrained()) {
+            jpql += " and grc.id in :grcIds";
+        };
+        TypedQuery<Number> query = entityManager.createQuery(jpql, Number.class)
+                                                .setParameter("fromInstant", fromInstant)
+                                                .setParameter("toInstant", toInstant);
+        if (perimeter.isConstrained()) {
+            query.setParameter("grcIds", perimeter.getGrcIds());
+        }
+        Number count = query.getSingleResult();
+        return count.longValue();
+    }
+
+    @Override
+    public Duration computeAverageFinalizationDuration(Instant fromInstant,
+                                                       Instant toInstant,
+                                                       VisualizationPerimeter perimeter) {
+        String jpql =
+            "select avg(EXTRACT(EPOCH FROM o.closingInstant) - EXTRACT(EPOCH from basket.confirmationInstant))" +
+                " from Order o" +
+                " inner join o.basket basket";
+        if (perimeter.isConstrained()) {
+            jpql +=
+                " inner join o.accessionHolder accessionHolder" +
+                    " inner join accessionHolder.grc grc";
+        }
+        jpql +=
+            " where o.status = fr.inra.urgi.rarebasket.domain.OrderStatus.FINALIZED" +
+                " and o.closingInstant >= :fromInstant" +
+                " and o.closingInstant < :toInstant";
+        if (perimeter.isConstrained()) {
+            jpql += " and grc.id in :grcIds";
+        };
+        TypedQuery<Number> query = entityManager.createQuery(jpql, Number.class)
+                                                .setParameter("fromInstant", fromInstant)
+                                                .setParameter("toInstant", toInstant);
+        if (perimeter.isConstrained()) {
+            query.setParameter("grcIds", perimeter.getGrcIds());
+        }
+        Number seconds = query.getSingleResult();
+        return Duration.ofSeconds(seconds == null ? 0L : seconds.longValue());
     }
 }

@@ -65,15 +65,20 @@ export interface DocumentCommand {
 
 export interface CustomerTypeStatistics {
   customerType: CustomerType;
-  accessionCount: number;
+  finalizedOrderCount: number;
 }
 
 export interface OrderStatusStatistics {
   orderStatus: OrderStatus;
-  orderCount: number;
+  createdOrderCount: number;
 }
 
 export interface OrderStatistics {
+  createdOrderCount: number;
+  finalizedOrderCount: number;
+  cancelledOrderCount: number;
+  averageFinalizationDurationInDays: number;
+  distinctFinalizedOrderCustomerCount: number;
   orderStatusStatistics: Array<OrderStatusStatistics>;
   customerTypeStatistics: Array<CustomerTypeStatistics>;
 }

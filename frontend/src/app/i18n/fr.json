@@ -136,6 +136,7 @@
       "statistics": "Statistiques"
     },
     "orders": {
+      "zero-accession": "0 accession",
       "one-accession": "1 accession",
       "n-accessions": "{{ n }} accessions"
     },
@@ -222,11 +223,21 @@
     },
     "statistics": {
       "year": "Année",
-      "customer-types-title": "Nombre d'accessions distinctes livrées par type de client pour l'année {{ year }}",
+      "key-numbers": "Chiffres clés",
+      "created-order": "commande créée",
+      "created-orders": "commandes créées",
+      "finalized-order": "commande finalisée",
+      "finalized-orders": "commandes finalisées",
+      "cancelled-order": "commande annulée",
+      "cancelled-orders": "commandes annulées",
+      "distinct-customer": "client",
+      "distinct-customers": "clients distincts",
+      "day-to-finalize": "jour pour finaliser une commande",
+      "days-to-finalize": "jours pour finaliser une commande",
+      "customer-types-title": "Nombre de commandes finalisées, par type de client",
       "customer-type": "Type de client",
-      "accession-count": "Nb. d'accessions",
       "total": "Total",
-      "order-status-title": "Nombre de commandes par état pour l'année {{ year }}",
+      "order-status-title": "Nombre de commandes créées, par état",
       "order-status": "État",
       "order-count": "Nb. de commandes"
     },

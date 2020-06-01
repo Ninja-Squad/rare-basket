@@ -10,19 +10,19 @@ import fr.inra.urgi.rarebasket.domain.CustomerType;
  */
 public final class CustomerTypeStatisticsDTO {
     private final CustomerType customerType;
-    private final long accessionCount;
+    private final long finalizedOrderCount;
 
-    public CustomerTypeStatisticsDTO(CustomerType customerType, long accessionCount) {
+    public CustomerTypeStatisticsDTO(CustomerType customerType, long finalizedOrderCount) {
         this.customerType = customerType;
-        this.accessionCount = accessionCount;
+        this.finalizedOrderCount = finalizedOrderCount;
     }
 
     public CustomerType getCustomerType() {
         return customerType;
     }
 
-    public long getAccessionCount() {
-        return accessionCount;
+    public long getFinalizedOrderCount() {
+        return finalizedOrderCount;
     }
 
     @Override
@@ -34,20 +34,20 @@ public final class CustomerTypeStatisticsDTO {
             return false;
         }
         CustomerTypeStatisticsDTO that = (CustomerTypeStatisticsDTO) o;
-        return accessionCount == that.accessionCount &&
+        return finalizedOrderCount == that.finalizedOrderCount &&
             customerType == that.customerType;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(customerType, accessionCount);
+        return Objects.hash(customerType, finalizedOrderCount);
     }
 
     @Override
     public String toString() {
         return "CustomerTypeStatistics{" +
             "customerType=" + customerType +
-            ", accessionCount=" + accessionCount +
+            ", finalizedOrderCount=" + finalizedOrderCount +
             '}';
     }
 }

@@ -136,6 +136,7 @@
       "statistics": "Statistics"
     },
     "orders": {
+      "zero-accession": "0 accession",
       "one-accession": "1 accession",
       "n-accessions": "{{ n }} accessions"
     },
@@ -221,11 +222,21 @@
     },
     "statistics": {
       "year": "Year",
-      "customer-types-title": "# of distinct delivered accessions per customer type for year {{ year }}",
+      "key-numbers": "Key numbers",
+      "created-order": "created order",
+      "created-orders": "created orders",
+      "finalized-order": "finalized order",
+      "finalized-orders": "finalized orders",
+      "cancelled-order": "cancelled order",
+      "cancelled-orders": "cancelled orders",
+      "distinct-customer": "customer",
+      "distinct-customers": "distinct customers",
+      "day-to-finalize": "day to finalize an order",
+      "days-to-finalize": "days to finalize an order",
+      "customer-types-title": "# of finalized orders, per customer type",
       "customer-type": "Customer type",
-      "accession-count": "# of accessions",
       "total": "Total",
-      "order-status-title": "# of orders per status for year {{ year }}",
+      "order-status-title": "# of created orders, per status",
       "order-status": "Order Status",
       "order-count": "# of orders"
     },

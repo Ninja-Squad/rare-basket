@@ -72,8 +72,8 @@ class ReportQueries {
         " orderItem.accession.identifier," +
         " orderItem.quantity," +
         " orderItem.unit" +
-        " from OrderItem orderItem" +
-        " join orderItem.order o" +
+        " from Order o" +
+        " left join o.items orderItem" +
         " join o.basket basket" +
         " join o.accessionHolder accessionHolder" +
         " join accessionHolder.grc grc" +

@@ -6,18 +6,65 @@
 </form>
 
 <div *ngIf="stats">
-  <h2 translate="order.statistics.customer-types-title" [translateParams]="{ year: form.value.year }"></h2>
+  <h2 translate="order.statistics.key-numbers"></h2>
+  <div class="form-row align-items-stretch" id="numbers">
+    <div class="mb-2 col-md-4 col-lg d-flex">
+      <div class="border rounded bg-light text-center p-2 flex-grow-1">
+        <div class="key-number">{{ stats.createdOrderCount | number }}</div>
+        &ngsp;
+        <div [translate]="stats.createdOrderCount <= 1 ? 'order.statistics.created-order' : 'order.statistics.created-orders'"></div>
+      </div>
+    </div>
+    <div class="mb-2 col-md-4 col-lg d-flex">
+      <div class="border rounded bg-light text-center p-2 flex-grow-1">
+        <div class="key-number">{{ stats.finalizedOrderCount | number }}</div>
+        &ngsp;
+        <div [translate]="stats.finalizedOrderCount <= 1 ? 'order.statistics.finalized-order' : 'order.statistics.finalized-orders'"></div>
+      </div>
+    </div>
+    <div class="mb-2 col-md-4 col-lg d-flex">
+      <div class="border rounded bg-light text-center p-2 flex-grow-1">
+        <div class="key-number">{{ stats.cancelledOrderCount | number }}</div>
+        &ngsp;
+        <div [translate]="stats.cancelledOrderCount <= 1 ? 'order.statistics.cancelled-order' : 'order.statistics.cancelled-orders'"></div>
+      </div>
+    </div>
+    <div class="mb-2 col-md-6 col-lg d-flex">
+      <div class="border rounded bg-light text-center p-2 flex-grow-1">
+        <div class="key-number">{{ stats.distinctFinalizedOrderCustomerCount | number }}</div>
+        &ngsp;
+        <div
+          [translate]="
+            stats.distinctFinalizedOrderCustomerCount <= 1 ? 'order.statistics.distinct-customer' : 'order.statistics.distinct-customers'
+          "
+        ></div>
+      </div>
+    </div>
+    <div class="mb-2 col-md-6 col-lg d-flex">
+      <div class="border rounded bg-light text-center p-2 flex-grow-1">
+        <div class="key-number">{{ stats.averageFinalizationDurationInDays | number: '.0-1' }}</div>
+        &ngsp;
+        <div
+          [translate]="
+            stats.averageFinalizationDurationInDays <= 1 ? 'order.statistics.day-to-finalize' : 'order.statistics.days-to-finalize'
+          "
+        ></div>
+      </div>
+    </div>
+  </div>
+
+  <h2 translate="order.statistics.customer-types-title"></h2>
 
   <div class="row align-items-center">
     <div class="col-md mb-2 mb-md-2">
-      <rb-chart [configuration]="customerTypeBar" id="customer-types-chart"></rb-chart>
+      <rb-chart [configuration]="customerTypeDoughnut" id="customer-types-chart"></rb-chart>
     </div>
     <div class="col-md">
       <table class="table table-sm">
         <thead class="thead-light">
           <tr>
             <th translate="order.statistics.customer-type"></th>
-            <th translate="order.statistics.accession-count"></th>
+            <th translate="order.statistics.order-count"></th>
           </tr>
         </thead>
         <tbody>
@@ -26,14 +73,20 @@
               <span [style.backgroundColor]="colors[index]" class="color-square"></span>
               {{ stat.customerType | customerTypeEnum }}
             </td>
-            <td>{{ stat.accessionCount | number }}</td>
+            <td>{{ stat.finalizedOrderCount | number }} ({{ finalizedOrderCountRatio(stat) | percent }})</td>
           </tr>
         </tbody>
+        <tfoot>
+          <tr>
+            <td><strong translate="order.statistics.total"></strong></td>
+            <td>{{ stats.finalizedOrderCount | number }}</td>
+          </tr>
+        </tfoot>
       </table>
     </div>
   </div>
 
-  <h2 translate="order.statistics.order-status-title" [translateParams]="{ year: form.value.year }"></h2>
+  <h2 translate="order.statistics.order-status-title"></h2>
 
   <div class="row align-items-center">
     <div class="col-md mb-2 mb-md-2">
@@ -53,13 +106,13 @@
               <span [style.backgroundColor]="colors[index]" class="color-square"></span>
               {{ stat.orderStatus | orderStatusEnum }}
             </td>
-            <td>{{ stat.orderCount | number }} ({{ orderCountRatio(stat) | percent: '.0-0' }})</td>
+            <td>{{ stat.createdOrderCount | number }} ({{ createdOrderCountRatio(stat) | percent }})</td>
           </tr>
         </tbody>
         <tfoot>
           <tr>
             <td><strong translate="order.statistics.total"></strong></td>
-            <td>{{ totalOrderCount | number }}</td>
+            <td>{{ stats.createdOrderCount | number }}</td>
           </tr>
         </tfoot>
       </table>

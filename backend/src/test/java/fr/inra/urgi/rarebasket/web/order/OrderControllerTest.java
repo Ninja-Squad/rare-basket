@@ -4,9 +4,11 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.tuple;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import java.io.ByteArrayInputStream;
+import java.time.Duration;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.util.EnumSet;
@@ -448,10 +450,22 @@ class OrderControllerTest {
         Instant expectedToInstant = Instant.parse("2020-12-31T23:00:00.000Z");
 
         List<OrderStatusStatisticsDTO> orderStatusStatistics =
-            List.of(new OrderStatusStatisticsDTO(OrderStatus.DRAFT, 1L));
+            List.of(
+                new OrderStatusStatisticsDTO(OrderStatus.DRAFT, 1L),
+                new OrderStatusStatisticsDTO(OrderStatus.FINALIZED, 56L)
+            );
         List<CustomerTypeStatisticsDTO> customerTypeStatistics =
-            List.of(new CustomerTypeStatisticsDTO(CustomerType.FARMER, 2L));
+            List.of(
+                new CustomerTypeStatisticsDTO(CustomerType.FARMER, 20L),
+                new CustomerTypeStatisticsDTO(CustomerType.CITIZEN, 30L)
+            );
 
+        when(mockOrderDao.countCancelledOrders(expectedFromInstant, expectedToInstant, mockCurrentUser.getVisualizationPerimeter()))
+            .thenReturn(12L);
+        when(mockOrderDao.countDistinctCustomersOfFinalizedOrders(expectedFromInstant, expectedToInstant, mockCurrentUser.getVisualizationPerimeter()))
+            .thenReturn(40L);
+        when(mockOrderDao.computeAverageFinalizationDuration(expectedFromInstant, expectedToInstant, mockCurrentUser.getVisualizationPerimeter()))
+            .thenReturn(Duration.ofHours(36));
         when(mockOrderDao.findOrderStatusStatistics(expectedFromInstant, expectedToInstant, mockCurrentUser.getVisualizationPerimeter()))
             .thenReturn(orderStatusStatistics);
         when(mockOrderDao.findCustomerTypeStatistics(expectedFromInstant, expectedToInstant, mockCurrentUser.getVisualizationPerimeter()))
@@ -459,10 +473,20 @@ class OrderControllerTest {
 
         mockMvc.perform(get("/api/orders/statistics").param("from", from.toString()).param("to", to.toString()))
                .andExpect(status().isOk())
+               .andDo(print())
+               .andExpect(jsonPath("$.createdOrderCount").value(57))
+               .andExpect(jsonPath("$.finalizedOrderCount").value(50))
+               .andExpect(jsonPath("$.cancelledOrderCount").value(12))
+               .andExpect(jsonPath("$.distinctFinalizedOrderCustomerCount").value(40))
+               .andExpect(jsonPath("$.averageFinalizationDurationInDays").value(1.5))
                .andExpect(jsonPath("$.orderStatusStatistics[0].orderStatus").value(OrderStatus.DRAFT.name()))
-               .andExpect(jsonPath("$.orderStatusStatistics[0].orderCount").value(1L))
+               .andExpect(jsonPath("$.orderStatusStatistics[0].createdOrderCount").value(1))
+               .andExpect(jsonPath("$.orderStatusStatistics[1].orderStatus").value(OrderStatus.FINALIZED.name()))
+               .andExpect(jsonPath("$.orderStatusStatistics[1].createdOrderCount").value(56))
                .andExpect(jsonPath("$.customerTypeStatistics[0].customerType").value(CustomerType.FARMER.name()))
-               .andExpect(jsonPath("$.customerTypeStatistics[0].accessionCount").value(2L));
+               .andExpect(jsonPath("$.customerTypeStatistics[0].finalizedOrderCount").value(20))
+               .andExpect(jsonPath("$.customerTypeStatistics[1].customerType").value(CustomerType.CITIZEN.name()))
+               .andExpect(jsonPath("$.customerTypeStatistics[1].finalizedOrderCount").value(30));
 
         verify(mockCurrentUser).checkPermission(Permission.ORDER_VISUALIZATION);
     }

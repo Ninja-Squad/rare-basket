@@ -10,19 +10,19 @@ import fr.inra.urgi.rarebasket.domain.OrderStatus;
  */
 public final class OrderStatusStatisticsDTO {
     private final OrderStatus orderStatus;
-    private final long orderCount;
+    private final long createdOrderCount;
 
-    public OrderStatusStatisticsDTO(OrderStatus orderStatus, long orderCount) {
+    public OrderStatusStatisticsDTO(OrderStatus orderStatus, long createdOrderCount) {
         this.orderStatus = orderStatus;
-        this.orderCount = orderCount;
+        this.createdOrderCount = createdOrderCount;
     }
 
     public OrderStatus getOrderStatus() {
         return orderStatus;
     }
 
-    public long getOrderCount() {
-        return orderCount;
+    public long getCreatedOrderCount() {
+        return createdOrderCount;
     }
 
     @Override
@@ -34,20 +34,20 @@ public final class OrderStatusStatisticsDTO {
             return false;
         }
         OrderStatusStatisticsDTO that = (OrderStatusStatisticsDTO) o;
-        return orderCount == that.orderCount &&
+        return createdOrderCount == that.createdOrderCount &&
             orderStatus == that.orderStatus;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(orderStatus, orderCount);
+        return Objects.hash(orderStatus, createdOrderCount);
     }
 
     @Override
     public String toString() {
         return "OrderStatusStatisticsDTO{" +
             "orderStatus=" + orderStatus +
-            ", orderCount=" + orderCount +
+            ", createdOrderCount=" + createdOrderCount +
             '}';
     }
 }

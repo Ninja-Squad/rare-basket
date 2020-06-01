@@ -5,6 +5,9 @@
     </div>
     <div class="col-6 col-md-2 order-md-3">
       <ng-container [ngPlural]="order.items.length">
+        <ng-template ngPluralCase="=0">
+          <span translate="order.orders.zero-accession"></span>
+        </ng-template>
         <ng-template ngPluralCase="=1">
           <span translate="order.orders.one-accession"></span>
         </ng-template>

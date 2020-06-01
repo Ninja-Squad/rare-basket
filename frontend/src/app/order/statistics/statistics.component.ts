@@ -1,6 +1,6 @@
 import { Component, Inject, InjectionToken, LOCALE_ID, OnInit } from '@angular/core';
 import { OrderService } from '../order.service';
-import { OrderStatistics, OrderStatusStatistics } from '../order.model';
+import { CustomerTypeStatistics, OrderStatistics, OrderStatusStatistics } from '../order.model';
 import { ChartConfiguration } from 'chart.js';
 import { COLORS } from '../../chart/colors';
 import { TranslateService } from '@ngx-translate/core';
@@ -22,9 +22,8 @@ export class StatisticsComponent implements OnInit {
   years: Array<number>;
 
   stats: OrderStatistics;
-  customerTypeBar: ChartConfiguration;
+  customerTypeDoughnut: ChartConfiguration;
   orderStatusDoughnut: ChartConfiguration;
-  totalOrderCount: number;
   colors = COLORS;
 
   constructor(
@@ -60,19 +59,22 @@ export class StatisticsComponent implements OnInit {
       )
       .subscribe(stats => {
         this.stats = stats;
-        this.stats.customerTypeStatistics.sort((s1, s2) => s2.accessionCount - s1.accessionCount);
-        this.totalOrderCount = this.countOrders();
+        this.stats.customerTypeStatistics.sort((s1, s2) => s2.finalizedOrderCount - s1.finalizedOrderCount);
         this.createCharts();
       });
   }
 
-  orderCountRatio(stat: OrderStatusStatistics) {
-    return stat.orderCount / this.totalOrderCount;
+  createdOrderCountRatio(stat: OrderStatusStatistics) {
+    return stat.createdOrderCount / this.stats.createdOrderCount;
+  }
+
+  finalizedOrderCountRatio(stat: CustomerTypeStatistics) {
+    return stat.finalizedOrderCount / this.stats.finalizedOrderCount;
   }
 
   private createCharts() {
     this.createCustomerTypeDoughnutChart();
-    this.createOrderStatusBarChart();
+    this.createOrderStatusDoughnutChart();
   }
 
   private createCustomerTypeDoughnutChart() {
@@ -84,40 +86,42 @@ export class StatisticsComponent implements OnInit {
     this.stats.customerTypeStatistics.forEach((value, index) => {
       labels.push(this.translateService.instant(`enums.customer-type.${value.customerType}`));
       shortLabels.push(this.translateService.instant(`enums.short-customer-type.${value.customerType}`));
-      data.push(value.accessionCount);
+      data.push(value.finalizedOrderCount);
       backgroundColor.push(COLORS[index % COLORS.length]);
     });
 
-    this.customerTypeBar = {
-      type: 'bar',
+    this.customerTypeDoughnut = {
+      type: 'doughnut',
       data: { labels: shortLabels, datasets: [{ data, backgroundColor }] },
       options: {
+        cutoutPercentage: 70,
         tooltips: {
           callbacks: {
             label: (tooltipItem, chart) => {
               const label = labels[tooltipItem.index];
               const stat = this.stats.customerTypeStatistics[tooltipItem.index];
-              const accessionCount = formatNumber(stat.accessionCount, this.locale);
-              return `${label}: ${accessionCount}`;
+              const count = formatNumber(stat.finalizedOrderCount, this.locale);
+              const percentage = formatPercent(this.finalizedOrderCountRatio(stat), this.locale, '.0-0');
+              return `${label}: ${count} (${percentage})`;
             }
           }
         },
         legend: {
           display: false
         },
-        aspectRatio: 1.5
+        aspectRatio: 2
       }
     };
   }
 
-  private createOrderStatusBarChart() {
+  private createOrderStatusDoughnutChart() {
     const labels: Array<string> = [];
     const data: Array<number> = [];
     const backgroundColor: Array<string> = [];
 
     this.stats.orderStatusStatistics.forEach((value, index) => {
       labels.push(this.translateService.instant(`enums.order-status.${value.orderStatus}`));
-      data.push(value.orderCount);
+      data.push(value.createdOrderCount);
       backgroundColor.push(COLORS[index % COLORS.length]);
     });
 
@@ -131,8 +135,8 @@ export class StatisticsComponent implements OnInit {
             label: (tooltipItem, chart) => {
               const label = labels[tooltipItem.index];
               const stat = this.stats.orderStatusStatistics[tooltipItem.index];
-              const orderCount = formatNumber(stat.orderCount, this.locale);
-              const percentage = formatPercent(this.orderCountRatio(stat), this.locale, '.0-0');
+              const orderCount = formatNumber(stat.createdOrderCount, this.locale);
+              const percentage = formatPercent(this.createdOrderCountRatio(stat), this.locale, '.0-0');
               return `${label}: ${orderCount} (${percentage})`;
             }
           }
@@ -143,11 +147,5 @@ export class StatisticsComponent implements OnInit {
         aspectRatio: 2
       }
     };
-  }
-
-  private countOrders() {
-    let result = 0;
-    this.stats.orderStatusStatistics.forEach(s => (result += s.orderCount));
-    return result;
   }
 }

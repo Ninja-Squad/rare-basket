@@ -1,3 +1,5 @@
+@import '../../../common';
+
 .color-square {
   display: inline-block;
   width: 0.7rem;
@@ -8,4 +10,10 @@ h2 {
   font-size: 1.5rem;
   margin-top: 1.5rem;
   margin-bottom: 1.5rem;
+}
+
+.key-number {
+  font-size: 3rem;
+  color: $gray-600;
+  font-weight: 500;
 }

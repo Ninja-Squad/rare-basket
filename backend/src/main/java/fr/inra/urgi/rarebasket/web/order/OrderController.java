@@ -2,8 +2,10 @@ package fr.inra.urgi.rarebasket.web.order;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.time.Duration;
 import java.time.Instant;
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -26,6 +28,7 @@ import fr.inra.urgi.rarebasket.service.order.DeliveryFormGenerator;
 import fr.inra.urgi.rarebasket.service.order.OrderCsvExporter;
 import fr.inra.urgi.rarebasket.service.storage.DocumentStorage;
 import fr.inra.urgi.rarebasket.service.user.CurrentUser;
+import fr.inra.urgi.rarebasket.service.user.VisualizationPerimeter;
 import fr.inra.urgi.rarebasket.util.References;
 import fr.inra.urgi.rarebasket.web.basket.BasketCommandDTO;
 import fr.inra.urgi.rarebasket.web.basket.CustomerCommandDTO;
@@ -295,9 +298,31 @@ public class OrderController {
         Instant fromInstant = from.atStartOfDay(Constants.FRANCE_TIMEZONE).toInstant();
         Instant toInstant = to.atStartOfDay(Constants.FRANCE_TIMEZONE).toInstant();
 
+        VisualizationPerimeter perimeter = currentUser.getVisualizationPerimeter();
+        List<OrderStatusStatisticsDTO> orderStatusStatistics = orderDao.findOrderStatusStatistics(fromInstant,
+                                                                                                  toInstant,
+                                                                                                  perimeter);
+        List<CustomerTypeStatisticsDTO> customerTypeStatistics = orderDao.findCustomerTypeStatistics(fromInstant,
+                                                                                                     toInstant,
+                                                                                                     perimeter);
+        long createdOrderCount = orderStatusStatistics.stream().mapToLong(OrderStatusStatisticsDTO::getCreatedOrderCount).sum();
+        long finalizedOrderCount = customerTypeStatistics.stream().mapToLong(CustomerTypeStatisticsDTO::getFinalizedOrderCount).sum();
+        long cancelledOrderCount = orderDao.countCancelledOrders(fromInstant, toInstant, perimeter);
+        long distinctFinalizedOrderCustomerCount = orderDao.countDistinctCustomersOfFinalizedOrders(fromInstant,
+                                                                                                    toInstant,
+                                                                                                    perimeter);
+
+        Duration averageFinalizationDuration =
+            orderDao.computeAverageFinalizationDuration(fromInstant, toInstant, perimeter);
+
         return new OrderStatisticsDTO(
-            orderDao.findOrderStatusStatistics(fromInstant, toInstant, currentUser.getVisualizationPerimeter()),
-            orderDao.findCustomerTypeStatistics(fromInstant, toInstant, currentUser.getVisualizationPerimeter())
+            createdOrderCount,
+            finalizedOrderCount,
+            cancelledOrderCount,
+            distinctFinalizedOrderCustomerCount,
+            averageFinalizationDuration.toMinutes() / (double) Duration.ofDays(1).toMinutes(),
+            orderStatusStatistics,
+            customerTypeStatistics
         );
     }
 
