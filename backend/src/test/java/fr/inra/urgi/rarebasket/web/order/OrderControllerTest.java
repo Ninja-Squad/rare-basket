@@ -447,4 +447,47 @@ class OrderControllerTest {
 
         verify(mockCurrentUser).checkPermission(Permission.ORDER_VISUALIZATION);
     }
+
+    @Test
+    void shouldUpdateCustomer() throws Exception {
+        OrderCustomerCommandDTO command = new OrderCustomerCommandDTO(
+            "Doe",
+            "Wheat SA",
+            "doe@mail.com",
+            "1, Main street",
+            CustomerType.FARMER,
+            SupportedLanguage.ENGLISH
+        );
+        mockMvc.perform(put("/api/orders/{id}/customer", order.getId())
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(objectMapper.writeValueAsBytes(command)))
+               .andExpect(status().isNoContent());
+
+        assertThat(order.getBasket().getCustomer()).isEqualTo(new Customer(
+            command.getName(),
+            command.getOrganization(),
+            command.getEmail(),
+            command.getAddress(),
+            command.getType(),
+            command.getLanguage()
+        ));
+        verify(mockCurrentUser).checkPermission(Permission.ORDER_MANAGEMENT);
+    }
+
+    @Test
+    void shouldThrowWhenUpdatingCustomerOfNonDraftOrder() throws Exception {
+        order.setStatus(OrderStatus.FINALIZED);
+        OrderCustomerCommandDTO command = new OrderCustomerCommandDTO(
+            "Doe",
+            "Wheat SA",
+            "doe@mail.com",
+            "1, Main street",
+            CustomerType.FARMER,
+            SupportedLanguage.ENGLISH
+        );
+        mockMvc.perform(put("/api/orders/{id}/customer", order.getId())
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(objectMapper.writeValueAsBytes(command)))
+               .andExpect(status().isBadRequest());
+    }
 }

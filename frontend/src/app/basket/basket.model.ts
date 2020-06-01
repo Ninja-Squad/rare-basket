@@ -49,7 +49,8 @@ export interface Basket {
   rationale: string;
 }
 
-export type Language = 'en' | 'fr';
+export const ALL_LANGUAGES = ['en', 'fr'] as const;
+export type Language = typeof ALL_LANGUAGES[number];
 
 export interface CustomerCommand {
   name: string;

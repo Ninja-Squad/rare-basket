@@ -92,15 +92,15 @@ public final class BasketCommandDTO {
     /**
      * The bean validation group used when creating a basket
      */
-    interface Create extends Default {}
+    public interface Create extends Default {}
 
     /**
      * The bean validation group used when updating a basket
      */
-    interface Update extends Default {}
+    public interface Update extends Default {}
 
     /**
      * The bean validation group used when creating or updating a basket with <code>complete</code> set to true
      */
-    interface Complete extends Default {}
+    public interface Complete extends Default {}
 }

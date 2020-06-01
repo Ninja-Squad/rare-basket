@@ -1,4 +1,4 @@
-import { Accession, Customer, CustomerType } from '../basket/basket.model';
+import { Accession, Customer, CustomerCommand, CustomerType } from '../basket/basket.model';
 
 export interface OrderItem {
   id: number;
@@ -77,3 +77,5 @@ export interface OrderStatistics {
   orderStatusStatistics: Array<OrderStatusStatistics>;
   customerTypeStatistics: Array<CustomerTypeStatistics>;
 }
+
+export type OrderCustomerCommand = CustomerCommand;

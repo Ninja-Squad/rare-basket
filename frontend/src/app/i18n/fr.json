@@ -166,6 +166,19 @@
       "add-document-title": "Ajouter un document",
       "all-orders": "Toutes les commandes"
     },
+    "edit-customer": {
+      "name": "Nom du client",
+      "name-error-label": "Le nom",
+      "organization": "Entreprise ou organisation du client (si applicable)",
+      "email": "Adresse courriel du client",
+      "email-error-label": "L'adresse courriel",
+      "address": "Adresse postale du client",
+      "address-error-label": "L'adresse postale",
+      "customer-type": "Catégorie du client",
+      "language": "Langue préférée du client",
+      "save": "Enregistrer",
+      "cancel": "Annuler"
+    },
     "edit-order": {
       "name": "Nom",
       "name-error-label": "Le nom",

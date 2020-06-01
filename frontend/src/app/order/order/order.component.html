@@ -20,34 +20,54 @@
     <div class="row">
       <div class="col-md-5">
         <h2 translate="order.order.customer-information"></h2>
-        <div class="d-flex">
-          <div class="mr-2"><fa-icon [icon]="nameIcon" [fixedWidth]="true"></fa-icon></div>
-          <div class="flex-grow-1">{{ order.basket.customer.name }}</div>
+        <div *ngIf="!editingCustomer">
+          <div class="d-flex">
+            <div class="mr-2"><fa-icon [icon]="nameIcon" [fixedWidth]="true"></fa-icon></div>
+            <div class="flex-grow-1">{{ order.basket.customer.name }}</div>
+          </div>
+          <div class="d-flex">
+            <div class="mr-2"><fa-icon [icon]="organizationIcon" [fixedWidth]="true"></fa-icon></div>
+            <div class="flex-grow-1">{{ order.basket.customer.organization }}</div>
+          </div>
+          <div class="d-flex">
+            <div class="mr-2"><fa-icon [icon]="emailIcon" [fixedWidth]="true"></fa-icon></div>
+            <div class="flex-grow-1">{{ order.basket.customer.email }}</div>
+          </div>
+          <div class="d-flex">
+            <div class="mr-2"><fa-icon [icon]="addressIcon" [fixedWidth]="true"></fa-icon></div>
+            <div class="flex-grow-1" style="white-space: pre-wrap;">{{ order.basket.customer.address }}</div>
+          </div>
+          <div class="d-flex">
+            <div class="mr-2"><fa-icon [icon]="customerTypeIcon" [fixedWidth]="true"></fa-icon></div>
+            <div class="flex-grow-1">{{ order.basket.customer.type | customerTypeEnum }}</div>
+          </div>
+          <div class="d-flex">
+            <div class="mr-2"><fa-icon [icon]="languageIcon" [fixedWidth]="true"></fa-icon></div>
+            <div class="flex-grow-1">{{ order.basket.customer.language | languageEnum }}</div>
+          </div>
+          <div class="d-flex" *ngIf="order.basket.rationale">
+            <div class="mr-2"><fa-icon [icon]="rationaleIcon" [fixedWidth]="true"></fa-icon></div>
+            <div class="flex-grow-1" style="white-space: pre-wrap;">{{ order.basket.rationale }}</div>
+          </div>
+          <div *ngIf="order.status === 'DRAFT'" class="text-right">
+            <button
+              type="button"
+              class="btn btn-sm btn-outline-primary"
+              id="edit-customer-button"
+              [disabled]="operationInProgress"
+              (click)="editCustomer()"
+            >
+              <fa-icon [icon]="editIcon" class="mr-1"></fa-icon>
+              <span translate="order.order.edit"></span>
+            </button>
+          </div>
         </div>
-        <div class="d-flex">
-          <div class="mr-2"><fa-icon [icon]="organizationIcon" [fixedWidth]="true"></fa-icon></div>
-          <div class="flex-grow-1">{{ order.basket.customer.organization }}</div>
-        </div>
-        <div class="d-flex">
-          <div class="mr-2"><fa-icon [icon]="emailIcon" [fixedWidth]="true"></fa-icon></div>
-          <div class="flex-grow-1">{{ order.basket.customer.email }}</div>
-        </div>
-        <div class="d-flex">
-          <div class="mr-2"><fa-icon [icon]="addressIcon" [fixedWidth]="true"></fa-icon></div>
-          <div class="flex-grow-1" style="white-space: pre-wrap;">{{ order.basket.customer.address }}</div>
-        </div>
-        <div class="d-flex">
-          <div class="mr-2"><fa-icon [icon]="customerTypeIcon" [fixedWidth]="true"></fa-icon></div>
-          <div class="flex-grow-1">{{ order.basket.customer.type | customerTypeEnum }}</div>
-        </div>
-        <div class="d-flex">
-          <div class="mr-2"><fa-icon [icon]="languageIcon" [fixedWidth]="true"></fa-icon></div>
-          <div class="flex-grow-1">{{ order.basket.customer.language | languageEnum }}</div>
-        </div>
-        <div class="d-flex" *ngIf="order.basket.rationale">
-          <div class="mr-2"><fa-icon [icon]="rationaleIcon" [fixedWidth]="true"></fa-icon></div>
-          <div class="flex-grow-1" style="white-space: pre-wrap;">{{ order.basket.rationale }}</div>
-        </div>
+        <rb-edit-customer
+          *ngIf="editingCustomer"
+          [customer]="order.basket.customer"
+          (saved)="customerSaved($event)"
+          (cancelled)="editingCustomer = false"
+        ></rb-edit-customer>
       </div>
       <div class="col-md-7">
         <h2 translate="order.order.ordered-accessions"></h2>
@@ -71,7 +91,7 @@
               type="button"
               class="btn btn-sm btn-outline-primary"
               id="edit-order-button"
-              [disabled]="addingDocument"
+              [disabled]="operationInProgress"
               (click)="edit()"
             >
               <fa-icon [icon]="editIcon" class="mr-1"></fa-icon>

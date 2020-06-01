@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { OrderService } from '../order.service';
-import { DetailedOrder, Document, DocumentCommand, OrderCommand } from '../order.model';
+import { DetailedOrder, Document, DocumentCommand, OrderCommand, OrderCustomerCommand } from '../order.model';
 import {
   faAddressCard,
   faAt,
@@ -60,6 +60,7 @@ export class OrderComponent implements OnInit {
   deliveryFormIcon = faClipboardList;
 
   editing = false;
+  editingCustomer = false;
   addingDocument = false;
   uploadProgress: number | null = null;
 
@@ -83,12 +84,26 @@ export class OrderComponent implements OnInit {
     this.editing = true;
   }
 
+  editCustomer() {
+    this.editingCustomer = true;
+  }
+
   saved(command: OrderCommand) {
     this.orderService
       .update(this.order.id, command)
       .pipe(switchMap(() => this.orderService.get(this.order.id)))
       .subscribe(order => {
         this.editing = false;
+        this.order = order;
+      });
+  }
+
+  customerSaved(command: OrderCustomerCommand) {
+    this.orderService
+      .updateCustomer(this.order.id, command)
+      .pipe(switchMap(() => this.orderService.get(this.order.id)))
+      .subscribe(order => {
+        this.editingCustomer = false;
         this.order = order;
       });
   }
@@ -135,7 +150,7 @@ export class OrderComponent implements OnInit {
   }
 
   get operationInProgress() {
-    return this.editing || this.addingDocument;
+    return this.editing || this.editingCustomer || this.addingDocument;
   }
 
   download(document: Document, event: Event) {

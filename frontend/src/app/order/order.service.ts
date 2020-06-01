@@ -1,6 +1,15 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpEvent, HttpResponse } from '@angular/common/http';
-import { DetailedOrder, Document, DocumentCommand, Order, OrderCommand, OrderStatistics, OrderStatus } from './order.model';
+import {
+  DetailedOrder,
+  Document,
+  DocumentCommand,
+  Order,
+  OrderCommand,
+  OrderCustomerCommand,
+  OrderStatistics,
+  OrderStatus
+} from './order.model';
 import { Observable } from 'rxjs';
 import { Page } from '../shared/page.model';
 
@@ -67,5 +76,9 @@ export class OrderService {
     const from = `${year}-01-01`;
     const to = `${year + 1}-01-01`;
     return this.http.get<OrderStatistics>(`/api/orders/statistics`, { params: { from, to } });
+  }
+
+  updateCustomer(orderId: number, command: OrderCustomerCommand): Observable<void> {
+    return this.http.put<void>(`/api/orders/${orderId}/customer`, command);
   }
 }

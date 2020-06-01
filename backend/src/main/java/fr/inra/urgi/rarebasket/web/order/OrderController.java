@@ -142,6 +142,21 @@ public class OrderController {
         order.setItems(items);
     }
 
+    @PutMapping("/{orderId}/customer")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void updateCustomerInformation(@PathVariable("orderId") Long orderId,
+                                          @Validated @RequestBody OrderCustomerCommandDTO command) {
+        currentUser.checkPermission(Permission.ORDER_MANAGEMENT);
+        Order order = getOrderAndCheckAccessibleAndDraft(orderId);
+
+        order.getBasket().getCustomer().setName(command.getName());
+        order.getBasket().getCustomer().setOrganization(command.getOrganization());
+        order.getBasket().getCustomer().setEmail(command.getEmail());
+        order.getBasket().getCustomer().setAddress(command.getAddress());
+        order.getBasket().getCustomer().setType(command.getType());
+        order.getBasket().getCustomer().setLanguage(command.getLanguage());
+    }
+
     @DeleteMapping("/{orderId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void cancel(@PathVariable("orderId") Long orderId) {

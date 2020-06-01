@@ -2,7 +2,7 @@ import { TestBed } from '@angular/core/testing';
 
 import { OrderService } from './order.service';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
-import { Document, DocumentCommand, Order, OrderCommand, OrderStatistics } from './order.model';
+import { Document, DocumentCommand, Order, OrderCommand, OrderCustomerCommand, OrderStatistics } from './order.model';
 import { Page } from '../shared/page.model';
 import { filter } from 'rxjs/operators';
 import { HttpEventType, HttpResponse } from '@angular/common/http';
@@ -144,6 +144,18 @@ describe('OrderService', () => {
     const expected = {} as OrderStatistics;
     http.expectOne({ url: '/api/orders/statistics?from=2020-01-01&to=2021-01-01', method: 'GET' }).flush(expected);
     expect(actual).toBe(expected);
+  });
+
+  it('should update an order customer', () => {
+    let done = false;
+
+    const command = {} as OrderCustomerCommand;
+    service.updateCustomer(42, command).subscribe(() => (done = true));
+
+    const testRequest = http.expectOne({ method: 'PUT', url: '/api/orders/42/customer' });
+    expect(testRequest.request.body).toBe(command);
+    testRequest.flush(null);
+    expect(done).toBe(true);
   });
 
   function blobToString(blob: Blob): Promise<string> {

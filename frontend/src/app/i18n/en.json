@@ -166,6 +166,19 @@
       "add-document-title": "Add a document",
       "all-orders": "All the orders"
     },
+    "edit-customer": {
+      "name": "Customer name",
+      "name-error-label": "The name",
+      "organization": "Customer company or organization (if any)",
+      "email": "Customer email",
+      "email-error-label": "The email",
+      "address": "Postal address of the customer",
+      "address-error-label": "The postal address",
+      "customer-type": "Customer category",
+      "language": "Preferred language of the customer",
+      "save": "Save",
+      "cancel": "Cancel"
+    },
     "edit-order": {
       "name": "Name",
       "name-error-label": "The name",

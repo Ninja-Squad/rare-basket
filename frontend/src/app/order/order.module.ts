@@ -22,6 +22,7 @@ import { ExportOrdersComponent } from './export-orders/export-orders.component';
 import { ChartModule } from '../chart/chart.module';
 import { FIRST_YEAR, StatisticsComponent } from './statistics/statistics.component';
 import { FinalizationWarningsModalComponent } from './finalization-warnings-modal/finalization-warnings-modal.component';
+import { EditCustomerComponent } from './edit-customer/edit-customer.component';
 
 @NgModule({
   declarations: [
@@ -37,7 +38,8 @@ import { FinalizationWarningsModalComponent } from './finalization-warnings-moda
     DocumentTypeEnumPipe,
     ExportOrdersComponent,
     StatisticsComponent,
-    FinalizationWarningsModalComponent
+    FinalizationWarningsModalComponent,
+    EditCustomerComponent
   ],
   imports: [
     CommonModule,
