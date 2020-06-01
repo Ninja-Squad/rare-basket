@@ -126,7 +126,7 @@ class OrderDaoTest extends BaseDaoTest {
                                      Instant.parse("2020-03-22T00:00:00Z"))).isEmpty();
         // ok
         assertThat(dao.reportBetween(Instant.parse("2020-03-20T00:00:00Z"),
-                                     Instant.parse("2020-03-21T00:00:00Z"))).hasSize(2);
+                                     Instant.parse("2020-03-21T00:00:00Z"))).hasSize(3);
     }
 
     @Test
@@ -144,7 +144,7 @@ class OrderDaoTest extends BaseDaoTest {
         // ok
         assertThat(dao.reportBetween(Instant.parse("2020-03-20T00:00:00Z"),
                                      Instant.parse("2020-03-21T00:00:00Z"),
-                                     Set.of(1L, 2L))).hasSize(2);
+                                     Set.of(1L, 2L))).hasSize(3);
         // wrong GRCs
         assertThat(dao.reportBetween(Instant.parse("2020-03-20T00:00:00Z"),
                                      Instant.parse("2020-03-21T00:00:00Z"),
