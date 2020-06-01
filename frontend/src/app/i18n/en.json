@@ -139,6 +139,9 @@
       "one-accession": "1 accession",
       "n-accessions": "{{ n }} accessions"
     },
+    "in-progress-orders": {
+      "create": "Create an order"
+    },
     "order": {
       "title": "Order {{ reference }}",
       "creation-date": "Order created on {{ date }}",
@@ -166,7 +169,7 @@
       "add-document-title": "Add a document",
       "all-orders": "All the orders"
     },
-    "edit-customer": {
+    "edit-customer-information": {
       "name": "Customer name",
       "name-error-label": "The name",
       "organization": "Customer company or organization (if any)",
@@ -175,7 +178,10 @@
       "address": "Postal address of the customer",
       "address-error-label": "The postal address",
       "customer-type": "Customer category",
+      "customer-type-error-label": "The category",
       "language": "Preferred language of the customer",
+      "language-error-label": "The language",
+      "rationale": "Description of the order",
       "save": "Save",
       "cancel": "Cancel"
     },
@@ -226,6 +232,9 @@
     "finalization-warnings-modal": {
       "message": "The order is not complete\u00a0:",
       "confirm": "Do you want to finalize this order anyway?"
+    },
+    "create-order": {
+      "title": "Create a new order"
     }
   },
   "user": {

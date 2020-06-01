@@ -6,6 +6,7 @@ import { DoneOrdersComponent } from './done-orders/done-orders.component';
 import { ExportOrdersComponent } from './export-orders/export-orders.component';
 import { StatisticsComponent } from './statistics/statistics.component';
 import { OrdersGuard } from './orders.guard';
+import { CreateOrderComponent } from './create-order/create-order.component';
 
 export const ORDER_ROUTES: Routes = [
   {
@@ -34,6 +35,10 @@ export const ORDER_ROUTES: Routes = [
         component: StatisticsComponent
       }
     ]
+  },
+  {
+    path: 'new',
+    component: CreateOrderComponent
   },
   {
     path: ':orderId',

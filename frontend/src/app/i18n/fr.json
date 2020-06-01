@@ -139,6 +139,9 @@
       "one-accession": "1 accession",
       "n-accessions": "{{ n }} accessions"
     },
+    "in-progress-orders": {
+      "create": "Créer une commande"
+    },
     "order": {
       "title": "Commande n° {{ reference }}",
       "creation-date": "Commande créée le {{ date }}",
@@ -166,7 +169,7 @@
       "add-document-title": "Ajouter un document",
       "all-orders": "Toutes les commandes"
     },
-    "edit-customer": {
+    "edit-customer-information": {
       "name": "Nom du client",
       "name-error-label": "Le nom",
       "organization": "Entreprise ou organisation du client (si applicable)",
@@ -175,7 +178,10 @@
       "address": "Adresse postale du client",
       "address-error-label": "L'adresse postale",
       "customer-type": "Catégorie du client",
+      "customer-type-error-label": "La catégorie",
       "language": "Langue préférée du client",
+      "language-error-label": "La langue",
+      "rationale": "Description de la commande",
       "save": "Enregistrer",
       "cancel": "Annuler"
     },
@@ -227,6 +233,9 @@
     "finalization-warnings-modal": {
       "message": "La commande n'est pas complète\u00a0:",
       "confirm": "Voulez-vous néanmoins finaliser cette commande\u00a0?"
+    },
+    "create-order": {
+      "title": "Créer une nouvelle commande"
     }
   },
   "user": {

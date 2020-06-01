@@ -98,11 +98,11 @@ describe('EditOrderComponent', () => {
     TestBed.createComponent(ValidationDefaultsComponent).detectChanges();
 
     tester = new TestComponentTester();
-    tester.detectChanges();
     jasmine.addMatchers(speculoosMatchers);
   });
 
   it('should display a filled form', () => {
+    tester.detectChanges();
     expect(tester.items.length).toBe(2);
 
     expect(tester.name(0)).toHaveValue('rosa');
@@ -119,6 +119,7 @@ describe('EditOrderComponent', () => {
   });
 
   it('should add an item', () => {
+    tester.detectChanges();
     tester.addItemButton.click();
 
     expect(tester.items.length).toBe(3);
@@ -129,6 +130,7 @@ describe('EditOrderComponent', () => {
   });
 
   it('should delete an item', () => {
+    tester.detectChanges();
     tester.deleteButton(0).click();
 
     expect(tester.items.length).toBe(1);
@@ -140,6 +142,7 @@ describe('EditOrderComponent', () => {
   });
 
   it('should validate', () => {
+    tester.detectChanges();
     tester.name(0).fillWith('');
     tester.identifier(0).fillWith('');
     tester.quantity(0).fillWith('0');
@@ -150,11 +153,13 @@ describe('EditOrderComponent', () => {
   });
 
   it('should cancel', () => {
+    tester.detectChanges();
     tester.cancelButton.click();
     expect(tester.componentInstance.cancelled).toBe(true);
   });
 
   it('should save', () => {
+    tester.detectChanges();
     tester.deleteButton(0).click();
     tester.name(0).fillWith('VIOLETTA');
     tester.addItemButton.click();
@@ -183,5 +188,17 @@ describe('EditOrderComponent', () => {
         }
       ]
     });
+  });
+
+  it('should add a first item if order does not have any', () => {
+    tester.componentInstance.order.items = [];
+    tester.detectChanges();
+
+    expect(tester.items.length).toBe(1);
+
+    expect(tester.name(0)).toHaveValue('');
+    expect(tester.identifier(0)).toHaveValue('');
+    expect(tester.quantity(0)).toHaveValue('');
+    expect(tester.unit(0)).toHaveValue('');
   });
 });

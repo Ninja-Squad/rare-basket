@@ -1,7 +1,5 @@
 package fr.inra.urgi.rarebasket.web.basket;
 
-import java.security.NoSuchAlgorithmException;
-import java.security.SecureRandom;
 import java.time.Instant;
 import java.util.HashMap;
 import java.util.List;
@@ -12,15 +10,15 @@ import java.util.stream.Collectors;
 import javax.validation.ConstraintViolation;
 import javax.validation.Validator;
 
-import fr.inra.urgi.rarebasket.dao.BasketDao;
 import fr.inra.urgi.rarebasket.dao.AccessionHolderDao;
+import fr.inra.urgi.rarebasket.dao.BasketDao;
 import fr.inra.urgi.rarebasket.dao.OrderDao;
 import fr.inra.urgi.rarebasket.domain.Accession;
+import fr.inra.urgi.rarebasket.domain.AccessionHolder;
 import fr.inra.urgi.rarebasket.domain.Basket;
 import fr.inra.urgi.rarebasket.domain.BasketItem;
 import fr.inra.urgi.rarebasket.domain.BasketStatus;
 import fr.inra.urgi.rarebasket.domain.Customer;
-import fr.inra.urgi.rarebasket.domain.AccessionHolder;
 import fr.inra.urgi.rarebasket.domain.Order;
 import fr.inra.urgi.rarebasket.domain.OrderItem;
 import fr.inra.urgi.rarebasket.domain.OrderStatus;
@@ -29,6 +27,7 @@ import fr.inra.urgi.rarebasket.exception.NotFoundException;
 import fr.inra.urgi.rarebasket.service.event.BasketSaved;
 import fr.inra.urgi.rarebasket.service.event.EventPublisher;
 import fr.inra.urgi.rarebasket.service.event.OrderCreated;
+import fr.inra.urgi.rarebasket.util.References;
 import org.springframework.http.HttpStatus;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
@@ -57,10 +56,6 @@ public class BasketController {
     private final Validator validator;
     private final EventPublisher eventPublisher;
 
-    private final SecureRandom random;
-
-    private static final String REFERENCE_CHARACTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-
     public BasketController(BasketDao basketDao,
                             AccessionHolderDao accessionHolderDao,
                             OrderDao orderDao,
@@ -71,12 +66,6 @@ public class BasketController {
         this.orderDao = orderDao;
         this.validator = validator;
         this.eventPublisher = eventPublisher;
-        try {
-            this.random = SecureRandom.getInstance("SHA1PRNG");
-        }
-        catch (NoSuchAlgorithmException e) {
-            throw new IllegalStateException(e);
-        }
     }
 
     /**
@@ -160,7 +149,7 @@ public class BasketController {
 
     private Basket createBasket(BasketCommandDTO command) {
         Basket basket = new Basket();
-        basket.setReference(generateRandomReference());
+        basket.setReference(References.generateRandomReference());
         basket.setStatus(BasketStatus.DRAFT);
 
         Map<String, AccessionHolder> accessionHoldersByEmail = new HashMap<>();
@@ -221,17 +210,9 @@ public class BasketController {
 
     private void generateConfirmationCodeAndFireSavedEventIfNecessary(Basket basket) {
         if (basket.getStatus() == BasketStatus.SAVED) {
-            basket.setConfirmationCode(generateRandomReference());
+            basket.setConfirmationCode(References.generateRandomReference());
             eventPublisher.publish(new BasketSaved(basket.getId()));
         }
-    }
-
-    private String generateRandomReference() {
-        StringBuilder builder = new StringBuilder();
-        for (int i = 0; i < 8; i++) {
-            builder.append(REFERENCE_CHARACTERS.charAt(random.nextInt(REFERENCE_CHARACTERS.length())));
-        }
-        return builder.toString();
     }
 
     private void createOrders(Basket basket) {

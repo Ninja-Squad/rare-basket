@@ -7,6 +7,7 @@
             <div class="col-lg-3 mb-2 mb-lg-0">
               <label class="sr-only" [for]="'name-' + i" translate="order.edit-order.name"></label>
               <input
+                #name
                 formControlName="name"
                 class="form-control form-control-sm"
                 [id]="'name-' + i"

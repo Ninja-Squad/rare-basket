@@ -4,6 +4,7 @@ import { OrderService } from '../order.service';
 import { map, switchMap } from 'rxjs/operators';
 import { Order } from '../order.model';
 import { Page } from '../../shared/page.model';
+import { faPlus } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'rb-in-progress-orders',
@@ -12,6 +13,8 @@ import { Page } from '../../shared/page.model';
 })
 export class InProgressOrdersComponent implements OnInit {
   orders: Page<Order>;
+
+  createOrderIcon = faPlus;
 
   constructor(private route: ActivatedRoute, private orderService: OrderService) {}
 

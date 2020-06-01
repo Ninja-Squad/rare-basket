@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, EventEmitter, Input, OnInit, Output, QueryList, ViewChildren } from '@angular/core';
 import { Order, OrderCommand } from '../order.model';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { faPlus, faTrash } from '@fortawesome/free-solid-svg-icons';
@@ -17,7 +17,7 @@ export interface FormValue {
   templateUrl: './edit-order.component.html',
   styleUrls: ['./edit-order.component.scss']
 })
-export class EditOrderComponent implements OnInit {
+export class EditOrderComponent implements OnInit, AfterViewInit {
   @Input()
   order: Order;
 
@@ -26,6 +26,9 @@ export class EditOrderComponent implements OnInit {
 
   @Output()
   readonly cancelled = new EventEmitter<void>();
+
+  @ViewChildren('name')
+  nameInputs: QueryList<ElementRef<HTMLInputElement>>;
 
   form: FormGroup;
 
@@ -42,6 +45,15 @@ export class EditOrderComponent implements OnInit {
         )
       )
     });
+
+    // add item right away if there is none
+    if (this.order.items.length === 0) {
+      this.addItem();
+    }
+  }
+
+  ngAfterViewInit(): void {
+    this.nameInputs.first?.nativeElement?.focus();
   }
 
   get itemGroups(): FormArray {

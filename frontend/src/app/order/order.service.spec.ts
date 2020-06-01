@@ -2,7 +2,7 @@ import { TestBed } from '@angular/core/testing';
 
 import { OrderService } from './order.service';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
-import { Document, DocumentCommand, Order, OrderCommand, OrderCustomerCommand, OrderStatistics } from './order.model';
+import { Document, DocumentCommand, Order, OrderCommand, CustomerInformationCommand, OrderStatistics } from './order.model';
 import { Page } from '../shared/page.model';
 import { filter } from 'rxjs/operators';
 import { HttpEventType, HttpResponse } from '@angular/common/http';
@@ -146,13 +146,13 @@ describe('OrderService', () => {
     expect(actual).toBe(expected);
   });
 
-  it('should update an order customer', () => {
+  it('should update the customer information of an order', () => {
     let done = false;
 
-    const command = {} as OrderCustomerCommand;
-    service.updateCustomer(42, command).subscribe(() => (done = true));
+    const command = {} as CustomerInformationCommand;
+    service.updateCustomerInformation(42, command).subscribe(() => (done = true));
 
-    const testRequest = http.expectOne({ method: 'PUT', url: '/api/orders/42/customer' });
+    const testRequest = http.expectOne({ method: 'PUT', url: '/api/orders/42/customer-information' });
     expect(testRequest.request.body).toBe(command);
     testRequest.flush(null);
     expect(done).toBe(true);

@@ -8,7 +8,12 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import fr.inra.urgi.rarebasket.config.Constants;
+import fr.inra.urgi.rarebasket.dao.AccessionHolderDao;
+import fr.inra.urgi.rarebasket.dao.BasketDao;
 import fr.inra.urgi.rarebasket.dao.OrderDao;
+import fr.inra.urgi.rarebasket.domain.Basket;
+import fr.inra.urgi.rarebasket.domain.BasketStatus;
+import fr.inra.urgi.rarebasket.domain.Customer;
 import fr.inra.urgi.rarebasket.domain.Document;
 import fr.inra.urgi.rarebasket.domain.Order;
 import fr.inra.urgi.rarebasket.domain.OrderItem;
@@ -21,6 +26,9 @@ import fr.inra.urgi.rarebasket.service.order.DeliveryFormGenerator;
 import fr.inra.urgi.rarebasket.service.order.OrderCsvExporter;
 import fr.inra.urgi.rarebasket.service.storage.DocumentStorage;
 import fr.inra.urgi.rarebasket.service.user.CurrentUser;
+import fr.inra.urgi.rarebasket.util.References;
+import fr.inra.urgi.rarebasket.web.basket.BasketCommandDTO;
+import fr.inra.urgi.rarebasket.web.basket.CustomerCommandDTO;
 import fr.inra.urgi.rarebasket.web.common.PageDTO;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.InputStreamResource;
@@ -65,18 +73,23 @@ public class OrderController {
     private final DocumentStorage documentStorage;
     private final DeliveryFormGenerator deliveryFormGenerator;
     private final OrderCsvExporter orderCsvExporter;
-
+    private final BasketDao basketDao;
+    private final AccessionHolderDao accessionHolderDao;
 
     public OrderController(OrderDao orderDao,
                            CurrentUser currentUser,
                            DocumentStorage documentStorage,
                            DeliveryFormGenerator deliveryFormGenerator,
-                           OrderCsvExporter orderCsvExporter) {
+                           OrderCsvExporter orderCsvExporter,
+                           BasketDao basketDao,
+                           AccessionHolderDao accessionHolderDao) {
         this.orderDao = orderDao;
         this.currentUser = currentUser;
         this.documentStorage = documentStorage;
         this.deliveryFormGenerator = deliveryFormGenerator;
         this.orderCsvExporter = orderCsvExporter;
+        this.basketDao = basketDao;
+        this.accessionHolderDao = accessionHolderDao;
     }
 
     @GetMapping
@@ -142,19 +155,15 @@ public class OrderController {
         order.setItems(items);
     }
 
-    @PutMapping("/{orderId}/customer")
+    @PutMapping("/{orderId}/customer-information")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void updateCustomerInformation(@PathVariable("orderId") Long orderId,
-                                          @Validated @RequestBody OrderCustomerCommandDTO command) {
+                                          @Validated(BasketCommandDTO.Complete.class) @RequestBody CustomerInformationCommandDTO command) {
         currentUser.checkPermission(Permission.ORDER_MANAGEMENT);
         Order order = getOrderAndCheckAccessibleAndDraft(orderId);
-
-        order.getBasket().getCustomer().setName(command.getName());
-        order.getBasket().getCustomer().setOrganization(command.getOrganization());
-        order.getBasket().getCustomer().setEmail(command.getEmail());
-        order.getBasket().getCustomer().setAddress(command.getAddress());
-        order.getBasket().getCustomer().setType(command.getType());
-        order.getBasket().getCustomer().setLanguage(command.getLanguage());
+        Customer customer = createCustomer(command.getCustomer());
+        order.getBasket().setCustomer(customer);
+        order.getBasket().setRationale(command.getRationale());
     }
 
     @DeleteMapping("/{orderId}")
@@ -292,6 +301,29 @@ public class OrderController {
         );
     }
 
+    @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
+    public DetailedOrderDTO create(@Validated(BasketCommandDTO.Complete.class) @RequestBody CustomerInformationCommandDTO command) {
+        currentUser.checkPermission(Permission.ORDER_MANAGEMENT);
+
+        Basket basket = new Basket();
+        basket.setCustomer(createCustomer(command.getCustomer()));
+        basket.setRationale(command.getRationale());
+        basket.setConfirmationInstant(Instant.now());
+        basket.setStatus(BasketStatus.CONFIRMED);
+        basket.setReference(References.generateRandomReference());
+        basketDao.save(basket);
+
+        Order order = new Order();
+        order.setBasket(basket);
+        order.setAccessionHolder(
+            accessionHolderDao.getOne(
+                currentUser.getAccessionHolderId()
+                           .orElseThrow(() -> new IllegalStateException("Current user should have an accession holder")))
+        );
+        orderDao.save(order);
+        return new DetailedOrderDTO(order);
+    }
 
     private Order getOrderAndCheckAccessible(Long orderId) {
         Order order = orderDao.findById(orderId).orElseThrow(NotFoundException::new);
@@ -320,5 +352,14 @@ public class OrderController {
     private Long getAccessionHolderId() {
         return currentUser.getAccessionHolderId()
                           .orElseThrow(() -> new IllegalStateException("Current user should have an accession holder"));
+    }
+
+    private Customer createCustomer(CustomerCommandDTO command) {
+        return new Customer(command.getName(),
+                            command.getOrganization(),
+                            command.getEmail(),
+                            command.getAddress(),
+                            command.getType(),
+                            command.getLanguage());
     }
 }

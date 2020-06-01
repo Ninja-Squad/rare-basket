@@ -12,6 +12,7 @@ import { Order } from '../order.model';
 import { Page } from '../../shared/page.model';
 import { RouterTestingModule } from '@angular/router/testing';
 import { I18nTestingModule } from '../../i18n/i18n-testing.module.spec';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 
 class InProgressOrdersComponentTester extends ComponentTester<InProgressOrdersComponent> {
   constructor() {
@@ -37,7 +38,7 @@ describe('InProgressOrdersComponent', () => {
 
     TestBed.configureTestingModule({
       declarations: [InProgressOrdersComponent, OrdersComponent],
-      imports: [I18nTestingModule, RouterTestingModule, RbNgbModule],
+      imports: [I18nTestingModule, RouterTestingModule, RbNgbModule, FontAwesomeModule],
       providers: [
         { provide: ActivatedRoute, useValue: route },
         { provide: OrderService, useValue: orderService }

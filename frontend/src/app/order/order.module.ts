@@ -22,7 +22,8 @@ import { ExportOrdersComponent } from './export-orders/export-orders.component';
 import { ChartModule } from '../chart/chart.module';
 import { FIRST_YEAR, StatisticsComponent } from './statistics/statistics.component';
 import { FinalizationWarningsModalComponent } from './finalization-warnings-modal/finalization-warnings-modal.component';
-import { EditCustomerComponent } from './edit-customer/edit-customer.component';
+import { EditCustomerInformationComponent } from './edit-customer-information/edit-customer-information.component';
+import { CreateOrderComponent } from './create-order/create-order.component';
 
 @NgModule({
   declarations: [
@@ -39,7 +40,8 @@ import { EditCustomerComponent } from './edit-customer/edit-customer.component';
     ExportOrdersComponent,
     StatisticsComponent,
     FinalizationWarningsModalComponent,
-    EditCustomerComponent
+    EditCustomerInformationComponent,
+    CreateOrderComponent
   ],
   imports: [
     CommonModule,

@@ -78,4 +78,7 @@ export interface OrderStatistics {
   customerTypeStatistics: Array<CustomerTypeStatistics>;
 }
 
-export type OrderCustomerCommand = CustomerCommand;
+export interface CustomerInformationCommand {
+  customer: CustomerCommand;
+  rationale: string | null;
+}

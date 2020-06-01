@@ -6,7 +6,7 @@ import {
   DocumentCommand,
   Order,
   OrderCommand,
-  OrderCustomerCommand,
+  CustomerInformationCommand,
   OrderStatistics,
   OrderStatus
 } from './order.model';
@@ -78,7 +78,11 @@ export class OrderService {
     return this.http.get<OrderStatistics>(`/api/orders/statistics`, { params: { from, to } });
   }
 
-  updateCustomer(orderId: number, command: OrderCustomerCommand): Observable<void> {
-    return this.http.put<void>(`/api/orders/${orderId}/customer`, command);
+  updateCustomerInformation(orderId: number, command: CustomerInformationCommand): Observable<void> {
+    return this.http.put<void>(`/api/orders/${orderId}/customer-information`, command);
+  }
+
+  createOrder(command: CustomerInformationCommand): Observable<DetailedOrder> {
+    return this.http.post<DetailedOrder>('/api/orders', command);
   }
 }

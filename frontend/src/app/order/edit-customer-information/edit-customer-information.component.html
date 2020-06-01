@@ -1,0 +1,59 @@
+<form [formGroup]="form" (ngSubmit)="save()">
+  <div formGroupName="customer">
+    <div class="form-group">
+      <label for="name" translate="order.edit-customer-information.name"></label>
+      <input formControlName="name" id="name" class="form-control" />
+      <val-errors controlName="name" [label]="'order.edit-customer-information.name-error-label' | translate"></val-errors>
+    </div>
+    <div class="form-group">
+      <label for="name" translate="order.edit-customer-information.organization"></label>
+      <input formControlName="organization" id="organization" class="form-control" />
+    </div>
+    <div class="form-group">
+      <label for="email" translate="order.edit-customer-information.email"></label>
+      <input type="email" formControlName="email" id="email" class="form-control" />
+      <val-errors controlName="email" [label]="'order.edit-customer-information.email-error-label' | translate"></val-errors>
+    </div>
+    <div class="form-group">
+      <label for="address" translate="order.edit-customer-information.address"></label>
+      <textarea formControlName="address" id="address" class="form-control"></textarea>
+      <val-errors controlName="address" [label]="'order.edit-customer-information.address-error-label' | translate"></val-errors>
+    </div>
+    <div class="form-group">
+      <label for="type" translate="order.edit-customer-information.customer-type"></label>
+      <select formControlName="type" id="type" class="form-control custom-select">
+        <option [ngValue]="null"></option>
+        <option *ngFor="let customerType of customerTypes" [value]="customerType">{{ customerType | customerTypeEnum }}</option>
+      </select>
+      <val-errors controlName="type" [label]="'order.edit-customer-information.customer-type-error-label' | translate"></val-errors>
+    </div>
+    <div class="form-group">
+      <label for="type" translate="order.edit-customer-information.language"></label>
+      <select formControlName="language" id="language" class="form-control custom-select">
+        <option [ngValue]="null"></option>
+        <option *ngFor="let language of languages" [value]="language">{{ language | languageEnum }}</option>
+      </select>
+      <val-errors controlName="language" [label]="'order.edit-customer-information.language-error-label' | translate"></val-errors>
+    </div>
+  </div>
+  <div class="form-group">
+    <label for="rationale" translate="order.edit-customer-information.rationale"></label>
+    <textarea formControlName="rationale" id="rationale" class="form-control"></textarea>
+  </div>
+  <div class="text-right">
+    <button
+      class="btn btn-primary mr-2"
+      [class.btn-sm]="smallButtons"
+      translate="order.edit-customer-information.save"
+      id="save-button"
+    ></button>
+    <button
+      type="button"
+      class="btn btn-danger"
+      [class.btn-sm]="smallButtons"
+      (click)="cancel()"
+      translate="order.edit-customer-information.cancel"
+      id="cancel-button"
+    ></button>
+  </div>
+</form>

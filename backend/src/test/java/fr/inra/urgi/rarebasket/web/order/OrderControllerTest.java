@@ -15,10 +15,14 @@ import java.util.Optional;
 import java.util.Set;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import fr.inra.urgi.rarebasket.MoreAnswers;
+import fr.inra.urgi.rarebasket.dao.AccessionHolderDao;
+import fr.inra.urgi.rarebasket.dao.BasketDao;
 import fr.inra.urgi.rarebasket.dao.OrderDao;
 import fr.inra.urgi.rarebasket.domain.Accession;
 import fr.inra.urgi.rarebasket.domain.AccessionHolder;
 import fr.inra.urgi.rarebasket.domain.Basket;
+import fr.inra.urgi.rarebasket.domain.BasketStatus;
 import fr.inra.urgi.rarebasket.domain.Customer;
 import fr.inra.urgi.rarebasket.domain.CustomerType;
 import fr.inra.urgi.rarebasket.domain.Document;
@@ -33,8 +37,11 @@ import fr.inra.urgi.rarebasket.service.order.OrderCsvExporter;
 import fr.inra.urgi.rarebasket.service.storage.DocumentStorage;
 import fr.inra.urgi.rarebasket.service.user.CurrentUser;
 import fr.inra.urgi.rarebasket.service.user.VisualizationPerimeter;
+import fr.inra.urgi.rarebasket.web.basket.CustomerCommandDTO;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -71,11 +78,20 @@ class OrderControllerTest {
     @MockBean
     private OrderCsvExporter mockOrderCsvExporter;
 
+    @MockBean
+    private AccessionHolderDao mockAccessionHolderDao;
+
+    @MockBean
+    private BasketDao mockBasketDao;
+
     @Autowired
     private MockMvc mockMvc;
 
     @Autowired
     private ObjectMapper objectMapper;
+
+    @Captor
+    private ArgumentCaptor<Order> orderCaptor;
 
     private Order order;
     private Document document;
@@ -91,12 +107,13 @@ class OrderControllerTest {
         basket.setRationale("why not?");
         basket.setConfirmationInstant(Instant.parse("2020-04-02T10:43:00Z"));
 
+        AccessionHolder accessionHolder = new AccessionHolder(accessionHolderId);
         order = new Order(42L);
         order.setBasket(basket);
         order.setStatus(OrderStatus.DRAFT);
         order.addItem(new OrderItem(421L, new Accession("rosa", "rosa1"), 10, "bags"));
         order.addItem(new OrderItem(422L, new Accession("violetta", "violetta1"), null, null));
-        order.setAccessionHolder(new AccessionHolder(accessionHolderId));
+        order.setAccessionHolder(accessionHolder);
 
         document = new Document(54L);
         document.setType(DocumentType.INVOICE);
@@ -108,6 +125,8 @@ class OrderControllerTest {
         when(mockCurrentUser.getAccessionHolderId()).thenReturn(Optional.of(accessionHolderId));
         when(mockCurrentUser.getVisualizationPerimeter()).thenReturn(VisualizationPerimeter.constrained(Set.of(1L, 2L)));
         when(mockOrderDao.findById(order.getId())).thenReturn(Optional.of(order));
+
+        when(mockAccessionHolderDao.getOne(accessionHolderId)).thenReturn(accessionHolder);
     }
 
     @Test
@@ -449,43 +468,135 @@ class OrderControllerTest {
     }
 
     @Test
-    void shouldUpdateCustomer() throws Exception {
-        OrderCustomerCommandDTO command = new OrderCustomerCommandDTO(
-            "Doe",
-            "Wheat SA",
-            "doe@mail.com",
-            "1, Main street",
-            CustomerType.FARMER,
-            SupportedLanguage.ENGLISH
+    void shouldUpdateCustomerInformation() throws Exception {
+        CustomerInformationCommandDTO command = new CustomerInformationCommandDTO(
+            new CustomerCommandDTO(
+                "Doe",
+                "Wheat SA",
+                "doe@mail.com",
+                "1, Main street",
+                CustomerType.FARMER,
+                SupportedLanguage.ENGLISH
+            ),
+            "the rationale"
         );
-        mockMvc.perform(put("/api/orders/{id}/customer", order.getId())
+        mockMvc.perform(put("/api/orders/{id}/customer-information", order.getId())
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(objectMapper.writeValueAsBytes(command)))
                .andExpect(status().isNoContent());
 
         assertThat(order.getBasket().getCustomer()).isEqualTo(new Customer(
-            command.getName(),
-            command.getOrganization(),
-            command.getEmail(),
-            command.getAddress(),
-            command.getType(),
-            command.getLanguage()
+            command.getCustomer().getName(),
+            command.getCustomer().getOrganization(),
+            command.getCustomer().getEmail(),
+            command.getCustomer().getAddress(),
+            command.getCustomer().getType(),
+            command.getCustomer().getLanguage()
         ));
+        assertThat(order.getBasket().getRationale()).isEqualTo(command.getRationale());
         verify(mockCurrentUser).checkPermission(Permission.ORDER_MANAGEMENT);
     }
 
     @Test
-    void shouldThrowWhenUpdatingCustomerOfNonDraftOrder() throws Exception {
+    void shouldThrowWhenUpdatingCustomerInformationOfNonDraftOrder() throws Exception {
         order.setStatus(OrderStatus.FINALIZED);
-        OrderCustomerCommandDTO command = new OrderCustomerCommandDTO(
-            "Doe",
-            "Wheat SA",
-            "doe@mail.com",
-            "1, Main street",
-            CustomerType.FARMER,
-            SupportedLanguage.ENGLISH
+        CustomerInformationCommandDTO command = new CustomerInformationCommandDTO(
+            new CustomerCommandDTO(
+                "Doe",
+                "Wheat SA",
+                "doe@mail.com",
+                "1, Main street",
+                CustomerType.FARMER,
+                SupportedLanguage.ENGLISH
+            ),
+            "the rationale"
         );
-        mockMvc.perform(put("/api/orders/{id}/customer", order.getId())
+        mockMvc.perform(put("/api/orders/{id}/customer-information", order.getId())
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(objectMapper.writeValueAsBytes(command)))
+               .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void shouldThrowWhenUpdatingInvalidCustomerInformation() throws Exception {
+        CustomerInformationCommandDTO command = new CustomerInformationCommandDTO(
+            new CustomerCommandDTO(
+                "", // empty name
+                "Wheat SA",
+                "doe@mail.com",
+                "1, Main street",
+                CustomerType.FARMER,
+                SupportedLanguage.ENGLISH
+            ),
+            "the rationale"
+        );
+        mockMvc.perform(put("/api/orders/{id}/customer-information", order.getId())
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(objectMapper.writeValueAsBytes(command)))
+               .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void shouldCreateOrder() throws Exception {
+        CustomerInformationCommandDTO command = new CustomerInformationCommandDTO(
+            new CustomerCommandDTO(
+                "John Doe",
+                "Wheat SA",
+                "john@mail.com",
+                "1, Main Street",
+                CustomerType.FARMER,
+                SupportedLanguage.ENGLISH),
+            "the rationale"
+        );
+
+        when(mockOrderDao.save(any())).thenAnswer(MoreAnswers.<Order>firstArgWith(order -> order.setId(42L)));
+
+        mockMvc.perform(post("/api/orders")
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(objectMapper.writeValueAsBytes(command)))
+               .andExpect(status().isCreated())
+               .andExpect(jsonPath("$.id").value(42L));
+
+        verify(mockOrderDao).save(orderCaptor.capture());
+        Order savedOrder = orderCaptor.getValue();
+
+        assertThat(savedOrder.getBasket().getCustomer()).isEqualTo(new Customer(
+            command.getCustomer().getName(),
+            command.getCustomer().getOrganization(),
+            command.getCustomer().getEmail(),
+            command.getCustomer().getAddress(),
+            command.getCustomer().getType(),
+            command.getCustomer().getLanguage()
+        ));
+        assertThat(savedOrder.getBasket().getRationale()).isEqualTo(command.getRationale());
+        assertThat(savedOrder.getBasket().getReference()).isNotNull();
+        assertThat(savedOrder.getBasket().getStatus()).isEqualTo(BasketStatus.CONFIRMED);
+        assertThat(savedOrder.getBasket().getCreationInstant()).isNotNull();
+        assertThat(savedOrder.getBasket().getConfirmationInstant()).isNotNull();
+        assertThat(savedOrder.getClosingInstant()).isNull();
+        assertThat(savedOrder.getStatus()).isEqualTo(OrderStatus.DRAFT);
+        assertThat(savedOrder.getAccessionHolder().getId()).isEqualTo(accessionHolderId);
+
+        verify(mockBasketDao).save(savedOrder.getBasket());
+        verify(mockCurrentUser).checkPermission(Permission.ORDER_MANAGEMENT);
+    }
+
+    @Test
+    void shouldThrowWhenCreatingOrderWithInvalidCustomerInformation() throws Exception {
+        CustomerInformationCommandDTO command = new CustomerInformationCommandDTO(
+            new CustomerCommandDTO(
+                "John Doe",
+                "Wheat SA",
+                "john", // invalid email
+                "1, Main Street",
+                CustomerType.FARMER,
+                SupportedLanguage.ENGLISH),
+            "the rationale"
+        );
+
+        when(mockOrderDao.save(any())).thenAnswer(MoreAnswers.<Order>firstArgWith(order -> order.setId(42L)));
+
+        mockMvc.perform(post("/api/orders")
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(objectMapper.writeValueAsBytes(command)))
                .andExpect(status().isBadRequest());

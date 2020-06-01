@@ -1,1 +1,8 @@
 <rb-orders *ngIf="orders" [orders]="orders"></rb-orders>
+
+<div class="text-right">
+  <a class="btn btn-outline-secondary" routerLink="/orders/new">
+    <fa-icon [icon]="createOrderIcon" class="mr-1"></fa-icon>
+    <span translate="order.in-progress-orders.create"></span>
+  </a>
+</div>

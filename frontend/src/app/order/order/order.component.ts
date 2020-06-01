@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { OrderService } from '../order.service';
-import { DetailedOrder, Document, DocumentCommand, OrderCommand, OrderCustomerCommand } from '../order.model';
+import { DetailedOrder, Document, DocumentCommand, OrderCommand, CustomerInformationCommand } from '../order.model';
 import {
   faAddressCard,
   faAt,
@@ -77,7 +77,13 @@ export class OrderComponent implements OnInit {
 
   ngOnInit(): void {
     const orderId = +this.route.snapshot.paramMap.get('orderId');
-    this.orderService.get(orderId).subscribe(order => (this.order = order));
+    this.orderService.get(orderId).subscribe(order => {
+      this.order = order;
+      if (this.order.items.length === 0) {
+        // we have just created the order, so let's start by editing the order right away
+        this.editing = true;
+      }
+    });
   }
 
   edit() {
@@ -98,9 +104,9 @@ export class OrderComponent implements OnInit {
       });
   }
 
-  customerSaved(command: OrderCustomerCommand) {
+  customerSaved(command: CustomerInformationCommand) {
     this.orderService
-      .updateCustomer(this.order.id, command)
+      .updateCustomerInformation(this.order.id, command)
       .pipe(switchMap(() => this.orderService.get(this.order.id)))
       .subscribe(order => {
         this.editingCustomer = false;
@@ -206,9 +212,5 @@ export class OrderComponent implements OnInit {
     this.orderService
       .downloadDeliveryForm(this.order.id)
       .subscribe(response => this.downloadService.download(response, `bon-de-livraison-${this.order.id}.pdf`));
-  }
-
-  documentTooltipKey(document: Document) {
-    return `order.order.document-${document.onDeliveryForm ? '' : 'not-'}on-delivery-form`;
   }
 }

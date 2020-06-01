@@ -62,12 +62,13 @@
             </button>
           </div>
         </div>
-        <rb-edit-customer
+        <rb-edit-customer-information
           *ngIf="editingCustomer"
-          [customer]="order.basket.customer"
+          [customerInformation]="order.basket"
+          [smallButtons]="true"
           (saved)="customerSaved($event)"
           (cancelled)="editingCustomer = false"
-        ></rb-edit-customer>
+        ></rb-edit-customer-information>
       </div>
       <div class="col-md-7">
         <h2 translate="order.order.ordered-accessions"></h2>
