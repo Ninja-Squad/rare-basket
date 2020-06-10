@@ -16,7 +16,5 @@
       <span translate="order.export-orders.export"></span>
     </button>
   </div>
-  <val-errors [control]="form">
-    <ng-template valError="dateRange"><span translate="order.export-orders.invalid-date-range"></span></ng-template>
-  </val-errors>
+  <val-errors [control]="form" [label]="'order.export-orders.date-range-error-label' | translate"></val-errors>
 </form>

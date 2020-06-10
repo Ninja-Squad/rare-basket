@@ -72,9 +72,7 @@ export class OrderService {
     return this.http.get(`/api/orders/report`, { observe: 'response', responseType: 'blob', params: { from, to } });
   }
 
-  getStatistics(year: number): Observable<OrderStatistics> {
-    const from = `${year}-01-01`;
-    const to = `${year + 1}-01-01`;
+  getStatistics(from: string, to: string): Observable<OrderStatistics> {
     return this.http.get<OrderStatistics>(`/api/orders/statistics`, { params: { from, to } });
   }
 

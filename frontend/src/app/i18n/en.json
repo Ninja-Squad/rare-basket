@@ -10,7 +10,8 @@
       "pattern": "{{ label }} does not have the required format",
       "email": "{{ label }} must be a valid email address",
       "min": "{{ label }} must be greater or equal to {{ min }}",
-      "max": "{{ label }} must be less or equal to {{ max }}"
+      "max": "{{ label }} must be less or equal to {{ max }}",
+      "invalid-date-range": "{{ label }} is invalid"
     }
   },
   "enums": {
@@ -218,10 +219,14 @@
       "from": "between",
       "to": "and",
       "export": "Export",
-      "invalid-date-range": "The date range is invalid"
+      "date-range-error-label": "The date range"
     },
     "statistics": {
-      "year": "Year",
+      "message": "Consult statistics",
+      "from": "between",
+      "to": "and",
+      "date-range-error-label": "The date range",
+      "refresh": "Display",
       "key-numbers": "Key numbers",
       "created-order": "created order",
       "created-orders": "created orders",

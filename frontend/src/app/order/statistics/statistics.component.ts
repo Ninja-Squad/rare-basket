@@ -1,16 +1,18 @@
-import { Component, Inject, InjectionToken, LOCALE_ID, OnInit } from '@angular/core';
+import { Component, Inject, LOCALE_ID, OnInit } from '@angular/core';
 import { OrderService } from '../order.service';
 import { CustomerTypeStatistics, OrderStatistics, OrderStatusStatistics } from '../order.model';
 import { ChartConfiguration } from 'chart.js';
 import { COLORS } from '../../chart/colors';
 import { TranslateService } from '@ngx-translate/core';
-import { formatNumber, formatPercent } from '@angular/common';
-import { FormBuilder, FormGroup } from '@angular/forms';
-import { distinctUntilChanged, map, switchMap, tap } from 'rxjs/operators';
+import { formatDate, formatNumber, formatPercent } from '@angular/common';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { concat, of } from 'rxjs';
+import { validDateRange } from '../../shared/validators';
 
-export const FIRST_YEAR = new InjectionToken<number>('FIRST_YEAR');
+export interface FormValue {
+  from: string;
+  to: string;
+}
 
 @Component({
   selector: 'rb-statistics',
@@ -19,7 +21,6 @@ export const FIRST_YEAR = new InjectionToken<number>('FIRST_YEAR');
 })
 export class StatisticsComponent implements OnInit {
   form: FormGroup;
-  years: Array<number>;
 
   stats: OrderStatistics;
   customerTypeDoughnut: ChartConfiguration;
@@ -32,36 +33,51 @@ export class StatisticsComponent implements OnInit {
     private route: ActivatedRoute,
     private orderService: OrderService,
     private translateService: TranslateService,
-    @Inject(FIRST_YEAR) firstYear: number,
     @Inject(LOCALE_ID) private locale: string
   ) {
-    const currentYear = new Date().getFullYear();
-    this.years = [];
-    for (let year = currentYear; year >= firstYear; year--) {
-      this.years.push(year);
-    }
-    this.form = fb.group({
-      year: [this.years[0]]
-    });
+    const now = new Date();
+    const startOfYear = new Date();
+    startOfYear.setDate(1);
+    startOfYear.setMonth(0);
+
+    this.form = fb.group(
+      {
+        from: [formatDate(startOfYear, 'yyyy-MM-dd', locale), Validators.required],
+        to: [formatDate(now, 'yyyy-MM-dd', locale), Validators.required]
+      },
+      { validators: validDateRange }
+    );
   }
 
   ngOnInit() {
-    this.route.queryParamMap.pipe(map(params => +(params.get('year') || this.years[0]))).subscribe(year => {
-      this.form.setValue({ year });
+    this.route.queryParamMap.subscribe(paramMap => {
+      if (paramMap.get('from')) {
+        this.form.patchValue({ from: paramMap.get('from') });
+      }
+      if (paramMap.get('to')) {
+        this.form.patchValue({ to: paramMap.get('to') });
+      }
     });
 
-    concat(of(this.form.value), this.form.valueChanges)
-      .pipe(
-        map(formValue => formValue.year),
-        distinctUntilChanged(),
-        tap(year => this.router.navigate(['.'], { queryParams: { year: `${year}` }, relativeTo: this.route, replaceUrl: true })),
-        switchMap(year => this.orderService.getStatistics(year))
-      )
-      .subscribe(stats => {
-        this.stats = stats;
-        this.stats.customerTypeStatistics.sort((s1, s2) => s2.finalizedOrderCount - s1.finalizedOrderCount);
-        this.createCharts();
-      });
+    this.refresh();
+  }
+
+  refresh() {
+    if (this.form.invalid) {
+      return;
+    }
+
+    const formValue: FormValue = this.form.value;
+    this.router.navigate(['.'], {
+      queryParams: { from: formValue.from, to: formValue.to },
+      relativeTo: this.route,
+      replaceUrl: true
+    });
+    this.orderService.getStatistics(formValue.from, formValue.to).subscribe(stats => {
+      this.stats = stats;
+      this.stats.customerTypeStatistics.sort((s1, s2) => s2.finalizedOrderCount - s1.finalizedOrderCount);
+      this.createCharts();
+    });
   }
 
   createdOrderCountRatio(stat: OrderStatusStatistics) {

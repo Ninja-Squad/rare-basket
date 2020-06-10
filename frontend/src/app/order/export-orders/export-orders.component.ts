@@ -5,6 +5,7 @@ import { OrderService } from '../order.service';
 import { DownloadService } from '../../shared/download.service';
 import { finalize } from 'rxjs/operators';
 import { faSpinner } from '@fortawesome/free-solid-svg-icons';
+import { validDateRange } from '../../shared/validators';
 
 @Component({
   selector: 'rb-export-orders',
@@ -32,15 +33,8 @@ export class ExportOrdersComponent {
         from: [formatDate(startOfYear, 'yyyy-MM-dd', locale), Validators.required],
         to: [formatDate(now, 'yyyy-MM-dd', locale), Validators.required]
       },
-      { validators: ExportOrdersComponent.validDateRange }
+      { validators: validDateRange }
     );
-  }
-
-  static validDateRange(group: FormGroup) {
-    const from = group.value.from;
-    const to = group.value.to;
-
-    return from && to && from > to ? { dateRange: true } : null;
   }
 
   export() {

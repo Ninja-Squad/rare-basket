@@ -20,7 +20,7 @@ import { EditDocumentComponent } from './edit-document/edit-document.component';
 import { DocumentTypeEnumPipe } from './document-type-enum.pipe';
 import { ExportOrdersComponent } from './export-orders/export-orders.component';
 import { ChartModule } from '../chart/chart.module';
-import { FIRST_YEAR, StatisticsComponent } from './statistics/statistics.component';
+import { StatisticsComponent } from './statistics/statistics.component';
 import { FinalizationWarningsModalComponent } from './finalization-warnings-modal/finalization-warnings-modal.component';
 import { EditCustomerInformationComponent } from './edit-customer-information/edit-customer-information.component';
 import { CreateOrderComponent } from './create-order/create-order.component';
@@ -53,7 +53,6 @@ import { CreateOrderComponent } from './create-order/create-order.component';
     ReactiveFormsModule,
     ValdemortModule,
     ChartModule
-  ],
-  providers: [{ provide: FIRST_YEAR, useValue: 2019 }]
+  ]
 })
 export class OrderModule {}

@@ -1,6 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 
-import { FIRST_YEAR, StatisticsComponent } from './statistics.component';
+import { StatisticsComponent } from './statistics.component';
 import { ComponentTester, fakeRoute, speculoosMatchers } from 'ngx-speculoos';
 import { I18nTestingModule } from '../../i18n/i18n-testing.module.spec';
 import { ReactiveFormsModule } from '@angular/forms';
@@ -11,14 +11,26 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { OrderService } from '../order.service';
 import { SharedModule } from '../../shared/shared.module';
 import { OrderStatusEnumPipe } from '../order-status-enum.pipe';
+import { ValidationDefaultsComponent } from '../../validation-defaults/validation-defaults.component';
+import { RbNgbModule } from '../../rb-ngb/rb-ngb.module';
+import { ValdemortModule } from 'ngx-valdemort';
+import { formatDate } from '@angular/common';
 
 class StatisticsComponentTester extends ComponentTester<StatisticsComponent> {
   constructor() {
     super(StatisticsComponent);
   }
 
-  get year() {
-    return this.select('#year');
+  get from() {
+    return this.input('#from');
+  }
+
+  get to() {
+    return this.input('#to');
+  }
+
+  get refreshButton() {
+    return this.button('#refresh-button');
   }
 
   get numbers() {
@@ -40,6 +52,10 @@ class StatisticsComponentTester extends ComponentTester<StatisticsComponent> {
   get orderStatusStats() {
     return this.elements('.order-status-stat');
   }
+
+  get errors() {
+    return this.elements('.invalid-feedback div');
+  }
 }
 
 describe('StatisticsComponent', () => {
@@ -58,15 +74,16 @@ describe('StatisticsComponent', () => {
     orderService = jasmine.createSpyObj<OrderService>('OrderService', ['getStatistics']);
 
     TestBed.configureTestingModule({
-      imports: [I18nTestingModule, ReactiveFormsModule, ChartModule, RouterTestingModule, SharedModule],
-      declarations: [StatisticsComponent, OrderStatusEnumPipe],
+      imports: [I18nTestingModule, RbNgbModule, ReactiveFormsModule, ChartModule, RouterTestingModule, SharedModule, ValdemortModule],
+      declarations: [StatisticsComponent, OrderStatusEnumPipe, ValidationDefaultsComponent],
       providers: [
-        { provide: FIRST_YEAR, useValue: 2010 },
         { provide: ActivatedRoute, useValue: route },
         { provide: Router, useValue: router },
         { provide: OrderService, useValue: orderService }
       ]
     });
+
+    TestBed.createComponent(ValidationDefaultsComponent).detectChanges();
 
     tester = new StatisticsComponentTester();
 
@@ -106,7 +123,12 @@ describe('StatisticsComponent', () => {
 
     tester.detectChanges();
 
-    expect(orderService.getStatistics).toHaveBeenCalledWith(new Date().getFullYear());
+    const currentYear = new Date().getFullYear();
+    const now = new Date();
+    expect(tester.from).toHaveValue(`01/01/${currentYear}`);
+    expect(tester.to.value).toMatch(/\d\d\/\d\d\/\d\d\d\d/);
+
+    expect(orderService.getStatistics).toHaveBeenCalledWith(`${currentYear}-01-01`, formatDate(now, 'yyyy-MM-dd', 'en-us'));
 
     expect(tester.numbers).toContainText('40 commandes créées');
     expect(tester.numbers).toContainText('35 commandes finalisées');
@@ -127,7 +149,7 @@ describe('StatisticsComponent', () => {
     expect(tester.orderStatusStats[0]).toContainText('24 (60 %)');
   });
 
-  it('should display given year charts and tables', () => {
+  it('should display charts and tables for the given route parameters', () => {
     orderService.getStatistics.and.returnValue(
       of({
         createdOrderCount: 0,
@@ -140,35 +162,65 @@ describe('StatisticsComponent', () => {
       })
     );
 
-    queryParamsSubject.next({ year: '2019' });
+    queryParamsSubject.next({ from: '2019-01-01', to: '2019-02-01' });
     tester.detectChanges();
 
-    expect(tester.year).toHaveSelectedLabel('2019');
-    expect(orderService.getStatistics).toHaveBeenCalledWith(2019);
+    expect(tester.from).toHaveValue('01/01/2019');
+    expect(tester.to).toHaveValue('01/02/2019');
+    expect(orderService.getStatistics).toHaveBeenCalledWith('2019-01-01', '2019-02-01');
   });
 
-  it('should navigate when changing year', () => {
-    orderService.getStatistics.and.returnValue(
-      of({
-        createdOrderCount: 0,
-        finalizedOrderCount: 0,
-        cancelledOrderCount: 0,
-        distinctFinalizedOrderCustomerCount: 0,
-        averageFinalizationDurationInDays: 0,
-        orderStatusStatistics: [],
-        customerTypeStatistics: []
-      })
-    );
+  describe('after first display', () => {
+    beforeEach(() => {
+      orderService.getStatistics.and.returnValue(
+        of({
+          createdOrderCount: 0,
+          finalizedOrderCount: 0,
+          cancelledOrderCount: 0,
+          distinctFinalizedOrderCustomerCount: 0,
+          averageFinalizationDurationInDays: 0,
+          orderStatusStatistics: [],
+          customerTypeStatistics: []
+        })
+      );
 
-    queryParamsSubject.next({});
-    tester.detectChanges();
+      queryParamsSubject.next({});
+      tester.detectChanges();
 
-    tester.year.selectLabel('2019');
+      router.navigate.calls.reset();
+      orderService.getStatistics.calls.reset();
+    });
 
-    expect(router.navigate).toHaveBeenCalledWith(['.'], {
-      queryParams: { year: '2019' },
-      relativeTo: TestBed.inject(ActivatedRoute),
-      replaceUrl: true
+    it('should navigate and refresh', () => {
+      tester.from.fillWith('2019-01-01');
+      tester.to.fillWith('2019-02-01');
+      tester.refreshButton.click();
+
+      expect(router.navigate).toHaveBeenCalledWith(['.'], {
+        queryParams: { from: '2019-01-01', to: '2019-02-01' },
+        relativeTo: TestBed.inject(ActivatedRoute),
+        replaceUrl: true
+      });
+      expect(orderService.getStatistics).toHaveBeenCalledWith('2019-01-01', '2019-02-01');
+    });
+
+    it('should not navigate and refresh if invalid', () => {
+      tester.from.fillWith('2019-02-01');
+      tester.to.fillWith('2019-01-31');
+      tester.refreshButton.click();
+
+      expect(tester.errors.length).toBe(1);
+      expect(tester.testElement).toContainText('La plage de dates est invalide');
+
+      tester.from.fillWith('');
+      tester.to.fillWith('');
+      tester.refreshButton.click();
+
+      // required errors are not displayed because it messes up the layout, but the form should be invalid
+      expect(tester.componentInstance.form.invalid).toBe(true);
+
+      expect(router.navigate).not.toHaveBeenCalled();
+      expect(orderService.getStatistics).not.toHaveBeenCalled();
     });
   });
 });

@@ -1,8 +1,19 @@
-<form [formGroup]="form" class="form-inline">
-  <label for="year" class="mb-2 mr-sm-2" translate="order.statistics.year"></label>
-  <select formControlName="year" class="form-control custom-select mb-2 mr-sm-2" id="year">
-    <option *ngFor="let year of years" [ngValue]="year">{{ year }}</option>
-  </select>
+<div class="mb-2" translate="order.statistics.message"></div>
+<form [formGroup]="form" class="form-inline" (ngSubmit)="refresh()">
+  <div class="form-inline">
+    <label class="mb-2 mr-sm-2" for="from" translate="order.statistics.from"></label>
+    <rb-datepicker-container class="mb-2 mr-sm-4">
+      <input id="from" class="form-control" formControlName="from" ngbDatepicker />
+    </rb-datepicker-container>
+
+    <label class="mb-2 mr-sm-2" for="to" translate="order.statistics.to"></label>
+    <rb-datepicker-container class="mb-2 mr-sm-2">
+      <input id="to" class="form-control" formControlName="to" ngbDatepicker />
+    </rb-datepicker-container>
+
+    <button type="submit" class="btn btn-primary mb-2" id="refresh-button" translate="order.statistics.refresh"></button>
+  </div>
+  <val-errors [control]="form" [label]="'order.statistics.date-range-error-label' | translate"></val-errors>
 </form>
 
 <div *ngIf="stats">

@@ -11,6 +11,7 @@ import { I18nTestingModule } from '../../i18n/i18n-testing.module.spec';
 import { HttpResponse } from '@angular/common/http';
 import { Subject } from 'rxjs';
 import { ValdemortModule } from 'ngx-valdemort';
+import { ValidationDefaultsComponent } from '../../validation-defaults/validation-defaults.component';
 
 class ExportOrdersComponentTester extends ComponentTester<ExportOrdersComponent> {
   constructor() {
@@ -32,6 +33,10 @@ class ExportOrdersComponentTester extends ComponentTester<ExportOrdersComponent>
   get exportSpinner() {
     return this.element('#export-spinner');
   }
+
+  get errors() {
+    return this.elements('.invalid-feedback div');
+  }
 }
 
 describe('ExportOrdersComponent', () => {
@@ -45,12 +50,14 @@ describe('ExportOrdersComponent', () => {
 
     TestBed.configureTestingModule({
       imports: [I18nTestingModule, RbNgbModule, FontAwesomeModule, ReactiveFormsModule, ValdemortModule],
-      declarations: [ExportOrdersComponent],
+      declarations: [ExportOrdersComponent, ValidationDefaultsComponent],
       providers: [
         { provide: OrderService, useValue: orderService },
         { provide: DownloadService, useValue: downloadService }
       ]
     });
+
+    TestBed.createComponent(ValidationDefaultsComponent).detectChanges();
 
     jasmine.addMatchers(speculoosMatchers);
 
@@ -68,8 +75,15 @@ describe('ExportOrdersComponent', () => {
     tester.to.fillWith('01/01/2019');
     tester.exportButton.click();
 
-    expect(orderService.exportReport).not.toHaveBeenCalled();
+    expect(tester.errors.length).toBe(1);
     expect(tester.testElement).toContainText('La plage de dates est invalide');
+
+    tester.to.fillWith('');
+    tester.from.fillWith('');
+    // required errors are not displayed because it messes up the layout, but the form should be invalid
+    expect(tester.componentInstance.form.invalid).toBe(true);
+
+    expect(orderService.exportReport).not.toHaveBeenCalled();
   });
 
   it('should export', () => {

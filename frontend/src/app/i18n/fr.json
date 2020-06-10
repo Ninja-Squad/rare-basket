@@ -10,7 +10,8 @@
       "pattern": "{{ label }} n'a pas le format requis",
       "email": "{{ label }} doit être une adresse email valide",
       "min": "{{ label }} doit être supérieur ou égal à {{ min }}",
-      "max": "{{ label }} doit être inférieur ou égal à {{ max }}"
+      "max": "{{ label }} doit être inférieur ou égal à {{ max }}",
+      "invalid-date-range": "{{ label }} est invalide"
     }
   },
   "enums": {
@@ -219,10 +220,14 @@
       "from": "entre le",
       "to": "et le",
       "export": "Exporter",
-      "invalid-date-range": "La plage de dates est invalide"
+      "date-range-error-label": "La plage de dates"
     },
     "statistics": {
-      "year": "Année",
+      "message": "Consulter les statistiques",
+      "from": "entre le",
+      "to": "et le",
+      "date-range-error-label": "La plage de dates",
+      "refresh": "Afficher",
       "key-numbers": "Chiffres clés",
       "created-order": "commande créée",
       "created-orders": "commandes créées",

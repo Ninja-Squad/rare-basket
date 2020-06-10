@@ -20,4 +20,7 @@
   <ng-template valError="max" let-error="error" let-label>
     <span translate="common.errors.min" [translateParams]="{ label: label, max: error.max | number }"></span>
   </ng-template>
+  <ng-template valError="dateRange" let-error="error" let-label>
+    <span translate="common.errors.invalid-date-range" [translateParams]="{ label: label }"></span>
+  </ng-template>
 </val-default-errors>
