@@ -1,4 +1,4 @@
-import { Component, ElementRef, EventEmitter, Inject, Input, LOCALE_ID, OnChanges, Output, SimpleChanges, ViewChild } from '@angular/core';
+import { Component, ElementRef, EventEmitter, Input, OnChanges, Output, SimpleChanges, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ALL_DOCUMENT_TYPES, DetailedOrder, DocumentCommand, DocumentType, isDocumentTypeUnique } from '../order.model';
 import { faFileUpload } from '@fortawesome/free-solid-svg-icons';
@@ -33,7 +33,7 @@ export class EditDocumentComponent implements OnChanges {
   documentTypes: Array<DocumentType>;
   saveIcon = faFileUpload;
 
-  constructor(fb: FormBuilder, @Inject(LOCALE_ID) public locale: string) {
+  constructor(fb: FormBuilder) {
     const typeControl = fb.control(null, Validators.required);
     const descriptionControl = fb.control('');
     this.form = fb.group({

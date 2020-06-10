@@ -39,5 +39,8 @@ export class I18nModule {
     translate.setDefaultLang('en');
     // the lang to use, if the lang isn't available, it will use the current loader to get them
     translate.use(locale);
+    // set the locale on the document. not only because it's the right thing to do,
+    // but also because the custom filechooser elements use it in CSS to display the right text
+    document.documentElement.lang = locale;
   }
 }

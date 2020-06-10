@@ -24,7 +24,6 @@
         <label translate="order.edit-document.file"></label>
         <div
           class="custom-file"
-          [lang]="locale"
           (drop)="fileDropped($event); highlightFileInput = false"
           (dragenter)="highlightFileInput = true"
           (dragleave)="highlightFileInput = false"
