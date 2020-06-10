@@ -143,6 +143,7 @@
       "n-accessions": "{{ n }} accessions"
     },
     "in-progress-orders": {
+      "no-order": "Aucune commande en cours. Beau travail\u00a0!",
       "create": "Créer une commande"
     },
     "order": {
