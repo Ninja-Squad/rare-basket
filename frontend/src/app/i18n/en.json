@@ -316,6 +316,20 @@
       "create": "Add a GRC",
       "delete": "Delete the GRC",
       "delete-confirmation": "Do you really want to delete this GRC? If it's referenced by an other entity in the system, the deletion will fail."
+    },
+    "edit": {
+      "title": {
+        "create": "Create a GRC",
+        "update": "Update a GRC"
+      },
+      "name": "Name",
+      "name-error-label": "The name",
+      "institution": "Institution",
+      "institution-error-label": "The institution",
+      "address": "Address",
+      "address-error-label": "The address",
+      "save": "Save",
+      "cancel": "Cancel"
     }
   }
 }

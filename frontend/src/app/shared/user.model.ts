@@ -5,6 +5,12 @@ export interface Grc {
   address: string;
 }
 
+export interface GrcCommand {
+  name: string;
+  institution: string;
+  address: string;
+}
+
 export interface AccessionHolder {
   id: number;
   name: string;

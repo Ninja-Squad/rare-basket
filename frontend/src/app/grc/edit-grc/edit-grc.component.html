@@ -1,0 +1,28 @@
+<h1 [translate]="'grc.edit.title.' + mode"></h1>
+
+<div class="content mt-2">
+  <form [formGroup]="form" (ngSubmit)="save()">
+    <div class="form-group">
+      <label for="name" translate="grc.edit.name"></label>
+      <input class="form-control" formControlName="name" id="name" />
+      <val-errors controlName="name" [label]="'grc.edit.name-error-label' | translate"></val-errors>
+    </div>
+
+    <div class="form-group">
+      <label for="institution" translate="grc.edit.institution"></label>
+      <input class="form-control" formControlName="institution" id="institution" type="institution" />
+      <val-errors controlName="institution" [label]="'grc.edit.institution-error-label' | translate"></val-errors>
+    </div>
+
+    <div class="form-group">
+      <label for="address" translate="grc.edit.address"></label>
+      <textarea class="form-control" formControlName="address" id="address"></textarea>
+      <val-errors controlName="address" [label]="'grc.edit.address-error-label' | translate"></val-errors>
+    </div>
+
+    <div>
+      <button class="btn btn-primary mr-2" translate="grc.edit.save" id="save-button"></button>
+      <a routerLink="/grcs" class="btn btn-danger" translate="grc.edit.cancel"></a>
+    </div>
+  </form>
+</div>

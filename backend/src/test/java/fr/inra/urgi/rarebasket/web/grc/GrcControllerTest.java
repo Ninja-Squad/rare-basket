@@ -1,9 +1,10 @@
 package fr.inra.urgi.rarebasket.web.grc;
 
+import static org.assertj.core.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -11,18 +12,23 @@ import java.util.List;
 import java.util.Optional;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import fr.inra.urgi.rarebasket.MoreAnswers;
 import fr.inra.urgi.rarebasket.dao.GrcDao;
 import fr.inra.urgi.rarebasket.domain.AccessionHolder;
 import fr.inra.urgi.rarebasket.domain.Grc;
 import fr.inra.urgi.rarebasket.domain.Permission;
 import fr.inra.urgi.rarebasket.domain.User;
 import fr.inra.urgi.rarebasket.domain.UserPermission;
+import fr.inra.urgi.rarebasket.exception.BadRequestException;
 import fr.inra.urgi.rarebasket.service.user.CurrentUser;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
@@ -49,6 +55,9 @@ class GrcControllerTest {
     @Autowired
     private GrcController controller;
 
+    @Captor
+    private ArgumentCaptor<Grc> grcArgumentCaptor;
+
     private Grc grc;
 
     @BeforeEach
@@ -58,6 +67,7 @@ class GrcControllerTest {
         grc.setInstitution("INRA");
         grc.setAddress("12 Boulevard Marie Curie, 69007 LYON");
         when(mockGrcDao.findById(grc.getId())).thenReturn(Optional.of(grc));
+        when(mockGrcDao.findByName(grc.getName())).thenReturn(Optional.of(grc));
 
         User user = new User(42L);
         user.setName("JB");
@@ -97,5 +107,103 @@ class GrcControllerTest {
 
         mockMvc.perform(delete("/api/grcs/42"))
                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void shouldGet() throws Exception {
+        when(mockGrcDao.findById(42L)).thenReturn(Optional.of(grc));
+
+        mockMvc.perform(get("/api/grcs/42"))
+               .andExpect(status().isOk())
+               .andExpect(jsonPath("$.id").value(grc.getId()))
+               .andExpect(jsonPath("$.name").value(grc.getName()))
+               .andExpect(jsonPath("$.institution").value(grc.getInstitution()))
+               .andExpect(jsonPath("$.address").value(grc.getAddress()));
+
+        verify(mockCurrentUser).checkPermission(Permission.ADMINISTRATION);
+    }
+
+    @Test
+    void shouldCreate() throws Exception {
+        GrcCommandDTO command = new GrcCommandDTO(
+                "GRC3",
+                "Ninja Squad Institute",
+                "Saint Just/Saint Rambert"
+        );
+
+        when(mockGrcDao.save(any())).thenAnswer(MoreAnswers.<Grc>firstArgWith(u -> u.setId(256L)));
+
+        mockMvc.perform(post("/api/grcs")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(objectMapper.writeValueAsBytes(command)))
+               .andExpect(status().isCreated())
+               .andExpect(jsonPath("$.id").value(256L));
+
+        verify(mockGrcDao).save(grcArgumentCaptor.capture());
+
+        Grc createdGrc = grcArgumentCaptor.getValue();
+        assertThat(createdGrc.getName()).isEqualTo(command.getName());
+        assertThat(createdGrc.getInstitution()).isEqualTo(command.getInstitution());
+        assertThat(createdGrc.getAddress()).isEqualTo(command.getAddress());
+
+        verify(mockCurrentUser).checkPermission(Permission.ADMINISTRATION);
+    }
+
+    @Test
+    void shouldThrowWhenCreatingWithAlreadyExistingName() {
+        GrcCommandDTO command = new GrcCommandDTO(
+                grc.getName(),
+                "Ninja Squad Institute",
+                "Saint Just/Saint Rambert"
+        );
+        assertThatExceptionOfType(BadRequestException.class).isThrownBy(
+                () -> controller.create(command)
+        );
+    }
+
+    @Test
+    void shouldUpdate() throws Exception {
+        GrcCommandDTO command = new GrcCommandDTO(
+                "GRC 3",
+                "Ninja Squad Institute",
+                "Saint Just/Saint Rambert"
+        );
+
+        mockMvc.perform(put("/api/grcs/{id}", grc.getId())
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(objectMapper.writeValueAsBytes(command)))
+               .andExpect(status().isNoContent());
+
+        assertThat(grc.getName()).isEqualTo(command.getName());
+        assertThat(grc.getInstitution()).isEqualTo(command.getInstitution());
+        assertThat(grc.getAddress()).isEqualTo(command.getAddress());
+
+        verify(mockCurrentUser).checkPermission(Permission.ADMINISTRATION);
+    }
+
+    @Test
+    void shouldThrowWhenUpdatingWithAlreadyExistingName() {
+        Grc otherGrc = new Grc();
+        otherGrc.setName(grc.getName());
+        when(mockGrcDao.findByName(otherGrc.getName()))
+                .thenReturn(Optional.of(otherGrc));
+        GrcCommandDTO command = new GrcCommandDTO(
+                grc.getName(),
+                "Ninja Squad Institute",
+                "Saint Just/Saint Rambert"
+        );
+        assertThatExceptionOfType(BadRequestException.class).isThrownBy(
+                () -> controller.update(grc.getId(), command)
+        );
+    }
+
+    @Test
+    void shouldNotThrowWhenUpdatingWithTheSameName() {
+        GrcCommandDTO command = new GrcCommandDTO(
+                grc.getName(),
+                "Ninja Squad Science Institute",
+                "Saint Just/Saint Rambert"
+        );
+        assertThatCode(() -> controller.update(grc.getId(), command)).doesNotThrowAnyException();
     }
 }

@@ -8,10 +8,11 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { RbNgbModule } from '../rb-ngb/rb-ngb.module';
 import { ReactiveFormsModule } from '@angular/forms';
 import { ValdemortModule } from 'ngx-valdemort';
-import { GRC_ROUTES } from './grc.route';
+import { GRC_ROUTES } from './grc.routes';
+import { EditGrcComponent } from './edit-grc/edit-grc.component';
 
 @NgModule({
-  declarations: [GrcsComponent],
+  declarations: [GrcsComponent, EditGrcComponent],
   imports: [
     CommonModule,
     TranslateModule,

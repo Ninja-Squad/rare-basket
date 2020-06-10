@@ -8,7 +8,7 @@ import { RbNgbModule } from '../rb-ngb/rb-ngb.module';
 import { ReactiveFormsModule } from '@angular/forms';
 import { ValdemortModule } from 'ngx-valdemort';
 import { AccessionHoldersComponent } from './accession-holders/accession-holders.component';
-import { ACCESSION_HOLDER_ROUTES } from './accession-holder.route';
+import { ACCESSION_HOLDER_ROUTES } from './accession-holder.routes';
 import { EditAccessionHolderComponent } from './edit-accession-holder/edit-accession-holder.component';
 
 @NgModule({
