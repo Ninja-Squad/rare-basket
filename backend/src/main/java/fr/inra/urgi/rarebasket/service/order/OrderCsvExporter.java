@@ -14,12 +14,13 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.time.Instant;
 import java.time.LocalDate;
-import java.util.Base64;
+import java.util.Arrays;
 import java.util.stream.Stream;
 
 import fr.inra.urgi.rarebasket.config.Constants;
 import fr.inra.urgi.rarebasket.dao.OrderDao;
 import fr.inra.urgi.rarebasket.service.user.VisualizationPerimeter;
+import org.apache.commons.codec.binary.Hex;
 import org.springframework.stereotype.Component;
 import org.supercsv.io.CsvListWriter;
 import org.supercsv.prefs.CsvPreference;
@@ -101,6 +102,11 @@ public class OrderCsvExporter {
     }
 
     private String hash(String email) {
-        return Base64.getEncoder().encodeToString(emailHasher.digest(email.getBytes(StandardCharsets.UTF_8)));
+        byte[] digest = emailHasher.digest(email.getBytes(StandardCharsets.UTF_8));
+        // truncate to avoid too large values in the CSV. The probability of a collision, even with "only"
+        // the first 10 bytes, is infinitesimal. At worse, the number of distinct clients will be off by one
+        byte[] first10Bytes = Arrays.copyOfRange(digest, 0, 10);
+        // use hex rather than base64 or base32 to avoid special characters like + or =
+        return Hex.encodeHexString(first10Bytes);
     }
 }

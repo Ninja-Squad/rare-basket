@@ -42,8 +42,8 @@ class OrderCsvExporterTest {
             List<String> rows = stream.collect(Collectors.toList());
             assertThat(rows).hasSize(3);
             // the second cell is the email, and is thus hashed
-            assertThat(rows.get(1)).isEqualTo("a;PiPoFgA5WUoziU9lZOGxNIu9egCI1CxKy3PurtWcAJ0=");
-            assertThat(rows.get(2)).isEqualTo("c;GKw+c0PwFokMUQ6T+TUmEWnZ4/VlQ2Qpgw+vCTT0+OQ=;\"e;f\"");
+            assertThat(rows.get(1)).isEqualTo("a;3e23e8160039594a3389");
+            assertThat(rows.get(2)).isEqualTo("c;18ac3e7343f016890c51;\"e;f\"");
         }
     }
 
@@ -66,8 +66,8 @@ class OrderCsvExporterTest {
             List<String> rows = stream.collect(Collectors.toList());
             assertThat(rows).hasSize(3);
             // the second cell is the email, and is thus hashed
-            assertThat(rows.get(1)).isEqualTo("a;PiPoFgA5WUoziU9lZOGxNIu9egCI1CxKy3PurtWcAJ0=");
-            assertThat(rows.get(2)).isEqualTo("c;GKw+c0PwFokMUQ6T+TUmEWnZ4/VlQ2Qpgw+vCTT0+OQ=;\"e;f\"");
+            assertThat(rows.get(1)).isEqualTo("a;3e23e8160039594a3389");
+            assertThat(rows.get(2)).isEqualTo("c;18ac3e7343f016890c51;\"e;f\"");
         }
     }
 }
