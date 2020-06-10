@@ -64,6 +64,7 @@
     "orders": "Commandes",
     "users": "Utilisateurs",
     "accession-holders": "Gestionnaires d'accessions",
+    "grcs": "CRBs",
     "login": "Connexion",
     "logout": "Déconnexion"
   },
@@ -302,6 +303,14 @@
       "grc-error-label": "Le CRB",
       "save": "Enregistrer",
       "cancel": "Annuler"
+    }
+  },
+  "grc": {
+    "grcs": {
+      "title": "CRBs",
+      "create": "Ajouter un CRB",
+      "delete": "Supprimer le CRB",
+      "delete-confirmation": "Voulez-vous vraiment supprimer ce CRB\u00a0? Si il est utilisé par une autre entité dans le système, la suppression échouera."
     }
   }
 }

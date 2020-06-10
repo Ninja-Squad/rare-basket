@@ -25,6 +25,12 @@
           <span translate="navbar.users"></span>
         </a>
       </li>
+      <li class="nav-item" *ngIf="hasPermission('ADMINISTRATION')" id="navbar-grcs">
+        <a class="nav-link" routerLink="/grcs">
+          <fa-icon [icon]="grcIcon" class="mr-1"></fa-icon>
+          <span translate="navbar.grcs"></span>
+        </a>
+      </li>
       <li class="nav-item" *ngIf="hasPermission('ADMINISTRATION')" id="navbar-accession-holders">
         <a class="nav-link" routerLink="/accession-holders">
           <fa-icon [icon]="accessionHolderIcon" class="mr-1"></fa-icon>

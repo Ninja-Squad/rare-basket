@@ -64,6 +64,7 @@
     "orders": "Orders",
     "users": "Users",
     "accession-holders": "Accession holders",
+    "grcs": "GRCs",
     "login": "Log in",
     "logout": "Log out"
   },
@@ -301,6 +302,14 @@
       "grc-error-label": "The GRC",
       "save": "Save",
       "cancel": "Cancel"
+    }
+  },
+  "grc": {
+    "grcs": {
+      "title": "GRCs",
+      "create": "Add a GRC",
+      "delete": "Delete the GRC",
+      "delete-confirmation": "Do you really want to delete this GRC? If it's referenced by an other entity in the system, the deletion will fail."
     }
   }
 }

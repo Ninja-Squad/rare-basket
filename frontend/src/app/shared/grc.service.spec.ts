@@ -27,4 +27,13 @@ describe('GrcService', () => {
     http.expectOne({ method: 'GET', url: '/api/grcs' }).flush(expected);
     expect(actual).toBe(expected);
   });
+
+  it('should delete', () => {
+    let done = false;
+
+    service.delete(42).subscribe(() => (done = true));
+
+    http.expectOne({ method: 'DELETE', url: '/api/grcs/42' }).flush(null);
+    expect(done).toBe(true);
+  });
 });

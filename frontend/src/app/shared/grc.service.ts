@@ -16,4 +16,8 @@ export class GrcService {
   list(): Observable<Array<Grc>> {
     return this.http.get<Array<Grc>>('/api/grcs');
   }
+
+  delete(grcId: number): Observable<void> {
+    return this.http.delete<void>(`/api/grcs/${grcId}`);
+  }
 }

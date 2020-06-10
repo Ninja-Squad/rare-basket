@@ -26,6 +26,10 @@ export const APP_ROUTES: Routes = [
       {
         path: 'accession-holders',
         loadChildren: () => import('./accession-holder/accession-holder.module').then(m => m.AccessionHolderModule)
+      },
+      {
+        path: 'grcs',
+        loadChildren: () => import('./grc/grc.module').then(m => m.GrcModule)
       }
     ]
   }

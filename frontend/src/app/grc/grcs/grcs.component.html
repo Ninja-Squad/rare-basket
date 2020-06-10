@@ -1,0 +1,31 @@
+<h1 translate="grc.grcs.title"></h1>
+
+<div *ngIf="grcs">
+  <div class="content mt-2">
+    <div *ngFor="let grc of grcs">
+      <div class="d-flex">
+        <div><fa-icon [icon]="grcIcon" class="mr-2"></fa-icon></div>
+        <div class="flex-grow-1 row grc">
+          <div class="col-6">
+            <a [routerLink]="['/grcs', grc.id, 'edit']">{{ grc.name }}</a>
+          </div>
+          <div class="col-6">{{ grc.institution }}</div>
+        </div>
+        <div class="text-right">
+          <button (click)="deleteGrc(grc)" type="button" class="btn btn-outline-danger btn-sm delete-grc-button">
+            <fa-icon [icon]="deleteGrcIcon"></fa-icon>
+            <span class="sr-only" translate="grc.grcs.delete"></span>
+          </button>
+        </div>
+      </div>
+      <hr class="my-2" />
+    </div>
+  </div>
+
+  <div class="text-right mt-2">
+    <a class="btn btn-outline-secondary" id="create-grc" routerLink="/grcs/new">
+      <fa-icon [icon]="createGrcIcon" class="mr-1"></fa-icon>
+      <span translate="grc.grcs.create"></span>
+    </a>
+  </div>
+</div>

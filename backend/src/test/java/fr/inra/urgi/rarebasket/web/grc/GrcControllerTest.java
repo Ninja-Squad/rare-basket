@@ -2,6 +2,7 @@ package fr.inra.urgi.rarebasket.web.grc;
 
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -77,5 +78,24 @@ class GrcControllerTest {
                .andExpect(jsonPath("$[0].institution").value(grc.getInstitution()));
 
         verify(mockCurrentUser).checkPermission(Permission.ADMINISTRATION);
+    }
+
+    @Test
+    void shouldDelete() throws Exception {
+        when(mockGrcDao.findById(42L)).thenReturn(Optional.of(grc));
+
+        mockMvc.perform(delete("/api/grcs/42"))
+               .andExpect(status().isNoContent());
+
+        verify(mockGrcDao).delete(grc);
+        verify(mockCurrentUser).checkPermission(Permission.ADMINISTRATION);
+    }
+
+    @Test
+    void shouldThrowIfNotExistWhenDelete() throws Exception {
+        when(mockGrcDao.findById(42L)).thenReturn(Optional.empty());
+
+        mockMvc.perform(delete("/api/grcs/42"))
+               .andExpect(status().isNotFound());
     }
 }
