@@ -72,8 +72,9 @@ export class OrderService {
     return this.http.get(`/api/orders/report`, { observe: 'response', responseType: 'blob', params: { from, to } });
   }
 
-  getStatistics(from: string, to: string): Observable<OrderStatistics> {
-    return this.http.get<OrderStatistics>(`/api/orders/statistics`, { params: { from, to } });
+  getStatistics(from: string, to: string, grcIds: Array<number>): Observable<OrderStatistics> {
+    const grcs = grcIds.map(grcId => `${grcId}`);
+    return this.http.get<OrderStatistics>(`/api/orders/statistics`, { params: { from, to, grcs } });
   }
 
   updateCustomerInformation(orderId: number, command: CustomerInformationCommand): Observable<void> {

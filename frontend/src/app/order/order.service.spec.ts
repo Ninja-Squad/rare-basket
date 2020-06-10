@@ -139,10 +139,10 @@ describe('OrderService', () => {
 
   it('should get statistics', () => {
     let actual: OrderStatistics = null;
-    service.getStatistics('2020-01-01', '2021-01-01').subscribe(stats => (actual = stats));
+    service.getStatistics('2020-01-01', '2021-01-01', [1, 2]).subscribe(stats => (actual = stats));
 
     const expected = {} as OrderStatistics;
-    http.expectOne({ url: '/api/orders/statistics?from=2020-01-01&to=2021-01-01', method: 'GET' }).flush(expected);
+    http.expectOne({ url: '/api/orders/statistics?from=2020-01-01&to=2021-01-01&grcs=1&grcs=2', method: 'GET' }).flush(expected);
     expect(actual).toBe(expected);
   });
 

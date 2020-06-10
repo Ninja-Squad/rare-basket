@@ -6,6 +6,7 @@ import java.time.Duration;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -292,13 +293,22 @@ public class OrderController {
 
     @GetMapping("/statistics")
     public OrderStatisticsDTO getStatistics(@RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate from,
-                                            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate to) {
+                                            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate to,
+                                            @RequestParam("grcs") Optional<Set<Long>> grcIds) {
         currentUser.checkPermission(Permission.ORDER_VISUALIZATION);
 
         Instant fromInstant = from.atStartOfDay(Constants.FRANCE_TIMEZONE).toInstant();
-        Instant toInstant = to.atStartOfDay(Constants.FRANCE_TIMEZONE).toInstant();
+        Instant toInstant = to.plusDays(1).atStartOfDay(Constants.FRANCE_TIMEZONE).toInstant();
 
         VisualizationPerimeter perimeter = currentUser.getVisualizationPerimeter();
+        if (grcIds.isPresent()) {
+            if (!currentUser.getVisualizationPerimeter().isGlobal() &&
+                !currentUser.getVisualizationPerimeter().getGrcIds().containsAll(grcIds.get())) {
+                throw new ForbiddenException();
+            }
+            perimeter = VisualizationPerimeter.constrained(grcIds.get());
+        }
+
         List<OrderStatusStatisticsDTO> orderStatusStatistics = orderDao.findOrderStatusStatistics(fromInstant,
                                                                                                   toInstant,
                                                                                                   perimeter);

@@ -223,10 +223,15 @@
       "date-range-error-label": "The date range"
     },
     "statistics": {
-      "message": "Consult statistics",
       "from": "between",
       "to": "and",
       "date-range-error-label": "The date range",
+      "global-perimeter": "For all GRCs",
+      "constrained-perimeter": "For the following GRC(s): {{ grcs }}",
+      "edit-perimeter": "Edit the perimeter",
+      "some-grcs": "For some GRCs only",
+      "all-grcs": "For all GRCs",
+      "grc-required": "At least one GRC must be selected",
       "refresh": "Display",
       "key-numbers": "Key numbers",
       "created-order": "created order",

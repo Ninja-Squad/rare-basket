@@ -4,13 +4,13 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.tuple;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import java.io.ByteArrayInputStream;
 import java.time.Duration;
 import java.time.Instant;
 import java.time.LocalDate;
+import java.util.Collections;
 import java.util.EnumSet;
 import java.util.List;
 import java.util.Optional;
@@ -442,38 +442,17 @@ class OrderControllerTest {
     }
 
     @Test
-    void shouldGetStatistics() throws Exception {
+    void shouldGetStatisticsWhenNoGrcProvided() throws Exception {
         LocalDate from = LocalDate.of(2020, 1, 1);
-        LocalDate to = LocalDate.of(2021, 1, 1);
+        LocalDate to = LocalDate.of(2020, 12, 31);
 
         Instant expectedFromInstant = Instant.parse("2019-12-31T23:00:00.000Z"); // French TZ
         Instant expectedToInstant = Instant.parse("2020-12-31T23:00:00.000Z");
 
-        List<OrderStatusStatisticsDTO> orderStatusStatistics =
-            List.of(
-                new OrderStatusStatisticsDTO(OrderStatus.DRAFT, 1L),
-                new OrderStatusStatisticsDTO(OrderStatus.FINALIZED, 56L)
-            );
-        List<CustomerTypeStatisticsDTO> customerTypeStatistics =
-            List.of(
-                new CustomerTypeStatisticsDTO(CustomerType.FARMER, 20L),
-                new CustomerTypeStatisticsDTO(CustomerType.CITIZEN, 30L)
-            );
-
-        when(mockOrderDao.countCancelledOrders(expectedFromInstant, expectedToInstant, mockCurrentUser.getVisualizationPerimeter()))
-            .thenReturn(12L);
-        when(mockOrderDao.countDistinctCustomersOfFinalizedOrders(expectedFromInstant, expectedToInstant, mockCurrentUser.getVisualizationPerimeter()))
-            .thenReturn(40L);
-        when(mockOrderDao.computeAverageFinalizationDuration(expectedFromInstant, expectedToInstant, mockCurrentUser.getVisualizationPerimeter()))
-            .thenReturn(Duration.ofHours(36));
-        when(mockOrderDao.findOrderStatusStatistics(expectedFromInstant, expectedToInstant, mockCurrentUser.getVisualizationPerimeter()))
-            .thenReturn(orderStatusStatistics);
-        when(mockOrderDao.findCustomerTypeStatistics(expectedFromInstant, expectedToInstant, mockCurrentUser.getVisualizationPerimeter()))
-            .thenReturn(customerTypeStatistics);
+        prepareForStatistics(expectedFromInstant, expectedToInstant, mockCurrentUser.getVisualizationPerimeter());
 
         mockMvc.perform(get("/api/orders/statistics").param("from", from.toString()).param("to", to.toString()))
                .andExpect(status().isOk())
-               .andDo(print())
                .andExpect(jsonPath("$.createdOrderCount").value(57))
                .andExpect(jsonPath("$.finalizedOrderCount").value(50))
                .andExpect(jsonPath("$.cancelledOrderCount").value(12))
@@ -489,6 +468,45 @@ class OrderControllerTest {
                .andExpect(jsonPath("$.customerTypeStatistics[1].finalizedOrderCount").value(30));
 
         verify(mockCurrentUser).checkPermission(Permission.ORDER_VISUALIZATION);
+    }
+
+    @Test
+    void shouldGetStatisticsWhenGrcsProvided() throws Exception {
+        LocalDate from = LocalDate.of(2020, 1, 1);
+        LocalDate to = LocalDate.of(2020, 12, 31);
+
+        Instant expectedFromInstant = Instant.parse("2019-12-31T23:00:00.000Z"); // French TZ
+        Instant expectedToInstant = Instant.parse("2020-12-31T23:00:00.000Z");
+        VisualizationPerimeter expectedPerimeter = VisualizationPerimeter.constrained(Collections.singleton(2L));
+
+        prepareForStatistics(expectedFromInstant, expectedToInstant, expectedPerimeter);
+
+        mockMvc.perform(get("/api/orders/statistics")
+                            .param("from", from.toString())
+                            .param("to", to.toString())
+                            .param("grcs", "2") // user is only allowed to see 1 and 2
+        )
+               .andExpect(status().isOk());
+
+
+        verify(mockOrderDao).countCancelledOrders(expectedFromInstant, expectedToInstant, expectedPerimeter);
+        verify(mockOrderDao).countDistinctCustomersOfFinalizedOrders(expectedFromInstant, expectedToInstant, expectedPerimeter);
+        //...
+
+        verify(mockCurrentUser).checkPermission(Permission.ORDER_VISUALIZATION);
+    }
+
+    @Test
+    void shouldThrowWhenRequestingStatisticsForDisallowedGrcs() throws Exception {
+        LocalDate from = LocalDate.of(2020, 1, 1);
+        LocalDate to = LocalDate.of(2020, 12, 31);
+
+        mockMvc.perform(get("/api/orders/statistics")
+                            .param("from", from.toString())
+                            .param("to", to.toString())
+                            .param("grcs", "1", "2", "3") // user is only allowed to see 1 and 2
+        )
+               .andExpect(status().isForbidden());
     }
 
     @Test
@@ -624,5 +642,31 @@ class OrderControllerTest {
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(objectMapper.writeValueAsBytes(command)))
                .andExpect(status().isBadRequest());
+    }
+
+    private void prepareForStatistics(Instant expectedFromInstant,
+                                      Instant expectedToInstant,
+                                      VisualizationPerimeter visualizationPerimeter) {
+        List<OrderStatusStatisticsDTO> orderStatusStatistics =
+            List.of(
+                new OrderStatusStatisticsDTO(OrderStatus.DRAFT, 1L),
+                new OrderStatusStatisticsDTO(OrderStatus.FINALIZED, 56L)
+            );
+        List<CustomerTypeStatisticsDTO> customerTypeStatistics =
+            List.of(
+                new CustomerTypeStatisticsDTO(CustomerType.FARMER, 20L),
+                new CustomerTypeStatisticsDTO(CustomerType.CITIZEN, 30L)
+            );
+
+        when(mockOrderDao.countCancelledOrders(expectedFromInstant, expectedToInstant, visualizationPerimeter))
+            .thenReturn(12L);
+        when(mockOrderDao.countDistinctCustomersOfFinalizedOrders(expectedFromInstant, expectedToInstant, visualizationPerimeter))
+            .thenReturn(40L);
+        when(mockOrderDao.computeAverageFinalizationDuration(expectedFromInstant, expectedToInstant, visualizationPerimeter))
+            .thenReturn(Duration.ofHours(36));
+        when(mockOrderDao.findOrderStatusStatistics(expectedFromInstant, expectedToInstant, visualizationPerimeter))
+            .thenReturn(orderStatusStatistics);
+        when(mockOrderDao.findCustomerTypeStatistics(expectedFromInstant, expectedToInstant, visualizationPerimeter))
+            .thenReturn(customerTypeStatistics);
     }
 }

@@ -224,10 +224,15 @@
       "date-range-error-label": "La plage de dates"
     },
     "statistics": {
-      "message": "Consulter les statistiques",
-      "from": "entre le",
+      "from": "Entre le",
       "to": "et le",
       "date-range-error-label": "La plage de dates",
+      "global-perimeter": "Pour tous les CRBs",
+      "constrained-perimeter": "Pour le(s) CRB(s) suivant(s)\u00a0: {{ grcs }}",
+      "edit-perimeter": "Modifier le périmètre",
+      "some-grcs": "Pour certains CRBs seulement",
+      "all-grcs": "Pour tous les CRBs",
+      "grc-required": "Au moins un CRB doit être sélectionné",
       "refresh": "Afficher",
       "key-numbers": "Chiffres clés",
       "created-order": "commande créée",
@@ -241,8 +246,10 @@
       "day-to-finalize": "jour pour finaliser une commande",
       "days-to-finalize": "jours pour finaliser une commande",
       "customer-types-title": "Nombre de commandes finalisées, par type de client",
+      "no-finalized-order": "Aucune commande finalisée sur cette plage de temps et ce périmètre",
       "customer-type": "Type de client",
       "total": "Total",
+      "no-created-order": "Aucune commande créée sur cette plage de temps et ce périmètre",
       "order-status-title": "Nombre de commandes créées, par état",
       "order-status": "État",
       "order-count": "Nb. de commandes"

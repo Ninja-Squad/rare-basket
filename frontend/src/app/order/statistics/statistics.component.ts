@@ -5,13 +5,25 @@ import { ChartConfiguration } from 'chart.js';
 import { COLORS } from '../../chart/colors';
 import { TranslateService } from '@ngx-translate/core';
 import { formatDate, formatNumber, formatPercent } from '@angular/common';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
+import { AbstractControl, FormArray, FormBuilder, FormGroup, ValidationErrors, Validators } from '@angular/forms';
+import { ActivatedRoute, Params, Router } from '@angular/router';
 import { validDateRange } from '../../shared/validators';
+import { Grc, User } from '../../shared/user.model';
+import { AuthenticationService } from '../../shared/authentication.service';
+import { GrcService } from '../../shared/grc.service';
+import { first, switchMap, tap } from 'rxjs/operators';
+import { concat, of } from 'rxjs';
 
 export interface FormValue {
   from: string;
   to: string;
+  global: boolean;
+  grcs: Array<{ grc: Grc; selected: boolean }>;
+}
+
+function atLeastOneSelection(control: AbstractControl): ValidationErrors | null {
+  const value: Array<{ grc: Grc; selected: boolean }> = control.value;
+  return value.some(item => item.selected) ? null : { required: true };
 }
 
 @Component({
@@ -26,40 +38,35 @@ export class StatisticsComponent implements OnInit {
   customerTypeDoughnut: ChartConfiguration;
   orderStatusDoughnut: ChartConfiguration;
   colors = COLORS;
+  user: User;
+  perimeterEdited = false;
+  private choosableGrcs: Array<Grc>;
 
   constructor(
-    fb: FormBuilder,
+    private fb: FormBuilder,
     private router: Router,
     private route: ActivatedRoute,
     private orderService: OrderService,
     private translateService: TranslateService,
+    private authenticationService: AuthenticationService,
+    private grcService: GrcService,
     @Inject(LOCALE_ID) private locale: string
-  ) {
-    const now = new Date();
-    const startOfYear = new Date();
-    startOfYear.setDate(1);
-    startOfYear.setMonth(0);
-
-    this.form = fb.group(
-      {
-        from: [formatDate(startOfYear, 'yyyy-MM-dd', locale), Validators.required],
-        to: [formatDate(now, 'yyyy-MM-dd', locale), Validators.required]
-      },
-      { validators: validDateRange }
-    );
-  }
+  ) {}
 
   ngOnInit() {
-    this.route.queryParamMap.subscribe(paramMap => {
-      if (paramMap.get('from')) {
-        this.form.patchValue({ from: paramMap.get('from') });
-      }
-      if (paramMap.get('to')) {
-        this.form.patchValue({ to: paramMap.get('to') });
-      }
-    });
-
-    this.refresh();
+    this.authenticationService
+      .getCurrentUser()
+      .pipe(
+        first(),
+        tap(user => (this.user = user)),
+        switchMap(user => (user.globalVisualization ? this.grcService.list() : of(user.visualizationGrcs)))
+      )
+      .subscribe(grcs => {
+        this.choosableGrcs = grcs;
+        this.form = this.createForm();
+        this.initializeForm();
+        this.refresh();
+      });
   }
 
   refresh() {
@@ -67,13 +74,24 @@ export class StatisticsComponent implements OnInit {
       return;
     }
 
+    this.perimeterEdited = false;
     const formValue: FormValue = this.form.value;
+    const grcIds = formValue.global ? [] : formValue.grcs.filter(({ selected }) => selected).map(({ grc }) => grc.id);
+
+    const queryParams: Params = {
+      from: formValue.from,
+      to: formValue.to
+    };
+    if (!formValue.global) {
+      queryParams.grcs = grcIds;
+    }
     this.router.navigate(['.'], {
-      queryParams: { from: formValue.from, to: formValue.to },
+      queryParams,
       relativeTo: this.route,
       replaceUrl: true
     });
-    this.orderService.getStatistics(formValue.from, formValue.to).subscribe(stats => {
+
+    this.orderService.getStatistics(formValue.from, formValue.to, grcIds).subscribe(stats => {
       this.stats = stats;
       this.stats.customerTypeStatistics.sort((s1, s2) => s2.finalizedOrderCount - s1.finalizedOrderCount);
       this.createCharts();
@@ -86,6 +104,22 @@ export class StatisticsComponent implements OnInit {
 
   finalizedOrderCountRatio(stat: CustomerTypeStatistics) {
     return stat.finalizedOrderCount / this.stats.finalizedOrderCount;
+  }
+
+  get grcs(): FormArray {
+    return this.form.get('grcs') as FormArray;
+  }
+
+  get constrainedPerimeterGrcs(): string {
+    const formValue: FormValue = this.form.value;
+    return formValue.grcs
+      .filter(({ selected }) => selected)
+      .map(({ grc }) => grc.name)
+      .join(', ');
+  }
+
+  get perimeterModifiable() {
+    return this.choosableGrcs.length > 1;
   }
 
   private createCharts() {
@@ -163,5 +197,74 @@ export class StatisticsComponent implements OnInit {
         aspectRatio: 2
       }
     };
+  }
+
+  private createForm(): FormGroup {
+    const now = new Date();
+    const startOfYear = new Date();
+    startOfYear.setDate(1);
+    startOfYear.setMonth(0);
+
+    const grcsFormArray = this.fb.array([], atLeastOneSelection);
+    this.choosableGrcs.forEach(grc => {
+      grcsFormArray.push(
+        this.fb.group({
+          grc,
+          selected: false
+        })
+      );
+    });
+
+    const globalControl = this.fb.control(this.user.globalVisualization);
+
+    const result = this.fb.group(
+      {
+        from: [formatDate(startOfYear, 'yyyy-MM-dd', this.locale), Validators.required],
+        to: [formatDate(now, 'yyyy-MM-dd', this.locale), Validators.required],
+        global: globalControl,
+        grcs: grcsFormArray
+      },
+      { validators: validDateRange }
+    );
+
+    concat(of(globalControl.value), globalControl.valueChanges).subscribe(global => {
+      if (global) {
+        grcsFormArray.disable();
+      } else {
+        grcsFormArray.enable();
+      }
+    });
+
+    return result;
+  }
+
+  private initializeForm() {
+    const newValue: Partial<FormValue> = {};
+    const paramMap = this.route.snapshot.queryParamMap;
+    if (paramMap.get('from')) {
+      newValue.from = paramMap.get('from');
+    }
+    if (paramMap.get('to')) {
+      newValue.to = paramMap.get('to');
+    }
+    if (this.user.globalVisualization) {
+      const grcIds = paramMap.getAll('grcs');
+      if (grcIds.length > 0) {
+        newValue.global = false;
+        newValue.grcs = this.choosableGrcs.map(grc => ({ grc, selected: grcIds.includes(`${grc.id}`) }));
+      } else {
+        newValue.global = true;
+      }
+    } else {
+      newValue.global = false;
+      const grcIds = paramMap.getAll('grcs');
+      if (grcIds.length > 0) {
+        newValue.grcs = this.choosableGrcs.map(grc => ({ grc, selected: grcIds.includes(`${grc.id}`) }));
+      } else {
+        newValue.grcs = this.choosableGrcs.map(grc => ({ grc, selected: true }));
+      }
+    }
+
+    this.form.patchValue(newValue);
   }
 }
