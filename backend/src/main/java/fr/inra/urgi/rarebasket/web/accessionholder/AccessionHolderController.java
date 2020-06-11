@@ -1,6 +1,6 @@
 package fr.inra.urgi.rarebasket.web.accessionholder;
 
-import static fr.inra.urgi.rarebasket.exception.FunctionalException.Code.ACCESSION_HOLDER_EMAIL_ALREADY_EXISTING;
+import static fr.inra.urgi.rarebasket.exception.FunctionalException.Code.*;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -75,6 +75,7 @@ public class AccessionHolderController {
     public AccessionHolderDTO create(@Validated @RequestBody AccessionHolderCommandDTO command) {
         currentUser.checkPermission(Permission.ADMINISTRATION);
         validateAccessionHolderEmail(command.getEmail(), null);
+        validateAccessionHolderName(command.getName(), command.getGrcId(), null);
 
         AccessionHolder accessionHolder = new AccessionHolder();
         copyCommandToAccessionHolder(command, accessionHolder);
@@ -91,6 +92,7 @@ public class AccessionHolderController {
         AccessionHolder accessionHolder = accessionHolderDao.findById(accessionHolderId)
                                                             .orElseThrow(NotFoundException::new);
         validateAccessionHolderEmail(command.getEmail(), accessionHolder);
+        validateAccessionHolderName(command.getName(), command.getGrcId(), accessionHolder);
 
         copyCommandToAccessionHolder(command, accessionHolder);
     }
@@ -111,6 +113,14 @@ public class AccessionHolderController {
                           .filter(foundAccessionHolder -> !foundAccessionHolder.equals(accessionHolder))
                           .ifPresent(foundAccessionHolder -> {
                               throw new FunctionalException(ACCESSION_HOLDER_EMAIL_ALREADY_EXISTING);
+                          });
+    }
+
+    private void validateAccessionHolderName(String name, Long grcId, AccessionHolder accessionHolder) {
+        accessionHolderDao.findByNameAndGrcId(name, grcId)
+                          .filter(foundAccessionHolder -> !foundAccessionHolder.equals(accessionHolder))
+                          .ifPresent(foundAccessionHolder -> {
+                              throw new FunctionalException(ACCESSION_HOLDER_NAME_ALREADY_EXISTING);
                           });
     }
 }

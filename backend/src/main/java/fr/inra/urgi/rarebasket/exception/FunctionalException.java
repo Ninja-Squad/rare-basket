@@ -9,6 +9,7 @@ public class FunctionalException extends BadRequestException {
         BASKET_ALREADY_CONFIRMED("The basket is already confirmed"),
         INCORRECT_BASKET_CONFIRMATION_CODE("Incorrect basket confirmation code"),
         ACCESSION_HOLDER_EMAIL_ALREADY_EXISTING("An accession holder with the given email already exists"),
+        ACCESSION_HOLDER_NAME_ALREADY_EXISTING("An accession holder with the given name and GRC already exists"),
         GRC_NAME_ALREADY_EXISTING("A GRC with the given name already exists"),
         USER_NAME_ALREADY_EXISTING("A user with the given name already exists");
 

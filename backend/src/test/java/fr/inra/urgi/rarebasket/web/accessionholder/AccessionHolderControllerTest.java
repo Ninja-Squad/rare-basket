@@ -78,6 +78,8 @@ class AccessionHolderControllerTest {
         accessionHolder.setGrc(grc);
         when(mockAccessionHolderDao.findById(accessionHolder.getId())).thenReturn(Optional.of(accessionHolder));
         when(mockAccessionHolderDao.findByEmail(accessionHolder.getEmail())).thenReturn(Optional.of(accessionHolder));
+        when(mockAccessionHolderDao.findByNameAndGrcId(accessionHolder.getName(), accessionHolder.getGrc().getId()))
+            .thenReturn(Optional.of(accessionHolder));
 
         User user = new User(42L);
         user.setName("JB");
@@ -177,6 +179,19 @@ class AccessionHolderControllerTest {
     }
 
     @Test
+    void shouldThrowWhenCreatingWithAlreadyExistingName() {
+        AccessionHolderCommandDTO command = new AccessionHolderCommandDTO(
+            accessionHolder.getName(),
+            "foo@bar.com",
+            "0601020304",
+            accessionHolder.getGrc().getId()
+        );
+        assertThatExceptionOfType(FunctionalException.class).isThrownBy(
+            () -> controller.create(command)
+        ).matches(e -> e.getCode() == FunctionalException.Code.ACCESSION_HOLDER_NAME_ALREADY_EXISTING);
+    }
+
+    @Test
     void shouldThrowWhenCreatingWithNonExistingGrc() {
         AccessionHolderCommandDTO command = new AccessionHolderCommandDTO(
                 "Cyril",
@@ -242,12 +257,40 @@ class AccessionHolderControllerTest {
     }
 
     @Test
+    void shouldThrowWhenUpdatingWithAlreadyExistingName() {
+        AccessionHolder otherAccessionHolder = new AccessionHolder();
+        otherAccessionHolder.setName(accessionHolder.getName());
+        when(mockAccessionHolderDao.findByNameAndGrcId(otherAccessionHolder.getName(), accessionHolder.getGrc().getId()))
+            .thenReturn(Optional.of(otherAccessionHolder));
+        AccessionHolderCommandDTO command = new AccessionHolderCommandDTO(
+            accessionHolder.getName(),
+            "foo@bar.com",
+            "0601020304",
+            accessionHolder.getGrc().getId()
+        );
+        assertThatExceptionOfType(FunctionalException.class).isThrownBy(
+            () -> controller.update(accessionHolder.getId(), command)
+        ).matches(e -> e.getCode() == FunctionalException.Code.ACCESSION_HOLDER_NAME_ALREADY_EXISTING);
+    }
+
+    @Test
     void shouldNotThrowWhenUpdatingWithTheSameEmail() {
         AccessionHolderCommandDTO command = new AccessionHolderCommandDTO(
                 "Cyril",
                 accessionHolder.getEmail(),
                 "0601020304",
                 accessionHolder.getGrc().getId()
+        );
+        assertThatCode(() -> controller.update(accessionHolder.getId(), command)).doesNotThrowAnyException();
+    }
+
+    @Test
+    void shouldNotThrowWhenUpdatingWithTheSameName() {
+        AccessionHolderCommandDTO command = new AccessionHolderCommandDTO(
+            accessionHolder.getName(),
+            "foo@bar.com",
+            "0601020304",
+            accessionHolder.getGrc().getId()
         );
         assertThatCode(() -> controller.update(accessionHolder.getId(), command)).doesNotThrowAnyException();
     }

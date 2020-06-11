@@ -20,6 +20,7 @@
         "BASKET_ALREADY_CONFIRMED": "The order is already confirmed",
         "INCORRECT_BASKET_CONFIRMATION_CODE": "The confirmation code is incorrect",
         "ACCESSION_HOLDER_EMAIL_ALREADY_EXISTING": "Another accession holder already uses that email address",
+        "ACCESSION_HOLDER_NAME_ALREADY_EXISTING": "Another accession holder of the same GRC already uses that name",
         "GRC_NAME_ALREADY_EXISTING": "Another GRC already uses that name",
         "USER_NAME_ALREADY_EXISTING": "Another user already uses that name"
       }

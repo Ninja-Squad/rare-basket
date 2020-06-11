@@ -20,6 +20,7 @@
         "BASKET_ALREADY_CONFIRMED": "La commande est déjà confirmée",
         "INCORRECT_BASKET_CONFIRMATION_CODE": "Code de confirmation incorrect",
         "ACCESSION_HOLDER_EMAIL_ALREADY_EXISTING": "Un autre gestionnaire d'accessions utilise déjà cette adresse courriel",
+        "ACCESSION_HOLDER_NAME_ALREADY_EXISTING": "Un autre gestionnaire d'accessions du même CRB utilise déjà ce nom",
         "GRC_NAME_ALREADY_EXISTING": "Un autre BRC utilise déjà ce nom",
         "USER_NAME_ALREADY_EXISTING": "Un autre utilisateur utilise déjà ce nom"
       }

@@ -43,6 +43,14 @@ class AccessionHolderDaoTest extends BaseDaoTest {
     }
 
     @Test
+    void shouldFindByNameAndGrcId() {
+        skipNextLaunch();
+        assertThat(accessionHolderDao.findByNameAndGrcId("GRC1 Orders", 234567L)).isEmpty();
+        assertThat(accessionHolderDao.findByNameAndGrcId("Not existing", 1L)).isEmpty();
+        assertThat(accessionHolderDao.findByNameAndGrcId("GRC1 Orders", 1L)).isNotEmpty();
+    }
+
+    @Test
     void shouldList() {
         skipNextLaunch();
         assertThat(accessionHolderDao.list()).hasSize(1);

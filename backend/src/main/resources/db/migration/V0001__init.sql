@@ -15,6 +15,9 @@ CREATE TABLE accession_holder (
     grc_id BIGINT  NOT NULL
         CONSTRAINT accession_holder_fk1 REFERENCES grc(id)
 );
+ALTER TABLE accession_holder
+    ADD CONSTRAINT accession_holder_un1
+        UNIQUE (name, grc_id);
 
 CREATE SEQUENCE accession_holder_seq START WITH 1001 INCREMENT 50;
 
