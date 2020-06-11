@@ -25,9 +25,9 @@ export class BasketConfirmationComponent implements OnInit {
   ngOnInit(): void {
     this.basketReference = this.route.snapshot.paramMap.get('reference');
     const confirmationCode = this.route.snapshot.queryParamMap.get('code');
-    this.basketService.confirm(this.basketReference, confirmationCode).subscribe(
-      () => this.router.navigate(['/baskets', this.basketReference]),
-      () => (this.confirmationFailed = true)
-    );
+    this.basketService.confirm(this.basketReference, confirmationCode).subscribe({
+      next: () => this.router.navigate(['/baskets', this.basketReference]),
+      error: () => (this.confirmationFailed = true)
+    });
   }
 }

@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { Observable, of, throwError } from 'rxjs';
 import { Basket, BasketCommand } from './basket.model';
+import { catchError } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
@@ -17,8 +18,19 @@ export class BasketService {
     return this.http.put<void>(`/api/baskets/${reference}`, command);
   }
 
+  /**
+   * COnfirms the basket, and if an error is received informing that the order was already confirmed,
+   * the ignore it and do as if the confirmation succeeded
+   */
   confirm(reference: string, confirmationCode: string): Observable<void> {
     const command = { confirmationCode };
-    return this.http.put<void>(`/api/baskets/${reference}/confirmation`, command);
+    return this.http.put<void>(`/api/baskets/${reference}/confirmation`, command).pipe(
+      catchError((error: HttpErrorResponse) => {
+        if (error.status === 400 && error.error?.functionalError === 'BASKET_ALREADY_CONFIRMED') {
+          return of(undefined);
+        }
+        return throwError(error);
+      })
+    );
   }
 }

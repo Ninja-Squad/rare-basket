@@ -1,6 +1,7 @@
 package fr.inra.urgi.rarebasket.web.basket;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.assertj.core.groups.Tuple.tuple;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
@@ -29,6 +30,7 @@ import fr.inra.urgi.rarebasket.domain.Order;
 import fr.inra.urgi.rarebasket.domain.OrderItem;
 import fr.inra.urgi.rarebasket.domain.OrderStatus;
 import fr.inra.urgi.rarebasket.domain.SupportedLanguage;
+import fr.inra.urgi.rarebasket.exception.FunctionalException;
 import fr.inra.urgi.rarebasket.service.event.BasketSaved;
 import fr.inra.urgi.rarebasket.service.event.EventPublisher;
 import fr.inra.urgi.rarebasket.service.event.OrderCreated;
@@ -68,6 +70,9 @@ class BasketControllerTest {
 
     @Autowired
     private ObjectMapper objectMapper;
+
+    @Autowired
+    private BasketController controller;
 
     private Basket basket;
     private BasketItem rosa;
@@ -461,12 +466,26 @@ class BasketControllerTest {
     }
 
     @Test
+    void shouldThrowWhenConfirmingAlreadyConfirmedBasket() throws Exception {
+        BasketConfirmationCommandDTO command = new BasketConfirmationCommandDTO("ZYXWVUTS");
+
+        basket.setStatus(BasketStatus.CONFIRMED);
+        checkBadRequestWhenConfirming(command);
+        assertThatExceptionOfType(FunctionalException.class)
+            .isThrownBy(() -> controller.confirm(basket.getReference(), command))
+            .matches(e -> e.getCode() == FunctionalException.Code.BASKET_ALREADY_CONFIRMED);
+    }
+
+    @Test
     void shouldThrowWhenConfirmingWithBadCode() throws Exception {
         BasketConfirmationCommandDTO command = new BasketConfirmationCommandDTO("ZYXWVUTS");
 
         basket.setStatus(BasketStatus.SAVED);
         basket.setConfirmationCode("OTHER");
         checkBadRequestWhenConfirming(command);
+        assertThatExceptionOfType(FunctionalException.class)
+            .isThrownBy(() -> controller.confirm(basket.getReference(), command))
+            .matches(e -> e.getCode() == FunctionalException.Code.INCORRECT_BASKET_CONFIRMATION_CODE);
     }
 
     @Test

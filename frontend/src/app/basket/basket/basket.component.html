@@ -4,7 +4,6 @@
   <rb-edit-confirmation
     *ngIf="basket.status === 'SAVED'"
     [basket]="basket"
-    [confirmationFailed]="confirmationFailed"
     (basketConfirmed)="confirm($event)"
     (refreshRequested)="refresh()"
   ></rb-edit-confirmation>

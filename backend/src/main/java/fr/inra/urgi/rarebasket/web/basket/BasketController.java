@@ -1,5 +1,8 @@
 package fr.inra.urgi.rarebasket.web.basket;
 
+import static fr.inra.urgi.rarebasket.exception.FunctionalException.Code.BASKET_ALREADY_CONFIRMED;
+import static fr.inra.urgi.rarebasket.exception.FunctionalException.Code.INCORRECT_BASKET_CONFIRMATION_CODE;
+
 import java.time.Instant;
 import java.util.HashMap;
 import java.util.List;
@@ -23,6 +26,7 @@ import fr.inra.urgi.rarebasket.domain.Order;
 import fr.inra.urgi.rarebasket.domain.OrderItem;
 import fr.inra.urgi.rarebasket.domain.OrderStatus;
 import fr.inra.urgi.rarebasket.exception.BadRequestException;
+import fr.inra.urgi.rarebasket.exception.FunctionalException;
 import fr.inra.urgi.rarebasket.exception.NotFoundException;
 import fr.inra.urgi.rarebasket.service.event.BasketSaved;
 import fr.inra.urgi.rarebasket.service.event.EventPublisher;
@@ -123,13 +127,17 @@ public class BasketController {
     @PutMapping("/{basketReference}/confirmation")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void confirm(@PathVariable("basketReference") String basketReference,
-                       @Validated @RequestBody BasketConfirmationCommandDTO command) {
+                        @Validated @RequestBody BasketConfirmationCommandDTO command) {
         Basket basket = basketDao.findByReference(basketReference).orElseThrow(NotFoundException::new);
+        if (basket.getStatus() == BasketStatus.CONFIRMED) {
+            throw new FunctionalException(BASKET_ALREADY_CONFIRMED);
+        }
         if (basket.getStatus() != BasketStatus.SAVED) {
-            throw new BadRequestException("A non-SAVED basket may not be updated");
+            // this should never happen
+            throw new BadRequestException("A non-SAVED basket may not be confirmed");
         }
         if (!basket.getConfirmationCode().equals(command.getConfirmationCode())) {
-            throw new BadRequestException("Incorrect confirmation code");
+            throw new FunctionalException(INCORRECT_BASKET_CONFIRMATION_CODE);
         }
 
         basket.setStatus(BasketStatus.CONFIRMED);

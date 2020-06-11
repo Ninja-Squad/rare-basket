@@ -7,7 +7,7 @@ import { By } from '@angular/platform-browser';
 import { ActivatedRoute } from '@angular/router';
 import { Basket, BasketCommand } from '../basket.model';
 import { BasketService } from '../basket.service';
-import { of, throwError } from 'rxjs';
+import { of } from 'rxjs';
 import { RbNgbModule } from '../../rb-ngb/rb-ngb.module';
 import { ReactiveFormsModule } from '@angular/forms';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
@@ -118,7 +118,6 @@ describe('BasketComponent', () => {
       expect(tester.editBasketComponent).toBeNull();
       expect(tester.editConfirmationComponent).not.toBeNull();
       expect(tester.editConfirmationComponent.basket).toBe(savedBasket);
-      expect(tester.editConfirmationComponent.confirmationFailed).toBe(false);
     });
   });
 
@@ -157,7 +156,6 @@ describe('BasketComponent', () => {
       expect(tester.confirmedComponent).toBeNull();
 
       expect(tester.editConfirmationComponent.basket).toBe(basket);
-      expect(tester.editConfirmationComponent.confirmationFailed).toBe(false);
     });
 
     it('should confirm when edit confirmation component emits', () => {
@@ -173,25 +171,11 @@ describe('BasketComponent', () => {
       expect(tester.confirmedComponent.basket).toBe(confirmedBasket);
     });
 
-    it('should signal failed confirmation', () => {
-      basketService.confirm.and.returnValue(throwError(undefined));
-
-      tester.editConfirmationComponent.basketConfirmed.emit('CODE');
-      tester.detectChanges();
-
-      expect(basketService.confirm).toHaveBeenCalledWith('ABCDEFGH', 'CODE');
-      expect(tester.componentInstance.basket).toBe(basket);
-      expect(tester.editConfirmationComponent.basket).toBe(basket);
-      expect(tester.editConfirmationComponent.confirmationFailed).toBe(true);
-    });
-
     it('should refresh when edit confirmation component asks to', () => {
-      tester.componentInstance.confirmationFailed = false;
       tester.editConfirmationComponent.refreshRequested.emit(undefined);
       tester.detectChanges();
 
       expect(tester.componentInstance.basket).toBe(confirmedBasket);
-      expect(tester.componentInstance.confirmationFailed).toBe(false);
     });
   });
 });

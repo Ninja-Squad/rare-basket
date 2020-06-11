@@ -14,7 +14,6 @@ import { I18nTestingModule } from '../../i18n/i18n-testing.module.spec';
   template: `
     <rb-edit-confirmation
       [basket]="basket"
-      [confirmationFailed]="confirmationFailed"
       (basketConfirmed)="confirmationCode = $event"
       (refreshRequested)="refreshRequested = true"
     ></rb-edit-confirmation>
@@ -27,7 +26,6 @@ class TestComponent {
     },
     accessionHolderBaskets: []
   } as Basket;
-  confirmationFailed = false;
   confirmationCode: string = null;
   refreshRequested = false;
 }
@@ -39,14 +37,6 @@ class TestComponentTester extends ComponentTester<TestComponent> {
 
   get infoRefreshLink() {
     return this.element('#info-refresh-link') as TestHtmlElement<HTMLAnchorElement>;
-  }
-
-  get errorAlert() {
-    return this.element('.alert-danger');
-  }
-
-  get errorRefreshLink() {
-    return this.element('#error-refresh-link') as TestHtmlElement<HTMLAnchorElement>;
   }
 
   get confirmationCode() {
@@ -75,22 +65,12 @@ describe('EditConfirmationComponent', () => {
 
   it('should display empty form', () => {
     expect(tester.infoRefreshLink).not.toBeNull();
-    expect(tester.errorAlert).toBeNull();
     expect(tester.confirmationCode).toHaveValue('');
     expect(tester.confirmButton.disabled).toBe(true);
   });
 
   it('should emit when info refresh link clicked', () => {
     tester.infoRefreshLink.click();
-    expect(tester.componentInstance.refreshRequested).toBe(true);
-  });
-
-  it('should emit when error refresh link clicked', () => {
-    tester.componentInstance.confirmationFailed = true;
-    tester.detectChanges();
-
-    expect(tester.errorAlert).not.toBeNull();
-    tester.errorRefreshLink.click();
     expect(tester.componentInstance.refreshRequested).toBe(true);
   });
 

@@ -17,6 +17,8 @@
       "client-error": "Une erreur inattendue s'est produite à l'envoi d'une requête au serveur",
       "server-error": "Une erreur inattendue ({{ status }}) s'est produite sur le serveur\u00a0: {{ message }}",
       "functional-error": {
+        "BASKET_ALREADY_CONFIRMED": "La commande est déjà confirmée",
+        "INCORRECT_BASKET_CONFIRMATION_CODE": "Code de confirmation incorrect",
         "ACCESSION_HOLDER_EMAIL_ALREADY_EXISTING": "Un autre gestionnaire d'accessions utilise déjà cette adresse courriel",
         "GRC_NAME_ALREADY_EXISTING": "Un autre BRC utilise déjà ce nom",
         "USER_NAME_ALREADY_EXISTING": "Un autre utilisateur utilise déjà ce nom"
@@ -110,7 +112,7 @@
       "save": "Finaliser ma commande"
     },
     "basket-confirmation": {
-      "error": "La confirmation de votre commande a échoué. Peut-être était-elle déjà confirmée\u00a0?",
+      "error": "La confirmation de votre commande a échoué.",
       "basket": "Votre commande"
     },
     "basket-content": {
@@ -125,8 +127,6 @@
       "mailbox-message": "Surveillez votre boîte aux lettres."
     },
     "edit-confirmation": {
-      "error": "La confirmation de votre commande a échoué. Peut-être était-elle déjà confirmée\u00a0?",
-      "refresh": "Rafraîchir",
       "success": "Votre commande a été enregistrée.",
       "message-prefix": "Un courriel vous a été envoyé à l'adresse",
       "message-suffix": "afin de confirmer votre commande.",

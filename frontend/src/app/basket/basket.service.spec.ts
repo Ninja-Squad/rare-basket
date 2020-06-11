@@ -51,4 +51,26 @@ describe('BasketService', () => {
 
     expect(done).toBe(true);
   });
+
+  it('should ignore already confirmed error', () => {
+    let done = false;
+
+    const confirmationCode = 'ZYXWVUTS';
+    service.confirm('ref1', confirmationCode).subscribe(() => (done = true));
+    http
+      .expectOne({ method: 'PUT', url: '/api/baskets/ref1/confirmation' })
+      .flush({ functionalError: 'BASKET_ALREADY_CONFIRMED' }, { status: 400, statusText: 'Bad Request' });
+
+    expect(done).toBe(true);
+  });
+
+  it('should not ignore other errors', () => {
+    let done = false;
+
+    const confirmationCode = 'ZYXWVUTS';
+    service.confirm('ref1', confirmationCode).subscribe({ error: () => (done = true) });
+    http.expectOne({ method: 'PUT', url: '/api/baskets/ref1/confirmation' }).flush({}, { status: 400, statusText: 'Bad Request' });
+
+    expect(done).toBe(true);
+  });
 });

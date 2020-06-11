@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { Basket } from '../basket.model';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { faCheckCircle, faExclamationCircle, faInfoCircle } from '@fortawesome/free-solid-svg-icons';
+import { faCheckCircle, faInfoCircle } from '@fortawesome/free-solid-svg-icons';
 
 /**
  * Component displayed once the user has saved the basket, informing the customer about the
@@ -14,7 +14,6 @@ import { faCheckCircle, faExclamationCircle, faInfoCircle } from '@fortawesome/f
 })
 export class EditConfirmationComponent implements OnInit {
   @Input() basket: Basket;
-  @Input() confirmationFailed: boolean;
 
   @Output() readonly basketConfirmed = new EventEmitter<string>();
   @Output() readonly refreshRequested = new EventEmitter<void>();
@@ -22,7 +21,6 @@ export class EditConfirmationComponent implements OnInit {
   form: FormGroup;
   infoIcon = faInfoCircle;
   confirmIcon = faCheckCircle;
-  errorIcon = faExclamationCircle;
 
   constructor(private fb: FormBuilder) {}
 

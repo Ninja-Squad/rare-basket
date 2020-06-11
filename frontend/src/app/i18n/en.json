@@ -17,6 +17,8 @@
       "client-error": "An unexpected error occurred when sending a request to the server",
       "server-error": "An unexpected error ({{ status }}) occurred on the server: {{ message }}",
       "functional-error": {
+        "BASKET_ALREADY_CONFIRMED": "The order is alredy confirmed",
+        "INCORRECT_BASKET_CONFIRMATION_CODE": "The confirmation code is incorrect",
         "ACCESSION_HOLDER_EMAIL_ALREADY_EXISTING": "Another accession holder already uses that email address",
         "GRC_NAME_ALREADY_EXISTING": "Another GRC already uses that name",
         "USER_NAME_ALREADY_EXISTING": "Another user already uses that name"
@@ -110,7 +112,7 @@
       "save": "Finalize my order"
     },
     "basket-confirmation": {
-      "error": "The confirmation of your order has failed. Maybe it was confirmed already?",
+      "error": "The confirmation of your order has failed.",
       "basket": "Your order"
     },
     "basket-content": {
@@ -125,8 +127,6 @@
       "mailbox-message": "Check your inbox."
     },
     "edit-confirmation": {
-      "error": "The confirmation of your order has failed. Maybe it was confirmed already?",
-      "refresh": "Refresh",
       "success": "Your order has been saved.",
       "message-prefix": "We sent you an email at the address",
       "message-suffix": "in order to confirm your order.",
