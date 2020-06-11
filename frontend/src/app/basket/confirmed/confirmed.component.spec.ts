@@ -10,9 +10,7 @@ import { SharedModule } from '../../shared/shared.module';
 import { I18nTestingModule } from '../../i18n/i18n-testing.module.spec';
 
 @Component({
-  template: `
-    <rb-confirmed [basket]="basket"></rb-confirmed>
-  `
+  template: `<rb-confirmed [basket]="basket"></rb-confirmed>`
 })
 class TestComponent {
   basket = {

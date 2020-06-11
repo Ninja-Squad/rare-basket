@@ -14,9 +14,7 @@ import { I18nTestingModule } from '../../i18n/i18n-testing.module.spec';
 import { OrderStatusEnumPipe } from '../order-status-enum.pipe';
 
 @Component({
-  template: `
-    <rb-orders [orders]="orders"></rb-orders>
-  `
+  template: `<rb-orders [orders]="orders"></rb-orders>`
 })
 class TestComponent {
   orders: Page<Order> = {
