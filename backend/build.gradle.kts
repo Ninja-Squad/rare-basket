@@ -6,7 +6,7 @@ buildscript {
     }
 
     dependencies {
-        classpath("org.postgresql:postgresql:42.2.9")
+        classpath("org.postgresql:postgresql:42.2.12")
     }
 }
 
@@ -84,6 +84,7 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
     implementation("org.springframework.boot:spring-boot-starter-mail")
     implementation("org.springframework.boot:spring-boot-starter-security")
+    implementation("org.springframework.boot:spring-boot-starter-validation")
     implementation("com.samskivert:jmustache")
     implementation("org.keycloak:keycloak-spring-boot-starter")
     implementation("com.itextpdf:kernel:$itextVersion")
