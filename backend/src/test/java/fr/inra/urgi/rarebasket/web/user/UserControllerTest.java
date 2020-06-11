@@ -24,6 +24,7 @@ import fr.inra.urgi.rarebasket.domain.Permission;
 import fr.inra.urgi.rarebasket.domain.User;
 import fr.inra.urgi.rarebasket.domain.UserPermission;
 import fr.inra.urgi.rarebasket.exception.BadRequestException;
+import fr.inra.urgi.rarebasket.exception.FunctionalException;
 import fr.inra.urgi.rarebasket.service.user.CurrentUser;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -198,9 +199,9 @@ class UserControllerTest {
                                                     accessionHolder.getId(),
                                                     false,
                                                     Set.of(grc.getId()));
-        assertThatExceptionOfType(BadRequestException.class).isThrownBy(
+        assertThatExceptionOfType(FunctionalException.class).isThrownBy(
             () -> controller.create(command)
-        );
+        ).matches(e -> e.getCode() == FunctionalException.Code.USER_NAME_ALREADY_EXISTING);
     }
 
     @Test
@@ -295,9 +296,9 @@ class UserControllerTest {
                                                     accessionHolder.getId(),
                                                     false,
                                                     Collections.emptySet());
-        assertThatExceptionOfType(BadRequestException.class).isThrownBy(
+        assertThatExceptionOfType(FunctionalException.class).isThrownBy(
             () -> controller.update(user.getId(), command)
-        );
+        ).matches(e -> e.getCode() == FunctionalException.Code.USER_NAME_ALREADY_EXISTING);
     }
 
     @Test

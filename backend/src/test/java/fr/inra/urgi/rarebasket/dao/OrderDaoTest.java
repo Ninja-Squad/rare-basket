@@ -239,19 +239,19 @@ class OrderDaoTest extends BaseDaoTest {
         result = dao.findOrderStatusStatistics(Instant.parse("2019-01-01T00:00:00Z"),
                                                Instant.parse("2020-01-01T00:00:00Z"),
                                                VisualizationPerimeter.global());
-        assertThat(result).containsOnlyElementsOf(allZeroes);
+        assertThat(result).containsOnlyOnceElementsOf(allZeroes);
 
         // too late
         result = dao.findOrderStatusStatistics(Instant.parse("2021-01-01T00:00:00Z"),
                                                Instant.parse("2022-01-01T00:00:00Z"),
                                                VisualizationPerimeter.global());
-        assertThat(result).containsOnlyElementsOf(allZeroes);
+        assertThat(result).containsOnlyOnceElementsOf(allZeroes);
 
         // wrong perimeter
         result = dao.findOrderStatusStatistics(Instant.parse("2020-01-01T00:00:00Z"),
                                                Instant.parse("2021-01-01T00:00:00Z"),
                                                VisualizationPerimeter.constrained(Set.of(2L)));
-        assertThat(result).containsOnlyElementsOf(allZeroes);
+        assertThat(result).containsOnlyOnceElementsOf(allZeroes);
     }
 
     @Test

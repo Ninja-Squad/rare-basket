@@ -1,12 +1,14 @@
 package fr.inra.urgi.rarebasket.web.grc;
 
+import static fr.inra.urgi.rarebasket.exception.FunctionalException.Code.GRC_NAME_ALREADY_EXISTING;
+
 import java.util.List;
 import java.util.stream.Collectors;
 
 import fr.inra.urgi.rarebasket.dao.GrcDao;
 import fr.inra.urgi.rarebasket.domain.Grc;
 import fr.inra.urgi.rarebasket.domain.Permission;
-import fr.inra.urgi.rarebasket.exception.BadRequestException;
+import fr.inra.urgi.rarebasket.exception.FunctionalException;
 import fr.inra.urgi.rarebasket.exception.NotFoundException;
 import fr.inra.urgi.rarebasket.service.user.CurrentUser;
 import org.springframework.http.HttpStatus;
@@ -97,7 +99,7 @@ public class GrcController {
         grcDao.findByName(name)
               .filter(foundGrc -> !foundGrc.equals(grc))
               .ifPresent(foundGrc -> {
-                  throw new BadRequestException("A GRC with that name already exists");
+                  throw new FunctionalException(GRC_NAME_ALREADY_EXISTING);
               });
     }
 }

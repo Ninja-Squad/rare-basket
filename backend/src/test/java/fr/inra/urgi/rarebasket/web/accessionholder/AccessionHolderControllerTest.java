@@ -21,6 +21,7 @@ import fr.inra.urgi.rarebasket.domain.Permission;
 import fr.inra.urgi.rarebasket.domain.User;
 import fr.inra.urgi.rarebasket.domain.UserPermission;
 import fr.inra.urgi.rarebasket.exception.BadRequestException;
+import fr.inra.urgi.rarebasket.exception.FunctionalException;
 import fr.inra.urgi.rarebasket.service.user.CurrentUser;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -170,9 +171,9 @@ class AccessionHolderControllerTest {
                 "0601020304",
                 accessionHolder.getGrc().getId()
         );
-        assertThatExceptionOfType(BadRequestException.class).isThrownBy(
+        assertThatExceptionOfType(FunctionalException.class).isThrownBy(
                 () -> controller.create(command)
-        );
+        ).matches(e -> e.getCode() == FunctionalException.Code.ACCESSION_HOLDER_EMAIL_ALREADY_EXISTING);
     }
 
     @Test
@@ -235,9 +236,9 @@ class AccessionHolderControllerTest {
                 "0601020304",
                 accessionHolder.getGrc().getId()
         );
-        assertThatExceptionOfType(BadRequestException.class).isThrownBy(
+        assertThatExceptionOfType(FunctionalException.class).isThrownBy(
                 () -> controller.update(accessionHolder.getId(), command)
-        );
+        ).matches(e -> e.getCode() == FunctionalException.Code.ACCESSION_HOLDER_EMAIL_ALREADY_EXISTING);
     }
 
     @Test

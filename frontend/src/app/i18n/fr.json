@@ -12,6 +12,15 @@
       "min": "{{ label }} doit être supérieur ou égal à {{ min }}",
       "max": "{{ label }} doit être inférieur ou égal à {{ max }}",
       "invalid-date-range": "{{ label }} est invalide"
+    },
+    "error-interceptor": {
+      "client-error": "Une erreur inattendue s'est produite à l'envoi d'une requête au serveur",
+      "server-error": "Une erreur inattendue ({{ status }}) s'est produite sur le serveur\u00a0: {{ message }}",
+      "functional-error": {
+        "ACCESSION_HOLDER_EMAIL_ALREADY_EXISTING": "Un autre gestionnaire d'accessions utilise déjà cette adresse courriel",
+        "GRC_NAME_ALREADY_EXISTING": "Un autre BRC utilise déjà ce nom",
+        "USER_NAME_ALREADY_EXISTING": "Un autre utilisateur utilise déjà ce nom"
+      }
     }
   },
   "enums": {

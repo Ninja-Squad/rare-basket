@@ -11,6 +11,8 @@ import { AuthenticationService } from './shared/authentication.service';
 import { of } from 'rxjs';
 import { I18nTestingModule } from './i18n/i18n-testing.module.spec';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { RbNgbModule } from './rb-ngb/rb-ngb.module';
+import { ToastsComponent } from './rb-ngb/toasts/toasts.component';
 
 class AppComponentTester extends ComponentTester<AppComponent> {
   constructor() {
@@ -24,6 +26,10 @@ class AppComponentTester extends ComponentTester<AppComponent> {
   get routerOutlet() {
     return this.debugElement.query(By.directive(RouterOutlet));
   }
+
+  get toasts() {
+    return this.debugElement.query(By.directive(ToastsComponent));
+  }
 }
 
 describe('AppComponent', () => {
@@ -35,7 +41,7 @@ describe('AppComponent', () => {
 
     TestBed.configureTestingModule({
       declarations: [AppComponent, ValidationDefaultsComponent, NavbarComponent],
-      imports: [I18nTestingModule, FontAwesomeModule, RouterTestingModule, ValdemortModule],
+      imports: [I18nTestingModule, FontAwesomeModule, RouterTestingModule, ValdemortModule, RbNgbModule],
       providers: [{ provide: AuthenticationService, useValue: authenticationService }]
     });
 
@@ -49,5 +55,9 @@ describe('AppComponent', () => {
 
   it('should have a navbar', () => {
     expect(tester.navbar).not.toBeNull();
+  });
+
+  it('should have toasts', () => {
+    expect(tester.toasts).not.toBeNull();
   });
 });

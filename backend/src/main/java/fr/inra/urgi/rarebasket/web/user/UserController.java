@@ -1,5 +1,7 @@
 package fr.inra.urgi.rarebasket.web.user;
 
+import static fr.inra.urgi.rarebasket.exception.FunctionalException.Code.USER_NAME_ALREADY_EXISTING;
+
 import java.util.Collections;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -13,6 +15,7 @@ import fr.inra.urgi.rarebasket.domain.Permission;
 import fr.inra.urgi.rarebasket.domain.User;
 import fr.inra.urgi.rarebasket.domain.UserPermission;
 import fr.inra.urgi.rarebasket.exception.BadRequestException;
+import fr.inra.urgi.rarebasket.exception.FunctionalException;
 import fr.inra.urgi.rarebasket.exception.NotFoundException;
 import fr.inra.urgi.rarebasket.service.user.CurrentUser;
 import fr.inra.urgi.rarebasket.web.common.PageDTO;
@@ -149,7 +152,7 @@ public class UserController {
         userDao.findByName(name)
                .filter(u -> !u.equals(user))
                .ifPresent(u -> {
-                   throw new BadRequestException("A user with that name already exists");
+                   throw new FunctionalException(USER_NAME_ALREADY_EXISTING);
                });
         // TODO check that the name is a valid keycloak name,
         //  or better, use the keycloak user ID and get the name from keycloak

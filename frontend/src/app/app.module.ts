@@ -14,6 +14,8 @@ import { AuthModule } from 'angular-auth-oidc-client';
 import { AuthenticationService } from './shared/authentication.service';
 import { AuthenticationInterceptorService } from './shared/authentication-interceptor.service';
 import { NavbarComponent } from './navbar/navbar.component';
+import { ErrorInterceptorService } from './shared/error-interceptor.service';
+import { RbNgbModule } from './rb-ngb/rb-ngb.module';
 
 @NgModule({
   declarations: [AppComponent, HomeComponent, ValidationDefaultsComponent, NavbarComponent],
@@ -24,9 +26,13 @@ import { NavbarComponent } from './navbar/navbar.component';
     HttpClientModule,
     ValdemortModule,
     I18nModule,
+    RbNgbModule,
     AuthModule.forRoot()
   ],
-  providers: [{ provide: HTTP_INTERCEPTORS, useClass: AuthenticationInterceptorService, multi: true }],
+  providers: [
+    { provide: HTTP_INTERCEPTORS, useClass: AuthenticationInterceptorService, multi: true },
+    { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptorService, multi: true }
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule {

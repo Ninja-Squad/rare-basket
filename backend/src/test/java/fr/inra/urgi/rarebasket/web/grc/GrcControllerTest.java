@@ -19,7 +19,7 @@ import fr.inra.urgi.rarebasket.domain.Grc;
 import fr.inra.urgi.rarebasket.domain.Permission;
 import fr.inra.urgi.rarebasket.domain.User;
 import fr.inra.urgi.rarebasket.domain.UserPermission;
-import fr.inra.urgi.rarebasket.exception.BadRequestException;
+import fr.inra.urgi.rarebasket.exception.FunctionalException;
 import fr.inra.urgi.rarebasket.service.user.CurrentUser;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -156,9 +156,9 @@ class GrcControllerTest {
                 "Ninja Squad Institute",
                 "Saint Just/Saint Rambert"
         );
-        assertThatExceptionOfType(BadRequestException.class).isThrownBy(
+        assertThatExceptionOfType(FunctionalException.class).isThrownBy(
                 () -> controller.create(command)
-        );
+        ).matches(e -> e.getCode() == FunctionalException.Code.GRC_NAME_ALREADY_EXISTING);
     }
 
     @Test
@@ -192,9 +192,9 @@ class GrcControllerTest {
                 "Ninja Squad Institute",
                 "Saint Just/Saint Rambert"
         );
-        assertThatExceptionOfType(BadRequestException.class).isThrownBy(
+        assertThatExceptionOfType(FunctionalException.class).isThrownBy(
                 () -> controller.update(grc.getId(), command)
-        );
+        ).matches(e -> e.getCode() == FunctionalException.Code.GRC_NAME_ALREADY_EXISTING);;
     }
 
     @Test

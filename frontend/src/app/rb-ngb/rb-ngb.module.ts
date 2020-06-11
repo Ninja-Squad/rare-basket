@@ -8,6 +8,7 @@ import {
   NgbModalModule,
   NgbPaginationModule,
   NgbProgressbarModule,
+  NgbToastModule,
   NgbTooltipModule
 } from '@ng-bootstrap/ng-bootstrap';
 import { PaginationComponent } from './pagination/pagination.component';
@@ -15,6 +16,7 @@ import { CustomDateParserFormatterService } from './custom-date-parser-formatter
 import { DateStringAdapterService } from './date-string-adapter.service';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { DatepickerContainerComponent } from './datepicker-container.component';
+import { ToastsComponent } from './toasts/toasts.component';
 
 @Injectable({
   providedIn: 'root'
@@ -27,12 +29,12 @@ export class RbNgbDatepickerConfig extends NgbDatepickerConfig {
   }
 }
 
-const NGB_MODULES = [NgbModalModule, NgbTooltipModule, NgbPaginationModule, NgbProgressbarModule, NgbDatepickerModule];
+const NGB_MODULES = [NgbModalModule, NgbTooltipModule, NgbPaginationModule, NgbProgressbarModule, NgbDatepickerModule, NgbToastModule];
 
 @NgModule({
   imports: [...NGB_MODULES, CommonModule, FontAwesomeModule],
-  exports: [...NGB_MODULES, PaginationComponent, DatepickerContainerComponent],
-  declarations: [PaginationComponent, DatepickerContainerComponent],
+  declarations: [PaginationComponent, DatepickerContainerComponent, ToastsComponent],
+  exports: [...NGB_MODULES, PaginationComponent, DatepickerContainerComponent, ToastsComponent],
   providers: [
     { provide: NgbDateParserFormatter, useClass: CustomDateParserFormatterService },
     { provide: NgbDateAdapter, useClass: DateStringAdapterService },

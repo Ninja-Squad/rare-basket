@@ -1,0 +1,19 @@
+@import '../../../common';
+
+.error {
+  @include alert-variant(
+    theme-color-level('danger', $alert-bg-level),
+    theme-color-level('danger', $alert-border-level),
+    theme-color-level('danger', $alert-color-level)
+  );
+  opacity: 0.7;
+}
+
+.success {
+  @include alert-variant(
+    theme-color-level('success', $alert-bg-level),
+    theme-color-level('success', $alert-border-level),
+    theme-color-level('success', $alert-color-level)
+  );
+  opacity: 0.7;
+}

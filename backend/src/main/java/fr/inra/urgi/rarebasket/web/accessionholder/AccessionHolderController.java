@@ -1,5 +1,7 @@
 package fr.inra.urgi.rarebasket.web.accessionholder;
 
+import static fr.inra.urgi.rarebasket.exception.FunctionalException.Code.ACCESSION_HOLDER_EMAIL_ALREADY_EXISTING;
+
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -9,6 +11,7 @@ import fr.inra.urgi.rarebasket.domain.AccessionHolder;
 import fr.inra.urgi.rarebasket.domain.Grc;
 import fr.inra.urgi.rarebasket.domain.Permission;
 import fr.inra.urgi.rarebasket.exception.BadRequestException;
+import fr.inra.urgi.rarebasket.exception.FunctionalException;
 import fr.inra.urgi.rarebasket.exception.NotFoundException;
 import fr.inra.urgi.rarebasket.service.user.CurrentUser;
 import org.springframework.http.HttpStatus;
@@ -107,7 +110,7 @@ public class AccessionHolderController {
         accessionHolderDao.findByEmail(email)
                           .filter(foundAccessionHolder -> !foundAccessionHolder.equals(accessionHolder))
                           .ifPresent(foundAccessionHolder -> {
-                              throw new BadRequestException("An accession holder with that email already exists");
+                              throw new FunctionalException(ACCESSION_HOLDER_EMAIL_ALREADY_EXISTING);
                           });
     }
 }
