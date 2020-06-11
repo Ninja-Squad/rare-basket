@@ -29,6 +29,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { FinalizationWarningsModalComponent } from '../finalization-warnings-modal/finalization-warnings-modal.component';
 import { Observable } from 'rxjs';
 import { ModalService } from '../../shared/modal.service';
+import { ToastService } from '../../shared/toast.service';
 
 /**
  * Component displaying the details of an order to a GRC user
@@ -72,7 +73,8 @@ export class OrderComponent implements OnInit {
     private confirmationService: ConfirmationService,
     private downloadService: DownloadService,
     private translateService: TranslateService,
-    private modalService: ModalService
+    private modalService: ModalService,
+    private toastService: ToastService
   ) {}
 
   ngOnInit(): void {
@@ -121,6 +123,7 @@ export class OrderComponent implements OnInit {
       })
       .pipe(
         switchMap(() => this.orderService.cancel(this.order.id)),
+        tap(() => this.toastService.success('order.order.cancelled')),
         switchMap(() => this.orderService.get(this.order.id))
       )
       .subscribe(order => (this.order = order));
@@ -203,6 +206,7 @@ export class OrderComponent implements OnInit {
     result$
       .pipe(
         switchMap(() => this.orderService.finalize(this.order.id)),
+        tap(() => this.toastService.success('order.order.finalized')),
         switchMap(() => this.orderService.get(this.order.id))
       )
       .subscribe(order => (this.order = order));

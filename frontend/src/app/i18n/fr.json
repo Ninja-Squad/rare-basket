@@ -180,7 +180,9 @@
       "delete-document-confirmation": "Voulez-vous vraiment supprimer définitivement ce document\u00a0? Cette opération est irréversible\u00a0!",
       "add-document": "Ajouter un document",
       "add-document-title": "Ajouter un document",
-      "all-orders": "Toutes les commandes"
+      "all-orders": "Toutes les commandes",
+      "finalized": "La commande a été finalisée",
+      "cancelled": "La commande a été annulée"
     },
     "edit-customer-information": {
       "name": "Nom du client",
@@ -269,7 +271,8 @@
       "confirm": "Voulez-vous néanmoins finaliser cette commande\u00a0?"
     },
     "create-order": {
-      "title": "Créer une nouvelle commande"
+      "title": "Créer une nouvelle commande",
+      "created": "La commande a été créée. Veuillez maintenant y ajouter les accessions demandées."
     }
   },
   "user": {
@@ -277,7 +280,8 @@
       "title": "Utilisateurs",
       "create": "Ajouter un utilisateur",
       "delete": "Supprimer l'utilisateur",
-      "delete-confirmation": "Voulez-vous vraiment supprimer cet utilisateur\u00a0? Notez que l'utilisateur ne sera pas supprimé de Keycloak."
+      "delete-confirmation": "Voulez-vous vraiment supprimer cet utilisateur\u00a0? Notez que l'utilisateur ne sera pas supprimé de Keycloak.",
+      "deleted": "L'utilisateur {{ name }} a été supprimé"
     },
     "edit": {
       "title": {
@@ -295,7 +299,11 @@
       "visualization-grcs": "CRBs consultables",
       "grc-required": "Au moins un CRB doit être sélectionné",
       "save": "Enregistrer",
-      "cancel": "Annuler"
+      "cancel": "Annuler",
+      "success": {
+        "create": "L'utilisateur {{ name }} a été créé",
+        "update": "L'utilisateur {{ name }} a été modifié"
+      }
     }
   },
   "accession-holder": {
@@ -303,7 +311,8 @@
       "title": "Gestionnaires d'accessions",
       "create": "Ajouter un gestionnaire d'accessions",
       "delete": "Supprimer le gestionnaire d'accessions",
-      "delete-confirmation": "Voulez-vous vraiment supprimer ce gestionnaire d'accessions\u00a0? Si il est utilisé par une autre entité dans le système, la suppression échouera."
+      "delete-confirmation": "Voulez-vous vraiment supprimer ce gestionnaire d'accessions\u00a0? Si il est utilisé par une autre entité dans le système, la suppression échouera.",
+      "deleted": "Le gestionnaire d'accessions {{ name }} a été supprimé"
     },
     "edit": {
       "title": {
@@ -319,7 +328,11 @@
       "grc": "CRB",
       "grc-error-label": "Le CRB",
       "save": "Enregistrer",
-      "cancel": "Annuler"
+      "cancel": "Annuler",
+      "success": {
+        "create": "Le gestionnaire d'accessions {{ name }} a été créé",
+        "update": "Le gestionnaire d'accessions {{ name }} a été modifié"
+      }
     }
   },
   "grc": {
@@ -327,7 +340,8 @@
       "title": "CRBs",
       "create": "Ajouter un CRB",
       "delete": "Supprimer le CRB",
-      "delete-confirmation": "Voulez-vous vraiment supprimer ce CRB\u00a0? Si il est utilisé par une autre entité dans le système, la suppression échouera."
+      "delete-confirmation": "Voulez-vous vraiment supprimer ce CRB\u00a0? Si il est utilisé par une autre entité dans le système, la suppression échouera.",
+      "deleted": "Le CRB {{ name }} a été supprimé"
     },
     "edit": {
       "title": {
@@ -341,7 +355,11 @@
       "address": "Adresse",
       "address-error-label": "L'adresse",
       "save": "Enregistrer",
-      "cancel": "Annuler"
+      "cancel": "Annuler",
+      "success": {
+        "create": "Le CRB {{ name }} a été créé",
+        "update": "Le CRB {{ name }} a été modifié"
+      }
     }
   }
 }

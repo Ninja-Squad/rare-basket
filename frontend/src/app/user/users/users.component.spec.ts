@@ -14,6 +14,7 @@ import { Page } from '../../shared/page.model';
 import { User } from '../../shared/user.model';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { ConfirmationService } from '../../shared/confirmation.service';
+import { ToastService } from '../../shared/toast.service';
 
 class UsersComponentTester extends ComponentTester<UsersComponent> {
   constructor() {
@@ -41,6 +42,7 @@ describe('UsersComponent', () => {
   let tester: UsersComponentTester;
   let userService: jasmine.SpyObj<UserService>;
   let confirmationService: jasmine.SpyObj<ConfirmationService>;
+  let toastService: jasmine.SpyObj<ToastService>;
 
   beforeEach(() => {
     const route = fakeRoute({
@@ -49,6 +51,7 @@ describe('UsersComponent', () => {
 
     userService = jasmine.createSpyObj<UserService>('UserService', ['list', 'delete']);
     confirmationService = jasmine.createSpyObj<ConfirmationService>('ConfirmationService', ['confirm']);
+    toastService = jasmine.createSpyObj<ToastService>('ToastService', ['success']);
 
     TestBed.configureTestingModule({
       imports: [I18nTestingModule, FontAwesomeModule, RbNgbModule, RouterTestingModule],
@@ -56,7 +59,8 @@ describe('UsersComponent', () => {
       providers: [
         { provide: ActivatedRoute, useValue: route },
         { provide: UserService, useValue: userService },
-        { provide: ConfirmationService, useValue: confirmationService }
+        { provide: ConfirmationService, useValue: confirmationService },
+        { provide: ToastService, useValue: toastService }
       ]
     });
 
@@ -135,5 +139,6 @@ describe('UsersComponent', () => {
 
     expect(tester.users.length).toBe(1);
     expect(userService.delete).toHaveBeenCalledWith(1);
+    expect(toastService.success).toHaveBeenCalled();
   });
 });

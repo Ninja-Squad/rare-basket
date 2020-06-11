@@ -14,6 +14,7 @@ import { ValidationDefaultsComponent } from '../../validation-defaults/validatio
 import { of } from 'rxjs';
 import { AccessionHolderService } from '../../shared/accession-holder.service';
 import { GrcService } from '../../shared/grc.service';
+import { ToastService } from '../../shared/toast.service';
 
 class EditUserComponentTester extends ComponentTester<EditUserComponent> {
   constructor() {
@@ -82,11 +83,13 @@ describe('EditUserComponent', () => {
   let accessionHolderService: jasmine.SpyObj<AccessionHolderService>;
   let grcService: jasmine.SpyObj<GrcService>;
   let router: Router;
+  let toastService: jasmine.SpyObj<ToastService>;
 
   function prepare(route: ActivatedRoute) {
     userService = jasmine.createSpyObj<UserService>('UserService', ['get', 'create', 'update']);
     accessionHolderService = jasmine.createSpyObj<AccessionHolderService>('AccessionHolderService', ['list']);
     grcService = jasmine.createSpyObj<GrcService>('GrcService', ['list']);
+    toastService = jasmine.createSpyObj<ToastService>('ToastService', ['success']);
 
     TestBed.configureTestingModule({
       imports: [I18nTestingModule, ReactiveFormsModule, ValdemortModule, RouterTestingModule],
@@ -95,6 +98,7 @@ describe('EditUserComponent', () => {
         { provide: UserService, useValue: userService },
         { provide: AccessionHolderService, useValue: accessionHolderService },
         { provide: GrcService, useValue: grcService },
+        { provide: ToastService, useValue: toastService },
         { provide: ActivatedRoute, useValue: route }
       ]
     });
@@ -259,6 +263,7 @@ describe('EditUserComponent', () => {
       };
       expect(userService.create).toHaveBeenCalledWith(expectedCommand);
       expect(router.navigate).toHaveBeenCalledWith(['/users']);
+      expect(toastService.success).toHaveBeenCalled();
     });
   });
 
@@ -325,6 +330,7 @@ describe('EditUserComponent', () => {
       };
       expect(userService.update).toHaveBeenCalledWith(42, expectedCommand);
       expect(router.navigate).toHaveBeenCalledWith(['/users']);
+      expect(toastService.success).toHaveBeenCalled();
     });
   });
 });

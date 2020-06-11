@@ -10,6 +10,7 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { EMPTY, of } from 'rxjs';
 import { Grc } from '../../shared/user.model';
 import { GrcService } from '../../shared/grc.service';
+import { ToastService } from '../../shared/toast.service';
 
 class GrcsComponentTester extends ComponentTester<GrcsComponent> {
   constructor() {
@@ -33,17 +34,20 @@ describe('GrcsComponent', () => {
   let tester: GrcsComponentTester;
   let grcService: jasmine.SpyObj<GrcService>;
   let confirmationService: jasmine.SpyObj<ConfirmationService>;
+  let toastService: jasmine.SpyObj<ToastService>;
 
   beforeEach(() => {
     grcService = jasmine.createSpyObj<GrcService>('GrcService', ['list', 'delete']);
     confirmationService = jasmine.createSpyObj<ConfirmationService>('ConfirmationService', ['confirm']);
+    toastService = jasmine.createSpyObj<ToastService>('ToastService', ['success']);
 
     TestBed.configureTestingModule({
       imports: [I18nTestingModule, FontAwesomeModule, RbNgbModule, RouterTestingModule],
       declarations: [GrcsComponent],
       providers: [
         { provide: GrcService, useValue: grcService },
-        { provide: ConfirmationService, useValue: confirmationService }
+        { provide: ConfirmationService, useValue: confirmationService },
+        { provide: ToastService, useValue: toastService }
       ]
     });
 
@@ -112,5 +116,6 @@ describe('GrcsComponent', () => {
 
     expect(tester.grcs.length).toBe(1);
     expect(grcService.delete).toHaveBeenCalledWith(432);
+    expect(toastService.success).toHaveBeenCalled();
   });
 });

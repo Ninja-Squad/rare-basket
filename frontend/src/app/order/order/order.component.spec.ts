@@ -25,6 +25,7 @@ import { RbNgbModule } from '../../rb-ngb/rb-ngb.module';
 import { DownloadService } from '../../shared/download.service';
 import { MockModalService, ModalTestingModule } from '../../shared/mock-modal.service.spec';
 import { FinalizationWarningsModalComponent } from '../finalization-warnings-modal/finalization-warnings-modal.component';
+import { ToastService } from '../../shared/toast.service';
 
 class OrderComponentTester extends ComponentTester<OrderComponent> {
   constructor() {
@@ -90,6 +91,7 @@ describe('OrderComponent', () => {
   let confirmationService: jasmine.SpyObj<ConfirmationService>;
   let downloadService: jasmine.SpyObj<DownloadService>;
   let modalService: MockModalService<FinalizationWarningsModalComponent>;
+  let toastService: jasmine.SpyObj<ToastService>;
 
   let order: DetailedOrder;
 
@@ -112,6 +114,7 @@ describe('OrderComponent', () => {
     ]);
     confirmationService = jasmine.createSpyObj<ConfirmationService>('ConfirmationService', ['confirm']);
     downloadService = jasmine.createSpyObj<DownloadService>('DownloadService', ['download']);
+    toastService = jasmine.createSpyObj<ToastService>('ToastService', ['success']);
 
     TestBed.configureTestingModule({
       declarations: [
@@ -137,7 +140,8 @@ describe('OrderComponent', () => {
         { provide: OrderService, useValue: orderService },
         { provide: ConfirmationService, useValue: confirmationService },
         { provide: DownloadService, useValue: downloadService },
-        { provide: LOCALE_ID, useValue: 'fr' }
+        { provide: LOCALE_ID, useValue: 'fr' },
+        { provide: ToastService, useValue: toastService }
       ]
     });
 
@@ -315,6 +319,7 @@ describe('OrderComponent', () => {
 
     expect(confirmationService.confirm).toHaveBeenCalled();
     expect(orderService.finalize).toHaveBeenCalledWith(tester.componentInstance.order.id);
+    expect(toastService.success).toHaveBeenCalled();
     expect(tester.componentInstance.order).toBe(newOrder);
   });
 
@@ -339,6 +344,7 @@ describe('OrderComponent', () => {
       `Certaines des accessions commandées n'ont pas d'unité spécifiée`
     ]);
     expect(orderService.finalize).toHaveBeenCalledWith(tester.componentInstance.order.id);
+    expect(toastService.success).toHaveBeenCalled();
     expect(tester.componentInstance.order).toBe(newOrder);
   });
 
@@ -362,6 +368,7 @@ describe('OrderComponent', () => {
 
     expect(confirmationService.confirm).toHaveBeenCalled();
     expect(orderService.cancel).toHaveBeenCalledWith(tester.componentInstance.order.id);
+    expect(toastService.success).toHaveBeenCalled();
     expect(tester.componentInstance.order).toBe(newOrder);
   });
 

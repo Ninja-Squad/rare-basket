@@ -12,6 +12,7 @@ import { I18nTestingModule } from '../../i18n/i18n-testing.module.spec';
 import { ValidationDefaultsComponent } from '../../validation-defaults/validation-defaults.component';
 import { AccessionHolder, AccessionHolderCommand, Grc } from '../../shared/user.model';
 import { GrcService } from '../../shared/grc.service';
+import { ToastService } from '../../shared/toast.service';
 
 class EditAccessionHolderComponentTester extends ComponentTester<EditAccessionHolderComponent> {
   constructor() {
@@ -52,10 +53,12 @@ describe('EditAccessionHolderComponent', () => {
   let accessionHolderService: jasmine.SpyObj<AccessionHolderService>;
   let grcService: jasmine.SpyObj<GrcService>;
   let router: Router;
+  let toastService: jasmine.SpyObj<ToastService>;
 
   function prepare(route: ActivatedRoute) {
     accessionHolderService = jasmine.createSpyObj<AccessionHolderService>('AccessionHolderService', ['get', 'create', 'update']);
     grcService = jasmine.createSpyObj<GrcService>('GrcService', ['list']);
+    toastService = jasmine.createSpyObj<ToastService>('ToastService', ['success']);
 
     TestBed.configureTestingModule({
       imports: [I18nTestingModule, ReactiveFormsModule, ValdemortModule, RouterTestingModule],
@@ -63,7 +66,8 @@ describe('EditAccessionHolderComponent', () => {
       providers: [
         { provide: AccessionHolderService, useValue: accessionHolderService },
         { provide: GrcService, useValue: grcService },
-        { provide: ActivatedRoute, useValue: route }
+        { provide: ActivatedRoute, useValue: route },
+        { provide: ToastService, useValue: toastService }
       ]
     });
 
@@ -147,6 +151,7 @@ describe('EditAccessionHolderComponent', () => {
       };
       expect(accessionHolderService.create).toHaveBeenCalledWith(expectedCommand);
       expect(router.navigate).toHaveBeenCalledWith(['/accession-holders']);
+      expect(toastService.success).toHaveBeenCalled();
     });
   });
 
@@ -202,6 +207,7 @@ describe('EditAccessionHolderComponent', () => {
       };
       expect(accessionHolderService.update).toHaveBeenCalledWith(41, expectedCommand);
       expect(router.navigate).toHaveBeenCalledWith(['/accession-holders']);
+      expect(toastService.success).toHaveBeenCalled();
     });
   });
 });

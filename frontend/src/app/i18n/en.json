@@ -180,7 +180,9 @@
       "delete-document-confirmation": "Do you really want to delete this document? This operation is irreversible!",
       "add-document": "Add a document",
       "add-document-title": "Add a document",
-      "all-orders": "All the orders"
+      "all-orders": "All the orders",
+      "finalized": "The order has been finalized",
+      "cancelled": "The order has been cancelled"
     },
     "edit-customer-information": {
       "name": "Customer name",
@@ -266,7 +268,8 @@
       "confirm": "Do you want to finalize this order anyway?"
     },
     "create-order": {
-      "title": "Create a new order"
+      "title": "Create a new order",
+      "created": "The order has been created. Please fill in the requested accessions now."
     }
   },
   "user": {
@@ -274,7 +277,8 @@
       "title": "Users",
       "create": "Add a user",
       "delete": "Delete the user",
-      "delete-confirmation": "Do you really want to delete this user? Note that the user will not be deleted from Keycloak."
+      "delete-confirmation": "Do you really want to delete this user? Note that the user will not be deleted from Keycloak.",
+      "deleted": "The user {{ name }} has been deleted"
     },
     "edit": {
       "title": {
@@ -292,7 +296,11 @@
       "visualization-grcs": "Visualizable GRCs",
       "grc-required": "At least one GRC must be selected",
       "save": "Save",
-      "cancel": "Cancel"
+      "cancel": "Cancel",
+      "success": {
+        "create": "The user {{ name }} has been created",
+        "update": "The user {{ name }} has been modified"
+      }
     }
   },
   "accession-holder": {
@@ -300,7 +308,8 @@
       "title": "Accession holders",
       "create": "Add an accession holder",
       "delete": "Delete the accession holder",
-      "delete-confirmation": "Do you really want to delete this accession holder? If it's referenced by an other entity in the system, the deletion will fail."
+      "delete-confirmation": "Do you really want to delete this accession holder? If it's referenced by an other entity in the system, the deletion will fail.",
+      "deleted": "The accession holder {{ name }} has been deleted"
     },
     "edit": {
       "title": {
@@ -316,7 +325,11 @@
       "grc": "GRC",
       "grc-error-label": "The GRC",
       "save": "Save",
-      "cancel": "Cancel"
+      "cancel": "Cancel",
+      "success": {
+        "create": "The accession holder {{ name }} has been created",
+        "update": "The accession holder {{ name }} has been modified"
+      }
     }
   },
   "grc": {
@@ -324,7 +337,8 @@
       "title": "GRCs",
       "create": "Add a GRC",
       "delete": "Delete the GRC",
-      "delete-confirmation": "Do you really want to delete this GRC? If it's referenced by an other entity in the system, the deletion will fail."
+      "delete-confirmation": "Do you really want to delete this GRC? If it's referenced by an other entity in the system, the deletion will fail.",
+      "deleted": "The GRC {{ name }} has been deleted"
     },
     "edit": {
       "title": {
@@ -338,7 +352,11 @@
       "address": "Address",
       "address-error-label": "The address",
       "save": "Save",
-      "cancel": "Cancel"
+      "cancel": "Cancel",
+      "success": {
+        "create": "The GRC {{ name }} has been created",
+        "update": "The GRC {{ name }} has been modified"
+      }
     }
   }
 }

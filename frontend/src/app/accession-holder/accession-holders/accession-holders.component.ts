@@ -2,8 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { AccessionHolder } from '../../shared/user.model';
 import { faPlus, faStoreAlt, faTrash } from '@fortawesome/free-solid-svg-icons';
 import { AccessionHolderService } from '../../shared/accession-holder.service';
-import { switchMap } from 'rxjs/operators';
+import { switchMap, tap } from 'rxjs/operators';
 import { ConfirmationService } from '../../shared/confirmation.service';
+import { ToastService } from '../../shared/toast.service';
 
 @Component({
   selector: 'rb-accession-holders',
@@ -17,7 +18,11 @@ export class AccessionHoldersComponent implements OnInit {
   createAccessionHolderIcon = faPlus;
   deleteAccessionHolderIcon = faTrash;
 
-  constructor(private accessionHolderService: AccessionHolderService, private confirmationService: ConfirmationService) {}
+  constructor(
+    private accessionHolderService: AccessionHolderService,
+    private confirmationService: ConfirmationService,
+    private toastService: ToastService
+  ) {}
 
   ngOnInit() {
     this.accessionHolderService.list().subscribe(accessionHolders => (this.accessionHolders = accessionHolders));
@@ -26,8 +31,11 @@ export class AccessionHoldersComponent implements OnInit {
   deleteAccessionHolder(accessionHolder: AccessionHolder) {
     this.confirmationService
       .confirm({ messageKey: 'accession-holder.accession-holders.delete-confirmation' })
-      .pipe(switchMap(() => this.accessionHolderService.delete(accessionHolder.id)))
-      .pipe(switchMap(() => this.accessionHolderService.list()))
+      .pipe(
+        switchMap(() => this.accessionHolderService.delete(accessionHolder.id)),
+        tap(() => this.toastService.success('accession-holder.accession-holders.deleted', { name: accessionHolder.name })),
+        switchMap(() => this.accessionHolderService.list())
+      )
       .subscribe(accessionHolders => (this.accessionHolders = accessionHolders));
   }
 }

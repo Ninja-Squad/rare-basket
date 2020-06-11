@@ -7,6 +7,7 @@ import { combineLatest, Observable, of } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { AccessionHolderService } from '../../shared/accession-holder.service';
 import { GrcService } from '../../shared/grc.service';
+import { ToastService } from '../../shared/toast.service';
 
 interface FormValue {
   name: string;
@@ -47,7 +48,8 @@ export class EditUserComponent implements OnInit {
     private userService: UserService,
     private accessionHolderService: AccessionHolderService,
     private grcService: GrcService,
-    private router: Router
+    private router: Router,
+    private toastService: ToastService
   ) {
     this.form = fb.group({
       name: ['', Validators.required],
@@ -181,7 +183,10 @@ export class EditUserComponent implements OnInit {
       obs = this.userService.create(command);
     }
 
-    obs.subscribe(() => this.router.navigate(['/users']));
+    obs.subscribe(() => {
+      this.router.navigate(['/users']);
+      this.toastService.success(`user.edit.success.${this.mode}`, { name: command.name });
+    });
   }
 
   private toGrcOptionGroups(accessionHolders: Array<AccessionHolder>): Array<GrcOptionGroup> {

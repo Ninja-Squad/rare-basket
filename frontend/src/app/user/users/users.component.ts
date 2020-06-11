@@ -4,10 +4,11 @@ import { User } from '../../shared/user.model';
 import { Page } from '../../shared/page.model';
 import { TranslateService } from '@ngx-translate/core';
 import { ActivatedRoute } from '@angular/router';
-import { map, switchMap } from 'rxjs/operators';
+import { map, switchMap, tap } from 'rxjs/operators';
 import { faPlus, faTrash, faUser } from '@fortawesome/free-solid-svg-icons';
 import { ConfirmationService } from '../../shared/confirmation.service';
 import { merge, Subject } from 'rxjs';
+import { ToastService } from '../../shared/toast.service';
 
 @Component({
   selector: 'rb-users',
@@ -27,7 +28,8 @@ export class UsersComponent implements OnInit {
     private route: ActivatedRoute,
     private userService: UserService,
     private translateService: TranslateService,
-    private confirmationService: ConfirmationService
+    private confirmationService: ConfirmationService,
+    private toastService: ToastService
   ) {}
 
   ngOnInit() {
@@ -47,7 +49,10 @@ export class UsersComponent implements OnInit {
   deleteUser(user: User) {
     this.confirmationService
       .confirm({ messageKey: 'user.users.delete-confirmation' })
-      .pipe(switchMap(() => this.userService.delete(user.id)))
+      .pipe(
+        switchMap(() => this.userService.delete(user.id)),
+        tap(() => this.toastService.success('user.users.deleted', { name: user.name }))
+      )
       .subscribe(() => this.reloadPage$.next(this.users.number));
   }
 }

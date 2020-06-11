@@ -11,6 +11,7 @@ import { I18nTestingModule } from '../../i18n/i18n-testing.module.spec';
 import { ValidationDefaultsComponent } from '../../validation-defaults/validation-defaults.component';
 import { Grc, GrcCommand } from '../../shared/user.model';
 import { GrcService } from '../../shared/grc.service';
+import { ToastService } from '../../shared/toast.service';
 
 class EditGrcComponentTester extends ComponentTester<EditGrcComponent> {
   constructor() {
@@ -46,16 +47,19 @@ describe('EditGrcComponent', () => {
   let tester: EditGrcComponentTester;
   let grcService: jasmine.SpyObj<GrcService>;
   let router: Router;
+  let toastService: jasmine.SpyObj<ToastService>;
 
   function prepare(route: ActivatedRoute) {
     grcService = jasmine.createSpyObj<GrcService>('GrcService', ['get', 'create', 'update']);
+    toastService = jasmine.createSpyObj<ToastService>('ToastService', ['success']);
 
     TestBed.configureTestingModule({
       imports: [I18nTestingModule, ReactiveFormsModule, ValdemortModule, RouterTestingModule],
       declarations: [EditGrcComponent, ValidationDefaultsComponent],
       providers: [
         { provide: GrcService, useValue: grcService },
-        { provide: ActivatedRoute, useValue: route }
+        { provide: ActivatedRoute, useValue: route },
+        { provide: ToastService, useValue: toastService }
       ]
     });
 
@@ -118,6 +122,7 @@ describe('EditGrcComponent', () => {
       };
       expect(grcService.create).toHaveBeenCalledWith(expectedCommand);
       expect(router.navigate).toHaveBeenCalledWith(['/grcs']);
+      expect(toastService.success).toHaveBeenCalled();
     });
   });
 
@@ -166,6 +171,7 @@ describe('EditGrcComponent', () => {
       };
       expect(grcService.update).toHaveBeenCalledWith(41, expectedCommand);
       expect(router.navigate).toHaveBeenCalledWith(['/grcs']);
+      expect(toastService.success).toHaveBeenCalled();
     });
   });
 });

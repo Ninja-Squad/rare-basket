@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Toast, ToastService } from '../../shared/toast.service';
-import { faExclamationCircle, faInfoCircle } from '@fortawesome/free-solid-svg-icons';
+import { faCheckCircle, faExclamationCircle } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'rb-toasts',
@@ -23,6 +23,6 @@ export class ToastsComponent implements OnInit {
   }
 
   icon(toast: Toast) {
-    return toast.type === 'success' ? faInfoCircle : faExclamationCircle;
+    return toast.type === 'success' ? faCheckCircle : faExclamationCircle;
   }
 }

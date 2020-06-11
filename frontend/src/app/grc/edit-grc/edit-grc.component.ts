@@ -4,6 +4,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { GrcService } from '../../shared/grc.service';
 import { Observable } from 'rxjs';
+import { ToastService } from '../../shared/toast.service';
 
 interface FormValue {
   name: string;
@@ -21,7 +22,13 @@ export class EditGrcComponent implements OnInit {
   editedGrc: Grc;
   form: FormGroup;
 
-  constructor(private route: ActivatedRoute, fb: FormBuilder, private grcService: GrcService, private router: Router) {
+  constructor(
+    private route: ActivatedRoute,
+    fb: FormBuilder,
+    private grcService: GrcService,
+    private router: Router,
+    private toastService: ToastService
+  ) {
     this.form = fb.group({
       name: ['', Validators.required],
       institution: ['', Validators.required],
@@ -65,6 +72,9 @@ export class EditGrcComponent implements OnInit {
       obs = this.grcService.create(command);
     }
 
-    obs.subscribe(() => this.router.navigate(['/grcs']));
+    obs.subscribe(() => {
+      this.router.navigate(['/grcs']);
+      this.toastService.success(`grc.edit.success.${this.mode}`, { name: command.name });
+    });
   }
 }

@@ -14,6 +14,7 @@ import { Router } from '@angular/router';
 import { EditCustomerInformationComponent } from '../edit-customer-information/edit-customer-information.component';
 import { DetailedOrder, CustomerInformationCommand } from '../order.model';
 import { of } from 'rxjs';
+import { ToastService } from '../../shared/toast.service';
 
 class CreateOrderComponentTester extends ComponentTester<CreateOrderComponent> {
   constructor() {
@@ -29,14 +30,19 @@ describe('CreateOrderComponent', () => {
   let tester: CreateOrderComponentTester;
   let orderService: jasmine.SpyObj<OrderService>;
   let router: Router;
+  let toastService: jasmine.SpyObj<ToastService>;
 
   beforeEach(() => {
     orderService = jasmine.createSpyObj<OrderService>('OrderService', ['createOrder']);
+    toastService = jasmine.createSpyObj<ToastService>('ToastService', ['success']);
 
     TestBed.configureTestingModule({
       imports: [I18nTestingModule, ReactiveFormsModule, ValdemortModule, RouterTestingModule],
       declarations: [CreateOrderComponent, EditCustomerInformationComponent, LanguageEnumPipe, CustomerTypeEnumPipe],
-      providers: [{ provide: OrderService, useValue: orderService }]
+      providers: [
+        { provide: OrderService, useValue: orderService },
+        { provide: ToastService, useValue: toastService }
+      ]
     });
 
     tester = new CreateOrderComponentTester();
@@ -60,6 +66,7 @@ describe('CreateOrderComponent', () => {
 
     expect(router.navigate).toHaveBeenCalledWith(['/orders', 42], { replaceUrl: true });
     expect(orderService.createOrder).toHaveBeenCalledWith(command);
+    expect(toastService.success).toHaveBeenCalled();
   });
 
   it('should cancel', () => {

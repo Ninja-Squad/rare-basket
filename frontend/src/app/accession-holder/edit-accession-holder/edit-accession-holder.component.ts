@@ -5,6 +5,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { AccessionHolderService } from '../../shared/accession-holder.service';
 import { GrcService } from '../../shared/grc.service';
 import { Observable } from 'rxjs';
+import { ToastService } from '../../shared/toast.service';
 
 interface FormValue {
   name: string;
@@ -29,7 +30,8 @@ export class EditAccessionHolderComponent implements OnInit {
     fb: FormBuilder,
     private accessionHolderService: AccessionHolderService,
     private grcService: GrcService,
-    private router: Router
+    private router: Router,
+    private toastService: ToastService
   ) {
     this.form = fb.group({
       name: ['', Validators.required],
@@ -78,6 +80,9 @@ export class EditAccessionHolderComponent implements OnInit {
       obs = this.accessionHolderService.create(command);
     }
 
-    obs.subscribe(() => this.router.navigate(['/accession-holders']));
+    obs.subscribe(() => {
+      this.router.navigate(['/accession-holders']);
+      this.toastService.success(`accession-holder.edit.success.${this.mode}`, { name: command.name });
+    });
   }
 }

@@ -10,6 +10,7 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { ConfirmationService } from '../../shared/confirmation.service';
 import { AccessionHoldersComponent } from './accession-holders.component';
 import { AccessionHolderService } from '../../shared/accession-holder.service';
+import { ToastService } from '../../shared/toast.service';
 
 class AccessionHoldersComponentTester extends ComponentTester<AccessionHoldersComponent> {
   constructor() {
@@ -33,17 +34,20 @@ describe('AccessionHoldersComponent', () => {
   let tester: AccessionHoldersComponentTester;
   let accessionHolderService: jasmine.SpyObj<AccessionHolderService>;
   let confirmationService: jasmine.SpyObj<ConfirmationService>;
+  let toastService: jasmine.SpyObj<ToastService>;
 
   beforeEach(() => {
     accessionHolderService = jasmine.createSpyObj<AccessionHolderService>('AccessionHolderService', ['list', 'delete']);
     confirmationService = jasmine.createSpyObj<ConfirmationService>('ConfirmationService', ['confirm']);
+    toastService = jasmine.createSpyObj<ToastService>('ToastService', ['success']);
 
     TestBed.configureTestingModule({
       imports: [I18nTestingModule, FontAwesomeModule, RbNgbModule, RouterTestingModule],
       declarations: [AccessionHoldersComponent],
       providers: [
         { provide: AccessionHolderService, useValue: accessionHolderService },
-        { provide: ConfirmationService, useValue: confirmationService }
+        { provide: ConfirmationService, useValue: confirmationService },
+        { provide: ToastService, useValue: toastService }
       ]
     });
 
@@ -138,5 +142,6 @@ describe('AccessionHoldersComponent', () => {
 
     expect(tester.accessionHolders.length).toBe(1);
     expect(accessionHolderService.delete).toHaveBeenCalledWith(1);
+    expect(toastService.success).toHaveBeenCalled();
   });
 });
