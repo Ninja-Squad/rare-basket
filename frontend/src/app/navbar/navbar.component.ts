@@ -1,6 +1,15 @@
 import { Component, OnInit } from '@angular/core';
 import { AuthenticationService } from '../shared/authentication.service';
-import { faBuilding, faPowerOff, faShoppingBag, faSignInAlt, faStoreAlt, faUser, faUsersCog } from '@fortawesome/free-solid-svg-icons';
+import {
+  faBuilding,
+  faPowerOff,
+  faShieldAlt,
+  faShoppingBag,
+  faSignInAlt,
+  faStoreAlt,
+  faUser,
+  faUsersCog
+} from '@fortawesome/free-solid-svg-icons';
 import { Permission, User } from '../shared/user.model';
 
 @Component({
@@ -13,6 +22,7 @@ export class NavbarComponent implements OnInit {
   user: User;
 
   ordersIcon = faShoppingBag;
+  administrationIcon = faShieldAlt;
   usersIcon = faUsersCog;
   userIcon = faUser;
   grcIcon = faBuilding;

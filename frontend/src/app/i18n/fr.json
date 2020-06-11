@@ -73,6 +73,7 @@
   "navbar": {
     "toggle": "Afficher/maquer la navigation",
     "orders": "Commandes",
+    "administration": "Administration",
     "users": "Utilisateurs",
     "accession-holders": "Gestionnaires d'accessions",
     "grcs": "CRBs",

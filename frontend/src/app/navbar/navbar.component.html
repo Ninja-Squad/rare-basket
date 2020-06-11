@@ -14,28 +14,31 @@
   <div class="collapse navbar-collapse" [class.show]="!collapsed">
     <ul class="navbar-nav mr-auto">
       <li class="nav-item" *ngIf="hasPermission('ORDER_MANAGEMENT') || hasPermission('ORDER_VISUALIZATION')" id="navbar-orders">
-        <a class="nav-link" routerLink="/orders">
+        <a class="nav-link" routerLink="/orders" (click)="collapsed = true">
           <fa-icon [icon]="ordersIcon" class="mr-1"></fa-icon>
           <span translate="navbar.orders"></span>
         </a>
       </li>
-      <li class="nav-item" *ngIf="hasPermission('ADMINISTRATION')" id="navbar-users">
-        <a class="nav-link" routerLink="/users">
-          <fa-icon [icon]="usersIcon" class="mr-1"></fa-icon>
-          <span translate="navbar.users"></span>
+
+      <li *ngIf="hasPermission('ADMINISTRATION')" class="nav-item" ngbDropdown>
+        <a class="nav-link" style="cursor: pointer" ngbDropdownToggle id="navbar-administration-dropdown" role="button">
+          <fa-icon [icon]="administrationIcon" class="mr-1"></fa-icon>
+          <span translate="navbar.administration"></span>
         </a>
-      </li>
-      <li class="nav-item" *ngIf="hasPermission('ADMINISTRATION')" id="navbar-grcs">
-        <a class="nav-link" routerLink="/grcs">
-          <fa-icon [icon]="grcIcon" class="mr-1"></fa-icon>
-          <span translate="navbar.grcs"></span>
-        </a>
-      </li>
-      <li class="nav-item" *ngIf="hasPermission('ADMINISTRATION')" id="navbar-accession-holders">
-        <a class="nav-link" routerLink="/accession-holders">
-          <fa-icon [icon]="accessionHolderIcon" class="mr-1"></fa-icon>
-          <span translate="navbar.accession-holders"></span>
-        </a>
+        <div ngbDropdownMenu aria-labelledby="navbar-administration-dropdown" class="dropdown-menu">
+          <a ngbDropdownItem routerLink="/grcs" (click)="collapsed = true" id="navbar-grcs">
+            <fa-icon [icon]="grcIcon" class="mr-1"></fa-icon>
+            <span translate="navbar.grcs"></span>
+          </a>
+          <a ngbDropdownItem routerLink="/accession-holders" (click)="collapsed = true" id="navbar-accession-holders">
+            <fa-icon [icon]="accessionHolderIcon" class="mr-1"></fa-icon>
+            <span translate="navbar.accession-holders"></span>
+          </a>
+          <a ngbDropdownItem routerLink="/users" (click)="collapsed = true" id="navbar-users">
+            <fa-icon [icon]="usersIcon" class="mr-1"></fa-icon>
+            <span translate="navbar.users"></span>
+          </a>
+        </div>
       </li>
     </ul>
     <ul class="navbar-nav">
@@ -46,11 +49,11 @@
         </span>
       </li>
       <li>
-        <a *ngIf="!user" class="nav-link" role="button" (click)="login()" style="cursor: pointer;" id="navbar-login">
+        <a *ngIf="!user" class="nav-link" role="button" (click)="login(); collapsed = true" style="cursor: pointer;" id="navbar-login">
           <fa-icon [icon]="loginIcon" class="mr-1"></fa-icon>
           <span translate="navbar.login"></span>
         </a>
-        <a *ngIf="user" class="nav-link" role="button" (click)="logout()" style="cursor: pointer;" id="navbar-logout">
+        <a *ngIf="user" class="nav-link" role="button" (click)="logout(); collapsed = true" style="cursor: pointer;" id="navbar-logout">
           <fa-icon [icon]="logoutIcon" class="mr-1"></fa-icon>
           <span translate="navbar.logout"></span>
         </a>

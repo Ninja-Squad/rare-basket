@@ -22,6 +22,10 @@ class NavbarComponentTester extends ComponentTester<NavbarComponent> {
     return this.element('#navbar-user');
   }
 
+  get administrationDropdown() {
+    return this.element('#navbar-administration-dropdown');
+  }
+
   get users() {
     return this.element('#navbar-users');
   }
@@ -73,6 +77,7 @@ describe('NavbarComponent', () => {
 
     expect(tester.user).toContainText('JB');
     expect(tester.orders).not.toBeNull();
+    expect(tester.administrationDropdown).toBeNull();
     expect(tester.users).toBeNull();
     expect(tester.accessionHolders).toBeNull();
     expect(tester.logout).not.toBeNull();
@@ -83,6 +88,7 @@ describe('NavbarComponent', () => {
 
     expect(tester.user).toBeNull();
     expect(tester.orders).toBeNull();
+    expect(tester.administrationDropdown).toBeNull();
     expect(tester.users).toBeNull();
     expect(tester.accessionHolders).toBeNull();
     expect(tester.logout).toBeNull();
@@ -93,6 +99,7 @@ describe('NavbarComponent', () => {
 
     expect(tester.user).toContainText('JB');
     expect(tester.orders).toBeNull();
+    expect(tester.administrationDropdown).toBeNull();
     expect(tester.users).toBeNull();
     expect(tester.accessionHolders).toBeNull();
     expect(tester.logout).not.toBeNull();
@@ -103,6 +110,7 @@ describe('NavbarComponent', () => {
 
     expect(tester.user).toContainText('JB');
     expect(tester.orders).toBeNull();
+    expect(tester.administrationDropdown).not.toBeNull();
     expect(tester.users).not.toBeNull();
     expect(tester.accessionHolders).not.toBeNull();
     expect(tester.logout).not.toBeNull();
@@ -113,6 +121,7 @@ describe('NavbarComponent', () => {
 
     expect(tester.user).toContainText('JB');
     expect(tester.orders).not.toBeNull();
+    expect(tester.administrationDropdown).toBeNull();
     expect(tester.users).toBeNull();
     expect(tester.accessionHolders).toBeNull();
     expect(tester.logout).not.toBeNull();

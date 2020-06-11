@@ -5,6 +5,7 @@ import {
   NgbDateParserFormatter,
   NgbDatepickerConfig,
   NgbDatepickerModule,
+  NgbDropdownModule,
   NgbModalModule,
   NgbPaginationModule,
   NgbProgressbarModule,
@@ -29,7 +30,15 @@ export class RbNgbDatepickerConfig extends NgbDatepickerConfig {
   }
 }
 
-const NGB_MODULES = [NgbModalModule, NgbTooltipModule, NgbPaginationModule, NgbProgressbarModule, NgbDatepickerModule, NgbToastModule];
+const NGB_MODULES = [
+  NgbModalModule,
+  NgbTooltipModule,
+  NgbPaginationModule,
+  NgbProgressbarModule,
+  NgbDatepickerModule,
+  NgbToastModule,
+  NgbDropdownModule
+];
 
 @NgModule({
   imports: [...NGB_MODULES, CommonModule, FontAwesomeModule],

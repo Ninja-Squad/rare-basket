@@ -73,6 +73,7 @@
   "navbar": {
     "toggle": "Toggle navigation",
     "orders": "Orders",
+    "administration": "Administration",
     "users": "Users",
     "accession-holders": "Accession holders",
     "grcs": "GRCs",
