@@ -1,4 +1,12 @@
-<rb-orders *ngIf="orders && orders.totalElements > 0" [orders]="orders"></rb-orders>
+<div *ngIf="orders && orders.totalElements > 0">
+  <div
+    class="small text-muted mb-2"
+    translate="order.in-progress-orders.count"
+    [translateParams]="{ count: orders.totalElements | number }"
+  ></div>
+
+  <rb-orders [orders]="orders"></rb-orders>
+</div>
 
 <div *ngIf="orders && orders.totalElements === 0" class="text-center mb-4" id="no-order-message">
   <div>

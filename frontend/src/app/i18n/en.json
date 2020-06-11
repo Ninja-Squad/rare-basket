@@ -154,6 +154,7 @@
       "n-accessions": "{{ n }} accessions"
     },
     "in-progress-orders": {
+      "count": "{{ count }} order(s) in progress",
       "no-order": "No in progress order. Good job!",
       "create": "Create an order"
     },
