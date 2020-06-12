@@ -2,15 +2,15 @@ import { TestBed } from '@angular/core/testing';
 
 import { AuthenticationService } from './authentication.service';
 import { WINDOW } from './window.service';
-import { AuthorizationResult, AuthorizationState, OidcSecurityService } from 'angular-auth-oidc-client';
+import { OidcConfigService, OidcSecurityService } from 'angular-auth-oidc-client';
 import { Router } from '@angular/router';
-import { BehaviorSubject, EMPTY, of, Subject } from 'rxjs';
+import { Subject } from 'rxjs';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
-import { User } from './user.model';
 
 describe('AuthenticationService', () => {
   let service: AuthenticationService;
   let fakeWindow: Window;
+  let oidcConfigService: jasmine.SpyObj<OidcConfigService>;
   let oidcSecurityService: jasmine.SpyObj<OidcSecurityService>;
   let router: jasmine.SpyObj<Router>;
   let http: HttpTestingController;
@@ -19,15 +19,16 @@ describe('AuthenticationService', () => {
     fakeWindow = ({
       origin: 'http://localhost:4201',
       location: 'http://localhost:4201/orders',
-      sessionStorage: jasmine.createSpyObj<Storage>('SessionStorage', ['getItem', 'setItem'])
+      sessionStorage: jasmine.createSpyObj<Storage>('SessionStorage', ['getItem', 'setItem', 'removeItem'])
     } as unknown) as Window;
+
+    oidcConfigService = jasmine.createSpyObj<OidcConfigService>('OidcConfigService', ['withConfig']);
 
     oidcSecurityService = jasmine.createSpyObj<OidcSecurityService>('OidcSecurityService', [
       'authorize',
       'logoff',
-      'getIsAuthorized',
-      'setupModule',
-      'authorizedCallbackWithCode'
+      'logoffLocal',
+      'checkAuth'
     ]);
 
     router = jasmine.createSpyObj<Router>('Router', ['navigateByUrl']);
@@ -37,6 +38,7 @@ describe('AuthenticationService', () => {
       providers: [
         { provide: WINDOW, useValue: fakeWindow },
         { provide: OidcSecurityService, useValue: oidcSecurityService },
+        { provide: OidcConfigService, useValue: oidcConfigService },
         { provide: Router, useValue: router }
       ]
     });
@@ -61,71 +63,90 @@ describe('AuthenticationService', () => {
     expect(oidcSecurityService.logoff).toHaveBeenCalled();
   });
 
-  it('should tell if the user is authenticated', () => {
+  it('should tell if the user is authenticated when authentication check succeeds', () => {
     const events: Array<boolean> = [];
-    const subject = new BehaviorSubject<boolean>(false);
 
-    oidcSecurityService.getIsAuthorized.and.returnValue(subject);
+    const subject = new Subject<boolean>();
 
-    (oidcSecurityService as any).onAuthorizationResult = EMPTY;
+    oidcSecurityService.checkAuth.and.returnValue(subject);
 
     service.init();
     service.isAuthenticated().subscribe(event => events.push(event));
 
-    subject.next(false);
-    subject.next(false);
-    subject.next(true);
-    http.expectOne('/api/users/me').flush({});
-    subject.next(true);
-    subject.next(false);
+    expect(events).toEqual([]);
 
-    expect(events).toEqual([false, true, false]);
+    subject.next(true);
+
+    expect(events).toEqual([]);
+
+    http.expectOne('/api/users/me').flush({});
+
+    expect(events).toEqual([true]);
+    service.isAuthenticated().subscribe(event => events.push(event));
+    expect(events).toEqual([true, true]);
+
     http.verify();
   });
 
-  it('should get the current user, or null if the user is not authenticated', () => {
-    const events: Array<User> = [];
-    const authenticatedSubject = new BehaviorSubject<boolean>(false);
+  it('should tell if the user is authenticated when authentication check fails', () => {
+    const events: Array<boolean> = [];
 
-    oidcSecurityService.getIsAuthorized.and.returnValue(authenticatedSubject);
+    const subject = new Subject<boolean>();
 
-    (oidcSecurityService as any).onAuthorizationResult = EMPTY;
+    oidcSecurityService.checkAuth.and.returnValue(subject);
 
     service.init();
-    service.getCurrentUser().subscribe(event => events.push(event));
+    service.isAuthenticated().subscribe(event => events.push(event));
 
-    authenticatedSubject.next(false);
-    authenticatedSubject.next(false);
-    authenticatedSubject.next(true);
-    http.expectOne('/api/users/me').flush({ id: 1 });
+    expect(events).toEqual([]);
 
-    authenticatedSubject.next(true);
-    authenticatedSubject.next(false);
+    subject.next(false);
 
-    expect(events).toEqual([null, { id: 1 } as User, null]);
+    expect(events).toEqual([false]);
+
+    service.isAuthenticated().subscribe(event => events.push(event));
+    expect(events).toEqual([false, false]);
+
+    http.verify();
+  });
+
+  it('should tell if the user is authenticated when authentication check succeeds but getting user fails', () => {
+    const events: Array<boolean> = [];
+
+    const subject = new Subject<boolean>();
+
+    oidcSecurityService.checkAuth.and.returnValue(subject);
+
+    service.init();
+    service.isAuthenticated().subscribe(event => events.push(event));
+
+    expect(events).toEqual([]);
+
+    subject.next(true);
+
+    expect(events).toEqual([]);
+
+    http.expectOne('/api/users/me').flush({}, { status: 404, statusText: 'Not Found' });
+
+    expect(events).toEqual([false]);
+    service.isAuthenticated().subscribe(event => events.push(event));
+    expect(events).toEqual([false, false]);
+
     http.verify();
   });
 
   it('should init and route to requested URL when authentication succeeds', () => {
-    const subject = new Subject<AuthorizationResult>();
-    (oidcSecurityService as any).onAuthorizationResult = subject;
+    (fakeWindow.sessionStorage.getItem as jasmine.Spy).and.returnValue('/foo');
 
-    oidcSecurityService.getIsAuthorized.and.returnValue(of(true));
+    const subject = new Subject<boolean>();
+
+    oidcSecurityService.checkAuth.and.returnValue(subject);
 
     service.init();
 
-    subject.next({ isRenewProcess: true, authorizationState: AuthorizationState.authorized, validationResult: null });
-    expect(router.navigateByUrl).not.toHaveBeenCalled();
-
-    subject.next({ isRenewProcess: false, authorizationState: AuthorizationState.unauthorized, validationResult: null });
-    expect(router.navigateByUrl).not.toHaveBeenCalled();
-
-    subject.next({ isRenewProcess: false, authorizationState: AuthorizationState.authorized, validationResult: null });
+    subject.next(true);
     http.expectOne('/api/users/me').flush({});
-    expect(router.navigateByUrl).toHaveBeenCalledWith('/');
 
-    (fakeWindow.sessionStorage.getItem as jasmine.Spy).and.returnValue('/foo');
-    subject.next({ isRenewProcess: false, authorizationState: AuthorizationState.authorized, validationResult: null });
-    expect(router.navigateByUrl).toHaveBeenCalledWith('/foo');
+    expect(router.navigateByUrl).toHaveBeenCalledWith('/foo', { replaceUrl: true });
   });
 });

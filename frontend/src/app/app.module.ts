@@ -11,7 +11,7 @@ import { ValdemortModule } from 'ngx-valdemort';
 import { ValidationDefaultsComponent } from './validation-defaults/validation-defaults.component';
 import { I18nModule } from './i18n/i18n.module';
 import { AuthModule } from 'angular-auth-oidc-client';
-import { AuthenticationService } from './shared/authentication.service';
+import { AuthenticationService, CustomSecurityStorage } from './shared/authentication.service';
 import { AuthenticationInterceptorService } from './shared/authentication-interceptor.service';
 import { NavbarComponent } from './navbar/navbar.component';
 import { ErrorInterceptorService } from './shared/error-interceptor.service';
@@ -27,7 +27,9 @@ import { RbNgbModule } from './rb-ngb/rb-ngb.module';
     ValdemortModule,
     I18nModule,
     RbNgbModule,
-    AuthModule.forRoot()
+    AuthModule.forRoot({
+      storage: CustomSecurityStorage
+    })
   ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: AuthenticationInterceptorService, multi: true },
