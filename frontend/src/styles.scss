@@ -15,3 +15,9 @@ body {
   @extend .p-2;
   @extend .p-md-5;
 }
+
+@include media-breakpoint-up(sm) {
+  .datepicker {
+    max-width: 8rem;
+  }
+}

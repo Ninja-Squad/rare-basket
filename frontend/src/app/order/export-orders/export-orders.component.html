@@ -3,12 +3,12 @@
   <div class="form-inline">
     <label class="mb-2 mr-sm-2" for="from" translate="order.export-orders.from"></label>
     <rb-datepicker-container class="mb-2 mr-sm-4">
-      <input id="from" class="form-control" formControlName="from" ngbDatepicker />
+      <input id="from" class="form-control datepicker" formControlName="from" ngbDatepicker />
     </rb-datepicker-container>
 
     <label class="mb-2 mr-sm-2" for="to" translate="order.export-orders.to"></label>
     <rb-datepicker-container class="mb-2 mr-sm-2">
-      <input id="to" class="form-control" formControlName="to" ngbDatepicker />
+      <input id="to" class="form-control datepicker" formControlName="to" ngbDatepicker />
     </rb-datepicker-container>
 
     <button type="submit" [disabled]="exporting" class="btn btn-primary mb-2" id="export-button">
