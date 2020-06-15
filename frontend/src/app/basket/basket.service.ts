@@ -19,8 +19,8 @@ export class BasketService {
   }
 
   /**
-   * COnfirms the basket, and if an error is received informing that the order was already confirmed,
-   * the ignore it and do as if the confirmation succeeded
+   * Confirms the basket, and if an error is received informing that the order was already confirmed,
+   * then ignore it and do as if the confirmation succeeded
    */
   confirm(reference: string, confirmationCode: string): Observable<void> {
     const command = { confirmationCode };
