@@ -1,23 +1,25 @@
-<div *ngIf="orders && orders.totalElements > 0">
-  <div
-    class="small text-muted mb-2"
-    translate="order.in-progress-orders.count"
-    [translateParams]="{ count: orders.totalElements | number }"
-  ></div>
+<div *ngIf="orders">
+  <div *ngIf="orders.totalElements > 0">
+    <div
+      class="small text-muted mb-2"
+      translate="order.in-progress-orders.count"
+      [translateParams]="{ count: orders.totalElements | number }"
+    ></div>
 
-  <rb-orders [orders]="orders"></rb-orders>
-</div>
-
-<div *ngIf="orders && orders.totalElements === 0" class="text-center mb-4" id="no-order-message">
-  <div>
-    <fa-icon class="text-success" [icon]="noOrderIcon" size="6x"></fa-icon>
+    <rb-orders [orders]="orders"></rb-orders>
   </div>
-  <div class="text-muted mt-2" translate="order.in-progress-orders.no-order"></div>
-</div>
 
-<div class="text-right">
-  <a class="btn btn-outline-secondary" routerLink="/orders/new">
-    <fa-icon [icon]="createOrderIcon" class="mr-1"></fa-icon>
-    <span translate="order.in-progress-orders.create"></span>
-  </a>
+  <div *ngIf="orders.totalElements === 0" class="text-center mb-4" id="no-order-message">
+    <div class="bumped">
+      <fa-icon class="text-success" [icon]="noOrderIcon" size="6x"></fa-icon>
+    </div>
+    <div class="text-muted mt-2" translate="order.in-progress-orders.no-order"></div>
+  </div>
+
+  <div class="text-right">
+    <a class="btn btn-outline-secondary" routerLink="/orders/new">
+      <fa-icon [icon]="createOrderIcon" class="mr-1"></fa-icon>
+      <span translate="order.in-progress-orders.create"></span>
+    </a>
+  </div>
 </div>
