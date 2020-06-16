@@ -64,6 +64,7 @@ export class OrderComponent implements OnInit {
   editingCustomer = false;
   addingDocument = false;
   uploadProgress: number | null = null;
+  statusChanged = false;
 
   private downloadingDocumentIds = new Set<number>();
 
@@ -122,11 +123,15 @@ export class OrderComponent implements OnInit {
         messageKey: 'order.order.cancel-confirmation'
       })
       .pipe(
+        tap(() => (this.statusChanged = false)),
         switchMap(() => this.orderService.cancel(this.order.id)),
         tap(() => this.toastService.success('order.order.cancelled')),
         switchMap(() => this.orderService.get(this.order.id))
       )
-      .subscribe(order => (this.order = order));
+      .subscribe(order => {
+        this.order = order;
+        this.statusChanged = true;
+      });
   }
 
   createDocument(command: DocumentCommand) {
@@ -205,11 +210,15 @@ export class OrderComponent implements OnInit {
 
     result$
       .pipe(
+        tap(() => (this.statusChanged = false)),
         switchMap(() => this.orderService.finalize(this.order.id)),
         tap(() => this.toastService.success('order.order.finalized')),
         switchMap(() => this.orderService.get(this.order.id))
       )
-      .subscribe(order => (this.order = order));
+      .subscribe(order => {
+        this.order = order;
+        this.statusChanged = true;
+      });
   }
 
   downloadDeliveryForm() {

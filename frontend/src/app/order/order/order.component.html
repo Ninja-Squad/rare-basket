@@ -7,7 +7,7 @@
       [class.cancelled]="order.status === 'CANCELLED'"
     ></div>
     <div>
-      <span class="badge badge-secondary ml-2">{{ order.status | orderStatusEnum }}</span>
+      <span class="badge badge-secondary ml-2" [class.status-changed]="statusChanged">{{ order.status | orderStatusEnum }}</span>
     </div>
   </h1>
 

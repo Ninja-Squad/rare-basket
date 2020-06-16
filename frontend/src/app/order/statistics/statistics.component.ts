@@ -40,6 +40,7 @@ export class StatisticsComponent implements OnInit {
   colors = COLORS;
   user: User;
   perimeterEdited = false;
+  refreshed = false;
   private choosableGrcs: Array<Grc>;
 
   constructor(
@@ -74,6 +75,7 @@ export class StatisticsComponent implements OnInit {
       return;
     }
 
+    this.refreshed = false;
     this.perimeterEdited = false;
     const formValue: FormValue = this.form.value;
     const grcIds = formValue.global ? [] : formValue.grcs.filter(({ selected }) => selected).map(({ grc }) => grc.id);
@@ -95,6 +97,7 @@ export class StatisticsComponent implements OnInit {
       this.stats = stats;
       this.stats.customerTypeStatistics.sort((s1, s2) => s2.finalizedOrderCount - s1.finalizedOrderCount);
       this.createCharts();
+      this.refreshed = true;
     });
   }
 

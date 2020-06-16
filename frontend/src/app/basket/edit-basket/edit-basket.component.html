@@ -107,7 +107,7 @@
       </div>
 
       <div class="text-center mt-4">
-        <button class="btn btn-primary" id="save">
+        <button class="btn btn-primary" id="save" [class.save-forbidden]="saveForbidden">
           <fa-icon [icon]="saveIcon" class="mr-1"></fa-icon>
           <span translate="basket.edit-basket.save"></span>
         </button>

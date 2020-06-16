@@ -4,6 +4,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { faCheck, faTrash } from '@fortawesome/free-solid-svg-icons';
 import { ConfirmationService } from '../../shared/confirmation.service';
 import { environment } from '../../../environments/environment';
+import { timer } from 'rxjs';
 
 interface FormValue {
   customer: {
@@ -37,6 +38,7 @@ export class EditBasketComponent implements OnInit {
 
   quantityDisplayed = false;
   deleteItemDisabled = false;
+  saveForbidden = false;
 
   constructor(private fb: FormBuilder, private confirmationService: ConfirmationService, @Inject(LOCALE_ID) private language: Language) {}
 
@@ -73,6 +75,8 @@ export class EditBasketComponent implements OnInit {
 
   save() {
     if (this.form.invalid) {
+      this.saveForbidden = true;
+      timer(350).subscribe(() => (this.saveForbidden = false));
       return;
     }
 

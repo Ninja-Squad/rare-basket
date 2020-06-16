@@ -68,14 +68,14 @@
     <div class="form-row align-items-stretch" id="numbers">
       <div class="mb-2 col-md-4 col-lg d-flex">
         <div class="border rounded bg-light text-center p-2 flex-grow-1">
-          <div class="key-number">{{ stats.createdOrderCount | number }}</div>
+          <div class="key-number" [class.refreshed]="refreshed">{{ stats.createdOrderCount | number }}</div>
           &ngsp;
           <div [translate]="stats.createdOrderCount <= 1 ? 'order.statistics.created-order' : 'order.statistics.created-orders'"></div>
         </div>
       </div>
       <div class="mb-2 col-md-4 col-lg d-flex">
         <div class="border rounded bg-light text-center p-2 flex-grow-1">
-          <div class="key-number">{{ stats.finalizedOrderCount | number }}</div>
+          <div class="key-number" [class.refreshed]="refreshed">{{ stats.finalizedOrderCount | number }}</div>
           &ngsp;
           <div
             [translate]="stats.finalizedOrderCount <= 1 ? 'order.statistics.finalized-order' : 'order.statistics.finalized-orders'"
@@ -84,7 +84,7 @@
       </div>
       <div class="mb-2 col-md-4 col-lg d-flex">
         <div class="border rounded bg-light text-center p-2 flex-grow-1">
-          <div class="key-number">{{ stats.cancelledOrderCount | number }}</div>
+          <div class="key-number" [class.refreshed]="refreshed">{{ stats.cancelledOrderCount | number }}</div>
           &ngsp;
           <div
             [translate]="stats.cancelledOrderCount <= 1 ? 'order.statistics.cancelled-order' : 'order.statistics.cancelled-orders'"
@@ -93,7 +93,7 @@
       </div>
       <div class="mb-2 col-md-6 col-lg d-flex">
         <div class="border rounded bg-light text-center p-2 flex-grow-1">
-          <div class="key-number">{{ stats.distinctFinalizedOrderCustomerCount | number }}</div>
+          <div class="key-number" [class.refreshed]="refreshed">{{ stats.distinctFinalizedOrderCustomerCount | number }}</div>
           &ngsp;
           <div
             [translate]="
@@ -104,7 +104,7 @@
       </div>
       <div class="mb-2 col-md-6 col-lg d-flex">
         <div class="border rounded bg-light text-center p-2 flex-grow-1">
-          <div class="key-number">{{ stats.averageFinalizationDurationInDays | number: '.0-1' }}</div>
+          <div class="key-number" [class.refreshed]="refreshed">{{ stats.averageFinalizationDurationInDays | number: '.0-1' }}</div>
           &ngsp;
           <div
             [translate]="

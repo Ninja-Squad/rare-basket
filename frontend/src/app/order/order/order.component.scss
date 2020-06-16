@@ -17,3 +17,23 @@ h1 .badge {
 fa-stack {
   width: 1em;
 }
+
+.status-changed {
+  animation: shake 300ms ease;
+}
+
+@keyframes shake {
+  0%,
+  100% {
+    transform: rotateZ(0);
+  }
+  10%,
+  50%,
+  90% {
+    transform: rotateZ(10deg);
+  }
+  30%,
+  70% {
+    transform: rotateZ(-10deg);
+  }
+}
