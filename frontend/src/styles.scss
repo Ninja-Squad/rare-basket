@@ -21,3 +21,10 @@ body {
     max-width: 8rem;
   }
 }
+
+.custom-file-label {
+  overflow: hidden;
+  white-space: nowrap;
+  padding-right: 6em;
+  text-overflow: ellipsis;
+}
