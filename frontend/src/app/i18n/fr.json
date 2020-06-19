@@ -175,6 +175,7 @@
       "cancel": "Annuler la commande",
       "cancel-confirmation": "Voulez-vous vraiment annuler cette commande\u00a0?",
       "delivery-form": "Bon de livraison",
+      "complete-delivery-form": "Bon de livraison et documents attachés",
       "documents": "Documents",
       "no-document": "Aucun document",
       "document-on-delivery-form": "Mentionné sur le bon de livraison",

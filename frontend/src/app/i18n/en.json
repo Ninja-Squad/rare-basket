@@ -175,6 +175,7 @@
       "cancel": "Cancel the order",
       "cancel-confirmation": "Do you really want to cancel this order?",
       "delivery-form": "Delivery form",
+      "complete-delivery-form": "Delivery form and attached documents",
       "documents": "Documents",
       "no-document": "No document",
       "document-on-delivery-form": "Listed on the delivery notice",

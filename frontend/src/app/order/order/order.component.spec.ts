@@ -60,6 +60,10 @@ class OrderComponentTester extends ComponentTester<OrderComponent> {
     return this.button('#delivery-form-button');
   }
 
+  get completeDeliveryFormButton() {
+    return this.button('#complete-delivery-form-button');
+  }
+
   get documents() {
     return this.elements('.document');
   }
@@ -532,14 +536,17 @@ describe('OrderComponent', () => {
   it('should not have a delivery form button when status is not FINALIZED', () => {
     orderService.get.and.returnValue(of(order));
     order.status = 'DRAFT';
+    order.documents[0].onDeliveryForm = true;
     tester.detectChanges();
 
     expect(tester.deliveryFormButton).toBeNull();
+    expect(tester.completeDeliveryFormButton).toBeNull();
 
     order.status = 'CANCELLED';
     tester.detectChanges();
 
     expect(tester.deliveryFormButton).toBeNull();
+    expect(tester.completeDeliveryFormButton).toBeNull();
   });
 
   it('should download delivery form', () => {
@@ -552,6 +559,30 @@ describe('OrderComponent', () => {
 
     tester.deliveryFormButton.click();
 
+    expect(orderService.downloadDeliveryForm).toHaveBeenCalledWith(42, { withDocuments: false });
     expect(downloadService.download).toHaveBeenCalledWith(response, 'bon-de-livraison-42.pdf');
+  });
+
+  it('should not have complete delivery form button if no document is attached', () => {
+    orderService.get.and.returnValue(of(order));
+    order.status = 'FINALIZED';
+    tester.detectChanges();
+
+    expect(tester.completeDeliveryFormButton).toBeNull();
+  });
+
+  it('should download complete delivery form', () => {
+    orderService.get.and.returnValue(of(order));
+    order.status = 'FINALIZED';
+    order.documents[0].onDeliveryForm = true;
+    tester.detectChanges();
+
+    const deliveryFormResponse = new HttpResponse<Blob>();
+    orderService.downloadDeliveryForm.and.returnValue(of(deliveryFormResponse));
+
+    tester.completeDeliveryFormButton.click();
+
+    expect(orderService.downloadDeliveryForm).toHaveBeenCalledWith(42, { withDocuments: true });
+    expect(downloadService.download).toHaveBeenCalledWith(deliveryFormResponse, 'bon-de-livraison-42.pdf');
   });
 });

@@ -4,9 +4,13 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.tuple;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.request;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import java.io.ByteArrayInputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
 import java.time.Duration;
 import java.time.Instant;
 import java.time.LocalDate;
@@ -15,6 +19,7 @@ import java.util.EnumSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.zip.ZipFile;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import fr.inra.urgi.rarebasket.MoreAnswers;
@@ -56,6 +61,8 @@ import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.util.StreamUtils;
 
 /**
  * Tests for {@link OrderController}
@@ -397,7 +404,7 @@ class OrderControllerTest {
         mockMvc.perform(get("/api/orders/{id}/delivery-form", order.getId()))
                .andExpect(status().isOk())
                .andExpect(header().longValue(HttpHeaders.CONTENT_LENGTH, 3L))
-               .andExpect(header().string(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"bon-de-livraison-42.pdf\""))
+               .andExpect(header().string(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"bon-de-livraison-ref.pdf\""))
                .andExpect(content().contentType(MediaType.APPLICATION_PDF))
                .andExpect(content().string("pdf"));
     }
@@ -405,6 +412,57 @@ class OrderControllerTest {
     @Test
     void shouldThrowWhenDownloadingDeliveryFormOnNonFinalizedOrder() throws Exception {
         mockMvc.perform(get("/api/orders/{id}/delivery-form", order.getId()))
+               .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void shouldDownloadCompleteDeliveryForm() throws Exception {
+        order.setStatus(OrderStatus.FINALIZED);
+        Document onDeliveryFormDocument = new Document();
+        onDeliveryFormDocument.setId(1234L);
+        onDeliveryFormDocument.setOriginalFileName("foo.pdf");
+        onDeliveryFormDocument.setOnDeliveryForm(true);
+        order.addDocument(onDeliveryFormDocument);
+
+        when(mockDeliveryFormGenerator.generate(order)).thenReturn("deliveryForm".getBytes());
+        when(mockDocumentStorage.documentInputStream(onDeliveryFormDocument.getId(), onDeliveryFormDocument.getOriginalFileName()))
+            .thenReturn(new ByteArrayInputStream("foo".getBytes()));
+
+        MvcResult mvcResult = mockMvc.perform(get("/api/orders/{id}/complete-delivery-form", order.getId()))
+                                     .andExpect(status().isOk())
+                                     .andExpect(header().exists(HttpHeaders.CONTENT_LENGTH))
+                                     .andExpect(header().string(HttpHeaders.CONTENT_DISPOSITION,
+                                                                "attachment; filename=\"bon-de-livraison-ref.zip\""))
+                                     .andExpect(content().contentType("application/zip"))
+                                     .andExpect(request().asyncStarted())
+                                     .andReturn();
+        mockMvc.perform(asyncDispatch(mvcResult))
+               .andExpect(result -> {
+                   byte[] bytes = result.getResponse().getContentAsByteArray();
+                   Path tempFile = Files.createTempFile("test", "zip");
+                   try {
+                       Files.copy(new ByteArrayInputStream(bytes), tempFile, StandardCopyOption.REPLACE_EXISTING);
+                       ZipFile zipFile = new ZipFile(tempFile.toFile());
+                       assertThat(zipFile.getEntry("bon-de-livraison-ref/bon-de-livraison.pdf")).isNotNull();
+                       assertThat(zipFile.getEntry("bon-de-livraison-ref/1234-foo.pdf")).isNotNull();
+                       assertThat(zipFile.getEntry("bon-de-livraison-ref/54-invoice54.pdf")).isNull();
+
+                       assertThat(StreamUtils.copyToByteArray(
+                           zipFile.getInputStream(zipFile.getEntry("bon-de-livraison-ref/bon-de-livraison.pdf"))
+                       )).isEqualTo("deliveryForm".getBytes());
+                       assertThat(StreamUtils.copyToByteArray(
+                           zipFile.getInputStream(zipFile.getEntry("bon-de-livraison-ref/1234-foo.pdf"))
+                       )).isEqualTo("foo".getBytes());
+                   }
+                   finally {
+                       Files.delete(tempFile);
+                   }
+               });
+    }
+
+    @Test
+    void shouldThrowWhenDownloadingCompleteDeliveryFormOnNonFinalizedOrder() throws Exception {
+        mockMvc.perform(get("/api/orders/{id}/complete-delivery-form", order.getId()))
                .andExpect(status().isBadRequest());
     }
 

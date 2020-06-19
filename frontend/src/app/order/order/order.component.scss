@@ -1,3 +1,5 @@
+@import '../../../common';
+
 .cancelled {
   text-decoration: line-through;
 }
@@ -35,5 +37,12 @@ fa-stack {
   30%,
   70% {
     transform: rotateZ(-10deg);
+  }
+}
+
+@media (max-width: breakpoint-min(md)) {
+  .btn-sm-block {
+    display: block;
+    width: 100%;
   }
 }

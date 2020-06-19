@@ -60,8 +60,11 @@ export class OrderService {
     return this.http.get(`api/orders/${orderId}/documents/${documentId}/file`, { observe: 'response', responseType: 'blob' });
   }
 
-  downloadDeliveryForm(orderId: number): Observable<HttpResponse<Blob>> {
-    return this.http.get(`api/orders/${orderId}/delivery-form`, { observe: 'response', responseType: 'blob' });
+  downloadDeliveryForm(orderId: number, options = { withDocuments: false }): Observable<HttpResponse<Blob>> {
+    return this.http.get(`api/orders/${orderId}/${options.withDocuments ? 'complete-' : ''}delivery-form`, {
+      observe: 'response',
+      responseType: 'blob'
+    });
   }
 
   finalize(orderId: number): Observable<void> {

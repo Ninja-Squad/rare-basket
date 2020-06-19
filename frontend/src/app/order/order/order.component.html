@@ -184,7 +184,7 @@
         (click)="finalizeOrder()"
         [disabled]="operationInProgress"
         type="button"
-        class="btn btn-primary mr-2"
+        class="btn btn-primary btn-sm-block my-1 mr-md-2"
         id="finalize-order-button"
       >
         <fa-icon [icon]="finalizeOrderIcon" class="mr-1"></fa-icon>
@@ -196,16 +196,33 @@
         (click)="cancelOrder()"
         [disabled]="operationInProgress"
         type="button"
-        class="btn btn-danger"
+        class="btn btn-danger btn-sm-block"
         id="cancel-order-button"
       >
         <fa-icon [icon]="cancelOrderIcon" class="mr-1"></fa-icon>
         <span translate="order.order.cancel"></span>
       </button>
 
-      <button *ngIf="order.status === 'FINALIZED'" class="btn btn-primary" (click)="downloadDeliveryForm()" id="delivery-form-button">
+      <button
+        *ngIf="order.status === 'FINALIZED'"
+        class="btn btn-primary btn-sm-block my-1 mr-md-2"
+        [disabled]="downloadingDeliveryForm"
+        (click)="downloadDeliveryForm()"
+        id="delivery-form-button"
+      >
         <fa-icon [icon]="deliveryFormIcon" class="mr-1"></fa-icon>
         <span translate="order.order.delivery-form"></span>
+      </button>
+
+      <button
+        *ngIf="order.status === 'FINALIZED' && hasOnDeliveryFormDocument()"
+        class="btn btn-primary btn-sm-block"
+        (click)="downloadCompleteDeliveryForm()"
+        [disabled]="downloadingDeliveryForm"
+        id="complete-delivery-form-button"
+      >
+        <fa-icon [icon]="completeDeliveryFormIcon" class="mr-1"></fa-icon>
+        <span translate="order.order.complete-delivery-form"></span>
       </button>
     </div>
   </div>

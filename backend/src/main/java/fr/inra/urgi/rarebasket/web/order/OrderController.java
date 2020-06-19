@@ -1,7 +1,11 @@
 package fr.inra.urgi.rarebasket.web.order;
 
+import java.io.BufferedOutputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.time.Duration;
 import java.time.Instant;
 import java.time.LocalDate;
@@ -9,6 +13,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 
 import fr.inra.urgi.rarebasket.config.Constants;
 import fr.inra.urgi.rarebasket.dao.AccessionHolderDao;
@@ -46,6 +52,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StreamUtils;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -59,6 +66,7 @@ import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody;
 
 /**
  * Controller used to handle orders. This controller is used by accession holder users.
@@ -273,12 +281,41 @@ public class OrderController {
                                  httpHeaders.add(
                                      HttpHeaders.CONTENT_DISPOSITION,
                                      ContentDisposition.builder("attachment")
-                                                       .filename("bon-de-livraison-" + order.getId() + ".pdf")
+                                                       .filename("bon-de-livraison-" + order.getBasket().getReference() + ".pdf")
                                                        .build()
                                                        .toString()
                                  );
                              })
                              .body(new ByteArrayResource(deliveryForm));
+    }
+
+    @GetMapping("/{orderId}/complete-delivery-form")
+    public ResponseEntity<StreamingResponseBody> downloadCompleteDeliveryForm(@PathVariable("orderId") Long orderId) throws IOException {
+        currentUser.checkPermission(Permission.ORDER_MANAGEMENT);
+        Order order = getOrderAndCheckAccessibleAndFinalized(orderId);
+
+        String folder = "bon-de-livraison-" + order.getBasket().getReference();
+        Path tempFile = createCompleteDeliveryFormZipFile(order, folder);
+
+        return ResponseEntity.ok()
+                             .contentType(MediaType.parseMediaType("application/zip"))
+                             .contentLength(Files.size(tempFile))
+                             .headers(httpHeaders -> {
+                                 httpHeaders.add(
+                                     HttpHeaders.CONTENT_DISPOSITION,
+                                     ContentDisposition.builder("attachment")
+                                                       .filename(folder + ".zip")
+                                                       .build()
+                                                       .toString()
+                                 );
+                             })
+                             .body(outputStream -> {
+                                 try {
+                                     Files.copy(tempFile, outputStream);
+                                 } finally {
+                                     Files.delete(tempFile);
+                                 }
+                             });
     }
 
     @PutMapping("/{orderId}/finalization")
@@ -396,5 +433,29 @@ public class OrderController {
                             command.getAddress(),
                             command.getType(),
                             command.getLanguage());
+    }
+
+    private Path createCompleteDeliveryFormZipFile(Order order, String folder) throws IOException {
+        byte[] deliveryForm = deliveryFormGenerator.generate(order);
+
+        Path tempFile = Files.createTempFile("rare-basket-", ".zip");
+        try (BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(tempFile.toFile()));
+             ZipOutputStream zip = new ZipOutputStream(bos)) {
+
+            zip.putNextEntry(new ZipEntry(folder + "/bon-de-livraison.pdf"));
+            zip.write(deliveryForm);
+            zip.closeEntry();
+            for (Document document: order.getDocuments()) {
+                if (document.isOnDeliveryForm()) {
+                    zip.putNextEntry(new ZipEntry(folder + "/" + document.getId() + "-" + document.getOriginalFileName()));
+                    StreamUtils.copy(documentStorage.documentInputStream(document.getId(),
+                                                                         document.getOriginalFileName()), zip);
+                    zip.closeEntry();
+                }
+            }
+
+            zip.finish();
+        }
+        return tempFile;
     }
 }

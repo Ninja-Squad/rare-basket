@@ -1,12 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { OrderService } from '../order.service';
-import { DetailedOrder, Document, DocumentCommand, OrderCommand, CustomerInformationCommand } from '../order.model';
+import { CustomerInformationCommand, DetailedOrder, Document, DocumentCommand, OrderCommand } from '../order.model';
 import {
   faAddressCard,
   faAt,
   faCheckSquare,
   faChevronLeft,
+  faClipboard,
   faClipboardList,
   faCommentDots,
   faEdit,
@@ -58,13 +59,15 @@ export class OrderComponent implements OnInit {
   addDocumentIcon = faPlus;
   deleteDocumentIcon = faTrash;
   downloadingIcon = faSpinner;
-  deliveryFormIcon = faClipboardList;
+  deliveryFormIcon = faClipboard;
+  completeDeliveryFormIcon = faClipboardList;
 
   editing = false;
   editingCustomer = false;
   addingDocument = false;
   uploadProgress: number | null = null;
   statusChanged = false;
+  downloadingDeliveryForm = false;
 
   private downloadingDocumentIds = new Set<number>();
 
@@ -221,9 +224,17 @@ export class OrderComponent implements OnInit {
       });
   }
 
-  downloadDeliveryForm() {
+  downloadDeliveryForm(options = { withDocuments: false }) {
     this.orderService
-      .downloadDeliveryForm(this.order.id)
+      .downloadDeliveryForm(this.order.id, options)
       .subscribe(response => this.downloadService.download(response, `bon-de-livraison-${this.order.id}.pdf`));
+  }
+
+  hasOnDeliveryFormDocument() {
+    return this.order.documents.some(document => document.onDeliveryForm);
+  }
+
+  downloadCompleteDeliveryForm() {
+    this.downloadDeliveryForm({ withDocuments: true });
   }
 }

@@ -120,6 +120,15 @@ describe('OrderService', () => {
     expect(actual).toBe(expected);
   });
 
+  it('should download delivery form with attached documents', () => {
+    let actual: Blob = null;
+    service.downloadDeliveryForm(42, { withDocuments: true }).subscribe(response => (actual = response.body));
+
+    const expected = new Blob();
+    http.expectOne({ url: 'api/orders/42/complete-delivery-form', method: 'GET' }).flush(expected);
+    expect(actual).toBe(expected);
+  });
+
   it('should finalize an order', () => {
     let done = false;
     service.finalize(42).subscribe(() => (done = true));
