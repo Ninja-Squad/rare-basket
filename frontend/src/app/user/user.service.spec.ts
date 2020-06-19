@@ -25,7 +25,7 @@ describe('UserService', () => {
     service.list(0).subscribe(users => (actual = users));
 
     const expected = { totalElements: 0 } as Page<User>;
-    http.expectOne({ method: 'GET', url: '/api/users?page=0' }).flush(expected);
+    http.expectOne({ method: 'GET', url: 'api/users?page=0' }).flush(expected);
     expect(actual).toBe(expected);
   });
 
@@ -35,7 +35,7 @@ describe('UserService', () => {
     service.get(42).subscribe(user => (actual = user));
 
     const expected = { id: 42 } as User;
-    http.expectOne({ method: 'GET', url: '/api/users/42' }).flush(expected);
+    http.expectOne({ method: 'GET', url: 'api/users/42' }).flush(expected);
     expect(actual).toBe(expected);
   });
 
@@ -46,7 +46,7 @@ describe('UserService', () => {
     service.create(command).subscribe(user => (actual = user));
 
     const expected = { id: 42 } as User;
-    const testRequest = http.expectOne({ method: 'POST', url: '/api/users' });
+    const testRequest = http.expectOne({ method: 'POST', url: 'api/users' });
     expect(testRequest.request.body).toBe(command);
     testRequest.flush(expected);
     expect(actual).toBe(expected);
@@ -58,7 +58,7 @@ describe('UserService', () => {
     const command = { name: 'foo' } as UserCommand;
     service.update(42, command).subscribe(() => (done = true));
 
-    const testRequest = http.expectOne({ method: 'PUT', url: '/api/users/42' });
+    const testRequest = http.expectOne({ method: 'PUT', url: 'api/users/42' });
     expect(testRequest.request.body).toBe(command);
     testRequest.flush(null);
     expect(done).toBe(true);
@@ -69,7 +69,7 @@ describe('UserService', () => {
 
     service.delete(42).subscribe(() => (done = true));
 
-    http.expectOne({ method: 'DELETE', url: '/api/users/42' }).flush(null);
+    http.expectOne({ method: 'DELETE', url: 'api/users/42' }).flush(null);
     expect(done).toBe(true);
   });
 });

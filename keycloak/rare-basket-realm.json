@@ -285,8 +285,8 @@
             "clientAuthenticatorType": "client-secret",
             "secret": "**********",
             "redirectUris": [
-                "http://localhost:4201",
-                "http://localhost:8081"
+                "http://localhost:4201/rare-basket/",
+                "http://localhost:8081/rare-basket/"
             ],
             "webOrigins": [
                 "+"

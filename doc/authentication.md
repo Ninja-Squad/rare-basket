@@ -50,7 +50,7 @@ For the authentication to work as expected, the following must be done on the Ke
  - create a realm named `rare-basket`;
  - create a client in this realm, with the client ID `rare-basket`, using the `openid-connect` protocol 
  - configure this client to have, in the "Valid Redirect URIs" field, the root public-facing URL(s) of the application.
-   In development, these URLs are `http://localhost:4201` and `http://localhost:8081`
+   In development, these URLs are `http://localhost:4201/rare-basket/` and `http://localhost:8081/rare-basket/`
  - configure this client to have, in its "Web Origins" field, the value `+` (which means that the
    Valid Redirect URIs are used as web origins). Of course, the actual public facing URL of the 
    rare-basket server can also be used instead. This is necessary because the frontend sends AJAX request

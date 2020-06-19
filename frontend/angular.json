@@ -37,7 +37,8 @@
             "styles": [
               "src/styles.scss"
             ],
-            "scripts": []
+            "scripts": [],
+            "baseHref": "/rare-basket/"
           },
           "configurations": {
             "production": {

@@ -6,6 +6,7 @@ import { OidcConfigService, OidcSecurityService } from 'angular-auth-oidc-client
 import { Router } from '@angular/router';
 import { Subject } from 'rxjs';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
+import { LocationStrategy } from '@angular/common';
 
 describe('AuthenticationService', () => {
   let service: AuthenticationService;
@@ -14,6 +15,7 @@ describe('AuthenticationService', () => {
   let oidcSecurityService: jasmine.SpyObj<OidcSecurityService>;
   let router: jasmine.SpyObj<Router>;
   let http: HttpTestingController;
+  let locationStrategy: jasmine.SpyObj<LocationStrategy>;
 
   beforeEach(() => {
     fakeWindow = ({
@@ -32,6 +34,8 @@ describe('AuthenticationService', () => {
     ]);
 
     router = jasmine.createSpyObj<Router>('Router', ['navigateByUrl']);
+    locationStrategy = jasmine.createSpyObj<LocationStrategy>('LocaltionStrategy', ['getBaseHref']);
+    locationStrategy.getBaseHref.and.returnValue('rare-basket');
 
     TestBed.configureTestingModule({
       imports: [HttpClientTestingModule],
@@ -39,7 +43,8 @@ describe('AuthenticationService', () => {
         { provide: WINDOW, useValue: fakeWindow },
         { provide: OidcSecurityService, useValue: oidcSecurityService },
         { provide: OidcConfigService, useValue: oidcConfigService },
-        { provide: Router, useValue: router }
+        { provide: Router, useValue: router },
+        { provide: LocationStrategy, useValue: locationStrategy }
       ]
     });
     service = TestBed.inject(AuthenticationService);
@@ -79,7 +84,7 @@ describe('AuthenticationService', () => {
 
     expect(events).toEqual([]);
 
-    http.expectOne('/api/users/me').flush({});
+    http.expectOne('api/users/me').flush({});
 
     expect(events).toEqual([true]);
     service.isAuthenticated().subscribe(event => events.push(event));
@@ -126,7 +131,7 @@ describe('AuthenticationService', () => {
 
     expect(events).toEqual([]);
 
-    http.expectOne('/api/users/me').flush({}, { status: 404, statusText: 'Not Found' });
+    http.expectOne('api/users/me').flush({}, { status: 404, statusText: 'Not Found' });
 
     expect(events).toEqual([false]);
     service.isAuthenticated().subscribe(event => events.push(event));
@@ -145,7 +150,7 @@ describe('AuthenticationService', () => {
     service.init();
 
     subject.next(true);
-    http.expectOne('/api/users/me').flush({});
+    http.expectOne('api/users/me').flush({});
 
     expect(router.navigateByUrl).toHaveBeenCalledWith('/foo', { replaceUrl: true });
   });

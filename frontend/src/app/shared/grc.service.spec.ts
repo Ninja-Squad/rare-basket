@@ -24,7 +24,7 @@ describe('GrcService', () => {
     service.list().subscribe(grcs => (actual = grcs));
 
     const expected = [] as Array<Grc>;
-    http.expectOne({ method: 'GET', url: '/api/grcs' }).flush(expected);
+    http.expectOne({ method: 'GET', url: 'api/grcs' }).flush(expected);
     expect(actual).toBe(expected);
   });
 
@@ -34,7 +34,7 @@ describe('GrcService', () => {
     service.get(42).subscribe(grc => (actual = grc));
 
     const expected = { id: 42 } as Grc;
-    http.expectOne({ method: 'GET', url: '/api/grcs/42' }).flush(expected);
+    http.expectOne({ method: 'GET', url: 'api/grcs/42' }).flush(expected);
     expect(actual).toBe(expected);
   });
 
@@ -45,7 +45,7 @@ describe('GrcService', () => {
     service.create(command).subscribe(grc => (actual = grc));
 
     const expected = { id: 42 } as Grc;
-    const testRequest = http.expectOne({ method: 'POST', url: '/api/grcs' });
+    const testRequest = http.expectOne({ method: 'POST', url: 'api/grcs' });
     expect(testRequest.request.body).toBe(command);
     testRequest.flush(expected);
     expect(actual).toBe(expected);
@@ -57,7 +57,7 @@ describe('GrcService', () => {
     const command = { name: 'foo' } as GrcCommand;
     service.update(42, command).subscribe(() => (done = true));
 
-    const testRequest = http.expectOne({ method: 'PUT', url: '/api/grcs/42' });
+    const testRequest = http.expectOne({ method: 'PUT', url: 'api/grcs/42' });
     expect(testRequest.request.body).toBe(command);
     testRequest.flush(null);
     expect(done).toBe(true);
@@ -68,7 +68,7 @@ describe('GrcService', () => {
 
     service.delete(42).subscribe(() => (done = true));
 
-    http.expectOne({ method: 'DELETE', url: '/api/grcs/42' }).flush(null);
+    http.expectOne({ method: 'DELETE', url: 'api/grcs/42' }).flush(null);
     expect(done).toBe(true);
   });
 });

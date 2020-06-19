@@ -11,22 +11,22 @@ export class UserService {
   constructor(private http: HttpClient) {}
 
   list(page: number): Observable<Page<User>> {
-    return this.http.get<Page<User>>('/api/users', { params: { page: `${page}` } });
+    return this.http.get<Page<User>>('api/users', { params: { page: `${page}` } });
   }
 
   get(userId: number): Observable<User> {
-    return this.http.get<User>(`/api/users/${userId}`);
+    return this.http.get<User>(`api/users/${userId}`);
   }
 
   create(command: UserCommand): Observable<User> {
-    return this.http.post<User>('/api/users', command);
+    return this.http.post<User>('api/users', command);
   }
 
   update(userId: number, command: UserCommand): Observable<void> {
-    return this.http.put<void>(`/api/users/${userId}`, command);
+    return this.http.put<void>(`api/users/${userId}`, command);
   }
 
   delete(userId: number): Observable<void> {
-    return this.http.delete<void>(`/api/users/${userId}`);
+    return this.http.delete<void>(`api/users/${userId}`);
   }
 }

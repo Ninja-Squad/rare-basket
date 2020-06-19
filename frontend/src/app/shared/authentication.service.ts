@@ -14,6 +14,7 @@ import { Router } from '@angular/router';
 import { WINDOW } from './window.service';
 import { HttpClient } from '@angular/common/http';
 import { User } from './user.model';
+import { LocationStrategy } from '@angular/common';
 
 const REQUESTED_URL_KEY = 'rare-basket-requested-url';
 
@@ -30,7 +31,8 @@ export class AuthenticationService {
     private oidcConfigService: OidcConfigService,
     private router: Router,
     @Inject(WINDOW) private window: Window,
-    private http: HttpClient
+    private http: HttpClient,
+    private locationStrategy: LocationStrategy
   ) {}
 
   /**
@@ -40,7 +42,7 @@ export class AuthenticationService {
   init() {
     // create the configuration
     const keycloakUrl = environment.keycloakUrl;
-    const url = this.window.origin;
+    const url = this.window.origin + this.locationStrategy.getBaseHref();
     const config: OpenIdConfiguration = {
       stsServer: keycloakUrl,
       redirectUrl: url,
@@ -58,7 +60,8 @@ export class AuthenticationService {
       autoUserinfo: false
     };
 
-    const realmUrl = `${keycloakUrl}/auth/realms/rare-basket`;
+    const realmPath = environment.realmPath;
+    const realmUrl = `${keycloakUrl}${realmPath}`;
     const authWellKnownEndpoints: AuthWellKnownEndpoints = {
       // these properties can be obtained from
       // http://localhost:8082/auth/realms/rare-basket/.well-known/openid-configuration
@@ -126,7 +129,7 @@ export class AuthenticationService {
   }
 
   private loadCurrentUser(): Observable<User> {
-    return this.http.get<User>('/api/users/me');
+    return this.http.get<User>('api/users/me');
   }
 }
 

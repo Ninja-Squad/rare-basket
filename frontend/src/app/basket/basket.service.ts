@@ -11,11 +11,11 @@ export class BasketService {
   constructor(private http: HttpClient) {}
 
   get(reference: string): Observable<Basket> {
-    return this.http.get<Basket>(`/api/baskets/${reference}`);
+    return this.http.get<Basket>(`api/baskets/${reference}`);
   }
 
   save(reference: string, command: BasketCommand): Observable<void> {
-    return this.http.put<void>(`/api/baskets/${reference}`, command);
+    return this.http.put<void>(`api/baskets/${reference}`, command);
   }
 
   /**
@@ -24,7 +24,7 @@ export class BasketService {
    */
   confirm(reference: string, confirmationCode: string): Observable<void> {
     const command = { confirmationCode };
-    return this.http.put<void>(`/api/baskets/${reference}/confirmation`, command).pipe(
+    return this.http.put<void>(`api/baskets/${reference}/confirmation`, command).pipe(
       catchError((error: HttpErrorResponse) => {
         if (error.status === 400 && error.error?.functionalError === 'BASKET_ALREADY_CONFIRMED') {
           return of(undefined);

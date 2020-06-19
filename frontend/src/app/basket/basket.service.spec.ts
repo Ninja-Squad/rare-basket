@@ -24,7 +24,7 @@ describe('BasketService', () => {
     service.get('ref1').subscribe(basket => (actualBasket = basket));
 
     const expectedBasket = { id: 42 } as Basket;
-    http.expectOne({ method: 'GET', url: '/api/baskets/ref1' }).flush(expectedBasket);
+    http.expectOne({ method: 'GET', url: 'api/baskets/ref1' }).flush(expectedBasket);
     expect(actualBasket).toBe(expectedBasket);
   });
 
@@ -33,7 +33,7 @@ describe('BasketService', () => {
 
     const command = { rationale: 'because' } as BasketCommand;
     service.save('ref1', command).subscribe(() => (done = true));
-    const testRequest = http.expectOne({ method: 'PUT', url: '/api/baskets/ref1' });
+    const testRequest = http.expectOne({ method: 'PUT', url: 'api/baskets/ref1' });
     expect(testRequest.request.body).toBe(command);
     testRequest.flush(null);
 
@@ -45,7 +45,7 @@ describe('BasketService', () => {
 
     const confirmationCode = 'ZYXWVUTS';
     service.confirm('ref1', confirmationCode).subscribe(() => (done = true));
-    const testRequest = http.expectOne({ method: 'PUT', url: '/api/baskets/ref1/confirmation' });
+    const testRequest = http.expectOne({ method: 'PUT', url: 'api/baskets/ref1/confirmation' });
     expect(testRequest.request.body).toEqual({ confirmationCode });
     testRequest.flush(null);
 
@@ -58,7 +58,7 @@ describe('BasketService', () => {
     const confirmationCode = 'ZYXWVUTS';
     service.confirm('ref1', confirmationCode).subscribe(() => (done = true));
     http
-      .expectOne({ method: 'PUT', url: '/api/baskets/ref1/confirmation' })
+      .expectOne({ method: 'PUT', url: 'api/baskets/ref1/confirmation' })
       .flush({ functionalError: 'BASKET_ALREADY_CONFIRMED' }, { status: 400, statusText: 'Bad Request' });
 
     expect(done).toBe(true);
@@ -69,7 +69,7 @@ describe('BasketService', () => {
 
     const confirmationCode = 'ZYXWVUTS';
     service.confirm('ref1', confirmationCode).subscribe({ error: () => (done = true) });
-    http.expectOne({ method: 'PUT', url: '/api/baskets/ref1/confirmation' }).flush({}, { status: 400, statusText: 'Bad Request' });
+    http.expectOne({ method: 'PUT', url: 'api/baskets/ref1/confirmation' }).flush({}, { status: 400, statusText: 'Bad Request' });
 
     expect(done).toBe(true);
   });

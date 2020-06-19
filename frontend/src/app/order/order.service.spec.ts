@@ -27,7 +27,7 @@ describe('OrderService', () => {
     service.get(42).subscribe(order => (actualOrder = order));
 
     const expectedOrder = { id: 42 } as Order;
-    http.expectOne({ method: 'GET', url: '/api/orders/42' }).flush(expectedOrder);
+    http.expectOne({ method: 'GET', url: 'api/orders/42' }).flush(expectedOrder);
     expect(actualOrder).toBe(expectedOrder);
   });
 
@@ -37,7 +37,7 @@ describe('OrderService', () => {
     service.listInProgress(0).subscribe(orders => (actualOrders = orders));
 
     const expectedOrders = { totalElements: 0 } as Page<Order>;
-    http.expectOne({ method: 'GET', url: '/api/orders?status=DRAFT&page=0' }).flush(expectedOrders);
+    http.expectOne({ method: 'GET', url: 'api/orders?status=DRAFT&page=0' }).flush(expectedOrders);
     expect(actualOrders).toBe(expectedOrders);
   });
 
@@ -47,7 +47,7 @@ describe('OrderService', () => {
     service.listDone(0).subscribe(orders => (actualOrders = orders));
 
     const expectedOrders = { totalElements: 0 } as Page<Order>;
-    http.expectOne({ method: 'GET', url: '/api/orders?status=FINALIZED&status=CANCELLED&page=0' }).flush(expectedOrders);
+    http.expectOne({ method: 'GET', url: 'api/orders?status=FINALIZED&status=CANCELLED&page=0' }).flush(expectedOrders);
     expect(actualOrders).toBe(expectedOrders);
   });
 
@@ -57,7 +57,7 @@ describe('OrderService', () => {
     const command = {} as OrderCommand;
     service.update(42, command).subscribe(() => (done = true));
 
-    const testRequest = http.expectOne({ method: 'PUT', url: '/api/orders/42' });
+    const testRequest = http.expectOne({ method: 'PUT', url: 'api/orders/42' });
     expect(testRequest.request.body).toBe(command);
     testRequest.flush(null);
     expect(done).toBe(true);
@@ -79,7 +79,7 @@ describe('OrderService', () => {
       .pipe(filter(event => event.type === HttpEventType.Response))
       .subscribe(response => (actual = (response as HttpResponse<Document>).body));
 
-    const testRequest = http.expectOne({ method: 'POST', url: '/api/orders/42/documents' });
+    const testRequest = http.expectOne({ method: 'POST', url: 'api/orders/42/documents' });
     const formData: FormData = testRequest.request.body;
     expect(formData.has('file')).toBe(true);
     const documentCommand = formData.get('document') as Blob;
@@ -98,7 +98,7 @@ describe('OrderService', () => {
     let done = false;
     service.deleteDocument(42, 54).subscribe(() => (done = true));
 
-    http.expectOne({ url: '/api/orders/42/documents/54', method: 'DELETE' }).flush(null);
+    http.expectOne({ url: 'api/orders/42/documents/54', method: 'DELETE' }).flush(null);
     expect(done).toBe(true);
   });
 
@@ -107,7 +107,7 @@ describe('OrderService', () => {
     service.downloadDocument(42, 54).subscribe(response => (actual = response.body));
 
     const expected = new Blob();
-    http.expectOne({ url: '/api/orders/42/documents/54/file', method: 'GET' }).flush(expected);
+    http.expectOne({ url: 'api/orders/42/documents/54/file', method: 'GET' }).flush(expected);
     expect(actual).toBe(expected);
   });
 
@@ -116,7 +116,7 @@ describe('OrderService', () => {
     service.downloadDeliveryForm(42).subscribe(response => (actual = response.body));
 
     const expected = new Blob();
-    http.expectOne({ url: '/api/orders/42/delivery-form', method: 'GET' }).flush(expected);
+    http.expectOne({ url: 'api/orders/42/delivery-form', method: 'GET' }).flush(expected);
     expect(actual).toBe(expected);
   });
 
@@ -124,7 +124,7 @@ describe('OrderService', () => {
     let done = false;
     service.finalize(42).subscribe(() => (done = true));
 
-    http.expectOne({ url: '/api/orders/42/finalization', method: 'PUT' }).flush(null);
+    http.expectOne({ url: 'api/orders/42/finalization', method: 'PUT' }).flush(null);
     expect(done).toBe(true);
   });
 
@@ -133,7 +133,7 @@ describe('OrderService', () => {
     service.exportReport('2020-01-01', '2021-01-01').subscribe(response => (actual = response.body));
 
     const expected = new Blob();
-    http.expectOne({ url: '/api/orders/report?from=2020-01-01&to=2021-01-01', method: 'GET' }).flush(expected);
+    http.expectOne({ url: 'api/orders/report?from=2020-01-01&to=2021-01-01', method: 'GET' }).flush(expected);
     expect(actual).toBe(expected);
   });
 
@@ -142,7 +142,7 @@ describe('OrderService', () => {
     service.getStatistics('2020-01-01', '2021-01-01', [1, 2]).subscribe(stats => (actual = stats));
 
     const expected = {} as OrderStatistics;
-    http.expectOne({ url: '/api/orders/statistics?from=2020-01-01&to=2021-01-01&grcs=1&grcs=2', method: 'GET' }).flush(expected);
+    http.expectOne({ url: 'api/orders/statistics?from=2020-01-01&to=2021-01-01&grcs=1&grcs=2', method: 'GET' }).flush(expected);
     expect(actual).toBe(expected);
   });
 
@@ -152,7 +152,7 @@ describe('OrderService', () => {
     const command = {} as CustomerInformationCommand;
     service.updateCustomerInformation(42, command).subscribe(() => (done = true));
 
-    const testRequest = http.expectOne({ method: 'PUT', url: '/api/orders/42/customer-information' });
+    const testRequest = http.expectOne({ method: 'PUT', url: 'api/orders/42/customer-information' });
     expect(testRequest.request.body).toBe(command);
     testRequest.flush(null);
     expect(done).toBe(true);

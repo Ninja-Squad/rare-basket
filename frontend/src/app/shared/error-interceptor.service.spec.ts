@@ -26,33 +26,33 @@ describe('ErrorInterceptorService', () => {
   });
 
   it('should do nothing if no error', () => {
-    httpClient.get('/api/foo').subscribe({ error: () => {} });
+    httpClient.get('api/foo').subscribe({ error: () => {} });
 
-    http.expectOne('/api/foo').flush('test');
+    http.expectOne('api/foo').flush('test');
 
     expect(toastService.error).not.toHaveBeenCalled();
   });
 
   it('should signal functional errors', () => {
-    httpClient.get('/api/foo').subscribe({ error: () => {} });
+    httpClient.get('api/foo').subscribe({ error: () => {} });
 
-    http.expectOne('/api/foo').flush({ functionalError: 'FOO' }, { status: 400, statusText: 'Bad Request' });
+    http.expectOne('api/foo').flush({ functionalError: 'FOO' }, { status: 400, statusText: 'Bad Request' });
 
     expect(toastService.error).toHaveBeenCalledWith('common.error-interceptor.functional-error.FOO');
   });
 
   it('should signal server errors', () => {
-    httpClient.get('/api/foo').subscribe({ error: () => {} });
+    httpClient.get('api/foo').subscribe({ error: () => {} });
 
-    http.expectOne('/api/foo').flush({ message: 'FOO' }, { status: 400, statusText: 'Bad Request' });
+    http.expectOne('api/foo').flush({ message: 'FOO' }, { status: 400, statusText: 'Bad Request' });
 
     expect(toastService.error).toHaveBeenCalledWith('common.error-interceptor.server-error', { status: 400, message: 'FOO' });
   });
 
   it('should signal client errors', () => {
-    httpClient.get('/api/foo').subscribe({ error: () => {} });
+    httpClient.get('api/foo').subscribe({ error: () => {} });
 
-    http.expectOne('/api/foo').error(new ErrorEvent('error'));
+    http.expectOne('api/foo').error(new ErrorEvent('error'));
 
     expect(toastService.error).toHaveBeenCalledWith('common.error-interceptor.client-error');
   });

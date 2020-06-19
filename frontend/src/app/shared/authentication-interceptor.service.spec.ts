@@ -33,30 +33,25 @@ describe('AuthenticationInterceptorService', () => {
   });
 
   it('should not do anything if not authenticated', () => {
-    httpClient.get('/api/foo').subscribe(() => {});
+    httpClient.get('api/foo').subscribe(() => {});
 
-    const testRequest = httpTestingController.expectOne('/api/foo');
+    const testRequest = httpTestingController.expectOne('api/foo');
     expect(testRequest.request.headers.get('Authorization')).toBeNull();
   });
 
   it('should not do anything if not to api', () => {
     oidcSecurityService.getToken.and.returnValue('token');
-    httpClient.get('http://foo.bar.com/api/foo').subscribe(() => {});
+    httpClient.get('http://foo.bar.comapi/foo').subscribe(() => {});
 
-    const testRequest = httpTestingController.expectOne('http://foo.bar.com/api/foo');
+    const testRequest = httpTestingController.expectOne('http://foo.bar.comapi/foo');
     expect(testRequest.request.headers.get('Authorization')).toBeNull();
   });
 
   it('should add token if authenticated and request to api', () => {
     oidcSecurityService.getToken.and.returnValue('token');
-    httpClient.get('/api/foo').subscribe(() => {});
-
-    let testRequest = httpTestingController.expectOne('/api/foo');
-    expect(testRequest.request.headers.get('Authorization')).toBe('Bearer token');
-
     httpClient.get('api/foo').subscribe(() => {});
 
-    testRequest = httpTestingController.expectOne('api/foo');
+    const testRequest = httpTestingController.expectOne('api/foo');
     expect(testRequest.request.headers.get('Authorization')).toBe('Bearer token');
   });
 });
