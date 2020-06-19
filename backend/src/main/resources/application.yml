@@ -3,7 +3,7 @@ rare-basket:
     host-and-port: localhost:5432
   mail:
     from: noreply@rare-basket.fr
-    base-url: http://localhost:4201
+    base-url: http://localhost:4201/rare-basket
   document-storage:
     path: /tmp/rare-basket-storage
 
