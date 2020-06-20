@@ -13,7 +13,7 @@ body {
   @extend .rounded;
   @extend .bg-white;
   @extend .p-2;
-  @extend .p-md-5;
+  @extend .p-lg-4;
 }
 
 @include media-breakpoint-up(sm) {
@@ -27,4 +27,9 @@ body {
   white-space: nowrap;
   padding-right: 6em;
   text-overflow: ellipsis;
+}
+
+.scrolling-accessions {
+  max-height: 25rem;
+  overflow-y: auto;
 }

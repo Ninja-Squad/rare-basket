@@ -1,5 +1,5 @@
 <form [formGroup]="form" (ngSubmit)="save()">
-  <div formArrayName="items">
+  <div formArrayName="items" class="scrolling-accessions mb-2">
     <div *ngFor="let itemGroup of itemGroups.controls; index as i" [formGroupName]="i" class="my-2 edit-order-item">
       <div class="d-flex">
         <div class="flex-grow-1 mr-3">
@@ -63,14 +63,22 @@
       <hr class="d-lg-none my-1" />
     </div>
   </div>
-  <div>
-    <button (click)="addItem()" type="button" class="btn btn-sm btn-outline-secondary" id="add-item-button">
-      <fa-icon [icon]="addItemIcon"></fa-icon>
-      <span class="sr-only" translate="order.edit-order.add-accession"></span>
-    </button>
-  </div>
-  <div class="text-right">
-    <button class="btn btn-sm btn-primary mr-2" translate="order.edit-order.save" id="save-button"></button>
-    <button type="button" class="btn btn-sm btn-danger" (click)="cancel()" translate="order.edit-order.cancel" id="cancel-button"></button>
+  <div class="d-flex">
+    <div>
+      <button (click)="addItem()" type="button" class="btn btn-sm btn-outline-secondary" id="add-item-button">
+        <fa-icon [icon]="addItemIcon"></fa-icon>
+        <span class="sr-only" translate="order.edit-order.add-accession"></span>
+      </button>
+    </div>
+    <div class="flex-grow-1 text-right">
+      <button class="btn btn-sm btn-primary mr-2" translate="order.edit-order.save" id="save-button"></button>
+      <button
+        type="button"
+        class="btn btn-sm btn-danger"
+        (click)="cancel()"
+        translate="order.edit-order.cancel"
+        id="cancel-button"
+      ></button>
+    </div>
   </div>
 </form>
