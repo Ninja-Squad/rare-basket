@@ -223,4 +223,18 @@ describe('EditDocumentComponent', () => {
 
     // quite hard to test drop event
   });
+
+  it('should change on delivery form value depending on document type unless dirty', () => {
+    tester.type.selectValue('MTA');
+    expect(tester.onDeliveryForm).toBeChecked();
+
+    tester.type.selectLabel('Courriel');
+    expect(tester.onDeliveryForm).not.toBeChecked();
+
+    tester.onDeliveryForm.check();
+    tester.onDeliveryForm.uncheck();
+
+    tester.type.selectValue('MTA');
+    expect(tester.onDeliveryForm).not.toBeChecked();
+  });
 });

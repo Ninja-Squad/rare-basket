@@ -1,6 +1,13 @@
 import { Component, ElementRef, EventEmitter, Input, OnChanges, Output, SimpleChanges, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { ALL_DOCUMENT_TYPES, DetailedOrder, DocumentCommand, DocumentType, isDocumentTypeUnique } from '../order.model';
+import {
+  ALL_DOCUMENT_TYPES,
+  DetailedOrder,
+  DocumentCommand,
+  DocumentType,
+  isDocumentTypeUnique,
+  ON_DELIVERY_FORM_BY_DEFAULT_DOCUMENT_TYPES
+} from '../order.model';
 import { faFileUpload } from '@fortawesome/free-solid-svg-icons';
 
 const validExtensions = ['.pdf', '.txt', '.eml', '.pst', '.ost'];
@@ -36,15 +43,22 @@ export class EditDocumentComponent implements OnChanges {
   constructor(fb: FormBuilder) {
     const typeControl = fb.control(null, Validators.required);
     const descriptionControl = fb.control('');
+    const onDeliveryFormControl = fb.control(false);
+
     this.form = fb.group({
       type: typeControl,
       description: descriptionControl,
-      onDeliveryForm: false
+      onDeliveryForm: onDeliveryFormControl
     });
 
     typeControl.valueChanges.subscribe((newType: DocumentType) => {
       descriptionControl.setValidators(newType === 'OTHER' ? Validators.required : []);
       descriptionControl.updateValueAndValidity();
+
+      // only change the on delivery form value if the user hasn't played with the control yet
+      if (!onDeliveryFormControl.dirty) {
+        onDeliveryFormControl.setValue(ON_DELIVERY_FORM_BY_DEFAULT_DOCUMENT_TYPES.includes(newType));
+      }
     });
   }
 
