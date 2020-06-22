@@ -321,6 +321,7 @@
         "update": "Update an accession holder"
       },
       "name": "Name",
+      "name-hint": "The name must match the accession holder name used in the RARe accessions",
       "name-error-label": "The name",
       "email": "Email",
       "email-error-label": "The email",
