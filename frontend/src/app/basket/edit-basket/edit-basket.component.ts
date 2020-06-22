@@ -1,10 +1,11 @@
 import { Component, EventEmitter, Inject, Input, LOCALE_ID, OnInit, Output } from '@angular/core';
 import { ALL_CUSTOMER_TYPES, Basket, BasketCommand, BasketItemCommand, CustomerType, Language } from '../basket.model';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { faCheck, faTrash } from '@fortawesome/free-solid-svg-icons';
 import { ConfirmationService } from '../../shared/confirmation.service';
 import { environment } from '../../../environments/environment';
 import { timer } from 'rxjs';
+import { billingAddressAnimation } from '../../shared/animations';
 
 interface FormValue {
   customer: {
@@ -13,6 +14,7 @@ interface FormValue {
     email: string;
     deliveryAddress: string;
     billingAddress: string;
+    useDeliveryAddress: boolean;
     type: CustomerType;
     language: Language;
   };
@@ -23,7 +25,8 @@ interface FormValue {
 @Component({
   selector: 'rb-edit-basket',
   templateUrl: './edit-basket.component.html',
-  styleUrls: ['./edit-basket.component.scss']
+  styleUrls: ['./edit-basket.component.scss'],
+  animations: [billingAddressAnimation]
 })
 export class EditBasketComponent implements OnInit {
   @Input() basket: Basket;
@@ -33,6 +36,7 @@ export class EditBasketComponent implements OnInit {
   gdprDetailsUrl = environment.gdprDetailsUrl;
   customerTypes = ALL_CUSTOMER_TYPES;
   form: FormGroup;
+  useDeliveryAddressControl: FormControl;
 
   deleteIcon = faTrash;
   saveIcon = faCheck;
@@ -45,18 +49,28 @@ export class EditBasketComponent implements OnInit {
 
   ngOnInit(): void {
     const customer = this.basket.customer;
+    const customerGroup = this.fb.group({
+      name: [customer?.name ?? null, Validators.required],
+      organization: [customer?.organization ?? null],
+      email: [customer?.email ?? null, [Validators.required, Validators.email]],
+      deliveryAddress: [customer?.deliveryAddress ?? null, Validators.required],
+      billingAddress: [customer?.billingAddress ?? null, Validators.required],
+      type: [customer?.type ?? null, Validators.required],
+      language: this.language
+    });
     this.form = this.fb.group({
-      customer: this.fb.group({
-        name: [customer?.name ?? null, Validators.required],
-        organization: [customer?.organization ?? null],
-        email: [customer?.email ?? null, [Validators.required, Validators.email]],
-        deliveryAddress: [customer?.deliveryAddress ?? null, Validators.required],
-        billingAddress: [customer?.billingAddress ?? null, Validators.required],
-        type: [customer?.type ?? null, Validators.required],
-        language: this.language
-      }),
+      customer: customerGroup,
       rationale: [this.basket.rationale],
       gdprAgreement: [false, Validators.requiredTrue]
+    });
+    this.useDeliveryAddressControl = this.fb.control(customer?.deliveryAddress && customer?.deliveryAddress === customer?.billingAddress);
+    this.useDeliveryAddressControl.valueChanges.subscribe(useDeliveryAddress => {
+      const billingAddressControl = customerGroup.get('billingAddress');
+      if (useDeliveryAddress) {
+        billingAddressControl.disable();
+      } else {
+        billingAddressControl.enable();
+      }
     });
     this.quantityDisplayed = this.shouldDisplayQuantity();
     this.deleteItemDisabled = this.shouldDisableDeleteItem();
@@ -94,8 +108,11 @@ export class EditBasketComponent implements OnInit {
     });
 
     const value: FormValue = this.form.value as FormValue;
+    // use the delivery address for the billing address if necessary
+    const customer = value.customer;
+    customer.billingAddress = this.useDeliveryAddressControl.value ? customer.deliveryAddress : customer.billingAddress;
     const command: BasketCommand = {
-      customer: value.customer,
+      customer,
       rationale: value.rationale,
       complete: true,
       items: itemCommands

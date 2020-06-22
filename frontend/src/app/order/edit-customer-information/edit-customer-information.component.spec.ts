@@ -1,4 +1,5 @@
 import { TestBed } from '@angular/core/testing';
+import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 
 import { EditCustomerInformationComponent } from './edit-customer-information.component';
 import { ComponentTester, speculoosMatchers } from 'ngx-speculoos';
@@ -66,6 +67,10 @@ class TestComponentTester extends ComponentTester<TestComponent> {
     return this.textarea('#billing-address');
   }
 
+  get useDeliveryAddress() {
+    return this.input('#use-delivery-address');
+  }
+
   get type() {
     return this.select('#type');
   }
@@ -96,7 +101,7 @@ describe('EditCustomerComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [I18nTestingModule, ReactiveFormsModule, ValdemortModule],
+      imports: [I18nTestingModule, ReactiveFormsModule, NoopAnimationsModule, ValdemortModule],
       declarations: [EditCustomerInformationComponent, TestComponent, ValidationDefaultsComponent, LanguageEnumPipe, CustomerTypeEnumPipe]
     });
 
@@ -114,6 +119,7 @@ describe('EditCustomerComponent', () => {
     expect(tester.email).toHaveValue('john@mail.com');
     expect(tester.deliveryAddress).toHaveValue('1, Main Street');
     expect(tester.billingAddress).toHaveValue('1, Main Street - billing service');
+    expect(tester.useDeliveryAddress).not.toBeChecked();
     expect(tester.type.optionLabels.length).toBe(ALL_CUSTOMER_TYPES.length + 1);
     expect(tester.type).toHaveSelectedLabel('Agriculteur');
     expect(tester.language.optionLabels.length).toBe(ALL_LANGUAGES.length + 1);
@@ -175,6 +181,23 @@ describe('EditCustomerComponent', () => {
     expect(tester.componentInstance.command).toEqual(expectedCommand);
   });
 
+  it('should use the delivery address as the billing address', () => {
+    tester.detectChanges();
+
+    tester.name.fillWith('Jane');
+    tester.organization.fillWith('Wheat SAS');
+    tester.email.fillWith('jane@mail.com');
+    tester.deliveryAddress.fillWith('2, Main Street');
+    tester.useDeliveryAddress.check();
+    expect(tester.billingAddress.disabled).toBe(true);
+    tester.type.selectLabel('Autre');
+    tester.language.selectLabel('Français');
+    tester.rationale.fillWith('foo');
+
+    tester.saveButton.click();
+    expect(tester.componentInstance.command.customer.billingAddress).toEqual(tester.componentInstance.command.customer.deliveryAddress);
+  });
+
   it('should cancel', () => {
     tester.detectChanges();
 
@@ -192,6 +215,7 @@ describe('EditCustomerComponent', () => {
     expect(tester.email).toHaveValue('');
     expect(tester.deliveryAddress).toHaveValue('');
     expect(tester.billingAddress).toHaveValue('');
+    expect(tester.useDeliveryAddress).not.toBeChecked();
     expect(tester.type).toHaveSelectedLabel('');
     expect(tester.language).toHaveSelectedLabel('');
     expect(tester.rationale).toHaveValue('');

@@ -1,4 +1,5 @@
 import { TestBed } from '@angular/core/testing';
+import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 
 import { EditBasketComponent } from './edit-basket.component';
 import { ComponentTester, speculoosMatchers, TestButton } from 'ngx-speculoos';
@@ -45,6 +46,10 @@ class TestComponentTester extends ComponentTester<TestComponent> {
 
   get customerBillingAddress() {
     return this.textarea('#billing-address');
+  }
+
+  get useDeliveryAddress() {
+    return this.input('#use-delivery-address');
   }
 
   get customerType() {
@@ -97,7 +102,15 @@ describe('EditBasketComponent', () => {
 
     TestBed.configureTestingModule({
       declarations: [EditBasketComponent, TestComponent, ValidationDefaultsComponent],
-      imports: [I18nTestingModule, RbNgbModule, ReactiveFormsModule, FontAwesomeModule, SharedModule, ValdemortModule],
+      imports: [
+        I18nTestingModule,
+        RbNgbModule,
+        ReactiveFormsModule,
+        NoopAnimationsModule,
+        FontAwesomeModule,
+        SharedModule,
+        ValdemortModule
+      ],
       providers: [{ provide: ConfirmationService, useValue: confirmationService }]
     });
 
@@ -167,6 +180,7 @@ describe('EditBasketComponent', () => {
       expect(tester.customerEmail).toHaveValue('');
       expect(tester.customerDeliveryAddress).toHaveValue('');
       expect(tester.customerBillingAddress).toHaveValue('');
+      expect(tester.useDeliveryAddress).not.toBeChecked();
       expect(tester.customerType).toHaveSelectedLabel('');
       expect(tester.rationale).toHaveValue('');
       expect(tester.accessionsHolderTitles.length).toBe(2);
@@ -271,6 +285,26 @@ describe('EditBasketComponent', () => {
       expect(tester.componentInstance.savedCommand).toEqual(expectedCommand);
     });
 
+    it('should use the delivery address as the billing address', () => {
+      tester.detectChanges();
+
+      tester.customerName.fillWith('John');
+      tester.customerOrganization.fillWith('Wheat SA');
+      tester.customerEmail.fillWith('john@mail.com');
+      tester.customerDeliveryAddress.fillWith('21 Jump Street');
+      tester.useDeliveryAddress.check();
+      expect(tester.customerBillingAddress.disabled).toBe(true);
+      tester.customerType.selectLabel('Citoyen');
+      tester.rationale.fillWith('Because');
+      tester.gdprAgreement.check();
+
+      tester.saveButton.click();
+      expect(tester.errors.length).toBe(0);
+      expect(tester.componentInstance.savedCommand.customer.billingAddress).toEqual(
+        tester.componentInstance.savedCommand.customer.deliveryAddress
+      );
+    });
+
     it('should remove accession after confirmation and make last one removal disabled', () => {
       tester.componentInstance.basket.accessionHolderBaskets[0].items[0].quantity = 10;
       tester.detectChanges();
@@ -340,6 +374,7 @@ describe('EditBasketComponent', () => {
       expect(tester.customerEmail).toHaveValue('john@mail.com');
       expect(tester.customerDeliveryAddress).toHaveValue('21 Jump Street');
       expect(tester.customerBillingAddress).toHaveValue('21 Jump Street - billing service');
+      expect(tester.useDeliveryAddress).not.toBeChecked();
       expect(tester.customerType).toHaveSelectedLabel('Citoyen');
       expect(tester.rationale).toHaveValue('Because');
     });
