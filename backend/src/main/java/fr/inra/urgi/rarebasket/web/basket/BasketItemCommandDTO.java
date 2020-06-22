@@ -2,7 +2,6 @@ package fr.inra.urgi.rarebasket.web.basket;
 
 import java.util.Objects;
 import javax.validation.Valid;
-import javax.validation.constraints.Email;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Null;
@@ -25,12 +24,11 @@ public final class BasketItemCommandDTO {
     private final Accession accession;
 
     /**
-     * The email of the accession holder in charge of handling this ordered item
+     * The name of the accession holder in charge of handling this ordered item
      */
     @NotNull(groups = BasketCommandDTO.Create.class)
-    @Email(groups = BasketCommandDTO.Create.class)
     @Null(groups = BasketCommandDTO.Update.class)
-    private final String contactEmail;
+    private final String accessionHolder;
 
     @Min(value = 1)
     private Integer quantity;
@@ -39,18 +37,18 @@ public final class BasketItemCommandDTO {
 
     @JsonCreator
     public BasketItemCommandDTO(@JsonProperty("accession") Accession accession,
-                                @JsonProperty("contactEmail") String contactEmail,
+                                @JsonProperty("accessionHolder") String accessionHolder,
                                 @JsonProperty("quantity") Integer quantity,
                                 @JsonProperty("unit") String unit) {
         this.accession = accession;
-        this.contactEmail = contactEmail;
+        this.accessionHolder = accessionHolder;
         this.quantity = quantity;
         this.unit = unit;
     }
 
     public BasketItemCommandDTO(Accession accession,
-                                String contactEmail) {
-        this(accession, contactEmail, null, null);
+                                String accessionHolder) {
+        this(accession, accessionHolder, null, null);
     }
 
     public BasketItemCommandDTO(Accession accession,
@@ -62,8 +60,8 @@ public final class BasketItemCommandDTO {
         return accession;
     }
 
-    public String getContactEmail() {
-        return contactEmail;
+    public String getAccessionHolder() {
+        return accessionHolder;
     }
 
     public Integer getQuantity() {
@@ -84,21 +82,21 @@ public final class BasketItemCommandDTO {
         }
         BasketItemCommandDTO that = (BasketItemCommandDTO) o;
         return Objects.equals(accession, that.accession) &&
-            Objects.equals(contactEmail, that.contactEmail) &&
+            Objects.equals(accessionHolder, that.accessionHolder) &&
             Objects.equals(quantity, that.quantity) &&
             Objects.equals(unit, that.unit);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(accession, contactEmail, quantity, unit);
+        return Objects.hash(accession, accessionHolder, quantity, unit);
     }
 
     @Override
     public String toString() {
         return "BasketItemCommandDTO{" +
             "accession=" + accession +
-            ", contactEmail='" + contactEmail + '\'' +
+            ", accessionHolder='" + accessionHolder + '\'' +
             ", quantity=" + quantity +
             ", unit='" + unit + '\'' +
             '}';

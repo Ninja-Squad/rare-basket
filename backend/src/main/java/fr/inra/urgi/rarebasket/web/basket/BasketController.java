@@ -160,14 +160,14 @@ public class BasketController {
         basket.setReference(References.generateRandomReference());
         basket.setStatus(BasketStatus.DRAFT);
 
-        Map<String, AccessionHolder> accessionHoldersByEmail = new HashMap<>();
+        Map<String, AccessionHolder> accessionHoldersByName = new HashMap<>();
         command.getItems().forEach(itemCommand -> {
             BasketItem item = new BasketItem();
             item.setAccession(itemCommand.getAccession());
-            AccessionHolder accessionHolder = accessionHoldersByEmail.computeIfAbsent(
-                itemCommand.getContactEmail(),
-                email -> accessionHolderDao.findByEmail(itemCommand.getContactEmail())
-                                           .orElseThrow(() -> new BadRequestException("No accession holder with email " + email))
+            AccessionHolder accessionHolder = accessionHoldersByName.computeIfAbsent(
+                itemCommand.getAccessionHolder(),
+                name -> accessionHolderDao.findByName(itemCommand.getAccessionHolder())
+                                           .orElseThrow(() -> new BadRequestException("No accession holder with name " + name))
             );
             item.setAccessionHolder(accessionHolder);
             basket.addItem(item);

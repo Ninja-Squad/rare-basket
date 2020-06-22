@@ -75,7 +75,7 @@ public class AccessionHolderController {
     public AccessionHolderDTO create(@Validated @RequestBody AccessionHolderCommandDTO command) {
         currentUser.checkPermission(Permission.ADMINISTRATION);
         validateAccessionHolderEmail(command.getEmail(), null);
-        validateAccessionHolderName(command.getName(), command.getGrcId(), null);
+        validateAccessionHolderName(command.getName(), null);
 
         AccessionHolder accessionHolder = new AccessionHolder();
         copyCommandToAccessionHolder(command, accessionHolder);
@@ -92,7 +92,7 @@ public class AccessionHolderController {
         AccessionHolder accessionHolder = accessionHolderDao.findById(accessionHolderId)
                                                             .orElseThrow(NotFoundException::new);
         validateAccessionHolderEmail(command.getEmail(), accessionHolder);
-        validateAccessionHolderName(command.getName(), command.getGrcId(), accessionHolder);
+        validateAccessionHolderName(command.getName(), accessionHolder);
 
         copyCommandToAccessionHolder(command, accessionHolder);
     }
@@ -116,8 +116,8 @@ public class AccessionHolderController {
                           });
     }
 
-    private void validateAccessionHolderName(String name, Long grcId, AccessionHolder accessionHolder) {
-        accessionHolderDao.findByNameAndGrcId(name, grcId)
+    private void validateAccessionHolderName(String name, AccessionHolder accessionHolder) {
+        accessionHolderDao.findByName(name)
                           .filter(foundAccessionHolder -> !foundAccessionHolder.equals(accessionHolder))
                           .ifPresent(foundAccessionHolder -> {
                               throw new FunctionalException(ACCESSION_HOLDER_NAME_ALREADY_EXISTING);

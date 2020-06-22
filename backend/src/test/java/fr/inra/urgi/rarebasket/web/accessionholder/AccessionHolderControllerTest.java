@@ -78,8 +78,7 @@ class AccessionHolderControllerTest {
         accessionHolder.setGrc(grc);
         when(mockAccessionHolderDao.findById(accessionHolder.getId())).thenReturn(Optional.of(accessionHolder));
         when(mockAccessionHolderDao.findByEmail(accessionHolder.getEmail())).thenReturn(Optional.of(accessionHolder));
-        when(mockAccessionHolderDao.findByNameAndGrcId(accessionHolder.getName(), accessionHolder.getGrc().getId()))
-            .thenReturn(Optional.of(accessionHolder));
+        when(mockAccessionHolderDao.findByName(accessionHolder.getName())).thenReturn(Optional.of(accessionHolder));
 
         User user = new User(42L);
         user.setName("JB");
@@ -260,8 +259,7 @@ class AccessionHolderControllerTest {
     void shouldThrowWhenUpdatingWithAlreadyExistingName() {
         AccessionHolder otherAccessionHolder = new AccessionHolder();
         otherAccessionHolder.setName(accessionHolder.getName());
-        when(mockAccessionHolderDao.findByNameAndGrcId(otherAccessionHolder.getName(), accessionHolder.getGrc().getId()))
-            .thenReturn(Optional.of(otherAccessionHolder));
+        when(mockAccessionHolderDao.findByName(otherAccessionHolder.getName())).thenReturn(Optional.of(otherAccessionHolder));
         AccessionHolderCommandDTO command = new AccessionHolderCommandDTO(
             accessionHolder.getName(),
             "foo@bar.com",

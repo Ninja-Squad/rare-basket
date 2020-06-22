@@ -96,7 +96,7 @@ class BasketControllerTest {
         alice.setGrc(grc);
 
         List.of(john, alice).forEach(
-            accessionHolder -> when(mockAccessionHolderDao.findByEmail(accessionHolder.getEmail()))
+            accessionHolder -> when(mockAccessionHolderDao.findByName(accessionHolder.getName()))
                 .thenReturn(Optional.of(accessionHolder))
         );
 
@@ -134,9 +134,9 @@ class BasketControllerTest {
     }
 
     @Test
-    void shouldNotCreateBasketWithItemWithInvalidContactEmail() throws Exception {
+    void shouldNotCreateBasketWithItemWithUnknownAccessionHolderName() throws Exception {
         BasketCommandDTO command = new BasketCommandDTO(
-            List.of(new BasketItemCommandDTO(new Accession("rosa", "rosa1"), "notAnEmail"))
+            List.of(new BasketItemCommandDTO(new Accession("rosa", "rosa1"), "unknownName"))
         );
         checkBadRequestWhenCreating(command);
     }
@@ -144,25 +144,17 @@ class BasketControllerTest {
     @Test
     void shouldNotCreateBasketWithItemWithAbsentOrInvalidAccession() throws Exception {
         BasketCommandDTO command = new BasketCommandDTO(
-            List.of(new BasketItemCommandDTO(null, john.getEmail()))
+            List.of(new BasketItemCommandDTO(null, john.getName()))
         );
         checkBadRequestWhenCreating(command);
 
         command = new BasketCommandDTO(
-            List.of(new BasketItemCommandDTO(new Accession("  ", "rosa1"), john.getEmail()))
+            List.of(new BasketItemCommandDTO(new Accession("  ", "rosa1"), john.getName()))
         );
         checkBadRequestWhenCreating(command);
 
         command = new BasketCommandDTO(
-            List.of(new BasketItemCommandDTO(new Accession("rosa", " "), john.getEmail()))
-        );
-        checkBadRequestWhenCreating(command);
-    }
-
-    @Test
-    void shouldNotCreateBasketWithItemWithUnexistingAccessionHolder() throws Exception {
-        BasketCommandDTO command = new BasketCommandDTO(
-            List.of(new BasketItemCommandDTO(new Accession("rosa", "rosa1"), "unexisting@mail.com"))
+            List.of(new BasketItemCommandDTO(new Accession("rosa", " "), john.getName()))
         );
         checkBadRequestWhenCreating(command);
     }
@@ -180,7 +172,7 @@ class BasketControllerTest {
             );
 
         BasketCommandDTO command = new BasketCommandDTO(
-            List.of(new BasketItemCommandDTO(new Accession("rosa", "rosa1"), john.getEmail())),
+            List.of(new BasketItemCommandDTO(new Accession("rosa", "rosa1"), john.getName())),
             customer,
             "rationale",
             false
@@ -191,7 +183,7 @@ class BasketControllerTest {
     @Test
     void shouldNotCreateBasketWithInvalidQuantity() throws Exception {
         BasketCommandDTO command = new BasketCommandDTO(
-            List.of(new BasketItemCommandDTO(new Accession("rosa", "rosa1"), john.getEmail(), 0, null))
+            List.of(new BasketItemCommandDTO(new Accession("rosa", "rosa1"), john.getName(), 0, null))
         );
         checkBadRequestWhenCreating(command);
     }
@@ -250,7 +242,7 @@ class BasketControllerTest {
         );
         for (CustomerCommandDTO customer : invalidCustomers) {
             BasketCommandDTO command = new BasketCommandDTO(
-                List.of(new BasketItemCommandDTO(new Accession("rosa", "rosa1"), john.getEmail())),
+                List.of(new BasketItemCommandDTO(new Accession("rosa", "rosa1"), john.getName())),
                 customer,
                 "rationale",
                 true
@@ -263,9 +255,9 @@ class BasketControllerTest {
     void shouldCreateADraftBasket() throws Exception {
         BasketCommandDTO command = new BasketCommandDTO(
             List.of(
-                new BasketItemCommandDTO(new Accession("rosa", "rosa1"), john.getEmail()),
-                new BasketItemCommandDTO(new Accession("violetta", "violetta1"), john.getEmail()),
-                new BasketItemCommandDTO(new Accession("amanita", "amanita1"), alice.getEmail())
+                new BasketItemCommandDTO(new Accession("rosa", "rosa1"), john.getName()),
+                new BasketItemCommandDTO(new Accession("violetta", "violetta1"), john.getName()),
+                new BasketItemCommandDTO(new Accession("amanita", "amanita1"), alice.getName())
             )
         );
 
@@ -300,9 +292,9 @@ class BasketControllerTest {
     void shouldCreateACompleteBasket() throws Exception {
         BasketCommandDTO command = new BasketCommandDTO(
             List.of(
-                new BasketItemCommandDTO(new Accession("rosa", "rosa1"), john.getEmail(), 1, "bags"),
-                new BasketItemCommandDTO(new Accession("violetta", "violetta1"), john.getEmail(), 2, "seeds"),
-                new BasketItemCommandDTO(new Accession("amanita", "amanita1"), alice.getEmail(), 3, null)
+                new BasketItemCommandDTO(new Accession("rosa", "rosa1"), john.getName(), 1, "bags"),
+                new BasketItemCommandDTO(new Accession("violetta", "violetta1"), john.getName(), 2, "seeds"),
+                new BasketItemCommandDTO(new Accession("amanita", "amanita1"), alice.getName(), 3, null)
             ),
             new CustomerCommandDTO(
                 "Jack",
@@ -389,9 +381,9 @@ class BasketControllerTest {
     }
 
     @Test
-    void shouldNotUpdateADraftBasketWithContactEmails() throws Exception {
+    void shouldNotUpdateADraftBasketWithAccessionHolderNames() throws Exception {
         BasketCommandDTO command = new BasketCommandDTO(
-            List.of(new BasketItemCommandDTO(new Accession("rosa", "rosa1"), "john@mail.com"))
+            List.of(new BasketItemCommandDTO(new Accession("rosa", "rosa1"), "john"))
         );
         checkBadRequestWhenUpdating(command);
     }
