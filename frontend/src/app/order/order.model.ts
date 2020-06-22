@@ -16,9 +16,9 @@ export interface BasketInformation {
   confirmationInstant: string;
 }
 
-export const ALL_DOCUMENT_TYPES = ['EMAIL', 'MTA', 'SANITARY_PASSPORT', 'INVOICE', 'OTHER'] as const;
+export const ALL_DOCUMENT_TYPES = ['EMAIL', 'MTA', 'SMTA', 'SANITARY_PASSPORT', 'INVOICE', 'OTHER'] as const;
 export type DocumentType = typeof ALL_DOCUMENT_TYPES[number];
-export const ON_DELIVERY_FORM_BY_DEFAULT_DOCUMENT_TYPES: ReadonlyArray<DocumentType> = ['MTA', 'SANITARY_PASSPORT', 'INVOICE'];
+export const ON_DELIVERY_FORM_BY_DEFAULT_DOCUMENT_TYPES: ReadonlyArray<DocumentType> = ['MTA', 'SMTA', 'SANITARY_PASSPORT', 'INVOICE'];
 
 export function isDocumentTypeUnique(documentType: DocumentType): boolean {
   return documentType === 'INVOICE';

@@ -190,7 +190,7 @@ export class OrderComponent implements OnInit {
     let result$: Observable<void>;
 
     const warnings: Array<string> = [];
-    if (!this.order.documents.some(doc => doc.type === 'MTA')) {
+    if (!this.order.documents.some(doc => doc.type === 'MTA' || doc.type === 'SMTA')) {
       warnings.push(this.translateService.instant('order.order.missing-mta-warning'));
     }
     if (!this.order.documents.some(doc => doc.type === 'SANITARY_PASSPORT')) {

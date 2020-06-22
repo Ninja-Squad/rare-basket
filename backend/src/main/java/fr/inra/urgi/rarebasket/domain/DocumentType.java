@@ -12,6 +12,10 @@ public enum DocumentType {
      * material transfert agreement
      */
     MTA,
+    /**
+     * standard material transfert agreement
+     */
+    SMTA,
     SANITARY_PASSPORT,
     INVOICE (true),
     OTHER;

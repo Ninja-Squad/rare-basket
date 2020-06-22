@@ -61,6 +61,7 @@
     "document-type": {
       "EMAIL": "Courriel",
       "MTA": "ATM - Accord de transfert de matériel",
+      "SMTA": "ATMS - Accord de transfert de matériel standard",
       "SANITARY_PASSPORT": "Passeport phytosanitaire, certificat sanitaire",
       "INVOICE": "Facture",
       "OTHER": "Autre"

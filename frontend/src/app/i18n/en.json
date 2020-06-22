@@ -61,6 +61,7 @@
     "document-type": {
       "EMAIL": "Email",
       "MTA": "MTA - Material transfer agreement",
+      "SMTA": "SMTA - Standard material transfer agreement",
       "SANITARY_PASSPORT": "Phytosanitary passport, sanitary certificate",
       "INVOICE": "Invoice",
       "OTHER": "Other"
