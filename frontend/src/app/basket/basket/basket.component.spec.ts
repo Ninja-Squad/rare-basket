@@ -1,5 +1,4 @@
 import { TestBed } from '@angular/core/testing';
-import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 
 import { BasketComponent } from './basket.component';
 import { ComponentTester, fakeRoute, fakeSnapshot, speculoosMatchers } from 'ngx-speculoos';
@@ -58,15 +57,7 @@ describe('BasketComponent', () => {
 
     TestBed.configureTestingModule({
       declarations: [BasketComponent, EditBasketComponent, EditConfirmationComponent, ConfirmedComponent, BasketContentComponent],
-      imports: [
-        I18nTestingModule,
-        RbNgbModule,
-        ReactiveFormsModule,
-        NoopAnimationsModule,
-        FontAwesomeModule,
-        SharedModule,
-        ValdemortModule
-      ],
+      imports: [I18nTestingModule, RbNgbModule, ReactiveFormsModule, FontAwesomeModule, SharedModule, ValdemortModule],
       providers: [
         { provide: ActivatedRoute, useValue: route },
         { provide: BasketService, useValue: basketService }

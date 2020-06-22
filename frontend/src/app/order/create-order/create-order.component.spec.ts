@@ -1,5 +1,4 @@
 import { TestBed } from '@angular/core/testing';
-import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 
 import { CreateOrderComponent } from './create-order.component';
 import { ComponentTester, speculoosMatchers } from 'ngx-speculoos';
@@ -38,7 +37,7 @@ describe('CreateOrderComponent', () => {
     toastService = jasmine.createSpyObj<ToastService>('ToastService', ['success']);
 
     TestBed.configureTestingModule({
-      imports: [I18nTestingModule, ReactiveFormsModule, NoopAnimationsModule, ValdemortModule, RouterTestingModule],
+      imports: [I18nTestingModule, ReactiveFormsModule, ValdemortModule, RouterTestingModule],
       declarations: [CreateOrderComponent, EditCustomerInformationComponent, LanguageEnumPipe, CustomerTypeEnumPipe],
       providers: [
         { provide: OrderService, useValue: orderService },

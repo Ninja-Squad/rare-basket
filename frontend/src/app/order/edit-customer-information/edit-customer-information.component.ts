@@ -2,13 +2,11 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { ALL_CUSTOMER_TYPES, ALL_LANGUAGES, CustomerCommand } from '../../basket/basket.model';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { CustomerInformationCommand } from '../order.model';
-import { billingAddressAnimation } from '../../shared/animations';
 
 @Component({
   selector: 'rb-edit-customer-information',
   templateUrl: './edit-customer-information.component.html',
-  styleUrls: ['./edit-customer-information.component.scss'],
-  animations: [billingAddressAnimation]
+  styleUrls: ['./edit-customer-information.component.scss']
 })
 export class EditCustomerInformationComponent implements OnInit {
   @Input()

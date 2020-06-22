@@ -1,6 +1,5 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 import { AppComponent } from './app.component';
 import { HomeComponent } from './home/home.component';
@@ -22,7 +21,6 @@ import { RbNgbModule } from './rb-ngb/rb-ngb.module';
   declarations: [AppComponent, HomeComponent, ValidationDefaultsComponent, NavbarComponent],
   imports: [
     BrowserModule,
-    BrowserAnimationsModule,
     RouterModule.forRoot(APP_ROUTES),
     FontAwesomeModule,
     HttpClientModule,

@@ -1,5 +1,4 @@
 import { TestBed } from '@angular/core/testing';
-import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 
 import { EditCustomerInformationComponent } from './edit-customer-information.component';
 import { ComponentTester, speculoosMatchers } from 'ngx-speculoos';
@@ -101,7 +100,7 @@ describe('EditCustomerComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [I18nTestingModule, ReactiveFormsModule, NoopAnimationsModule, ValdemortModule],
+      imports: [I18nTestingModule, ReactiveFormsModule, ValdemortModule],
       declarations: [EditCustomerInformationComponent, TestComponent, ValidationDefaultsComponent, LanguageEnumPipe, CustomerTypeEnumPipe]
     });
 

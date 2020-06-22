@@ -1,5 +1,4 @@
 import { TestBed } from '@angular/core/testing';
-import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 
 import { EditBasketComponent } from './edit-basket.component';
 import { ComponentTester, speculoosMatchers, TestButton } from 'ngx-speculoos';
@@ -102,15 +101,7 @@ describe('EditBasketComponent', () => {
 
     TestBed.configureTestingModule({
       declarations: [EditBasketComponent, TestComponent, ValidationDefaultsComponent],
-      imports: [
-        I18nTestingModule,
-        RbNgbModule,
-        ReactiveFormsModule,
-        NoopAnimationsModule,
-        FontAwesomeModule,
-        SharedModule,
-        ValdemortModule
-      ],
+      imports: [I18nTestingModule, RbNgbModule, ReactiveFormsModule, FontAwesomeModule, SharedModule, ValdemortModule],
       providers: [{ provide: ConfirmationService, useValue: confirmationService }]
     });
 

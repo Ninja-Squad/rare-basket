@@ -5,7 +5,6 @@ import { faCheck, faTrash } from '@fortawesome/free-solid-svg-icons';
 import { ConfirmationService } from '../../shared/confirmation.service';
 import { environment } from '../../../environments/environment';
 import { timer } from 'rxjs';
-import { billingAddressAnimation } from '../../shared/animations';
 
 interface FormValue {
   customer: {
@@ -25,8 +24,7 @@ interface FormValue {
 @Component({
   selector: 'rb-edit-basket',
   templateUrl: './edit-basket.component.html',
-  styleUrls: ['./edit-basket.component.scss'],
-  animations: [billingAddressAnimation]
+  styleUrls: ['./edit-basket.component.scss']
 })
 export class EditBasketComponent implements OnInit {
   @Input() basket: Basket;

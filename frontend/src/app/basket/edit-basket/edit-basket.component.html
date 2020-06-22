@@ -27,11 +27,11 @@
           </div>
           <div class="form-group">
             <label for="billing-address" translate="basket.edit-basket.billing-address"></label>
-            <div class="custom-control custom-switch mt-md-2">
+            <div class="custom-control custom-switch" [class.mb-2]="!useDeliveryAddressControl.value">
               <input [formControl]="useDeliveryAddressControl" type="checkbox" class="custom-control-input" id="use-delivery-address" />
               <label class="custom-control-label" for="use-delivery-address" translate="basket.edit-basket.use-delivery-address"></label>
             </div>
-            <div [@showHide]="useDeliveryAddressControl.value ? 'hide' : 'show'">
+            <div class="hidable" [class.hide]="useDeliveryAddressControl.value">
               <textarea formControlName="billingAddress" id="billing-address" class="form-control"></textarea>
             </div>
             <val-errors controlName="billingAddress" [label]="'basket.edit-basket.billing-address-error-label' | translate"></val-errors>

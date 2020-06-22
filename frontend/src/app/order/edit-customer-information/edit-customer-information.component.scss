@@ -1,0 +1,14 @@
+textarea {
+  height: 4rem;
+}
+
+.hidable {
+  transition: all 0.3s ease-out;
+  opacity: 1;
+  height: 4rem;
+  overflow-y: hidden;
+  &.hide {
+    opacity: 0;
+    height: 0;
+  }
+}
