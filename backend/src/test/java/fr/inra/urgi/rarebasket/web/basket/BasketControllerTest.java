@@ -335,7 +335,7 @@ class BasketControllerTest {
         assertThat(savedBasket.getCustomer()).isEqualTo(new Customer(command.getCustomer().getName(),
                                                                      command.getCustomer().getOrganization(),
                                                                      command.getCustomer().getEmail(),
-                                                                     command.getCustomer().getAddress(),
+                                                                     command.getCustomer().getDeliveryAddress(),
                                                                      command.getCustomer().getType(),
                                                                      command.getCustomer().getLanguage()));
         assertThat(savedBasket.getRationale()).isEqualTo(command.getRationale());
@@ -354,7 +354,7 @@ class BasketControllerTest {
                .andExpect(jsonPath("$.customer.name").value(basket.getCustomer().getName()))
                .andExpect(jsonPath("$.customer.organization").value(basket.getCustomer().getOrganization()))
                .andExpect(jsonPath("$.customer.email").value(basket.getCustomer().getEmail()))
-               .andExpect(jsonPath("$.customer.address").value(basket.getCustomer().getAddress()))
+               .andExpect(jsonPath("$.customer.deliveryAddress").value(basket.getCustomer().getDeliveryAddress()))
                .andExpect(jsonPath("$.customer.type").value(basket.getCustomer().getType().name()))
                .andExpect(jsonPath("$.customer.language").value(basket.getCustomer().getLanguage().getLanguageCode()))
                .andExpect(jsonPath("$.accessionHolderBaskets.length()").value(2))
@@ -439,7 +439,7 @@ class BasketControllerTest {
         assertThat(basket.getCustomer()).isEqualTo(new Customer(command.getCustomer().getName(),
                                                                 command.getCustomer().getOrganization(),
                                                                 command.getCustomer().getEmail(),
-                                                                command.getCustomer().getAddress(),
+                                                                command.getCustomer().getDeliveryAddress(),
                                                                 command.getCustomer().getType(),
                                                                 command.getCustomer().getLanguage()));
         assertThat(basket.getRationale()).isEqualTo(command.getRationale());

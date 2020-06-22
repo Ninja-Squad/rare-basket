@@ -31,7 +31,7 @@ export class EditCustomerInformationComponent implements OnInit {
         name: [null, Validators.required],
         organization: null,
         email: [null, [Validators.required, Validators.email]],
-        address: [null, Validators.required],
+        deliveryAddress: [null, Validators.required],
         type: [null, Validators.required],
         language: [null, Validators.required]
       }),
@@ -47,7 +47,7 @@ export class EditCustomerInformationComponent implements OnInit {
           name: customer.name,
           organization: customer.organization,
           email: customer.email,
-          address: customer.address,
+          deliveryAddress: customer.deliveryAddress,
           type: customer.type,
           language: customer.language
         },

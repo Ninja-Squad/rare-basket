@@ -15,9 +15,12 @@
       <val-errors controlName="email" [label]="'order.edit-customer-information.email-error-label' | translate"></val-errors>
     </div>
     <div class="form-group">
-      <label for="address" translate="order.edit-customer-information.address"></label>
-      <textarea formControlName="address" id="address" class="form-control"></textarea>
-      <val-errors controlName="address" [label]="'order.edit-customer-information.address-error-label' | translate"></val-errors>
+      <label for="delivery-address" translate="order.edit-customer-information.delivery-address"></label>
+      <textarea formControlName="deliveryAddress" id="delivery-address" class="form-control"></textarea>
+      <val-errors
+        controlName="deliveryAddress"
+        [label]="'order.edit-customer-information.delivery-address-error-label' | translate"
+      ></val-errors>
     </div>
     <div class="form-group">
       <label for="type" translate="order.edit-customer-information.customer-type"></label>

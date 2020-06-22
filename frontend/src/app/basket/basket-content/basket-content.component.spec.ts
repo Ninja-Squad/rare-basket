@@ -20,7 +20,7 @@ class TestComponent {
     customer: {
       name: 'John Doe',
       email: 'john@mail.com',
-      address: 'Av. du Centre\n75000 Paris',
+      deliveryAddress: 'Av. du Centre\n75000 Paris',
       type: 'CITIZEN'
     },
     rationale: 'Why not?',

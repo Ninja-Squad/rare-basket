@@ -20,7 +20,7 @@ export interface Customer {
   name: string | null;
   organization: string | null;
   email: string | null;
-  address: string | null;
+  deliveryAddress: string | null;
   type: CustomerType | null;
   language: Language | null;
 }
@@ -56,7 +56,7 @@ export interface CustomerCommand {
   name: string;
   organization: string | null;
   email: string;
-  address: string;
+  deliveryAddress: string;
   type: CustomerType;
   language: Language;
 }

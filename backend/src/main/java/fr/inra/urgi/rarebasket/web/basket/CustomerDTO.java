@@ -12,20 +12,20 @@ public final class CustomerDTO {
     private final String name;
     private final String organization;
     private final String email;
-    private final String address;
+    private final String deliveryAddress;
     private final CustomerType type;
     private final SupportedLanguage language;
 
     public CustomerDTO(String name,
                        String organization,
                        String email,
-                       String address,
+                       String deliveryAddress,
                        CustomerType type,
                        SupportedLanguage language) {
         this.name = name;
         this.organization = organization;
         this.email = email;
-        this.address = address;
+        this.deliveryAddress = deliveryAddress;
         this.type = type;
         this.language = language;
     }
@@ -34,7 +34,7 @@ public final class CustomerDTO {
         this(customer.getName(),
              customer.getOrganization(),
              customer.getEmail(),
-             customer.getAddress(),
+             customer.getDeliveryAddress(),
              customer.getType(),
              customer.getLanguage());
     }
@@ -51,8 +51,8 @@ public final class CustomerDTO {
         return email;
     }
 
-    public String getAddress() {
-        return address;
+    public String getDeliveryAddress() {
+        return deliveryAddress;
     }
 
     public CustomerType getType() {

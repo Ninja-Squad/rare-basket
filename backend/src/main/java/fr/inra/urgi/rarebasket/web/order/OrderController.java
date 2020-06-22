@@ -430,7 +430,7 @@ public class OrderController {
         return new Customer(command.getName(),
                             command.getOrganization(),
                             command.getEmail(),
-                            command.getAddress(),
+                            command.getDeliveryAddress(),
                             command.getType(),
                             command.getLanguage());
     }

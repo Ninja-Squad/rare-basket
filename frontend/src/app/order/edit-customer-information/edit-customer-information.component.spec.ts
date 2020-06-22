@@ -29,7 +29,7 @@ class TestComponent {
       name: 'John',
       organization: 'Wheat SA',
       email: 'john@mail.com',
-      address: '1, Main Street',
+      deliveryAddress: '1, Main Street',
       type: 'FARMER',
       language: 'en'
     },
@@ -57,8 +57,8 @@ class TestComponentTester extends ComponentTester<TestComponent> {
     return this.input('#email');
   }
 
-  get address() {
-    return this.textarea('#address');
+  get deliveryAddress() {
+    return this.textarea('#delivery-address');
   }
 
   get type() {
@@ -107,7 +107,7 @@ describe('EditCustomerComponent', () => {
     expect(tester.name).toHaveValue('John');
     expect(tester.organization).toHaveValue('Wheat SA');
     expect(tester.email).toHaveValue('john@mail.com');
-    expect(tester.address).toHaveValue('1, Main Street');
+    expect(tester.deliveryAddress).toHaveValue('1, Main Street');
     expect(tester.type.optionLabels.length).toBe(ALL_CUSTOMER_TYPES.length + 1);
     expect(tester.type).toHaveSelectedLabel('Agriculteur');
     expect(tester.language.optionLabels.length).toBe(ALL_LANGUAGES.length + 1);
@@ -124,7 +124,7 @@ describe('EditCustomerComponent', () => {
     tester.name.fillWith('');
     tester.organization.fillWith('');
     tester.email.fillWith('');
-    tester.address.fillWith('');
+    tester.deliveryAddress.fillWith('');
     tester.type.selectLabel('');
     tester.language.selectLabel('');
     tester.rationale.fillWith('');
@@ -132,7 +132,7 @@ describe('EditCustomerComponent', () => {
     tester.saveButton.click();
 
     expect(tester.componentInstance.command).toBeNull();
-    // name, email, address, type, language are mandatory, but not organization nor rationale
+    // name, email, delivery address, type, language are mandatory, but not organization nor rationale
     expect(tester.errors.length).toBe(5);
 
     tester.email.fillWith('notAnEmail');
@@ -145,7 +145,7 @@ describe('EditCustomerComponent', () => {
     tester.name.fillWith('Jane');
     tester.organization.fillWith('Wheat SAS');
     tester.email.fillWith('jane@mail.com');
-    tester.address.fillWith('2, Main Street');
+    tester.deliveryAddress.fillWith('2, Main Street');
     tester.type.selectLabel('Autre');
     tester.language.selectLabel('Français');
     tester.rationale.fillWith('foo');
@@ -157,7 +157,7 @@ describe('EditCustomerComponent', () => {
         name: 'Jane',
         organization: 'Wheat SAS',
         email: 'jane@mail.com',
-        address: '2, Main Street',
+        deliveryAddress: '2, Main Street',
         type: 'OTHER',
         language: 'fr'
       },
@@ -181,7 +181,7 @@ describe('EditCustomerComponent', () => {
     expect(tester.name).toHaveValue('');
     expect(tester.organization).toHaveValue('');
     expect(tester.email).toHaveValue('');
-    expect(tester.address).toHaveValue('');
+    expect(tester.deliveryAddress).toHaveValue('');
     expect(tester.type).toHaveSelectedLabel('');
     expect(tester.language).toHaveSelectedLabel('');
     expect(tester.rationale).toHaveValue('');

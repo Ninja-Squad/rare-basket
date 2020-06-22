@@ -39,8 +39,8 @@ class TestComponentTester extends ComponentTester<TestComponent> {
     return this.input('#email');
   }
 
-  get customerAddress() {
-    return this.textarea('#address');
+  get customerDeliveryAddress() {
+    return this.textarea('#delivery-address');
   }
 
   get customerType() {
@@ -161,7 +161,7 @@ describe('EditBasketComponent', () => {
 
       expect(tester.customerName).toHaveValue('');
       expect(tester.customerEmail).toHaveValue('');
-      expect(tester.customerAddress).toHaveValue('');
+      expect(tester.customerDeliveryAddress).toHaveValue('');
       expect(tester.customerType).toHaveSelectedLabel('');
       expect(tester.rationale).toHaveValue('');
       expect(tester.accessionsHolderTitles.length).toBe(2);
@@ -201,7 +201,7 @@ describe('EditBasketComponent', () => {
       expect(tester.errors.length).toBe(5);
       expect(tester.testElement).toContainText('Le nom est obligatoire');
       expect(tester.testElement).toContainText(`L'adresse courriel est obligatoire`);
-      expect(tester.testElement).toContainText(`L'adresse postale est obligatoire`);
+      expect(tester.testElement).toContainText(`L'adresse postale de livraison est obligatoire`);
       expect(tester.testElement).toContainText(`La catégorie est obligatoire`);
       expect(tester.testElement).toContainText(`Vous devez cocher cette case pour pouvoir finaliser votre commande`);
     });
@@ -214,7 +214,7 @@ describe('EditBasketComponent', () => {
       tester.customerName.fillWith('John');
       tester.customerOrganization.fillWith('Wheat SA');
       tester.customerEmail.fillWith('john@mail.com');
-      tester.customerAddress.fillWith('21 Jump Street');
+      tester.customerDeliveryAddress.fillWith('21 Jump Street');
       tester.customerType.selectLabel('Citoyen');
       tester.rationale.fillWith('Because');
       tester.gdprAgreement.check();
@@ -227,7 +227,7 @@ describe('EditBasketComponent', () => {
           name: 'John',
           organization: 'Wheat SA',
           email: 'john@mail.com',
-          address: '21 Jump Street',
+          deliveryAddress: '21 Jump Street',
           type: 'CITIZEN',
           language: 'fr'
         },
@@ -297,7 +297,7 @@ describe('EditBasketComponent', () => {
           name: 'John',
           organization: 'Wheat SA',
           email: 'john@mail.com',
-          address: '21 Jump Street',
+          deliveryAddress: '21 Jump Street',
           type: 'CITIZEN',
           language: 'en'
         },
@@ -329,7 +329,7 @@ describe('EditBasketComponent', () => {
       expect(tester.customerName).toHaveValue('John');
       expect(tester.customerOrganization).toHaveValue('Wheat SA');
       expect(tester.customerEmail).toHaveValue('john@mail.com');
-      expect(tester.customerAddress).toHaveValue('21 Jump Street');
+      expect(tester.customerDeliveryAddress).toHaveValue('21 Jump Street');
       expect(tester.customerType).toHaveSelectedLabel('Citoyen');
       expect(tester.rationale).toHaveValue('Because');
     });

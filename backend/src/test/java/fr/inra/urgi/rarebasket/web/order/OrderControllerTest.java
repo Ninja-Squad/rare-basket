@@ -165,9 +165,9 @@ class OrderControllerTest {
                .andExpect(jsonPath("$.content[0].basket.customer.organization").value(order.getBasket()
                                                                                     .getCustomer()
                                                                                     .getOrganization()))
-               .andExpect(jsonPath("$.content[0].basket.customer.address").value(order.getBasket()
+               .andExpect(jsonPath("$.content[0].basket.customer.deliveryAddress").value(order.getBasket()
                                                                                       .getCustomer()
-                                                                                      .getAddress()))
+                                                                                      .getDeliveryAddress()))
                .andExpect(jsonPath("$.content[0].basket.customer.type").value(order.getBasket()
                                                                                    .getCustomer()
                                                                                    .getType()
@@ -589,7 +589,7 @@ class OrderControllerTest {
             command.getCustomer().getName(),
             command.getCustomer().getOrganization(),
             command.getCustomer().getEmail(),
-            command.getCustomer().getAddress(),
+            command.getCustomer().getDeliveryAddress(),
             command.getCustomer().getType(),
             command.getCustomer().getLanguage()
         ));
@@ -664,7 +664,7 @@ class OrderControllerTest {
             command.getCustomer().getName(),
             command.getCustomer().getOrganization(),
             command.getCustomer().getEmail(),
-            command.getCustomer().getAddress(),
+            command.getCustomer().getDeliveryAddress(),
             command.getCustomer().getType(),
             command.getCustomer().getLanguage()
         ));

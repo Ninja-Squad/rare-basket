@@ -162,7 +162,7 @@ describe('OrderComponent', () => {
           name: 'John Doe',
           organization: 'Wheat SA',
           email: 'john@mail.com',
-          address: 'Av. du Centre\n75000 Paris',
+          deliveryAddress: 'Av. du Centre\n75000 Paris',
           type: 'CITIZEN',
           language: 'en'
         },

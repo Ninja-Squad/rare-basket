@@ -178,7 +178,7 @@ public class DeliveryFormGenerator {
         if (StringUtils.hasText(order.getBasket().getCustomer().getOrganization())) {
             cell.add(new Paragraph(order.getBasket().getCustomer().getOrganization()));
         }
-        cell.add(new Paragraph(order.getBasket().getCustomer().getAddress()))
+        cell.add(new Paragraph(order.getBasket().getCustomer().getDeliveryAddress()))
             .add(new Paragraph(order.getBasket().getCustomer().getEmail()));
 
         return cell;

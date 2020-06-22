@@ -19,19 +19,19 @@ CREATE TABLE accession_holder (
 CREATE SEQUENCE accession_holder_seq START WITH 1001 INCREMENT 50;
 
 CREATE TABLE basket (
-    id                    BIGINT PRIMARY KEY,
-    reference             VARCHAR     NOT NULL UNIQUE,
-    customer_name         VARCHAR,
-    customer_organization VARCHAR,
-    customer_email        VARCHAR,
-    customer_address      VARCHAR,
-    customer_type         VARCHAR,
-    customer_language     VARCHAR,
-    status                VARCHAR     NOT NULL,
-    creation_instant      TIMESTAMPTZ NOT NULL,
-    rationale             VARCHAR,
-    confirmation_code     VARCHAR,
-    confirmation_instant  TIMESTAMPTZ
+    id                        BIGINT PRIMARY KEY,
+    reference                 VARCHAR     NOT NULL UNIQUE,
+    customer_name             VARCHAR,
+    customer_organization     VARCHAR,
+    customer_email            VARCHAR,
+    customer_delivery_address VARCHAR,
+    customer_type             VARCHAR,
+    customer_language         VARCHAR,
+    status                    VARCHAR     NOT NULL,
+    creation_instant          TIMESTAMPTZ NOT NULL,
+    rationale                 VARCHAR,
+    confirmation_code         VARCHAR,
+    confirmation_instant      TIMESTAMPTZ
 );
 
 CREATE SEQUENCE basket_seq START WITH 1001 INCREMENT 50;
