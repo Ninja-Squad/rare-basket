@@ -12,6 +12,7 @@ interface FormValue {
     organization: string;
     email: string;
     deliveryAddress: string;
+    billingAddress: string;
     type: CustomerType;
     language: Language;
   };
@@ -50,6 +51,7 @@ export class EditBasketComponent implements OnInit {
         organization: [customer?.organization ?? null],
         email: [customer?.email ?? null, [Validators.required, Validators.email]],
         deliveryAddress: [customer?.deliveryAddress ?? null, Validators.required],
+        billingAddress: [customer?.billingAddress ?? null, Validators.required],
         type: [customer?.type ?? null, Validators.required],
         language: this.language
       }),

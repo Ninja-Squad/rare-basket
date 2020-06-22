@@ -111,7 +111,7 @@ class OrderControllerTest {
         Basket basket = new Basket(34L);
         basket.setReference("ref");
         basket.setCustomer(
-            new Customer("jb", "org", "jb@mail.com", "Saint Just", CustomerType.FARMER, SupportedLanguage.FRENCH)
+            new Customer("jb", "org", "jb@mail.com", "Saint Just", "Saint Rambert", CustomerType.FARMER, SupportedLanguage.FRENCH)
         );
         basket.setRationale("why not?");
         basket.setConfirmationInstant(Instant.parse("2020-04-02T10:43:00Z"));
@@ -168,6 +168,9 @@ class OrderControllerTest {
                .andExpect(jsonPath("$.content[0].basket.customer.deliveryAddress").value(order.getBasket()
                                                                                       .getCustomer()
                                                                                       .getDeliveryAddress()))
+               .andExpect(jsonPath("$.content[0].basket.customer.billingAddress").value(order.getBasket()
+                                                                                              .getCustomer()
+                                                                                              .getBillingAddress()))
                .andExpect(jsonPath("$.content[0].basket.customer.type").value(order.getBasket()
                                                                                    .getCustomer()
                                                                                    .getType()
@@ -575,6 +578,7 @@ class OrderControllerTest {
                 "Wheat SA",
                 "doe@mail.com",
                 "1, Main street",
+                "1 - billing service, Main Street",
                 CustomerType.FARMER,
                 SupportedLanguage.ENGLISH
             ),
@@ -586,12 +590,13 @@ class OrderControllerTest {
                .andExpect(status().isNoContent());
 
         assertThat(order.getBasket().getCustomer()).isEqualTo(new Customer(
-            command.getCustomer().getName(),
-            command.getCustomer().getOrganization(),
-            command.getCustomer().getEmail(),
-            command.getCustomer().getDeliveryAddress(),
-            command.getCustomer().getType(),
-            command.getCustomer().getLanguage()
+                command.getCustomer().getName(),
+                command.getCustomer().getOrganization(),
+                command.getCustomer().getEmail(),
+                command.getCustomer().getDeliveryAddress(),
+                command.getCustomer().getBillingAddress(),
+                command.getCustomer().getType(),
+                command.getCustomer().getLanguage()
         ));
         assertThat(order.getBasket().getRationale()).isEqualTo(command.getRationale());
         verify(mockCurrentUser).checkPermission(Permission.ORDER_MANAGEMENT);
@@ -606,6 +611,7 @@ class OrderControllerTest {
                 "Wheat SA",
                 "doe@mail.com",
                 "1, Main street",
+                "1 - billing service, Main Street",
                 CustomerType.FARMER,
                 SupportedLanguage.ENGLISH
             ),
@@ -625,6 +631,7 @@ class OrderControllerTest {
                 "Wheat SA",
                 "doe@mail.com",
                 "1, Main street",
+                "1 - billing service, Main Street",
                 CustomerType.FARMER,
                 SupportedLanguage.ENGLISH
             ),
@@ -644,6 +651,7 @@ class OrderControllerTest {
                 "Wheat SA",
                 "john@mail.com",
                 "1, Main Street",
+                "1 - billing service, Main Street",
                 CustomerType.FARMER,
                 SupportedLanguage.ENGLISH),
             "the rationale"
@@ -661,12 +669,13 @@ class OrderControllerTest {
         Order savedOrder = orderCaptor.getValue();
 
         assertThat(savedOrder.getBasket().getCustomer()).isEqualTo(new Customer(
-            command.getCustomer().getName(),
-            command.getCustomer().getOrganization(),
-            command.getCustomer().getEmail(),
-            command.getCustomer().getDeliveryAddress(),
-            command.getCustomer().getType(),
-            command.getCustomer().getLanguage()
+                command.getCustomer().getName(),
+                command.getCustomer().getOrganization(),
+                command.getCustomer().getEmail(),
+                command.getCustomer().getDeliveryAddress(),
+                command.getCustomer().getBillingAddress(),
+                command.getCustomer().getType(),
+                command.getCustomer().getLanguage()
         ));
         assertThat(savedOrder.getBasket().getRationale()).isEqualTo(command.getRationale());
         assertThat(savedOrder.getBasket().getReference()).isNotNull();
@@ -689,6 +698,7 @@ class OrderControllerTest {
                 "Wheat SA",
                 "john", // invalid email
                 "1, Main Street",
+                "1 - billing service, Main Street",
                 CustomerType.FARMER,
                 SupportedLanguage.ENGLISH),
             "the rationale"

@@ -26,6 +26,9 @@ public class Customer {
     @Column(name = "customer_delivery_address")
     private String deliveryAddress;
 
+    @Column(name = "customer_billing_address")
+    private String billingAddress;
+
     @Enumerated(EnumType.STRING)
     @Column(name = "customer_type")
     private CustomerType type;
@@ -41,12 +44,14 @@ public class Customer {
                     String organization,
                     String email,
                     String deliveryAddress,
+                    String billingAddress,
                     CustomerType type,
                     SupportedLanguage language) {
         this.name = name;
         this.organization = organization;
         this.email = email;
         this.deliveryAddress = deliveryAddress;
+        this.billingAddress = billingAddress;
         this.type = type;
         this.language = language;
     }
@@ -83,6 +88,14 @@ public class Customer {
         this.deliveryAddress = address;
     }
 
+    public String getBillingAddress() {
+        return billingAddress;
+    }
+
+    public void setBillingAddress(String billingAddress) {
+        this.billingAddress = billingAddress;
+    }
+
     public CustomerType getType() {
         return type;
     }
@@ -112,12 +125,13 @@ public class Customer {
             Objects.equals(organization, customer.organization) &&
             Objects.equals(email, customer.email) &&
             Objects.equals(deliveryAddress, customer.deliveryAddress) &&
+            Objects.equals(billingAddress, customer.billingAddress) &&
             type == customer.type &&
             language == customer.language;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(name, organization, email, deliveryAddress, type, language);
+        return Objects.hash(name, organization, email, deliveryAddress, billingAddress, type, language);
     }
 }

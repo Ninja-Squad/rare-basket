@@ -431,6 +431,7 @@ public class OrderController {
                             command.getOrganization(),
                             command.getEmail(),
                             command.getDeliveryAddress(),
+                            command.getBillingAddress(),
                             command.getType(),
                             command.getLanguage());
     }

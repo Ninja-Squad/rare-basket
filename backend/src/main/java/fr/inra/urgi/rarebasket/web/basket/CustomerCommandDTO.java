@@ -27,6 +27,9 @@ public final class CustomerCommandDTO {
     @NotBlank(groups = BasketCommandDTO.Complete.class)
     private final String deliveryAddress;
 
+    @NotBlank(groups = BasketCommandDTO.Complete.class)
+    private final String billingAddress;
+
     @NotNull(groups = BasketCommandDTO.Complete.class)
     private final CustomerType type;
 
@@ -38,12 +41,14 @@ public final class CustomerCommandDTO {
                               @JsonProperty("organization") String organization,
                               @JsonProperty("email") String email,
                               @JsonProperty("deliveryAddress") String deliveryAddress,
+                              @JsonProperty("billingAddress") String billingAddress,
                               @JsonProperty("type") CustomerType type,
                               @JsonProperty("language") SupportedLanguage language) {
         this.name = name;
         this.organization = organization;
         this.email = email;
         this.deliveryAddress = deliveryAddress;
+        this.billingAddress = billingAddress;
         this.type = type;
         this.language = language;
     }
@@ -62,6 +67,10 @@ public final class CustomerCommandDTO {
 
     public String getDeliveryAddress() {
         return deliveryAddress;
+    }
+
+    public String getBillingAddress() {
+        return billingAddress;
     }
 
     public CustomerType getType() {
@@ -85,13 +94,14 @@ public final class CustomerCommandDTO {
             Objects.equals(organization, that.organization) &&
             Objects.equals(email, that.email) &&
             Objects.equals(deliveryAddress, that.deliveryAddress) &&
+            Objects.equals(deliveryAddress, that.deliveryAddress) &&
             type == that.type &&
             language == that.language;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(name, organization, email, deliveryAddress, type, language);
+        return Objects.hash(name, organization, email, deliveryAddress, billingAddress, type, language);
     }
 
     @Override
@@ -101,6 +111,7 @@ public final class CustomerCommandDTO {
             ", organization='" + organization + '\'' +
             ", email='" + email + '\'' +
             ", deliveryAddress='" + deliveryAddress + '\'' +
+            ", billingAddress='" + billingAddress + '\'' +
             ", type=" + type +
             ", language=" + language +
             '}';

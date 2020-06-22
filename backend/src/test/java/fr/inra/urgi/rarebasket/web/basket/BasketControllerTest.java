@@ -107,6 +107,7 @@ class BasketControllerTest {
                                         "Ninja Squad",
                                         "jb@mail.com",
                                         "Saint Just",
+                                        "Saint Rambert",
                                         CustomerType.FARMER,
                                         SupportedLanguage.FRENCH));
         basket.setRationale("why not?");
@@ -167,6 +168,7 @@ class BasketControllerTest {
                 null,
                 "notAnEmail",
                 "address",
+                "billing address",
                 CustomerType.FARMER,
                 SupportedLanguage.FRENCH
             );
@@ -191,51 +193,73 @@ class BasketControllerTest {
     @Test
     void shouldNotCreateCompleteBasketWithIncompleteCustomer() throws Exception {
         List<CustomerCommandDTO> invalidCustomers = List.of(
+            // no name
             new CustomerCommandDTO(
                 "",
                 "org",
                 "foo@bar.com",
                 "address",
+                "billing address",
                 CustomerType.FARMER,
                 SupportedLanguage.FRENCH
             ),
+            // no email
             new CustomerCommandDTO(
                 "validName",
                 "org",
                 null,
                 "address",
+                "billing address",
                 CustomerType.FARMER,
                 SupportedLanguage.FRENCH
             ),
+            // invalid email
             new CustomerCommandDTO(
                 "validName",
                 "org",
                 "notAnEmail",
                 "address",
+                "billing address",
                 CustomerType.FARMER,
                 SupportedLanguage.FRENCH
             ),
+            // no delivery address
             new CustomerCommandDTO(
                 "validName",
                 "org",
                 "foo@bar.com",
                 "",
+                "billing address",
                 CustomerType.FARMER,
                 SupportedLanguage.FRENCH
             ),
+            // no billing address
+            new CustomerCommandDTO(
+                    "validName",
+                    "org",
+                    "foo@bar.com",
+                    "address",
+                    "",
+                    CustomerType.FARMER,
+                    SupportedLanguage.FRENCH
+            ),
+            // no type
             new CustomerCommandDTO(
                 "validName",
                 "org",
                 "foo@bar.com",
                 "",
+                "billing address",
                 null,
                 SupportedLanguage.FRENCH
             ),
+            // no language
             new CustomerCommandDTO(
                 "validName",
                 "org",
                 "foo@bar.com",
                 "",
+                "billing address",
                 CustomerType.FARMER,
                 null
             )
@@ -301,6 +325,7 @@ class BasketControllerTest {
                 "org",
                 "jack@mail.com",
                 "21 Jump street",
+                "21 Jump street - billing service",
                 CustomerType.CITIZEN,
                 SupportedLanguage.ENGLISH
             ),
@@ -336,6 +361,7 @@ class BasketControllerTest {
                                                                      command.getCustomer().getOrganization(),
                                                                      command.getCustomer().getEmail(),
                                                                      command.getCustomer().getDeliveryAddress(),
+                                                                     command.getCustomer().getBillingAddress(),
                                                                      command.getCustomer().getType(),
                                                                      command.getCustomer().getLanguage()));
         assertThat(savedBasket.getRationale()).isEqualTo(command.getRationale());
@@ -355,6 +381,7 @@ class BasketControllerTest {
                .andExpect(jsonPath("$.customer.organization").value(basket.getCustomer().getOrganization()))
                .andExpect(jsonPath("$.customer.email").value(basket.getCustomer().getEmail()))
                .andExpect(jsonPath("$.customer.deliveryAddress").value(basket.getCustomer().getDeliveryAddress()))
+               .andExpect(jsonPath("$.customer.billingAddress").value(basket.getCustomer().getBillingAddress()))
                .andExpect(jsonPath("$.customer.type").value(basket.getCustomer().getType().name()))
                .andExpect(jsonPath("$.customer.language").value(basket.getCustomer().getLanguage().getLanguageCode()))
                .andExpect(jsonPath("$.accessionHolderBaskets.length()").value(2))
@@ -420,6 +447,7 @@ class BasketControllerTest {
                 "org",
                 "jack@mail.com",
                 "21 Jump street",
+                "21 Jump street - billing service",
                 CustomerType.CITIZEN,
                 SupportedLanguage.ENGLISH
             ),
@@ -440,6 +468,7 @@ class BasketControllerTest {
                                                                 command.getCustomer().getOrganization(),
                                                                 command.getCustomer().getEmail(),
                                                                 command.getCustomer().getDeliveryAddress(),
+                                                                command.getCustomer().getBillingAddress(),
                                                                 command.getCustomer().getType(),
                                                                 command.getCustomer().getLanguage()));
         assertThat(basket.getRationale()).isEqualTo(command.getRationale());

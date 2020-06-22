@@ -21,6 +21,7 @@ class TestComponent {
       name: 'John Doe',
       email: 'john@mail.com',
       deliveryAddress: 'Av. du Centre\n75000 Paris',
+      billingAddress: 'Av. du Centre - billing service\n75000 Paris',
       type: 'CITIZEN'
     },
     rationale: 'Why not?',
@@ -110,6 +111,7 @@ describe('BasketContentComponent', () => {
     expect(tester.testElement).toContainText('John');
     expect(tester.testElement).toContainText('john@mail.com');
     expect(tester.testElement).toContainText('Av. du Centre\n75000 Paris');
+    expect(tester.testElement).toContainText('Av. du Centre - billing service\n75000 Paris');
     expect(tester.testElement).toContainText('Citoyen');
     expect(tester.testElement).toContainText('Why not?');
   });

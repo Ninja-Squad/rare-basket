@@ -23,6 +23,14 @@
       ></val-errors>
     </div>
     <div class="form-group">
+      <label for="billing-address" translate="order.edit-customer-information.billing-address"></label>
+      <textarea formControlName="billingAddress" id="billing-address" class="form-control"></textarea>
+      <val-errors
+        controlName="billingAddress"
+        [label]="'order.edit-customer-information.billing-address-error-label' | translate"
+      ></val-errors>
+    </div>
+    <div class="form-group">
       <label for="type" translate="order.edit-customer-information.customer-type"></label>
       <select formControlName="type" id="type" class="form-control custom-select">
         <option [ngValue]="null"></option>

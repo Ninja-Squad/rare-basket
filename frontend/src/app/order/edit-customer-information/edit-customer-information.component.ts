@@ -32,6 +32,7 @@ export class EditCustomerInformationComponent implements OnInit {
         organization: null,
         email: [null, [Validators.required, Validators.email]],
         deliveryAddress: [null, Validators.required],
+        billingAddress: [null, Validators.required],
         type: [null, Validators.required],
         language: [null, Validators.required]
       }),
@@ -42,17 +43,19 @@ export class EditCustomerInformationComponent implements OnInit {
   ngOnInit(): void {
     if (this.customerInformation) {
       const customer = this.customerInformation.customer;
-      this.form.setValue({
+      const formValue: CustomerInformationCommand = {
         customer: {
           name: customer.name,
           organization: customer.organization,
           email: customer.email,
           deliveryAddress: customer.deliveryAddress,
+          billingAddress: customer.billingAddress,
           type: customer.type,
           language: customer.language
         },
         rationale: this.customerInformation.rationale
-      } as CustomerInformationCommand);
+      };
+      this.form.setValue(formValue);
     }
   }
 

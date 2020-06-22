@@ -163,6 +163,7 @@ describe('OrderComponent', () => {
           organization: 'Wheat SA',
           email: 'john@mail.com',
           deliveryAddress: 'Av. du Centre\n75000 Paris',
+          billingAddress: 'Av. du Centre - billing service\n75000 Paris',
           type: 'CITIZEN',
           language: 'en'
         },
@@ -229,6 +230,7 @@ describe('OrderComponent', () => {
     expect(tester.testElement).toContainText('Wheat SA');
     expect(tester.testElement).toContainText('john@mail.com');
     expect(tester.testElement).toContainText('Av. du Centre\n75000 Paris');
+    expect(tester.testElement).toContainText('Av. du Centre - billing service\n75000 Paris');
     expect(tester.testElement).toContainText('Citoyen');
     expect(tester.testElement).toContainText('Anglais');
     expect(tester.testElement).toContainText('Why not?');

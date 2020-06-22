@@ -36,12 +36,13 @@ class DeliveryFormGeneratorTest {
         Order order = new Order();
         Basket basket = new Basket();
         basket.setCustomer(new Customer(
-            "John Doe",
-            "Wheat SA",
-            "john.doe@mail.com",
-            "5, main street\n76543 New York",
-            CustomerType.FARMER,
-            language
+                "John Doe",
+                "Wheat SA",
+                "john.doe@mail.com",
+                "5, main street\n76543 New York",
+                "5, main street - billing service\n76543 New York",
+                CustomerType.FARMER,
+                language
         ));
         basket.setReference("ABCDEFGH");
         basket.setConfirmationInstant(Instant.now().minus(10, ChronoUnit.DAYS));

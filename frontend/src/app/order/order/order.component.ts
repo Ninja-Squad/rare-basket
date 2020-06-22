@@ -12,6 +12,7 @@ import {
   faCommentDots,
   faEdit,
   faFile,
+  faFileInvoiceDollar,
   faFileMedical,
   faHome,
   faMicrophone,
@@ -46,7 +47,8 @@ export class OrderComponent implements OnInit {
   nameIcon = faUser;
   organizationIcon = faSitemap;
   emailIcon = faAt;
-  addressIcon = faHome;
+  deliveryAddressIcon = faHome;
+  billingAddressIcon = faFileInvoiceDollar;
   customerTypeIcon = faAddressCard;
   languageIcon = faMicrophone;
   rationaleIcon = faCommentDots;

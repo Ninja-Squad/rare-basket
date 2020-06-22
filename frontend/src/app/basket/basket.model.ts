@@ -21,6 +21,7 @@ export interface Customer {
   organization: string | null;
   email: string | null;
   deliveryAddress: string | null;
+  billingAddress: string | null;
   type: CustomerType | null;
   language: Language | null;
 }
@@ -57,6 +58,7 @@ export interface CustomerCommand {
   organization: string | null;
   email: string;
   deliveryAddress: string;
+  billingAddress: string;
   type: CustomerType;
   language: Language;
 }

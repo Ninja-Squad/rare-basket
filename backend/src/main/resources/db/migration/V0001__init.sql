@@ -25,6 +25,7 @@ CREATE TABLE basket (
     customer_organization     VARCHAR,
     customer_email            VARCHAR,
     customer_delivery_address VARCHAR,
+    customer_billing_address  VARCHAR,
     customer_type             VARCHAR,
     customer_language         VARCHAR,
     status                    VARCHAR     NOT NULL,

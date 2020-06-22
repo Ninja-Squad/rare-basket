@@ -190,6 +190,7 @@ public class BasketController {
             customer.setOrganization(command.getCustomer().getOrganization());
             customer.setEmail(command.getCustomer().getEmail());
             customer.setDeliveryAddress(command.getCustomer().getDeliveryAddress());
+            customer.setBillingAddress(command.getCustomer().getBillingAddress());
             customer.setType(command.getCustomer().getType());
             customer.setLanguage(command.getCustomer().getLanguage());
         }

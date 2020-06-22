@@ -14,8 +14,12 @@
       <div class="flex-grow-1">{{ basket.customer.email }}</div>
     </div>
     <div class="d-flex">
-      <div class="mr-2"><fa-icon [icon]="addressIcon" [fixedWidth]="true"></fa-icon></div>
+      <div class="mr-2"><fa-icon [icon]="deliveryAddressIcon" [fixedWidth]="true"></fa-icon></div>
       <div class="flex-grow-1" style="white-space: pre-wrap;">{{ basket.customer.deliveryAddress }}</div>
+    </div>
+    <div class="d-flex">
+      <div class="mr-2"><fa-icon [icon]="billingAddressIcon" [fixedWidth]="true"></fa-icon></div>
+      <div class="flex-grow-1" style="white-space: pre-wrap;">{{ basket.customer.billingAddress }}</div>
     </div>
     <div class="d-flex">
       <div class="mr-2"><fa-icon [icon]="customerTypeIcon" [fixedWidth]="true"></fa-icon></div>

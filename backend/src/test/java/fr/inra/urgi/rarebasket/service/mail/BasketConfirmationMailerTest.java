@@ -41,6 +41,7 @@ class BasketConfirmationMailerTest {
                          "Wheat SA",
                          "john@mail.com",
                          "address",
+                         "billing address",
                          CustomerType.FARMER,
                          SupportedLanguage.ENGLISH)
         );
