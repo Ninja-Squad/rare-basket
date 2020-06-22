@@ -41,6 +41,7 @@ import fr.inra.urgi.rarebasket.domain.Permission;
 import fr.inra.urgi.rarebasket.domain.SupportedLanguage;
 import fr.inra.urgi.rarebasket.service.order.DeliveryFormGenerator;
 import fr.inra.urgi.rarebasket.service.order.OrderCsvExporter;
+import fr.inra.urgi.rarebasket.service.order.OrderReport;
 import fr.inra.urgi.rarebasket.service.storage.DocumentStorage;
 import fr.inra.urgi.rarebasket.service.user.CurrentUser;
 import fr.inra.urgi.rarebasket.service.user.VisualizationPerimeter;
@@ -491,14 +492,25 @@ class OrderControllerTest {
         LocalDate from = LocalDate.of(2020, 1, 1);
         LocalDate to = LocalDate.of(2020, 4, 1);
 
-        when(mockOrderCsvExporter.export(from, to, mockCurrentUser.getVisualizationPerimeter()))
-            .thenReturn(new ByteArrayInputStream("foo;bar".getBytes()));
+        Path tempFile = Files.createTempFile("foo", ".csv");
+        Files.writeString(tempFile, "foo;bar");
 
-        mockMvc.perform(get("/api/orders/report").param("from", from.toString()).param("to", to.toString()))
-               .andExpect(status().isOk())
-               .andExpect(content().contentType("text/csv"))
+        when(mockOrderCsvExporter.export(from, to, mockCurrentUser.getVisualizationPerimeter()))
+            .thenReturn(new OrderReport(tempFile));
+
+        MvcResult mvcResult =
+            mockMvc.perform(get("/api/orders/report")
+                                .param("from", from.toString())
+                                .param("to", to.toString()))
+                   .andExpect(status().isOk())
+                   .andExpect(header().longValue(HttpHeaders.CONTENT_LENGTH, 7))
+                   .andExpect(content().contentType("text/csv"))
+                   .andExpect(request().asyncStarted())
+                   .andReturn();
+        mockMvc.perform(asyncDispatch(mvcResult))
                .andExpect(content().string("foo;bar"));
 
+        assertThat(Files.exists(tempFile)).isFalse();
         verify(mockCurrentUser).checkPermission(Permission.ORDER_VISUALIZATION);
     }
 

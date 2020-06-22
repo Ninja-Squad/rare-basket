@@ -15,6 +15,7 @@ import com.ninja_squad.dbsetup.generator.ValueGenerators;
 import com.ninja_squad.dbsetup.operation.Operation;
 import fr.inra.urgi.rarebasket.domain.BasketStatus;
 import fr.inra.urgi.rarebasket.domain.CustomerType;
+import fr.inra.urgi.rarebasket.domain.DocumentType;
 import fr.inra.urgi.rarebasket.domain.Order;
 import fr.inra.urgi.rarebasket.domain.OrderStatus;
 import fr.inra.urgi.rarebasket.service.user.VisualizationPerimeter;
@@ -99,7 +100,24 @@ class OrderDaoTest extends BaseDaoTest {
                 .values(7L, "rosa2")
                 .build();
 
-        executeIfNecessary(Operations.sequenceOf(grcs, accessionHolders, baskets, orders, orderItems));
+        Operation documents =
+            insertInto("document")
+                .withDefaultValue("creation_instant", Instant.ofEpochSecond(2345678L))
+                .withDefaultValue("original_file_name", "foo.txt")
+                .withDefaultValue("content_type", "text/plain")
+                .columns("id", "type", "on_delivery_form")
+                .values(1L, DocumentType.MTA, true)
+                .values(2L, DocumentType.OTHER, false)
+                .build();
+
+        Operation orderDocuments =
+            insertInto("accession_order_document")
+                .columns("order_id", "document_id")
+                .values(1L, 1L)
+                .values(1L, 2L)
+                .build();
+
+        executeIfNecessary(Operations.sequenceOf(grcs, accessionHolders, baskets, orders, orderItems, documents, orderDocuments));
     }
 
     @Test
@@ -170,6 +188,13 @@ class OrderDaoTest extends BaseDaoTest {
         assertThat(dao.reportBetween(Instant.parse("2020-03-20T00:00:00Z"),
                                      Instant.parse("2020-03-21T00:00:00Z"),
                                      Set.of(2L))).isEmpty();
+    }
+
+    @Test
+    void shouldFindDocumentTypesOnOrders() {
+        Set<Long> orderIds = Set.of(1L, 2L);
+        List<DocumentTypeOnOrder> result = dao.findDocumentTypesOnOrders(orderIds);
+        assertThat(result).containsOnly(new DocumentTypeOnOrder(1L, DocumentType.MTA));
     }
 
     @Test

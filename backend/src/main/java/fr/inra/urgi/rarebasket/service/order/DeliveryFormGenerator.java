@@ -207,7 +207,7 @@ public class DeliveryFormGenerator {
                 for (int i = 0; i < docs.size(); i++) {
                     StringBuilder text = new StringBuilder(
                         messageSource.getMessage(
-                            "delivery-form.document-type." + docType.name(),
+                            "document-type." + docType.name(),
                             null,
                             order.getBasket().getCustomer().getLanguage().getLocale())
                     );

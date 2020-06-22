@@ -3,7 +3,6 @@ package fr.inra.urgi.rarebasket.web.order;
 import java.io.BufferedOutputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.Duration;
@@ -33,6 +32,7 @@ import fr.inra.urgi.rarebasket.exception.ForbiddenException;
 import fr.inra.urgi.rarebasket.exception.NotFoundException;
 import fr.inra.urgi.rarebasket.service.order.DeliveryFormGenerator;
 import fr.inra.urgi.rarebasket.service.order.OrderCsvExporter;
+import fr.inra.urgi.rarebasket.service.order.OrderReport;
 import fr.inra.urgi.rarebasket.service.storage.DocumentStorage;
 import fr.inra.urgi.rarebasket.service.user.CurrentUser;
 import fr.inra.urgi.rarebasket.service.user.VisualizationPerimeter;
@@ -122,14 +122,17 @@ public class OrderController {
 
     @GetMapping("/report")
     @Transactional(readOnly = true)
-    public ResponseEntity<Resource> csvReport(@RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate from,
-                                              @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate to) {
+    public ResponseEntity<StreamingResponseBody> csvReport(
+        @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate from,
+        @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate to
+    ) {
         currentUser.checkPermission(Permission.ORDER_VISUALIZATION);
 
-        InputStream report = orderCsvExporter.export(from, to, currentUser.getVisualizationPerimeter());
+        OrderReport report = orderCsvExporter.export(from, to, currentUser.getVisualizationPerimeter());
 
         return ResponseEntity.ok()
                              .contentType(MediaType.parseMediaType("text/csv"))
+                             .contentLength(report.size())
                              .headers(httpHeaders -> {
                                  httpHeaders.add(
                                      HttpHeaders.CONTENT_DISPOSITION,
@@ -139,7 +142,11 @@ public class OrderController {
                                                        .toString()
                                  );
                              })
-                             .body(new InputStreamResource(report));
+                             .body(outputStream -> {
+                                 try (report) {
+                                     StreamUtils.copy(report.inputStream(), outputStream);
+                                 }
+                             });
     }
 
     @GetMapping("/{orderId}")

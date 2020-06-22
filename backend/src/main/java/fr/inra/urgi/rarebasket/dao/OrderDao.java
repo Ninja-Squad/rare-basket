@@ -1,6 +1,7 @@
 package fr.inra.urgi.rarebasket.dao;
 
 import java.time.Instant;
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Stream;
 
@@ -44,22 +45,33 @@ public interface OrderDao extends JpaRepository<Order, Long>, CustomOrderDao {
      * @see fr.inra.urgi.rarebasket.service.order.OrderCsvExporter
      */
     @Query(ReportQueries.REPORT_QUERY)
-    Stream<Object[]> reportBetween(@Param("fromInstant") Instant fromInstant,
-                                   @Param("toInstant") Instant toInstant);
+    Stream<ReportingOrder> reportBetween(@Param("fromInstant") Instant fromInstant,
+                                         @Param("toInstant") Instant toInstant);
 
     /**
      * Generates the rows of the order CSV report for the given perimeter.
      * @see fr.inra.urgi.rarebasket.service.order.OrderCsvExporter
      */
     @Query(ReportQueries.GRC_REPORT_QUERY)
-    Stream<Object[]> reportBetween(@Param("fromInstant") Instant fromInstant,
-                                   @Param("toInstant") Instant toInstant,
-                                   @Param("grcIds") Set<Long> grcIds);
+    Stream<ReportingOrder> reportBetween(@Param("fromInstant") Instant fromInstant,
+                                         @Param("toInstant") Instant toInstant,
+                                         @Param("grcIds") Set<Long> grcIds);
 
+    @Query(
+        "select new fr.inra.urgi.rarebasket.dao.DocumentTypeOnOrder(o.id, document.type)" +
+            " from Order o" +
+            " join o.documents document" +
+            " where o.id in :orderIds" +
+            " and document.onDeliveryForm = true"
+
+    )
+    List<DocumentTypeOnOrder> findDocumentTypesOnOrders(@Param("orderIds") Set<Long> orderIds);
 }
 
 class ReportQueries {
-    private static final String BEGINNING = "select basket.reference," +
+    private static final String BEGINNING = "select new fr.inra.urgi.rarebasket.dao.ReportingOrder(" +
+        " o.id," +
+        " basket.reference," +
         " basket.customer.email," +
         " basket.customer.type," +
         " basket.customer.language," +
@@ -72,6 +84,7 @@ class ReportQueries {
         " orderItem.accession.identifier," +
         " orderItem.quantity," +
         " orderItem.unit" +
+        ")" +
         " from Order o" +
         " left join o.items orderItem" +
         " join o.basket basket" +
@@ -81,7 +94,7 @@ class ReportQueries {
         " and o.closingInstant >= :fromInstant" +
         " and o.closingInstant < :toInstant";
     private static final String END =
-        " order by o.closingInstant, orderItem.accession.name, orderItem.accession.identifier";
+        " order by o.closingInstant, o.id, orderItem.accession.name, orderItem.accession.identifier";
 
     static final String REPORT_QUERY = BEGINNING + END;
     static final String GRC_REPORT_QUERY =

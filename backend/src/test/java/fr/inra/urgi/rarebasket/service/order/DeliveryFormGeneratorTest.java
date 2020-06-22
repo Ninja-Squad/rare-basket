@@ -81,7 +81,7 @@ class DeliveryFormGeneratorTest {
         messageSource.setBasename("messages");
         for (DocumentType documentType : DocumentType.values()) {
             assertThat(messageSource.getMessage(
-                "delivery-form.document-type." + documentType.name(),
+                "document-type." + documentType.name(),
                 null,
                 language.getLocale())
             ).isNotNull();
