@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { faSeedling } from '@fortawesome/free-solid-svg-icons';
+import { faShoppingBag, faSignInAlt } from '@fortawesome/free-solid-svg-icons';
+import { Permission, User } from '../shared/user.model';
+import { AuthenticationService } from '../shared/authentication.service';
 
 @Component({
   selector: 'rb-home',
@@ -7,9 +9,24 @@ import { faSeedling } from '@fortawesome/free-solid-svg-icons';
   styleUrls: ['./home.component.scss']
 })
 export class HomeComponent implements OnInit {
-  seed = faSeedling;
+  user: User;
 
-  constructor() {}
+  loginIcon = faSignInAlt;
+  ordersIcon = faShoppingBag;
 
-  ngOnInit(): void {}
+  constructor(private authenticationService: AuthenticationService) {}
+
+  ngOnInit() {
+    this.authenticationService.getCurrentUser().subscribe(user => {
+      this.user = user;
+    });
+  }
+
+  login() {
+    this.authenticationService.login();
+  }
+
+  hasPermission(permission: Permission): boolean {
+    return this.user && this.user.permissions.includes(permission);
+  }
 }

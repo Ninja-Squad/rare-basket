@@ -82,6 +82,12 @@
     "login": "Connexion",
     "logout": "Déconnexion"
   },
+  "home": {
+    "welcome": "Bienvenue {{ name }}",
+    "message": "Cette application vous permet de gérer des commandes de ressources génétiques, de l'enregistrement d'une commande jusqu'à l'édition du bon de livraison, et de disposer de statistiques sur l'ensemble des commandes effectuées.",
+    "login": "Connexion",
+    "orders": "Commandes"
+  },
   "basket": {
     "basket": {
       "title": "Votre commande {{ reference }}"

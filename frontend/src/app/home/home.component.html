@@ -1,0 +1,21 @@
+<div class="d-flex align-items-center justify-content-around bg">
+  <div class="card" *ngIf="user !== undefined">
+    <div class="card-body">
+      <h1 *ngIf="user" translate="home.welcome" [translateParams]="user"></h1>
+      <p translate="home.message"></p>
+      <button *ngIf="user === null" class="btn btn-secondary" (click)="login()" id="login-button">
+        <fa-icon [icon]="loginIcon" class="mr-1"></fa-icon>
+        <span translate="home.login"></span>
+      </button>
+      <a
+        *ngIf="hasPermission('ORDER_MANAGEMENT') || hasPermission('ORDER_VISUALIZATION')"
+        routerLink="/orders"
+        class="btn btn-secondary"
+        id="orders-link"
+      >
+        <fa-icon [icon]="ordersIcon" class="mr-1"></fa-icon>
+        <span translate="home.orders"></span>
+      </a>
+    </div>
+  </div>
+</div>

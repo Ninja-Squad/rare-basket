@@ -82,6 +82,12 @@
     "login": "Log in",
     "logout": "Log out"
   },
+  "home": {
+    "welcome": "Welcome {{ name }}",
+    "message": "This application allows managing orders of genetic resources, from the creation of the order to the edition of the delivery notice, and to get statistics over all the orders.",
+    "login": "Log in",
+    "orders": "Orders"
+  },
   "basket": {
     "basket": {
       "title": "Your order {{ reference }}"
