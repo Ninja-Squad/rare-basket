@@ -75,6 +75,7 @@ tasks {
 dependencyManagement {
     imports {
         mavenBom("org.keycloak.bom:keycloak-adapter-bom:9.0.2")
+        mavenBom("org.springframework.cloud:spring-cloud-dependencies:Hoxton.SR5")
     }
 }
 
