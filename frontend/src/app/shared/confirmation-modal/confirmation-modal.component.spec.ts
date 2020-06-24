@@ -4,6 +4,7 @@ import { ConfirmationOptions, ConfirmationService } from '../confirmation.servic
 import { Component } from '@angular/core';
 import { Observable } from 'rxjs';
 import { I18nTestingModule } from '../../i18n/i18n-testing.module.spec';
+import { RbNgbModule } from '../../rb-ngb/rb-ngb.module';
 
 class ModalComponentTester {
   constructor(private fixture: ComponentFixture<any>) {}
@@ -54,7 +55,7 @@ describe('ConfirmationModalComponent and ConfirmationService', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [TestComponent],
-      imports: [I18nTestingModule, SharedModule]
+      imports: [I18nTestingModule, SharedModule, RbNgbModule]
     });
 
     confirmationService = TestBed.inject(ConfirmationService);

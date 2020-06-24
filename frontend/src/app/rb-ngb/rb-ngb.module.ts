@@ -18,6 +18,7 @@ import { DateStringAdapterService } from './date-string-adapter.service';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { DatepickerContainerComponent } from './datepicker-container.component';
 import { ToastsComponent } from './toasts/toasts.component';
+import { ModalService } from './modal.service';
 
 @Injectable({
   providedIn: 'root'
@@ -45,6 +46,7 @@ const NGB_MODULES = [
   declarations: [PaginationComponent, DatepickerContainerComponent, ToastsComponent],
   exports: [...NGB_MODULES, PaginationComponent, DatepickerContainerComponent, ToastsComponent],
   providers: [
+    ModalService,
     { provide: NgbDateParserFormatter, useClass: CustomDateParserFormatterService },
     { provide: NgbDateAdapter, useClass: DateStringAdapterService },
     { provide: NgbDatepickerConfig, useClass: RbNgbDatepickerConfig }

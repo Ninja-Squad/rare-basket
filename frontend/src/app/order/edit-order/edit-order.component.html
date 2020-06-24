@@ -65,9 +65,13 @@
   </div>
   <div class="d-flex">
     <div>
-      <button (click)="addItem()" type="button" class="btn btn-sm btn-outline-secondary" id="add-item-button">
+      <button (click)="addItem()" type="button" class="btn btn-sm btn-outline-secondary mr-2" id="add-item-button">
         <fa-icon [icon]="addItemIcon"></fa-icon>
         <span class="sr-only" translate="order.edit-order.add-accession"></span>
+      </button>
+      <button (click)="openCsvModal()" type="button" class="btn btn-sm btn-outline-secondary" id="csv-button">
+        <fa-icon [icon]="csvIcon"></fa-icon>
+        <span class="sr-only" translate="order.edit-order.csv"></span>
       </button>
     </div>
     <div class="flex-grow-1 text-right">

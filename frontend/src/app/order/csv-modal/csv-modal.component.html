@@ -1,0 +1,50 @@
+<div class="modal-header">
+  <h4 class="modal-title" translate="order.csv-modal.title"></h4>
+</div>
+<div class="modal-body">
+  <form [formGroup]="form">
+    <div class="form-group">
+      <label translate="order.csv-modal.csv"></label>
+      <textarea formControlName="csv" class="form-control" style="height: 8rem;"></textarea>
+    </div>
+  </form>
+
+  <div *ngIf="result.errors.length" class="alert alert-danger scrolling">
+    <table class="table table-sm mb-0">
+      <tbody>
+        <tr *ngFor="let error of result.errors" class="csv-error">
+          <th scope="row">{{ error.row + 1 | number }}</th>
+          <td>{{ error.key | translate }}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="scrolling mb-2">
+    <table class="table table-sm mb-0">
+      <thead class="thead-light">
+        <tr>
+          <th translate="order.csv-modal.accession-heading"></th>
+          <th translate="order.csv-modal.quantity-heading"></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let item of result.items" class="order-item">
+          <td><rb-accession [accession]="item.accession"></rb-accession></td>
+          <td>{{ item.quantity | number }} {{ item.unit }}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+<div class="modal-footer">
+  <button
+    type="button"
+    class="btn btn-primary"
+    [disabled]="result.items.length === 0"
+    (click)="close()"
+    id="add-items-button"
+    translate="order.csv-modal.add-items"
+  ></button>
+  <button type="button" class="btn btn-danger" (click)="dismiss()" id="dismiss-button" translate="order.csv-modal.cancel"></button>
+</div>

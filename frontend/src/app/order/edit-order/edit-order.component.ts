@@ -1,15 +1,19 @@
 import { AfterViewInit, Component, ElementRef, EventEmitter, Input, OnInit, Output, QueryList, ViewChildren } from '@angular/core';
-import { Order, OrderCommand } from '../order.model';
+import { Order, OrderCommand, OrderItemCommand } from '../order.model';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { faPlus, faTrash } from '@fortawesome/free-solid-svg-icons';
+import { faFileCsv, faPlus, faTrash } from '@fortawesome/free-solid-svg-icons';
+import { ModalService } from '../../rb-ngb/modal.service';
+import { CsvModalComponent } from '../csv-modal/csv-modal.component';
+
+interface ItemFormValue {
+  name: string;
+  identifier: string;
+  quantity: number | null;
+  unit: string | null;
+}
 
 export interface FormValue {
-  items: Array<{
-    name: string;
-    identifier: string;
-    quantity: number | null;
-    unit: string | null;
-  }>;
+  items: Array<ItemFormValue>;
 }
 
 @Component({
@@ -34,8 +38,9 @@ export class EditOrderComponent implements OnInit, AfterViewInit {
 
   deleteIcon = faTrash;
   addItemIcon = faPlus;
+  csvIcon = faFileCsv;
 
-  constructor(private fb: FormBuilder) {}
+  constructor(private fb: FormBuilder, private modalService: ModalService) {}
 
   ngOnInit() {
     this.form = this.fb.group({
@@ -98,5 +103,26 @@ export class EditOrderComponent implements OnInit, AfterViewInit {
       quantity: [quantity, Validators.min(1)],
       unit
     });
+  }
+
+  openCsvModal() {
+    this.modalService.open(CsvModalComponent).result.subscribe((items: Array<OrderItemCommand>) => {
+      // if the last item is blank, remove it. This happens, for example, when we create an order
+      // from scratch, and immediately open this component with an empty order item
+      if (this.itemGroups.length > 0) {
+        const lastIndex = this.itemGroups.length - 1;
+        const lastItemValue: ItemFormValue = this.itemGroups.controls[lastIndex].value;
+        if (this.isBlank(lastItemValue)) {
+          this.delete(lastIndex);
+        }
+      }
+      items.forEach(item => {
+        this.itemGroups.push(this.createItemGroup(item.accession.name, item.accession.identifier, item.quantity, item.unit));
+      });
+    });
+  }
+
+  private isBlank(value: ItemFormValue) {
+    return !value.name?.trim() && !value.identifier?.trim() && !value.quantity && !value.unit?.trim();
   }
 }

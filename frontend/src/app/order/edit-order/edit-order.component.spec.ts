@@ -2,13 +2,15 @@ import { TestBed } from '@angular/core/testing';
 
 import { EditOrderComponent } from './edit-order.component';
 import { Component } from '@angular/core';
-import { Order, OrderCommand } from '../order.model';
+import { Order, OrderCommand, OrderItemCommand } from '../order.model';
 import { ComponentTester, speculoosMatchers, TestButton } from 'ngx-speculoos';
 import { I18nTestingModule } from '../../i18n/i18n-testing.module.spec';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { ReactiveFormsModule } from '@angular/forms';
 import { ValdemortModule } from 'ngx-valdemort';
 import { ValidationDefaultsComponent } from '../../validation-defaults/validation-defaults.component';
+import { MockModalService, ModalTestingModule } from '../../rb-ngb/mock-modal.service.spec';
+import { CsvModalComponent } from '../csv-modal/csv-modal.component';
 
 @Component({
   template: '<rb-edit-order [order]="order" (cancelled)="cancelled = true" (saved)="saved = $event"></rb-edit-order>'
@@ -73,6 +75,10 @@ class TestComponentTester extends ComponentTester<TestComponent> {
     return this.button('#add-item-button');
   }
 
+  get csvButton() {
+    return this.button('#csv-button');
+  }
+
   get saveButton() {
     return this.button('#save-button');
   }
@@ -91,7 +97,7 @@ describe('EditOrderComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [I18nTestingModule, FontAwesomeModule, ReactiveFormsModule, ValdemortModule],
+      imports: [I18nTestingModule, FontAwesomeModule, ReactiveFormsModule, ValdemortModule, ModalTestingModule],
       declarations: [EditOrderComponent, TestComponent, ValidationDefaultsComponent]
     });
 
@@ -200,5 +206,59 @@ describe('EditOrderComponent', () => {
     expect(tester.identifier(0)).toHaveValue('');
     expect(tester.quantity(0)).toHaveValue('');
     expect(tester.unit(0)).toHaveValue('');
+  });
+
+  it('should open a CSV modal and add the entered items', () => {
+    const enteredItems: Array<OrderItemCommand> = [
+      {
+        accession: { name: 'rosa', identifier: 'rosa2' },
+        quantity: null,
+        unit: null
+      },
+      {
+        accession: { name: 'bolet', identifier: 'bolet1' },
+        quantity: 5,
+        unit: 'pièces'
+      }
+    ];
+
+    const modalService: MockModalService<CsvModalComponent> = TestBed.inject(MockModalService);
+    modalService.mockClosedModal(null, enteredItems);
+
+    tester.detectChanges();
+
+    tester.csvButton.click();
+
+    expect(tester.items.length).toBe(4);
+    expect(tester.name(2)).toHaveValue('rosa');
+    expect(tester.identifier(2)).toHaveValue('rosa2');
+    expect(tester.quantity(2)).toHaveValue('');
+    expect(tester.unit(2)).toHaveValue('');
+
+    expect(tester.name(3)).toHaveValue('bolet');
+    expect(tester.identifier(3)).toHaveValue('bolet1');
+    expect(tester.quantity(3)).toHaveValue('5');
+    expect(tester.unit(3)).toHaveValue('pièces');
+  });
+
+  it('should open a CSV modal and remove the last blank item before adding the entered items', () => {
+    const enteredItems: Array<OrderItemCommand> = [
+      {
+        accession: { name: 'rosa', identifier: 'rosa2' },
+        quantity: null,
+        unit: null
+      }
+    ];
+
+    const modalService: MockModalService<CsvModalComponent> = TestBed.inject(MockModalService);
+    modalService.mockClosedModal(null, enteredItems);
+
+    tester.detectChanges();
+
+    tester.addItemButton.click(); // add a new blank item
+    tester.csvButton.click();
+
+    expect(tester.items.length).toBe(3);
+    expect(tester.name(2)).toHaveValue('rosa');
   });
 });

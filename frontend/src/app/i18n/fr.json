@@ -227,6 +227,7 @@
       "unit": "Unité",
       "delete-accession": "Enlever cette accession de la commande",
       "add-accession": "Ajouter une accession à la commande",
+      "csv": "Ajouter des accessions au format CSV",
       "save": "Enregistrer",
       "cancel": "Annuler"
     },
@@ -290,6 +291,24 @@
     "create-order": {
       "title": "Créer une nouvelle commande",
       "created": "La commande a été créée. Veuillez maintenant y ajouter les accessions demandées."
+    },
+    "csv-modal": {
+      "title": "Ajouter des accessions au format CSV",
+      "csv": "Données (nom, identifiant, quantité, unité)",
+      "accession-heading": "Accession",
+      "quantity-heading": "Quantité",
+      "add-items": "Ajouter aux accessions commandées",
+      "cancel": "Annuler"
+    },
+    "order-csv-parser": {
+      "MissingQuotes": "Apostrophes manquantes",
+      "UndetectableDelimiter": "Impossible de détecter le délimiteur",
+      "TooFewFields": "Trop peu de champs",
+      "TooManyFields": "Trop de champs",
+      "name-and-identifier-required": "Au moins deux champs requis pour le nom et l'identifiant",
+      "name-required": "Le nom est obligatoire",
+      "identifier-required": "L'identifiant est obligatoire",
+      "invalid-quantity": "Quantité invalide"
     }
   },
   "user": {

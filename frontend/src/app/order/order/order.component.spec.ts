@@ -23,7 +23,7 @@ import { EditDocumentComponent } from '../edit-document/edit-document.component'
 import { HttpEvent, HttpEventType, HttpProgressEvent, HttpResponse } from '@angular/common/http';
 import { RbNgbModule } from '../../rb-ngb/rb-ngb.module';
 import { DownloadService } from '../../shared/download.service';
-import { MockModalService, ModalTestingModule } from '../../shared/mock-modal.service.spec';
+import { MockModalService, ModalTestingModule } from '../../rb-ngb/mock-modal.service.spec';
 import { FinalizationWarningsModalComponent } from '../finalization-warnings-modal/finalization-warnings-modal.component';
 import { ToastService } from '../../shared/toast.service';
 

@@ -226,6 +226,7 @@
       "quantity-error-label": "The quantity",
       "delete-accession": "Remove this accession from the order",
       "add-accession": "Add an accession to the order",
+      "csv": "Add accessions in CSV formt",
       "save": "Save",
       "cancel": "Cancel"
     },
@@ -287,6 +288,24 @@
     "create-order": {
       "title": "Create a new order",
       "created": "The order has been created. Please fill in the requested accessions now."
+    },
+    "csv-modal": {
+      "title": "Add accessions in CSV format",
+      "csv": "Data (name, identifier, quantity, unit)",
+      "accession-heading": "Accession",
+      "quantity-heading": "Quantity",
+      "add-items": "Add to the ordered accessions",
+      "cancel": "Cancel"
+    },
+    "order-csv-parser": {
+      "MissingQuotes": "Apostrophes manquantes",
+      "UndetectableDelimiter": "Impossible de détecter le délimiteur",
+      "TooFewFields": "Trop peu de champs",
+      "TooManyFields": "Trop de champs",
+      "name-and-identifier-required": "Au moins deux champs requis pour le nom et l'identifiant",
+      "name-required": "Le nom est obligatoire",
+      "identifier-required": "L'identifiant est obligatoire",
+      "invalid-quantity": "Quantité invalide"
     }
   },
   "user": {

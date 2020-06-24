@@ -1,4 +1,4 @@
-import { Injectable, Type } from '@angular/core';
+import { Injectable, TemplateRef, Type } from '@angular/core';
 import { NgbModal, NgbModalOptions, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 import { EMPTY, from, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
@@ -13,24 +13,20 @@ export interface ModalOptions extends NgbModalOptions {
 }
 
 export class Modal<T> {
-  private options: ModalOptions;
-
-  constructor(private ngbModalRef: NgbModalRef, options?: ModalOptions) {
-    this.options = { errorOnClose: false, ...options };
-  }
+  constructor(private ngbModalRef: NgbModalRef, private errorOnClose: boolean) {}
 
   get componentInstance(): T {
     return this.ngbModalRef.componentInstance;
   }
 
   get result() {
-    return from(this.ngbModalRef.result).pipe(catchError(err => (this.options.errorOnClose ? throwError(err || 'not confirmed') : EMPTY)));
+    return from(this.ngbModalRef.result).pipe(catchError(err => (this.errorOnClose ? throwError(err || 'not confirmed') : EMPTY)));
   }
 }
 
-@Injectable({
-  providedIn: 'root'
-})
+// not provided in root, otherwise it doesn't work properly when used in a lazy module.
+// See https://github.com/ng-bootstrap/ng-bootstrap/issues/3784
+@Injectable()
 export class ModalService {
   constructor(private ngbModal: NgbModal) {}
 
@@ -42,7 +38,7 @@ export class ModalService {
    * If `errorOnClose` is true, then canceling the modal makes the returned observable emit an error.
    * Otherwise, the observable just doesn't emit anything and completes.
    */
-  open<T>(modalComponent: Type<T>, options?: ModalOptions): Modal<T> {
-    return new Modal(this.ngbModal.open(modalComponent), options);
+  open<T>(modalComponent: Type<T> | TemplateRef<any>, options?: ModalOptions): Modal<T> {
+    return new Modal(this.ngbModal.open(modalComponent, options), options?.errorOnClose ?? false);
   }
 }

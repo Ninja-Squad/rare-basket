@@ -24,6 +24,7 @@ import { StatisticsComponent } from './statistics/statistics.component';
 import { FinalizationWarningsModalComponent } from './finalization-warnings-modal/finalization-warnings-modal.component';
 import { EditCustomerInformationComponent } from './edit-customer-information/edit-customer-information.component';
 import { CreateOrderComponent } from './create-order/create-order.component';
+import { CsvModalComponent } from './csv-modal/csv-modal.component';
 
 @NgModule({
   declarations: [
@@ -41,7 +42,8 @@ import { CreateOrderComponent } from './create-order/create-order.component';
     StatisticsComponent,
     FinalizationWarningsModalComponent,
     EditCustomerInformationComponent,
-    CreateOrderComponent
+    CreateOrderComponent,
+    CsvModalComponent
   ],
   imports: [
     CommonModule,

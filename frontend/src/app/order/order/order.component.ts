@@ -30,7 +30,7 @@ import { DownloadService } from '../../shared/download.service';
 import { TranslateService } from '@ngx-translate/core';
 import { FinalizationWarningsModalComponent } from '../finalization-warnings-modal/finalization-warnings-modal.component';
 import { Observable } from 'rxjs';
-import { ModalService } from '../../shared/modal.service';
+import { ModalService } from '../../rb-ngb/modal.service';
 import { ToastService } from '../../shared/toast.service';
 
 /**

@@ -2,7 +2,8 @@ import { fakeAsync, TestBed, tick } from '@angular/core/testing';
 import { Component } from '@angular/core';
 import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 
-import { ModalService } from './modal.service';
+import { ModalOptions, ModalService } from './modal.service';
+import { RbNgbModule } from './rb-ngb.module';
 
 @Component({
   template: 'Hello'
@@ -17,7 +18,7 @@ describe('ModalService', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       declarations: [TestModalComponent],
-      providers: [ModalService]
+      imports: [RbNgbModule]
     });
     ngbModal = TestBed.inject(NgbModal);
     modalService = TestBed.inject(ModalService);
@@ -31,7 +32,7 @@ describe('ModalService', () => {
 
     const modal = modalService.open(TestModalComponent);
 
-    expect(ngbModal.open).toHaveBeenCalledWith(TestModalComponent);
+    expect(ngbModal.open).toHaveBeenCalledWith(TestModalComponent, undefined);
     expect(modal.componentInstance).toBe(fakeModalComponent);
   }));
 
@@ -75,9 +76,10 @@ describe('ModalService', () => {
       result: Promise.reject()
     } as NgbModalRef);
 
-    const modal = modalService.open(TestModalComponent, { errorOnClose: true });
+    const options: ModalOptions = { errorOnClose: true };
+    const modal = modalService.open(TestModalComponent, options);
 
-    expect(ngbModal.open).toHaveBeenCalledWith(TestModalComponent);
+    expect(ngbModal.open).toHaveBeenCalledWith(TestModalComponent, options);
     expect(modal.componentInstance).toBe(fakeModalComponent);
 
     let hasError = false;
