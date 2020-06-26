@@ -305,7 +305,7 @@
       "UndetectableDelimiter": "Impossible de détecter le délimiteur",
       "TooFewFields": "Trop peu de champs",
       "TooManyFields": "Trop de champs",
-      "name-and-identifier-required": "Au moins deux champs requis pour le nom et l'identifiant",
+      "name-and-identifier-required": "Au moins deux champs requis: le nom et l'identifiant",
       "name-required": "Le nom est obligatoire",
       "identifier-required": "L'identifiant est obligatoire",
       "invalid-quantity": "Quantité invalide"
