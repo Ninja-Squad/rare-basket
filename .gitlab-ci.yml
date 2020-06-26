@@ -59,7 +59,7 @@ test:
   # Restarting service with the updated jar and the according Spring profiles enabled
   - ssh ${SERVER_USER}@${SERVER_IP} "sudo systemctl restart bootapp@${APP_NAME}-${ENV}"
   - eval $(ssh-agent -k)
-  - echo "Deploy and index done. Application should be available at http://${SERVER_IP}:${APP_PORT}/${APP_CONTEXT}"
+  - echo "Deploy done. Application should be available at http://${SERVER_IP}:${APP_PORT}/${APP_CONTEXT}"
 
 .variables-beta: &variables-beta
  variables:

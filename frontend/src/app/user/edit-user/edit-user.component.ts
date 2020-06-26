@@ -40,7 +40,7 @@ export class EditUserComponent implements OnInit {
   form: FormGroup;
 
   grcOptionGroups: Array<GrcOptionGroup>;
-  keycloakUrl = `${environment.keycloakUrl}/admin/master/console/#/realms/rare-basket/users`;
+  keycloakUrl = `${environment.keycloakUrl}${environment.usersRealmPath}`;
 
   constructor(
     private route: ActivatedRoute,

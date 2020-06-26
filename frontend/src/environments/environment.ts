@@ -6,6 +6,7 @@ export const environment = {
   production: false,
   keycloakUrl: 'http://localhost:8082',
   realmPath: '/auth/realms/rare-basket',
+  usersRealmPath: '/auth/admin/master/console/#/realms/rare-basket/users',
   gdprDetailsUrl: 'https://urgi.versailles.inra.fr/rare/legal#personal-data'
 };
 
