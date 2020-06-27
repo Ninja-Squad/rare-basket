@@ -1,7 +1,8 @@
+<h1 class="sr-only" translate="home.title"></h1>
 <div class="d-flex align-items-center justify-content-around bg">
   <div class="card" *ngIf="user !== undefined">
     <div class="card-body">
-      <h1 *ngIf="user" translate="home.welcome" [translateParams]="user"></h1>
+      <h2 *ngIf="user" translate="home.welcome" [translateParams]="user"></h2>
       <p translate="home.message"></p>
       <button *ngIf="user === null" class="btn btn-secondary" (click)="login()" id="login-button">
         <fa-icon [icon]="loginIcon" class="mr-1"></fa-icon>

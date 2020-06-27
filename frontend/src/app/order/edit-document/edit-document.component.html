@@ -2,7 +2,7 @@
   <div class="form-row">
     <div class="col-md-6">
       <div class="form-group">
-        <label translate="order.edit-document.type"></label>
+        <label translate="order.edit-document.type" for="document-type"></label>
         <select formControlName="type" class="form-control custom-select-sm" id="document-type">
           <option [ngValue]="null"></option>
           <option *ngFor="let documentType of documentTypes" [value]="documentType">{{ documentType | documentTypeEnum }}</option>
@@ -12,7 +12,7 @@
     </div>
     <div class="col-md-6">
       <div class="form-group">
-        <label translate="order.edit-document.description"></label>
+        <label translate="order.edit-document.description" for="document-description"></label>
         <input formControlName="description" class="form-control form-control-sm" id="document-description" />
         <val-errors controlName="description" [label]="'order.edit-document.description-error-label' | translate"></val-errors>
       </div>
@@ -21,7 +21,7 @@
   <div class="form-row">
     <div class="col-md-6">
       <div class="form-group">
-        <label translate="order.edit-document.file"></label>
+        <label translate="order.edit-document.file" for="document-file"></label>
         <div
           class="custom-file"
           (drop)="fileDropped($event); highlightFileInput = false"
@@ -40,7 +40,7 @@
             [disabled]="uploadProgress !== null"
             [class.is-invalid]="formDirective.submitted && hasFileError()"
           />
-          <label class="custom-file-label" for="document-file" [class.highlighted]="highlightFileInput" [class.placeholder]="!selectedFile">
+          <label class="custom-file-label" for="" [class.highlighted]="highlightFileInput" [class.placeholder]="!selectedFile">
             {{ selectedFile?.name || ('order.edit-document.file-placeholder' | translate) }}
           </label>
         </div>
@@ -65,7 +65,7 @@
     </div>
     <div class="col-md-6">
       <div class="form-group">
-        <label translate="order.edit-document.delivery-form"></label>
+        <label translate="order.edit-document.delivery-form" for=""></label>
         <div class="custom-control custom-switch mt-md-2">
           <input formControlName="onDeliveryForm" type="checkbox" class="custom-control-input" id="on-delivery-form" />
           <label class="custom-control-label" for="on-delivery-form" translate="order.edit-document.on-delivery-form"></label>

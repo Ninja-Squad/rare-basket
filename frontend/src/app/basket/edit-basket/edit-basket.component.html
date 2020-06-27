@@ -12,7 +12,7 @@
             <val-errors controlName="name" [label]="'basket.edit-basket.name-error-label' | translate"></val-errors>
           </div>
           <div class="form-group">
-            <label for="name" translate="basket.edit-basket.organization"></label>
+            <label for="organization" translate="basket.edit-basket.organization"></label>
             <input formControlName="organization" id="organization" class="form-control" />
           </div>
           <div class="form-group">
@@ -69,7 +69,7 @@
               <tr>
                 <th translate="basket.edit-basket.accession-heading"></th>
                 <th *ngIf="quantityDisplayed" translate="basket.edit-basket.quantity-heading" style="width: 25%;"></th>
-                <th style="width: 20%;"></th>
+                <th style="width: 20%;"><span class="sr-only" translate="basket.edit-basket.actions-heading"></span></th>
               </tr>
             </thead>
             <tbody>

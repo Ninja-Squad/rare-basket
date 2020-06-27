@@ -181,7 +181,7 @@ describe('EditBasketComponent', () => {
       expect(tester.accessionsHeadings(0).length).toBe(2);
       expect(tester.accessionsHeadings(1).length).toBe(2);
       expect(tester.accessionsHeadings(0)[0]).toHaveText('Accession');
-      expect(tester.accessionsHeadings(0)[1]).toHaveText('');
+      expect(tester.accessionsHeadings(0)[1]).toHaveText('Actions');
       expect(tester.accessions.length).toBe(3);
       expect(tester.accessions[0]).toContainText('Rosa');
       expect(tester.accessions[0]).toContainText('rosa1');
@@ -199,7 +199,7 @@ describe('EditBasketComponent', () => {
       expect(tester.accessionsHeadings(1).length).toBe(3);
       expect(tester.accessionsHeadings(0)[0]).toHaveText('Accession');
       expect(tester.accessionsHeadings(0)[1]).toHaveText('Quantité');
-      expect(tester.accessionsHeadings(0)[2]).toHaveText('');
+      expect(tester.accessionsHeadings(0)[2]).toHaveText('Actions');
       expect(tester.accessions[0]).toContainText('10 bags');
     });
 

@@ -19,6 +19,7 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { DatepickerContainerComponent } from './datepicker-container.component';
 import { ToastsComponent } from './toasts/toasts.component';
 import { ModalService } from './modal.service';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Injectable({
   providedIn: 'root'
@@ -42,7 +43,7 @@ const NGB_MODULES = [
 ];
 
 @NgModule({
-  imports: [...NGB_MODULES, CommonModule, FontAwesomeModule],
+  imports: [...NGB_MODULES, CommonModule, FontAwesomeModule, TranslateModule],
   declarations: [PaginationComponent, DatepickerContainerComponent, ToastsComponent],
   exports: [...NGB_MODULES, PaginationComponent, DatepickerContainerComponent, ToastsComponent],
   providers: [

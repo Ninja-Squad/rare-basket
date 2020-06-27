@@ -3,6 +3,7 @@
     "confirmation-modal-title": "Confirmation",
     "yes": "Oui",
     "no": "Non",
+    "open-datepicker": "Choisir une date",
     "errors": {
       "required": "{{ label }} est obligatoire",
       "minlength": "{{ label }} doit avoir au moins {{ requiredLength }} caractères",
@@ -83,6 +84,7 @@
     "logout": "Déconnexion"
   },
   "home": {
+    "title": "RARe Basket",
     "welcome": "Bienvenue {{ name }}",
     "message": "Cette application vous permet de gérer des commandes de ressources génétiques, de l'enregistrement d'une commande jusqu'à l'édition du bon de livraison, et de disposer de statistiques sur l'ensemble des commandes effectuées.",
     "login": "Connexion",
@@ -115,6 +117,7 @@
       "ordered-accessions": "Accessions commandées",
       "accession-heading": "Accession",
       "quantity-heading": "Quantité",
+      "actions-heading": "Actions",
       "delete-accession": "Supprimer l'accession {{ name }} - {{ identifier }} de la commande",
       "confirm-accession-deletion": "Voulez-vous vraiment supprimer cette accession de votre commande\u00a0?",
       "data-collection": "Nous collectons des données personnelles (nom, e-mail, adresse postale) afin de gérer votre commande.",
