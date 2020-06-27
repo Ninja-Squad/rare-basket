@@ -6,7 +6,7 @@ import { By } from '@angular/platform-browser';
 import { ReactiveFormsModule } from '@angular/forms';
 import { ValdemortModule } from 'ngx-valdemort';
 import { I18nTestingModule } from '../../i18n/i18n-testing.module.spec';
-import { LanguageEnumPipe } from '../language-enum.pipe';
+import { LanguageEnumPipe } from '../../shared/language-enum.pipe';
 import { CustomerTypeEnumPipe } from '../../shared/customer-type-enum.pipe';
 import { OrderService } from '../order.service';
 import { RouterTestingModule } from '@angular/router/testing';

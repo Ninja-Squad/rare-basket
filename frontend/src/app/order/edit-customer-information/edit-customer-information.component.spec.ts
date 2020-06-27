@@ -9,7 +9,7 @@ import { I18nTestingModule } from '../../i18n/i18n-testing.module.spec';
 import { ValidationDefaultsComponent } from '../../validation-defaults/validation-defaults.component';
 import { ValdemortModule } from 'ngx-valdemort';
 import { ReactiveFormsModule } from '@angular/forms';
-import { LanguageEnumPipe } from '../language-enum.pipe';
+import { LanguageEnumPipe } from '../../shared/language-enum.pipe';
 import { CustomerTypeEnumPipe } from '../../shared/customer-type-enum.pipe';
 
 @Component({

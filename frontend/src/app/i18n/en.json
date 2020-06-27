@@ -25,6 +25,16 @@
         "GRC_NAME_ALREADY_EXISTING": "Another GRC already uses that name",
         "USER_NAME_ALREADY_EXISTING": "Another user already uses that name"
       }
+    },
+    "customer-information": {
+      "name": "Name",
+      "organization": "Company or organization",
+      "email": "Email",
+      "delivery-address": "Delivery address",
+      "billing-address": "Billing address",
+      "type": "Category",
+      "language": "Preferred language",
+      "rationale": "Description of the order"
     }
   },
   "enums": {

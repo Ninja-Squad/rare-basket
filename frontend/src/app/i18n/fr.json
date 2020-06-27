@@ -25,6 +25,16 @@
         "GRC_NAME_ALREADY_EXISTING": "Un autre BRC utilise déjà ce nom",
         "USER_NAME_ALREADY_EXISTING": "Un autre utilisateur utilise déjà ce nom"
       }
+    },
+    "customer-information": {
+      "name": "Nom",
+      "organization": "Entreprise ou organisation",
+      "email": "Adresse courriel",
+      "delivery-address": "Adresse postale de livraison",
+      "billing-address": "Adresse postale de facturation",
+      "type": "Catégorie",
+      "language": "Langue préférée",
+      "rationale": "Description de la commande"
     }
   },
   "enums": {

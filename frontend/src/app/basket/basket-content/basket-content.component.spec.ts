@@ -1,16 +1,12 @@
 import { TestBed } from '@angular/core/testing';
 
 import { BasketContentComponent } from './basket-content.component';
-import { Component, LOCALE_ID } from '@angular/core';
+import { Component } from '@angular/core';
 import { Basket } from '../basket.model';
 import { ComponentTester, speculoosMatchers } from 'ngx-speculoos';
 import { SharedModule } from '../../shared/shared.module';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
-import localeFr from '@angular/common/locales/fr';
-import { registerLocaleData } from '@angular/common';
 import { I18nTestingModule } from '../../i18n/i18n-testing.module.spec';
-
-registerLocaleData(localeFr);
 
 @Component({
   template: '<rb-basket-content [basket]="basket"></rb-basket-content>'
@@ -19,10 +15,12 @@ class TestComponent {
   basket = {
     customer: {
       name: 'John Doe',
+      organization: 'Boom Inc.',
       email: 'john@mail.com',
       deliveryAddress: 'Av. du Centre\n75000 Paris',
       billingAddress: 'Av. du Centre - billing service\n75000 Paris',
-      type: 'CITIZEN'
+      type: 'CITIZEN',
+      language: 'fr'
     },
     rationale: 'Why not?',
     accessionHolderBaskets: [
@@ -97,8 +95,7 @@ describe('BasketContentComponent', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       declarations: [BasketContentComponent, TestComponent],
-      imports: [I18nTestingModule, SharedModule, FontAwesomeModule],
-      providers: [{ provide: LOCALE_ID, useValue: 'fr' }]
+      imports: [I18nTestingModule, SharedModule, FontAwesomeModule]
     });
 
     tester = new TestComponentTester();
@@ -109,11 +106,13 @@ describe('BasketContentComponent', () => {
     tester.detectChanges();
 
     expect(tester.testElement).toContainText('John');
+    expect(tester.testElement).toContainText('Boom Inc.');
     expect(tester.testElement).toContainText('john@mail.com');
     expect(tester.testElement).toContainText('Av. du Centre\n75000 Paris');
     expect(tester.testElement).toContainText('Av. du Centre - billing service\n75000 Paris');
     expect(tester.testElement).toContainText('Citoyen');
     expect(tester.testElement).toContainText('Why not?');
+    expect(tester.testElement).not.toContainText('Français');
   });
 
   it('should display one section per accession holder basket', () => {

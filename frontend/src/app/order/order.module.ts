@@ -12,7 +12,6 @@ import { DoneOrdersComponent } from './done-orders/done-orders.component';
 import { OrdersComponent } from './orders/orders.component';
 import { TranslateModule } from '@ngx-translate/core';
 import { OrderStatusEnumPipe } from './order-status-enum.pipe';
-import { LanguageEnumPipe } from './language-enum.pipe';
 import { EditOrderComponent } from './edit-order/edit-order.component';
 import { ReactiveFormsModule } from '@angular/forms';
 import { ValdemortModule } from 'ngx-valdemort';
@@ -34,7 +33,6 @@ import { CsvModalComponent } from './csv-modal/csv-modal.component';
     DoneOrdersComponent,
     OrdersComponent,
     OrderStatusEnumPipe,
-    LanguageEnumPipe,
     EditOrderComponent,
     EditDocumentComponent,
     DocumentTypeEnumPipe,

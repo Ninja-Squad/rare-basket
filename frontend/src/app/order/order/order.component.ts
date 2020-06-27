@@ -3,24 +3,16 @@ import { ActivatedRoute } from '@angular/router';
 import { OrderService } from '../order.service';
 import { CustomerInformationCommand, DetailedOrder, Document, DocumentCommand, OrderCommand } from '../order.model';
 import {
-  faAddressCard,
-  faAt,
   faCheckSquare,
   faChevronLeft,
   faClipboard,
   faClipboardList,
-  faCommentDots,
   faEdit,
   faFile,
-  faFileInvoiceDollar,
   faFileMedical,
-  faHome,
-  faMicrophone,
   faPlus,
-  faSitemap,
   faSpinner,
   faTrash,
-  faUser,
   faWindowClose
 } from '@fortawesome/free-solid-svg-icons';
 import { filter, finalize, switchMap, tap } from 'rxjs/operators';
@@ -44,14 +36,6 @@ import { ToastService } from '../../shared/toast.service';
 export class OrderComponent implements OnInit {
   order: DetailedOrder;
 
-  nameIcon = faUser;
-  organizationIcon = faSitemap;
-  emailIcon = faAt;
-  deliveryAddressIcon = faHome;
-  billingAddressIcon = faFileInvoiceDollar;
-  customerTypeIcon = faAddressCard;
-  languageIcon = faMicrophone;
-  rationaleIcon = faCommentDots;
   editIcon = faEdit;
   finalizeOrderIcon = faCheckSquare;
   cancelOrderIcon = faWindowClose;

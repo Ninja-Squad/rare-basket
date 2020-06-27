@@ -11,7 +11,6 @@ import { DetailedOrder, Document, DocumentCommand, OrderCommand } from '../order
 import { LOCALE_ID } from '@angular/core';
 import { SharedModule } from '../../shared/shared.module';
 import { I18nTestingModule } from '../../i18n/i18n-testing.module.spec';
-import { LanguageEnumPipe } from '../language-enum.pipe';
 import { EditOrderComponent } from '../edit-order/edit-order.component';
 import { By } from '@angular/platform-browser';
 import { ValdemortModule } from 'ngx-valdemort';
@@ -121,14 +120,7 @@ describe('OrderComponent', () => {
     toastService = jasmine.createSpyObj<ToastService>('ToastService', ['success']);
 
     TestBed.configureTestingModule({
-      declarations: [
-        OrderComponent,
-        LanguageEnumPipe,
-        EditOrderComponent,
-        OrderStatusEnumPipe,
-        DocumentTypeEnumPipe,
-        EditDocumentComponent
-      ],
+      declarations: [OrderComponent, EditOrderComponent, OrderStatusEnumPipe, DocumentTypeEnumPipe, EditDocumentComponent],
       imports: [
         I18nTestingModule,
         FontAwesomeModule,

@@ -21,38 +21,12 @@
       <div class="col-md-5">
         <h2 translate="order.order.customer-information"></h2>
         <div *ngIf="!editingCustomer">
-          <div class="d-flex">
-            <div class="mr-2"><fa-icon [icon]="nameIcon" [fixedWidth]="true"></fa-icon></div>
-            <div class="flex-grow-1">{{ order.basket.customer.name }}</div>
-          </div>
-          <div class="d-flex">
-            <div class="mr-2"><fa-icon [icon]="organizationIcon" [fixedWidth]="true"></fa-icon></div>
-            <div class="flex-grow-1">{{ order.basket.customer.organization }}</div>
-          </div>
-          <div class="d-flex">
-            <div class="mr-2"><fa-icon [icon]="emailIcon" [fixedWidth]="true"></fa-icon></div>
-            <div class="flex-grow-1">{{ order.basket.customer.email }}</div>
-          </div>
-          <div class="d-flex">
-            <div class="mr-2"><fa-icon [icon]="deliveryAddressIcon" [fixedWidth]="true"></fa-icon></div>
-            <div class="flex-grow-1" style="white-space: pre-wrap;">{{ order.basket.customer.deliveryAddress }}</div>
-          </div>
-          <div class="d-flex">
-            <div class="mr-2"><fa-icon [icon]="billingAddressIcon" [fixedWidth]="true"></fa-icon></div>
-            <div class="flex-grow-1" style="white-space: pre-wrap;">{{ order.basket.customer.billingAddress }}</div>
-          </div>
-          <div class="d-flex">
-            <div class="mr-2"><fa-icon [icon]="customerTypeIcon" [fixedWidth]="true"></fa-icon></div>
-            <div class="flex-grow-1">{{ order.basket.customer.type | customerTypeEnum }}</div>
-          </div>
-          <div class="d-flex">
-            <div class="mr-2"><fa-icon [icon]="languageIcon" [fixedWidth]="true"></fa-icon></div>
-            <div class="flex-grow-1">{{ order.basket.customer.language | languageEnum }}</div>
-          </div>
-          <div class="d-flex" *ngIf="order.basket.rationale">
-            <div class="mr-2"><fa-icon [icon]="rationaleIcon" [fixedWidth]="true"></fa-icon></div>
-            <div class="flex-grow-1" style="white-space: pre-wrap;">{{ order.basket.rationale }}</div>
-          </div>
+          <rb-customer-information
+            [customer]="order.basket.customer"
+            [rationale]="order.basket.rationale"
+            [withLanguage]="true"
+          ></rb-customer-information>
+
           <div *ngIf="order.status === 'DRAFT'" class="text-right">
             <button
               type="button"
