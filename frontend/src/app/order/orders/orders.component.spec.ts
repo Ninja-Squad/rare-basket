@@ -44,7 +44,8 @@ class TestComponent {
           confirmationInstant: '2020-04-02T11:00:00Z',
           customer: {
             type: 'FARMER',
-            name: 'Jane Doe'
+            name: 'Jane Doe',
+            organization: 'Farm Inc.'
           }
         },
         items: [{}]
@@ -90,11 +91,13 @@ describe('OrdersComponent', () => {
   it('should have rows of data', () => {
     expect(tester.rows.length).toBe(2);
     expect(tester.rows[0]).toContainText('ABCDEFGH');
-    expect(tester.rows[0]).toContainText('John Doe, Citoyen');
+    expect(tester.rows[0]).toContainText('John Doe');
+    expect(tester.rows[0]).toContainText('Citoyen');
     expect(tester.rows[0]).toContainText('2 avr. 2020');
     expect(tester.rows[0]).toContainText('2 accessions');
     expect(tester.rows[0]).toContainText('En cours');
 
+    expect(tester.rows[1]).toContainText('(Farm Inc.)');
     expect(tester.rows[1]).toContainText('1 accession');
   });
 });

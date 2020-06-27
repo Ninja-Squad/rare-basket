@@ -16,7 +16,13 @@
         </ng-template>
       </ng-container>
     </div>
-    <div class="col-6 col-md order-md-1">{{ order.basket.customer.name }}, {{ order.basket.customer.type | customerTypeEnum }}</div>
+    <div class="col-6 col-md order-md-1">
+      <div>
+        {{ order.basket.customer.name }}
+        <span *ngIf="order.basket.customer.organization" class="text-muted small">({{ order.basket.customer.organization }})</span>
+      </div>
+      <div class="text-muted small">{{ order.basket.customer.type | customerTypeEnum }}</div>
+    </div>
     <div class="col-6 col-md-2 order-md-4">
       <span class="badge badge-secondary">{{ order.status | orderStatusEnum }}</span>
     </div>

@@ -49,7 +49,14 @@
         </span>
       </li>
       <li>
-        <a *ngIf="!user" class="nav-link" role="button" (click)="login(); collapsed = true" style="cursor: pointer;" id="navbar-login">
+        <a
+          *ngIf="user === null"
+          class="nav-link"
+          role="button"
+          (click)="login(); collapsed = true"
+          style="cursor: pointer;"
+          id="navbar-login"
+        >
           <fa-icon [icon]="loginIcon" class="mr-1"></fa-icon>
           <span translate="navbar.login"></span>
         </a>

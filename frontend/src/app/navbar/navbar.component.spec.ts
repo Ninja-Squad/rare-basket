@@ -70,7 +70,7 @@ describe('NavbarComponent', () => {
     expect(tester.users).toBeNull();
     expect(tester.accessionHolders).toBeNull();
     expect(tester.logout).toBeNull();
-    expect(tester.login).not.toBeNull();
+    expect(tester.login).toBeNull();
 
     userSubject.next({ name: 'JB', permissions: ['ORDER_MANAGEMENT'] } as User);
     tester.detectChanges();
@@ -129,6 +129,9 @@ describe('NavbarComponent', () => {
   });
 
   it('should login', () => {
+    userSubject.next(null);
+    tester.detectChanges();
+
     tester.login.click();
     expect(authenticationService.login).toHaveBeenCalled();
   });
