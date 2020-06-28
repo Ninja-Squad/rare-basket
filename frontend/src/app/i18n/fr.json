@@ -1,4 +1,7 @@
 {
+  "app": {
+    "skip-to-main": "Aller au contenu principal"
+  },
   "common": {
     "confirmation-modal-title": "Confirmation",
     "yes": "Oui",

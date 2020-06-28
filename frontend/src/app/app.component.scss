@@ -1,0 +1,10 @@
+.skip {
+  display: block;
+  text-align: center;
+  margin: 0.5rem 0.5rem;
+  outline: 0;
+  span {
+    outline: 2px dotted;
+    padding: 0.5rem;
+  }
+}
