@@ -21,7 +21,7 @@
       </li>
 
       <li *ngIf="hasPermission('ADMINISTRATION')" class="nav-item" ngbDropdown>
-        <a class="nav-link" ngbDropdownToggle id="navbar-administration-dropdown" role="button">
+        <a class="nav-link" ngbDropdownToggle id="navbar-administration-dropdown" role="button" tabindex="0">
           <fa-icon [icon]="administrationIcon" class="mr-1"></fa-icon>
           <span translate="navbar.administration"></span>
         </a>
@@ -49,18 +49,11 @@
         </span>
       </li>
       <li>
-        <a
-          *ngIf="user === null"
-          class="nav-link"
-          role="button"
-          (click)="login(); collapsed = true"
-          style="cursor: pointer;"
-          id="navbar-login"
-        >
+        <a *ngIf="user === null" class="nav-link" role="button" (click)="login(); collapsed = true" id="navbar-login" tabindex="0">
           <fa-icon [icon]="loginIcon" class="mr-1"></fa-icon>
           <span translate="navbar.login"></span>
         </a>
-        <a *ngIf="user" class="nav-link" role="button" (click)="logout(); collapsed = true" style="cursor: pointer;" id="navbar-logout">
+        <a *ngIf="user" class="nav-link" role="button" (click)="logout(); collapsed = true" id="navbar-logout" tabindex="0">
           <fa-icon [icon]="logoutIcon" class="mr-1"></fa-icon>
           <span translate="navbar.logout"></span>
         </a>
