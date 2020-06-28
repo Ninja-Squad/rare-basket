@@ -1,16 +1,17 @@
 <div class="modal-header">
-  <h4 class="modal-title" translate="order.csv-modal.title"></h4>
+  <h3 class="modal-title" translate="order.csv-modal.title"></h3>
 </div>
 <div class="modal-body">
   <form [formGroup]="form">
     <div class="form-group">
-      <label translate="order.csv-modal.csv"></label>
-      <textarea formControlName="csv" class="form-control" style="height: 8rem;"></textarea>
+      <label translate="order.csv-modal.csv" for="csv-area"></label>
+      <textarea formControlName="csv" class="form-control" id="csv-area"></textarea>
     </div>
   </form>
 
   <div *ngIf="result.errors.length" class="alert alert-danger scrolling">
-    <table class="table table-sm mb-0">
+    <h4 class="sr-only" translate="order.csv-modal.csv-errors"></h4>
+    <table class="table table-sm mb-0 csv-errors">
       <thead>
         <tr>
           <th scope="col" translate="order.csv-modal.error-line-heading"></th>
@@ -27,6 +28,7 @@
   </div>
 
   <div class="scrolling mb-2">
+    <h4 class="sr-only" translate="order.csv-modal.preview"></h4>
     <table class="table table-sm mb-0">
       <thead class="thead-light">
         <tr>

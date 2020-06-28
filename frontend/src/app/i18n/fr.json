@@ -311,8 +311,10 @@
     "csv-modal": {
       "title": "Ajouter des accessions au format CSV",
       "csv": "Données (nom, identifiant, quantité, unité)",
+      "csv-errors": "Erreurs détectées",
       "error-line-heading": "Ligne",
       "error-message-heading": "Erreur",
+      "preview": "Accessions trouvées",
       "accession-heading": "Accession",
       "quantity-heading": "Quantité",
       "add-items": "Ajouter aux accessions commandées",

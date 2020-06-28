@@ -9,6 +9,7 @@ import { I18nTestingModule } from '../../i18n/i18n-testing.module.spec';
 import { AuthenticationService } from '../../shared/authentication.service';
 import { User } from '../../shared/user.model';
 import { BehaviorSubject } from 'rxjs';
+import { RbNgbModule } from '../../rb-ngb/rb-ngb.module';
 
 class OrdersContainerComponentTester extends ComponentTester<OrdersContainerComponent> {
   constructor() {
@@ -38,7 +39,7 @@ describe('OrdersContainerComponent', () => {
 
     TestBed.configureTestingModule({
       declarations: [OrdersContainerComponent],
-      imports: [I18nTestingModule, RouterTestingModule],
+      imports: [I18nTestingModule, RouterTestingModule, RbNgbModule],
       providers: [{ provide: AuthenticationService, useValue: authenticationService }]
     });
 

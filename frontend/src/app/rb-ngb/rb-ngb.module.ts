@@ -20,6 +20,7 @@ import { DatepickerContainerComponent } from './datepicker-container.component';
 import { ToastsComponent } from './toasts/toasts.component';
 import { ModalService } from './modal.service';
 import { TranslateModule } from '@ngx-translate/core';
+import { RouterNavDirective, RouterNavLinkDirective, RouterNavPanelDirective } from './router-nav.directive';
 
 @Injectable({
   providedIn: 'root'
@@ -42,10 +43,19 @@ const NGB_MODULES = [
   NgbDropdownModule
 ];
 
+const EXPORTED_DECLARABLES = [
+  PaginationComponent,
+  DatepickerContainerComponent,
+  ToastsComponent,
+  RouterNavDirective,
+  RouterNavLinkDirective,
+  RouterNavPanelDirective
+];
+
 @NgModule({
   imports: [...NGB_MODULES, CommonModule, FontAwesomeModule, TranslateModule],
-  declarations: [PaginationComponent, DatepickerContainerComponent, ToastsComponent],
-  exports: [...NGB_MODULES, PaginationComponent, DatepickerContainerComponent, ToastsComponent],
+  declarations: [...EXPORTED_DECLARABLES],
+  exports: [...NGB_MODULES, ...EXPORTED_DECLARABLES],
   providers: [
     ModalService,
     { provide: NgbDateParserFormatter, useClass: CustomDateParserFormatterService },

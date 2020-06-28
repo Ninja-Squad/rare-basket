@@ -1,3 +1,14 @@
+textarea {
+  height: 8rem;
+}
+
+.csv-errors {
+  th,
+  td {
+    border: 0;
+  }
+}
+
 .scrolling {
   max-height: 15rem;
   overflow-y: auto;

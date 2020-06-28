@@ -1,20 +1,22 @@
 <h1 translate="order.orders-container.title"></h1>
 
 <div class="content mt-2">
-  <ul class="nav nav-tabs mb-4">
+  <ul class="nav-tabs mb-4" rbRouterNav #nav="rbRouterNav">
     <li *ngIf="hasPermission('ORDER_MANAGEMENT') | async" class="nav-item">
-      <a class="nav-link" routerLink="in-progress" routerLinkActive="active" translate="order.orders-container.in-progress"></a>
+      <a routerLink="in-progress" routerLinkActive="active" rbRouterNavLink translate="order.orders-container.in-progress"></a>
     </li>
     <li *ngIf="hasPermission('ORDER_MANAGEMENT') | async" class="nav-item">
-      <a class="nav-link" routerLink="done" routerLinkActive="active" translate="order.orders-container.done"></a>
+      <a routerLink="done" routerLinkActive="active" rbRouterNavLink translate="order.orders-container.done"></a>
     </li>
     <li *ngIf="hasPermission('ORDER_VISUALIZATION') | async" class="nav-item">
-      <a class="nav-link" routerLink="stats" routerLinkActive="active" translate="order.orders-container.statistics"></a>
+      <a routerLink="stats" routerLinkActive="active" rbRouterNavLink translate="order.orders-container.statistics"></a>
     </li>
     <li *ngIf="hasPermission('ORDER_VISUALIZATION') | async" class="nav-item">
-      <a class="nav-link" routerLink="export" routerLinkActive="active" translate="order.orders-container.export"></a>
+      <a routerLink="export" routerLinkActive="active" rbRouterNavLink translate="order.orders-container.export"></a>
     </li>
   </ul>
 
-  <router-outlet></router-outlet>
+  <div [rbRouterNavPanel]="nav">
+    <router-outlet></router-outlet>
+  </div>
 </div>
