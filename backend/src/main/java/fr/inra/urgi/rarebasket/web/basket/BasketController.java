@@ -95,6 +95,7 @@ public class BasketController {
      * it redirects the user to a rare-basket URL containing the generated secret reference, so that the customer
      * can edit the basket (i.e. fill the customer information, the quantities, etc.)
      */
+    @CrossOrigin("*")
     @GetMapping("/{basketReference}")
     public BasketDTO get(@PathVariable("basketReference") String basketReference) {
         Basket basket = basketDao.findByReference(basketReference).orElseThrow(NotFoundException::new);
@@ -106,6 +107,7 @@ public class BasketController {
      * If the command status is SAVED, then additional checks are made to be sure that all the required information
      * is present.
      */
+    @CrossOrigin("*")
     @PutMapping("/{basketReference}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void update(@PathVariable("basketReference") String basketReference,

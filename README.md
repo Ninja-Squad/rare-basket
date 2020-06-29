@@ -31,3 +31,4 @@ See the backend README and the `build.gradle.kts` files for more details.
 ## Documentation
 
  - [Authentication](doc/authentication.md)
+ - [HTTP API documentation](doc/api.md)
