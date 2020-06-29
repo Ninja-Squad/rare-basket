@@ -1,7 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 
 import { StatisticsComponent } from './statistics.component';
-import { ComponentTester, fakeRoute, fakeSnapshot, speculoosMatchers, TestHtmlElement, TestInput } from 'ngx-speculoos';
+import { ComponentTester, fakeRoute, fakeSnapshot, speculoosMatchers, TestInput } from 'ngx-speculoos';
 import { I18nTestingModule } from '../../i18n/i18n-testing.module.spec';
 import { ReactiveFormsModule } from '@angular/forms';
 import { ChartModule } from '../../chart/chart.module';
@@ -38,7 +38,7 @@ class StatisticsComponentTester extends ComponentTester<StatisticsComponent> {
   }
 
   get editPerimeterButton() {
-    return this.element('#edit-perimeter') as TestHtmlElement<HTMLAnchorElement>;
+    return this.element<HTMLAnchorElement>('#edit-perimeter');
   }
 
   get noGlobalVisualizationRadio() {

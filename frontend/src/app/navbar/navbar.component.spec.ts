@@ -1,7 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 
 import { NavbarComponent } from './navbar.component';
-import { ComponentTester, speculoosMatchers, TestHtmlElement } from 'ngx-speculoos';
+import { ComponentTester, speculoosMatchers } from 'ngx-speculoos';
 import { I18nTestingModule } from '../i18n/i18n-testing.module.spec';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { AuthenticationService } from '../shared/authentication.service';
@@ -35,11 +35,11 @@ class NavbarComponentTester extends ComponentTester<NavbarComponent> {
   }
 
   get login() {
-    return this.element('#navbar-login') as TestHtmlElement<HTMLAnchorElement>;
+    return this.element<HTMLAnchorElement>('#navbar-login');
   }
 
   get logout() {
-    return this.element('#navbar-logout') as TestHtmlElement<HTMLAnchorElement>;
+    return this.element<HTMLAnchorElement>('#navbar-logout');
   }
 }
 

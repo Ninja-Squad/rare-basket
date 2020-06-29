@@ -38,7 +38,12 @@
               "src/styles.scss"
             ],
             "scripts": [],
-            "baseHref": "/rare-basket/"
+            "baseHref": "/rare-basket/",
+            "allowedCommonJsDependencies": [
+              "@angular/common/locales/fr",
+              "papaparse",
+              "chart.js"
+            ]
           },
           "configurations": {
             "production": {

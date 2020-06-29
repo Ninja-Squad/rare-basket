@@ -1,12 +1,11 @@
 {
-  "extends": "./tsconfig.json",
+  "extends": "./tsconfig.base.json",
   "compilerOptions": {
     "esModuleInterop": true,   // needed for I18nTestingModule, to be able to import json
     "resolveJsonModule": true, // needed for I18nTestingModule, to be able to import json
     "outDir": "./out-tsc/spec",
     "types": [
-      "jasmine",
-      "node"
+      "jasmine"
     ]
   },
   "files": [

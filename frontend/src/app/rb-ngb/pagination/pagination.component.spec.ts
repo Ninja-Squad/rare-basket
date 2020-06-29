@@ -3,7 +3,7 @@ import { fakeAsync, TestBed, tick } from '@angular/core/testing';
 import { PaginationComponent } from './pagination.component';
 import { NgbPagination, NgbPaginationModule } from '@ng-bootstrap/ng-bootstrap';
 import { Component } from '@angular/core';
-import { ComponentTester, fakeRoute, speculoosMatchers, TestHtmlElement } from 'ngx-speculoos';
+import { ComponentTester, fakeRoute, speculoosMatchers } from 'ngx-speculoos';
 import { By } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Page } from '../../shared/page.model';
@@ -33,7 +33,7 @@ class TestComponentTester extends ComponentTester<TestComponent> {
   }
 
   get firstPageLink() {
-    return this.element('a') as TestHtmlElement<HTMLAnchorElement>;
+    return this.element<HTMLAnchorElement>('a');
   }
 }
 
