@@ -33,3 +33,22 @@ body {
   max-height: 25rem;
   overflow-y: auto;
 }
+
+// hack used to make sure that the validation errors only appear after 10ms, rather than instantly.
+// Indeed, since they appear when an invalid form control is blurred, and cause a small vertical layout shift
+// when they appear, clicking a button below the form control sometimes fails because the click actually happens
+// outside of the button.
+// This is particularly useful in the edit order component (when clicking the CSV button for example)
+// or even in the basket submission form (when submitting the form)
+val-errors div {
+  animation: delay 10ms none;
+}
+
+@keyframes delay {
+  0% {
+    height: 0;
+  }
+  100% {
+    height: auto;
+  }
+}
