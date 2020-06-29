@@ -11,6 +11,12 @@
 
   <div *ngIf="result.errors.length" class="alert alert-danger scrolling">
     <table class="table table-sm mb-0">
+      <thead>
+        <tr>
+          <th scope="col" translate="order.csv-modal.error-line-heading"></th>
+          <th scope="col" translate="order.csv-modal.error-message-heading"></th>
+        </tr>
+      </thead>
       <tbody>
         <tr *ngFor="let error of result.errors" class="csv-error">
           <th scope="row">{{ error.row + 1 | number }}</th>

@@ -295,6 +295,8 @@
     "csv-modal": {
       "title": "Ajouter des accessions au format CSV",
       "csv": "Données (nom, identifiant, quantité, unité)",
+      "error-line-heading": "Ligne",
+      "error-message-heading": "Erreur",
       "accession-heading": "Accession",
       "quantity-heading": "Quantité",
       "add-items": "Ajouter aux accessions commandées",
@@ -305,7 +307,7 @@
       "UndetectableDelimiter": "Impossible de détecter le délimiteur",
       "TooFewFields": "Trop peu de champs",
       "TooManyFields": "Trop de champs",
-      "name-and-identifier-required": "Au moins deux champs requis: le nom et l'identifiant",
+      "name-and-identifier-required": "Au moins deux champs requis\u00a0: le nom et l'identifiant",
       "name-required": "Le nom est obligatoire",
       "identifier-required": "L'identifiant est obligatoire",
       "invalid-quantity": "Quantité invalide"

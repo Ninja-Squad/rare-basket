@@ -227,7 +227,7 @@
       "unit": "Unit",
       "delete-accession": "Remove this accession from the order",
       "add-accession": "Add an accession to the order",
-      "csv": "Add accessions in CSV formt",
+      "csv": "Add accessions in CSV format",
       "save": "Save",
       "cancel": "Cancel"
     },
@@ -295,6 +295,8 @@
     "csv-modal": {
       "title": "Add accessions in CSV format",
       "csv": "Data (name, identifier, quantity, unit)",
+      "error-line-heading": "Line",
+      "error-message-heading": "Error",
       "accession-heading": "Accession",
       "quantity-heading": "Quantity",
       "add-items": "Add to the ordered accessions",
