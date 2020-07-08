@@ -3,5 +3,5 @@ export const environment = {
   keycloakUrl: 'https://urgi.versailles.inrae.fr/keycloak',
   realmPath: '/realms/rare-basket',
   usersRealmPath: '/admin/master/console/#/realms/rare-basket/users',
-  gdprDetailsUrl: 'https://urgi.versailles.inra.fr/rare/legal#personal-data'
+  gdprDetailsUrl: 'https://urgi.versailles.inrae.fr/rare/legal#personal-data'
 };

@@ -4,6 +4,7 @@ import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.MailSendException;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Component;
 
@@ -35,6 +36,9 @@ public class Mailer {
         }
         catch (MessagingException e) {
             throw new IllegalStateException(e);
+        }
+        catch (MailSendException mse) {
+            throw new IllegalStateException(mse.getMessage(), mse);
         }
     }
 

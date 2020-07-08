@@ -2,7 +2,7 @@ rare-basket:
   database:
     host-and-port: localhost:5432
   mail:
-    from: noreply@rare-basket.fr
+    from: openstack-urgi@inrae.fr
     base-url: http://localhost:4201/rare-basket
   document-storage:
     path: /tmp/rare-basket-storage
@@ -38,6 +38,8 @@ spring:
 
 logging.level:
   root: ERROR
+#   com.sun.mail: DEBUG
+#   javax.mail: DEBUG
   org.springframework:
     boot.web.embedded.tomcat.TomcatWebServer: INFO
     web.client.RestTemplate: INFO
