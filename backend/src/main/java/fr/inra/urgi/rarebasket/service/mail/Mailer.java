@@ -1,5 +1,6 @@
 package fr.inra.urgi.rarebasket.service.mail;
 
+import java.io.UnsupportedEncodingException;
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 
@@ -27,7 +28,8 @@ public class Mailer {
         try {
             MimeMessage mimeMessage = mailSender.createMimeMessage();
             MimeMessageHelper helper = createHelper(mimeMessage);
-            helper.setFrom(message.getFrom());
+            // helper.setFrom(message.getFrom());
+            helper.setFrom(message.getFrom(), message.getDisplayName() == null ? "rare-basket-no-reply": message.getDisplayName());
             helper.setTo(message.getTo());
             helper.setSubject(message.getSubject());
             helper.setText(message.getPlainText(), message.getHtmlText());
@@ -37,7 +39,7 @@ public class Mailer {
         catch (MessagingException e) {
             throw new IllegalStateException(e);
         }
-        catch (MailSendException mse) {
+        catch (MailSendException | UnsupportedEncodingException mse) {
             throw new IllegalStateException(mse.getMessage(), mse);
         }
     }

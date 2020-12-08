@@ -2,6 +2,7 @@ package fr.inra.urgi.rarebasket.service.mail;
 
 import static org.mockito.Mockito.*;
 
+import java.io.UnsupportedEncodingException;
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 
@@ -15,7 +16,7 @@ import org.springframework.mail.javamail.MimeMessageHelper;
  */
 class MailerTest {
     @Test
-    void shouldSendMimeMessage() throws MessagingException {
+    void shouldSendMimeMessage() throws MessagingException, UnsupportedEncodingException {
         JavaMailSender mockJavaMailSender = mock(JavaMailSender.class);
         MimeMessage mockMimeMessage = mock(MimeMessage.class);
         when(mockJavaMailSender.createMimeMessage()).thenReturn(mockMimeMessage);
@@ -25,6 +26,7 @@ class MailerTest {
 
         MailMessage mailMessage = new MailMessage(
             "john@amies.com",
+            "Jenny (Gmail)",
             "jenny@gmail.com",
             "Hello",
             "This is plain text",
@@ -34,7 +36,7 @@ class MailerTest {
         mailer.send(mailMessage);
 
         verify(mockJavaMailSender).send(mockMimeMessage);
-        verify(mockHelper).setFrom(mailMessage.getFrom());
+        verify(mockHelper).setFrom(mailMessage.getFrom(), mailMessage.getDisplayName());
         verify(mockHelper).setTo(mailMessage.getTo());
         verify(mockHelper).setSubject(mailMessage.getSubject());
         verify(mockHelper).setText(mailMessage.getPlainText(), mailMessage.getHtmlText());

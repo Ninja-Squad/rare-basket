@@ -39,6 +39,7 @@ public class OrderCreatedMailer extends TemplateBasedMailer {
             sendEmail(
                 SupportedLanguage.FRENCH,
                 mailProperties.getFrom(),
+                mailProperties.getDisplayName(),
                 order.getAccessionHolder().getEmail(),
                 "Nouvelle commande d'accessions " + order.getBasket().getReference(),
                 context

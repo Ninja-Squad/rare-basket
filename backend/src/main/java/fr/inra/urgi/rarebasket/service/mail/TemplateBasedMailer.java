@@ -66,6 +66,7 @@ public class TemplateBasedMailer {
 
     protected void sendEmail(SupportedLanguage language,
                              String from,
+                             String displayName,
                              String to,
                              String subject,
                              Object context) {
@@ -78,6 +79,7 @@ public class TemplateBasedMailer {
 
         MailMessage message = new MailMessage(
             from,
+            displayName,
             to,
             subject,
             plainText,

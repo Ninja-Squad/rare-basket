@@ -48,6 +48,7 @@ public class BasketConfirmationMailer extends TemplateBasedMailer {
             sendEmail(
                 basket.getCustomer().getLanguage(),
                 mailProperties.getFrom(),
+                mailProperties.getDisplayName(),
                 basket.getCustomer().getEmail(),
                 subject,
                 context

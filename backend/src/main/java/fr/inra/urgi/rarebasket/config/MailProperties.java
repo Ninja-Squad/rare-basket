@@ -18,6 +18,8 @@ public class MailProperties {
     @Email
     private String from;
 
+    private String displayName;
+
     /**
      * The base URL of the application, without a trailing `/`
      */
@@ -47,5 +49,13 @@ public class MailProperties {
 
     public void setBaseUrl(String baseUrl) {
         this.baseUrl = baseUrl;
+    }
+
+    public String getDisplayName() {
+        return displayName;
+    }
+
+    public void setDisplayName(String displayName) {
+        this.displayName = displayName;
     }
 }

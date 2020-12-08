@@ -8,13 +8,15 @@ import java.util.Objects;
  */
 public class MailMessage {
     private final String from;
+    private final String displayName;
     private final String to;
     private final String subject;
     private final String plainText;
     private final String htmlText;
 
-    public MailMessage(String from, String to, String subject, String plainText, String htmlText) {
+    public MailMessage(String from, String displayName, String to, String subject, String plainText, String htmlText) {
         this.from = from;
+        this.displayName = displayName;
         this.to = to;
         this.subject = subject;
         this.plainText = plainText;
@@ -71,5 +73,9 @@ public class MailMessage {
             ", plainText='" + plainText + '\'' +
             ", htmlText='" + htmlText + '\'' +
             '}';
+    }
+
+    public String getDisplayName() {
+        return displayName;
     }
 }

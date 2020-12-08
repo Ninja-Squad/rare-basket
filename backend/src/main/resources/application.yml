@@ -3,6 +3,7 @@ rare-basket:
     host-and-port: localhost:5432
   mail:
     from: openstack-urgi@inrae.fr
+    displayName: rare-basket-no-reply
     base-url: http://localhost:4201/rare-basket
   document-storage:
     path: /tmp/rare-basket-storage
