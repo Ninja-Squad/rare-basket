@@ -64,21 +64,23 @@ test:
 .variables-beta: &variables-beta
  variables:
   ENV: beta
-  APP_PORT: ${BETA_PORT}
+  APP_PORT: ${PORT_BETA}
   APP_CONTEXT: ${APP_NAME}-${ENV}
+  SERVER_IP: ${SERVER_IP_DEV}
 
 .variables-staging: &variables-staging
  variables:
   ENV: staging
-  APP_PORT: ${STAGING_PORT}
+  APP_PORT: ${PORT_STAGING}
   APP_CONTEXT: ${APP_NAME}-${ENV}
+  SERVER_IP: ${SERVER_IP_DEV}
 
-# ALPHA
 .variables-prod: &variables-prod
  variables:
   ENV: prod
-  APP_PORT: ${PROD_PORT}
+  APP_PORT: ${PORT_PROD}
   APP_CONTEXT: ${APP_NAME}
+  SERVER_IP: ${SERVER_IP_PROD}
 
 deploy-to-beta:
  stage: deploy-beta
