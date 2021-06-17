@@ -6,7 +6,7 @@ buildscript {
     }
 
     dependencies {
-        classpath("org.postgresql:postgresql:42.2.12")
+        classpath("org.postgresql:postgresql:42.2.19")
     }
 }
 
@@ -24,6 +24,13 @@ java {
 
 repositories {
     mavenCentral()
+
+    // TODO remove this once spring-boot depends on version 5.5.1 or later
+    //   it's necessary because version 5.5.0 has the issue https://github.com/spring-projects/spring-security/issues/9794
+    //   which breaks the keycloak adapter
+    maven {
+        url = uri("https://repo.spring.io/snapshot")
+    }
 }
 
 tasks {
@@ -49,7 +56,7 @@ tasks {
 
     jacocoTestReport {
         reports {
-            html.setEnabled(true)
+            html.required.set(true)
         }
     }
 
@@ -72,10 +79,15 @@ tasks {
     }
 }
 
+// TODO remove this once spring-boot depends on version 5.5.1 or later
+//   it's necessary because version 5.5.0 has the issue https://github.com/spring-projects/spring-security/issues/9794
+//   which breaks the keycloak adapter
+extra["spring-security.version"] = "5.5.1-SNAPSHOT"
+
 dependencyManagement {
     imports {
-        mavenBom("org.keycloak.bom:keycloak-adapter-bom:9.0.2")
-        mavenBom("org.springframework.cloud:spring-cloud-dependencies:Hoxton.SR5")
+        mavenBom("org.keycloak.bom:keycloak-adapter-bom:13.0.1")
+        mavenBom("org.springframework.cloud:spring-cloud-dependencies:2020.0.3")
     }
 }
 
@@ -98,11 +110,8 @@ dependencies {
     runtimeOnly("org.postgresql:postgresql")
     runtimeOnly("org.flywaydb:flyway-core")
 
-    testImplementation("org.springframework.boot:spring-boot-starter-test") {
-        exclude(group = "org.junit.vintage", module = "junit-vintage-engine")
-    }
+    testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("org.springframework.security:spring-security-test")
 
     testImplementation("com.ninja-squad:DbSetup:2.1.0")
-    testImplementation("org.junit.jupiter:junit-jupiter")
 }

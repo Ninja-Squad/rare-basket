@@ -1,4 +1,4 @@
-import com.moowork.gradle.node.yarn.YarnTask
+import com.github.gradle.node.yarn.task.YarnTask
 
 plugins {
     base
@@ -6,10 +6,10 @@ plugins {
 }
 
 node {
-    version = "12.13.1"
-    npmVersion = "6.13.2"
-    yarnVersion = "1.22.4"
-    download = true
+    version.set("14.17.0")
+    npmVersion.set("6.14.10")
+    yarnVersion.set("1.22.10")
+    download.set(true)
 }
 
 tasks {
@@ -64,8 +64,8 @@ tasks {
     // This is not a yarn_format task because the task to run is `yarn format:check`
     // and tasks with colons are not supported
     val checkFormat by registering(YarnTask::class) {
-        args = listOf("run", "format:check")
-        execRunner.ignoreExitValue = true
+        args.set(listOf("run", "format:check"))
+        ignoreExitValue.set(true)
         dependsOn(prepare)
         inputs.dir("src")
         inputs.file(".prettierrc")

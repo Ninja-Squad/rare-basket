@@ -22,6 +22,11 @@ server:
     context-path: /rare-basket
 
 spring:
+  config:
+    import: 'optional:configserver:'
+  cloud:
+    config:
+      uri: ${SPRING_CONFIG_URI:http://localhost:8888}
   datasource:
     url: jdbc:postgresql:rarebasket
     username: rarebasket
@@ -58,7 +63,9 @@ keycloak:
 
 ---
 spring:
-  profiles: test
+  config:
+    activate:
+      on-profile: test
   datasource:
     url: jdbc:postgresql://${rare-basket.database.host-and-port}/rarebasket_test
     hikari:

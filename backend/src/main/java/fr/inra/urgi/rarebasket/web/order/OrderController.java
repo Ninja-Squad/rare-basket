@@ -396,7 +396,7 @@ public class OrderController {
         Order order = new Order();
         order.setBasket(basket);
         order.setAccessionHolder(
-            accessionHolderDao.getOne(
+            accessionHolderDao.getById(
                 currentUser.getAccessionHolderId()
                            .orElseThrow(() -> new IllegalStateException("Current user should have an accession holder")))
         );
