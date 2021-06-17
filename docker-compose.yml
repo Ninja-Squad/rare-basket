@@ -6,6 +6,7 @@ services:
     container_name: rare-basket-postgres
     environment:
       - POSTGRES_HOST_AUTH_METHOD=trust
+      - ENV=dev
     # copying the setup.sql file in the /docker-entrypoint-initdb.d/ directory
     # the script run on start by the postgres container
     # and creates the appropriate databases and users
