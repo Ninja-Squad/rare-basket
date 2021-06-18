@@ -152,4 +152,8 @@ export class CustomSecurityStorage extends AbstractSecurityStorage {
     value = value || null;
     localStorage.setItem(key, JSON.stringify(value));
   }
+
+  remove(key: string): void {
+    localStorage.removeItem(key);
+  }
 }
