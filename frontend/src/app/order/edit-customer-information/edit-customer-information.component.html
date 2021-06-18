@@ -32,7 +32,7 @@
           translate="order.edit-customer-information.use-delivery-address"
         ></label>
       </div>
-      <div class="hidable" [class.hide]="useDeliveryAddressControl.value">
+      <div [ngbCollapse]="useDeliveryAddressControl.value">
         <textarea formControlName="billingAddress" id="billing-address" class="form-control"></textarea>
       </div>
       <val-errors

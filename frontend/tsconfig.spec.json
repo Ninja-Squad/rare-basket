@@ -1,5 +1,5 @@
 {
-  "extends": "./tsconfig.base.json",
+  "extends": "./tsconfig.json",
   "compilerOptions": {
     "esModuleInterop": true,   // needed for I18nTestingModule, to be able to import json
     "resolveJsonModule": true, // needed for I18nTestingModule, to be able to import json

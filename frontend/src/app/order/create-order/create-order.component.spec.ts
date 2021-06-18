@@ -15,6 +15,7 @@ import { EditCustomerInformationComponent } from '../edit-customer-information/e
 import { DetailedOrder, CustomerInformationCommand } from '../order.model';
 import { of } from 'rxjs';
 import { ToastService } from '../../shared/toast.service';
+import { RbNgbTestingModule } from '../../rb-ngb/rb-ngb-testing.module';
 
 class CreateOrderComponentTester extends ComponentTester<CreateOrderComponent> {
   constructor() {
@@ -37,7 +38,7 @@ describe('CreateOrderComponent', () => {
     toastService = jasmine.createSpyObj<ToastService>('ToastService', ['success']);
 
     TestBed.configureTestingModule({
-      imports: [I18nTestingModule, ReactiveFormsModule, ValdemortModule, RouterTestingModule],
+      imports: [I18nTestingModule, RbNgbTestingModule, ReactiveFormsModule, ValdemortModule, RouterTestingModule],
       declarations: [CreateOrderComponent, EditCustomerInformationComponent, LanguageEnumPipe, CustomerTypeEnumPipe],
       providers: [
         { provide: OrderService, useValue: orderService },

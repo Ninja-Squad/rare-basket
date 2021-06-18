@@ -1,4 +1,4 @@
-<ngb-toast *ngFor="let toast of toasts" [class]="toast.type" [autohide]="true" [delay]="5000" (hide)="remove(toast)">
+<ngb-toast *ngFor="let toast of toasts" [class]="toast.type" [autohide]="true" [delay]="5000" (hidden)="remove(toast)">
   <div class="d-flex">
     <div class="mr-2">
       <fa-icon [icon]="icon(toast)"></fa-icon>

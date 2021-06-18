@@ -5,7 +5,6 @@ import { ComponentTester, speculoosMatchers, TestButton } from 'ngx-speculoos';
 import { Component } from '@angular/core';
 import { Basket, BasketCommand } from '../basket.model';
 import { ValidationDefaultsComponent } from '../../validation-defaults/validation-defaults.component';
-import { RbNgbModule } from '../../rb-ngb/rb-ngb.module';
 import { ReactiveFormsModule } from '@angular/forms';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { SharedModule } from '../../shared/shared.module';
@@ -13,6 +12,7 @@ import { ValdemortModule } from 'ngx-valdemort';
 import { ConfirmationService } from '../../shared/confirmation.service';
 import { of } from 'rxjs';
 import { I18nTestingModule } from '../../i18n/i18n-testing.module.spec';
+import { RbNgbTestingModule } from '../../rb-ngb/rb-ngb-testing.module';
 
 @Component({
   template: '<rb-edit-basket [basket]="basket" (basketSaved)="savedCommand = $event"></rb-edit-basket>'
@@ -101,7 +101,7 @@ describe('EditBasketComponent', () => {
 
     TestBed.configureTestingModule({
       declarations: [EditBasketComponent, TestComponent, ValidationDefaultsComponent],
-      imports: [I18nTestingModule, RbNgbModule, ReactiveFormsModule, FontAwesomeModule, SharedModule, ValdemortModule],
+      imports: [I18nTestingModule, RbNgbTestingModule, ReactiveFormsModule, FontAwesomeModule, SharedModule, ValdemortModule],
       providers: [{ provide: ConfirmationService, useValue: confirmationService }]
     });
 

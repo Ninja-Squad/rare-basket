@@ -11,6 +11,7 @@ import { ValdemortModule } from 'ngx-valdemort';
 import { ReactiveFormsModule } from '@angular/forms';
 import { LanguageEnumPipe } from '../../shared/language-enum.pipe';
 import { CustomerTypeEnumPipe } from '../../shared/customer-type-enum.pipe';
+import { RbNgbTestingModule } from '../../rb-ngb/rb-ngb-testing.module';
 
 @Component({
   template: `
@@ -100,7 +101,7 @@ describe('EditCustomerComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [I18nTestingModule, ReactiveFormsModule, ValdemortModule],
+      imports: [I18nTestingModule, RbNgbTestingModule, ReactiveFormsModule, ValdemortModule],
       declarations: [EditCustomerInformationComponent, TestComponent, ValidationDefaultsComponent, LanguageEnumPipe, CustomerTypeEnumPipe]
     });
 

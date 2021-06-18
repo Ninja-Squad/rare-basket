@@ -3,7 +3,7 @@ import { Component } from '@angular/core';
 import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 
 import { ModalOptions, ModalService } from './modal.service';
-import { RbNgbModule } from './rb-ngb.module';
+import { RbNgbTestingModule } from './rb-ngb-testing.module';
 
 @Component({
   template: 'Hello'
@@ -18,7 +18,7 @@ describe('ModalService', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       declarations: [TestModalComponent],
-      imports: [RbNgbModule]
+      imports: [RbNgbTestingModule]
     });
     ngbModal = TestBed.inject(NgbModal);
     modalService = TestBed.inject(ModalService);

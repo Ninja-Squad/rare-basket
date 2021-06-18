@@ -2,7 +2,6 @@ import { TestBed } from '@angular/core/testing';
 
 import { ExportOrdersComponent } from './export-orders.component';
 import { ComponentTester, speculoosMatchers } from 'ngx-speculoos';
-import { RbNgbModule } from '../../rb-ngb/rb-ngb.module';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { ReactiveFormsModule } from '@angular/forms';
 import { OrderService } from '../order.service';
@@ -12,6 +11,7 @@ import { HttpResponse } from '@angular/common/http';
 import { Subject } from 'rxjs';
 import { ValdemortModule } from 'ngx-valdemort';
 import { ValidationDefaultsComponent } from '../../validation-defaults/validation-defaults.component';
+import { RbNgbTestingModule } from '../../rb-ngb/rb-ngb-testing.module';
 
 class ExportOrdersComponentTester extends ComponentTester<ExportOrdersComponent> {
   constructor() {
@@ -49,7 +49,7 @@ describe('ExportOrdersComponent', () => {
     downloadService = jasmine.createSpyObj<DownloadService>('DownloadService', ['download']);
 
     TestBed.configureTestingModule({
-      imports: [I18nTestingModule, RbNgbModule, FontAwesomeModule, ReactiveFormsModule, ValdemortModule],
+      imports: [I18nTestingModule, RbNgbTestingModule, FontAwesomeModule, ReactiveFormsModule, ValdemortModule],
       declarations: [ExportOrdersComponent, ValidationDefaultsComponent],
       providers: [
         { provide: OrderService, useValue: orderService },

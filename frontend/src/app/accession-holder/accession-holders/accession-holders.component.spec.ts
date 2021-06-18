@@ -2,7 +2,6 @@ import { TestBed } from '@angular/core/testing';
 
 import { ComponentTester, speculoosMatchers, TestButton } from 'ngx-speculoos';
 import { I18nTestingModule } from '../../i18n/i18n-testing.module.spec';
-import { RbNgbModule } from '../../rb-ngb/rb-ngb.module';
 import { RouterTestingModule } from '@angular/router/testing';
 import { EMPTY, of } from 'rxjs';
 import { AccessionHolder } from '../../shared/user.model';
@@ -11,6 +10,7 @@ import { ConfirmationService } from '../../shared/confirmation.service';
 import { AccessionHoldersComponent } from './accession-holders.component';
 import { AccessionHolderService } from '../../shared/accession-holder.service';
 import { ToastService } from '../../shared/toast.service';
+import { RbNgbTestingModule } from '../../rb-ngb/rb-ngb-testing.module';
 
 class AccessionHoldersComponentTester extends ComponentTester<AccessionHoldersComponent> {
   constructor() {
@@ -42,7 +42,7 @@ describe('AccessionHoldersComponent', () => {
     toastService = jasmine.createSpyObj<ToastService>('ToastService', ['success']);
 
     TestBed.configureTestingModule({
-      imports: [I18nTestingModule, FontAwesomeModule, RbNgbModule, RouterTestingModule],
+      imports: [I18nTestingModule, FontAwesomeModule, RbNgbTestingModule, RouterTestingModule],
       declarations: [AccessionHoldersComponent],
       providers: [
         { provide: AccessionHolderService, useValue: accessionHolderService },

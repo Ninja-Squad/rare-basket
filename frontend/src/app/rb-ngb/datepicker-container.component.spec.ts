@@ -1,11 +1,11 @@
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { TestBed } from '@angular/core/testing';
 import { Component } from '@angular/core';
-import { RbNgbModule } from './rb-ngb.module';
 import { By } from '@angular/platform-browser';
 import { NgbDatepicker } from '@ng-bootstrap/ng-bootstrap';
 import { ComponentTester, speculoosMatchers } from 'ngx-speculoos';
 import { I18nTestingModule } from '../i18n/i18n-testing.module.spec';
+import { RbNgbTestingModule } from './rb-ngb-testing.module';
 
 @Component({
   template: `
@@ -45,7 +45,7 @@ describe('DatepickerContainerComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [I18nTestingModule, RbNgbModule, ReactiveFormsModule],
+      imports: [I18nTestingModule, RbNgbTestingModule, ReactiveFormsModule],
       declarations: [TestComponent]
     });
 

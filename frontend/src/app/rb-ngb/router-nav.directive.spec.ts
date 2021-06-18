@@ -1,9 +1,9 @@
 import { fakeAsync, TestBed, tick } from '@angular/core/testing';
-import { RbNgbModule } from './rb-ngb.module';
 import { RouterTestingModule } from '@angular/router/testing';
 import { Component } from '@angular/core';
 import { ComponentTester, speculoosMatchers } from 'ngx-speculoos';
 import { Router } from '@angular/router';
+import { RbNgbTestingModule } from './rb-ngb-testing.module';
 
 @Component({
   template: ''
@@ -53,7 +53,7 @@ describe('router nav directive', () => {
     TestBed.configureTestingModule({
       declarations: [TestComponent, PlaceholderComponent],
       imports: [
-        RbNgbModule,
+        RbNgbTestingModule,
         RouterTestingModule.withRoutes([
           { path: 'foo', component: PlaceholderComponent },
           { path: 'bar', component: PlaceholderComponent }

@@ -11,8 +11,8 @@ import { AuthenticationService } from './shared/authentication.service';
 import { of } from 'rxjs';
 import { I18nTestingModule } from './i18n/i18n-testing.module.spec';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
-import { RbNgbModule } from './rb-ngb/rb-ngb.module';
 import { ToastsComponent } from './rb-ngb/toasts/toasts.component';
+import { RbNgbTestingModule } from './rb-ngb/rb-ngb-testing.module';
 
 class AppComponentTester extends ComponentTester<AppComponent> {
   constructor() {
@@ -41,7 +41,7 @@ describe('AppComponent', () => {
 
     TestBed.configureTestingModule({
       declarations: [AppComponent, ValidationDefaultsComponent, NavbarComponent],
-      imports: [I18nTestingModule, FontAwesomeModule, RouterTestingModule, ValdemortModule, RbNgbModule],
+      imports: [I18nTestingModule, FontAwesomeModule, RouterTestingModule, ValdemortModule, RbNgbTestingModule],
       providers: [{ provide: AuthenticationService, useValue: authenticationService }]
     });
 

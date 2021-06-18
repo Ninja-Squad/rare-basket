@@ -1,4 +1,4 @@
-import { async, TestBed } from '@angular/core/testing';
+import { TestBed, waitForAsync } from '@angular/core/testing';
 
 import { AuthenticationGuard } from './authentication.guard';
 import { AuthenticationService } from './authentication.service';
@@ -20,13 +20,13 @@ describe('AuthenticationGuard', () => {
     state = { url: '/foo' } as RouterStateSnapshot;
   });
 
-  it('should route if authenticated', async(() => {
+  it('should route if authenticated', waitForAsync(() => {
     authenticationService.isAuthenticated.and.returnValue(of(true));
     guard.canActivate(null, state).subscribe(value => expect(value).toBe(true));
     guard.canActivateChild(null, state).subscribe(value => expect(value).toBe(true));
   }));
 
-  it('should login if not authenticated', async(() => {
+  it('should login if not authenticated', waitForAsync(() => {
     authenticationService.isAuthenticated.and.returnValue(of(false));
     guard.canActivate(null, state).subscribe(value => {
       expect(value).toBe(false);

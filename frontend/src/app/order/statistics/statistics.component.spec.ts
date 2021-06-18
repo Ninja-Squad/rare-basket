@@ -12,13 +12,13 @@ import { OrderService } from '../order.service';
 import { SharedModule } from '../../shared/shared.module';
 import { OrderStatusEnumPipe } from '../order-status-enum.pipe';
 import { ValidationDefaultsComponent } from '../../validation-defaults/validation-defaults.component';
-import { RbNgbModule } from '../../rb-ngb/rb-ngb.module';
 import { ValdemortModule } from 'ngx-valdemort';
 import { formatDate } from '@angular/common';
 import { Grc, User } from '../../shared/user.model';
 import { AuthenticationService } from '../../shared/authentication.service';
 import { GrcService } from '../../shared/grc.service';
 import { OrderStatistics } from '../order.model';
+import { RbNgbTestingModule } from 'src/app/rb-ngb/rb-ngb-testing.module';
 
 class StatisticsComponentTester extends ComponentTester<StatisticsComponent> {
   constructor() {
@@ -160,7 +160,7 @@ describe('StatisticsComponent', () => {
     grcService.list.and.returnValue(of(allGrcs));
 
     TestBed.configureTestingModule({
-      imports: [I18nTestingModule, RbNgbModule, ReactiveFormsModule, ChartModule, RouterTestingModule, SharedModule, ValdemortModule],
+      imports: [I18nTestingModule, RbNgbTestingModule, ReactiveFormsModule, ChartModule, RouterTestingModule, SharedModule, ValdemortModule],
       declarations: [StatisticsComponent, OrderStatusEnumPipe, ValidationDefaultsComponent],
       providers: [
         { provide: ActivatedRoute, useValue: route },

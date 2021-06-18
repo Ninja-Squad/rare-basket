@@ -1,10 +1,10 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { SharedModule } from '../shared.module';
 import { ConfirmationOptions, ConfirmationService } from '../confirmation.service';
 import { Component } from '@angular/core';
 import { Observable } from 'rxjs';
 import { I18nTestingModule } from '../../i18n/i18n-testing.module.spec';
-import { RbNgbModule } from '../../rb-ngb/rb-ngb.module';
+import { RbNgbTestingModule } from '../../rb-ngb/rb-ngb-testing.module';
 
 class ModalComponentTester {
   constructor(private fixture: ComponentFixture<any>) {}
@@ -52,16 +52,16 @@ describe('ConfirmationModalComponent and ConfirmationService', () => {
   let tester: ModalComponentTester;
   let confirmationService: ConfirmationService;
 
-  beforeEach(async(() => {
+  beforeEach(() => {
     TestBed.configureTestingModule({
       declarations: [TestComponent],
-      imports: [I18nTestingModule, SharedModule, RbNgbModule]
+      imports: [I18nTestingModule, SharedModule, RbNgbTestingModule]
     });
 
     confirmationService = TestBed.inject(ConfirmationService);
     tester = new ModalComponentTester(TestBed.createComponent(TestComponent));
     tester.detectChanges();
-  }));
+  });
 
   afterEach(() => {
     if (tester.modalWindow) {

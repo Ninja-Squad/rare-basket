@@ -20,11 +20,11 @@ import { OrderStatusEnumPipe } from '../order-status-enum.pipe';
 import { DocumentTypeEnumPipe } from '../document-type-enum.pipe';
 import { EditDocumentComponent } from '../edit-document/edit-document.component';
 import { HttpEvent, HttpEventType, HttpProgressEvent, HttpResponse } from '@angular/common/http';
-import { RbNgbModule } from '../../rb-ngb/rb-ngb.module';
 import { DownloadService } from '../../shared/download.service';
 import { MockModalService, ModalTestingModule } from '../../rb-ngb/mock-modal.service.spec';
 import { FinalizationWarningsModalComponent } from '../finalization-warnings-modal/finalization-warnings-modal.component';
 import { ToastService } from '../../shared/toast.service';
+import { RbNgbTestingModule } from 'src/app/rb-ngb/rb-ngb-testing.module';
 
 class OrderComponentTester extends ComponentTester<OrderComponent> {
   constructor() {
@@ -128,7 +128,7 @@ describe('OrderComponent', () => {
         SharedModule,
         ReactiveFormsModule,
         ValdemortModule,
-        RbNgbModule,
+        RbNgbTestingModule,
         ModalTestingModule
       ],
       providers: [

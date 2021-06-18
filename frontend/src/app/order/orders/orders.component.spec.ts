@@ -7,11 +7,11 @@ import { Page } from '../../shared/page.model';
 import { ComponentTester, speculoosMatchers } from 'ngx-speculoos';
 import { PaginationComponent } from '../../rb-ngb/pagination/pagination.component';
 import { By } from '@angular/platform-browser';
-import { RbNgbModule } from '../../rb-ngb/rb-ngb.module';
 import { CustomerTypeEnumPipe } from '../../shared/customer-type-enum.pipe';
 import { RouterTestingModule } from '@angular/router/testing';
 import { I18nTestingModule } from '../../i18n/i18n-testing.module.spec';
 import { OrderStatusEnumPipe } from '../order-status-enum.pipe';
+import { RbNgbTestingModule } from '../../rb-ngb/rb-ngb-testing.module';
 
 @Component({
   template: `<rb-orders [orders]="orders"></rb-orders>`
@@ -74,7 +74,7 @@ describe('OrdersComponent', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       declarations: [OrdersComponent, TestComponent, CustomerTypeEnumPipe, OrderStatusEnumPipe],
-      imports: [I18nTestingModule, RouterTestingModule, RbNgbModule],
+      imports: [I18nTestingModule, RouterTestingModule, RbNgbTestingModule],
       providers: [{ provide: LOCALE_ID, useValue: 'fr' }]
     });
 

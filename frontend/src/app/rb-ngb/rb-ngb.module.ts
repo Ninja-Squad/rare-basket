@@ -1,6 +1,7 @@
 import { Injectable, NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {
+  NgbCollapseModule,
   NgbDateAdapter,
   NgbDateParserFormatter,
   NgbDatepickerConfig,
@@ -40,7 +41,8 @@ const NGB_MODULES = [
   NgbProgressbarModule,
   NgbDatepickerModule,
   NgbToastModule,
-  NgbDropdownModule
+  NgbDropdownModule,
+  NgbCollapseModule
 ];
 
 const EXPORTED_DECLARABLES = [

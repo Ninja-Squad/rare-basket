@@ -8,7 +8,6 @@ import { ActivatedRoute } from '@angular/router';
 import { Basket, BasketCommand } from '../basket.model';
 import { BasketService } from '../basket.service';
 import { of } from 'rxjs';
-import { RbNgbModule } from '../../rb-ngb/rb-ngb.module';
 import { ReactiveFormsModule } from '@angular/forms';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { SharedModule } from '../../shared/shared.module';
@@ -17,6 +16,7 @@ import { EditConfirmationComponent } from '../edit-confirmation/edit-confirmatio
 import { ConfirmedComponent } from '../confirmed/confirmed.component';
 import { BasketContentComponent } from '../basket-content/basket-content.component';
 import { I18nTestingModule } from '../../i18n/i18n-testing.module.spec';
+import { RbNgbTestingModule } from '../../rb-ngb/rb-ngb-testing.module';
 
 class BasketComponentTester extends ComponentTester<BasketComponent> {
   constructor() {
@@ -57,7 +57,7 @@ describe('BasketComponent', () => {
 
     TestBed.configureTestingModule({
       declarations: [BasketComponent, EditBasketComponent, EditConfirmationComponent, ConfirmedComponent, BasketContentComponent],
-      imports: [I18nTestingModule, RbNgbModule, ReactiveFormsModule, FontAwesomeModule, SharedModule, ValdemortModule],
+      imports: [I18nTestingModule, RbNgbTestingModule, ReactiveFormsModule, FontAwesomeModule, SharedModule, ValdemortModule],
       providers: [
         { provide: ActivatedRoute, useValue: route },
         { provide: BasketService, useValue: basketService }

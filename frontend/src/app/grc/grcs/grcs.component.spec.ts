@@ -5,12 +5,12 @@ import { ComponentTester, speculoosMatchers, TestButton } from 'ngx-speculoos';
 import { ConfirmationService } from '../../shared/confirmation.service';
 import { I18nTestingModule } from '../../i18n/i18n-testing.module.spec';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
-import { RbNgbModule } from '../../rb-ngb/rb-ngb.module';
 import { RouterTestingModule } from '@angular/router/testing';
 import { EMPTY, of } from 'rxjs';
 import { Grc } from '../../shared/user.model';
 import { GrcService } from '../../shared/grc.service';
 import { ToastService } from '../../shared/toast.service';
+import { RbNgbTestingModule } from '../../rb-ngb/rb-ngb-testing.module';
 
 class GrcsComponentTester extends ComponentTester<GrcsComponent> {
   constructor() {
@@ -42,7 +42,7 @@ describe('GrcsComponent', () => {
     toastService = jasmine.createSpyObj<ToastService>('ToastService', ['success']);
 
     TestBed.configureTestingModule({
-      imports: [I18nTestingModule, FontAwesomeModule, RbNgbModule, RouterTestingModule],
+      imports: [I18nTestingModule, FontAwesomeModule, RbNgbTestingModule, RouterTestingModule],
       declarations: [GrcsComponent],
       providers: [
         { provide: GrcService, useValue: grcService },

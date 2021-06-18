@@ -6,7 +6,7 @@ import { NgbToast } from '@ng-bootstrap/ng-bootstrap';
 import { By } from '@angular/platform-browser';
 import { Subject } from 'rxjs';
 import { Toast, ToastService } from '../../shared/toast.service';
-import { RbNgbModule } from '../rb-ngb.module';
+import { RbNgbTestingModule } from '../rb-ngb-testing.module';
 
 class ToastsComponentTester extends ComponentTester<ToastsComponent> {
   constructor() {
@@ -28,7 +28,7 @@ describe('ToastsComponent', () => {
     toastService.toasts.and.returnValue(toastsSubject);
 
     TestBed.configureTestingModule({
-      imports: [RbNgbModule],
+      imports: [RbNgbTestingModule],
       declarations: [ToastsComponent],
       providers: [{ provide: ToastService, useValue: toastService }]
     });

@@ -9,10 +9,10 @@ import { By } from '@angular/platform-browser';
 import { DocumentTypeEnumPipe } from '../document-type-enum.pipe';
 import { I18nTestingModule } from '../../i18n/i18n-testing.module.spec';
 import { ReactiveFormsModule } from '@angular/forms';
-import { RbNgbModule } from '../../rb-ngb/rb-ngb.module';
 import { ValdemortModule } from 'ngx-valdemort';
 import { ValidationDefaultsComponent } from '../../validation-defaults/validation-defaults.component';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { RbNgbTestingModule } from '../../rb-ngb/rb-ngb-testing.module';
 
 @Component({
   template:
@@ -78,7 +78,7 @@ describe('EditDocumentComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [I18nTestingModule, FontAwesomeModule, ReactiveFormsModule, RbNgbModule, ValdemortModule],
+      imports: [I18nTestingModule, FontAwesomeModule, ReactiveFormsModule, RbNgbTestingModule, ValdemortModule],
       declarations: [TestComponent, EditDocumentComponent, DocumentTypeEnumPipe, ValidationDefaultsComponent]
     });
 
