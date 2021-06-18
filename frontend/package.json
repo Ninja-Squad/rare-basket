@@ -6,9 +6,8 @@
     "start": "ng serve",
     "build": "ng build --no-progress",
     "test": "ng test --code-coverage --no-progress --no-watch",
-    "lint": "ng lint > tslint-result.txt",
-    "format": "prettier --write \"{src,e2e}/**/*.+(ts|js|json|html|scss)\"",
-    "format:check": "prettier --check \"{src,e2e}/**/*.+(ts|js|json|html|scss)\" > prettier-result.txt"
+    "lint": "mkdirp build && ng lint > build/eslint-result.txt",
+    "format": "prettier --write \"{src,e2e}/**/*.+(ts|js|json|html|scss)\""
   },
   "private": true,
   "dependencies": {

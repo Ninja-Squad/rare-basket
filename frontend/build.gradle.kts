@@ -1,8 +1,9 @@
+import com.github.gradle.node.yarn.task.YarnInstallTask
 import com.github.gradle.node.yarn.task.YarnTask
 
 plugins {
     base
-    id("com.github.node-gradle.node")
+    id("com.github.node-gradle.node") version "3.0.1"
 }
 
 node {
@@ -17,81 +18,56 @@ tasks {
         enabled = false
     }
 
-    val yarn_install by getting {
-        inputs.file("package.json")
-        inputs.file("yarn.lock")
-        outputs.dir("node_modules")
+    named<YarnInstallTask>(YarnInstallTask.NAME) {
+        ignoreExitValue.set(true)
     }
 
     val prepare by registering {
-        dependsOn(yarn_install)
+        dependsOn(YarnInstallTask.NAME)
     }
 
-    val yarn_build by getting {
+    val yarnBuild by registering(YarnTask::class) {
+        args.set(listOf("build"))
         dependsOn(prepare)
         inputs.dir("src")
         outputs.dir("dist")
     }
 
-    val yarn_test by getting {
+    val yarnTest by registering(YarnTask::class) {
+        args.set(listOf("test"))
         dependsOn(prepare)
         inputs.dir("src")
         outputs.dir("coverage")
     }
 
-    val test by registering {
-        dependsOn(yarn_test)
-    }
-
-    val yarn_lint by getting {
+    val yarnLint by registering(YarnTask::class){
+        args.set(listOf("lint"))
         dependsOn(prepare)
         inputs.dir("src")
-        inputs.file("tslint.json")
-        outputs.file("tslint-result.txt")
+        inputs.file(".eslintrc.json")
+        inputs.file(".prettierrc")
+        outputs.file("$buildDir/eslint-result.txt")
     }
 
     val lint by registering {
-        dependsOn("yarn_lint")
-        doLast {
-            file("tslint-result.txt").useLines { sequence ->
-                if (sequence.any { it.contains("WARNING") }) {
-                    throw GradleException("Lint warning found. Check tslint-result.txt")
-                }
-            }
-        }
+        dependsOn(yarnLint)
     }
 
-    // This is not a yarn_format task because the task to run is `yarn format:check`
-    // and tasks with colons are not supported
-    val checkFormat by registering(YarnTask::class) {
-        args.set(listOf("run", "format:check"))
-        ignoreExitValue.set(true)
-        dependsOn(prepare)
-        inputs.dir("src")
-        inputs.file(".prettierrc")
-        outputs.file("prettier-result.txt")
-        doLast {
-            file("prettier-result.txt").useLines { sequence ->
-                if (sequence.any { it.contains("src") }) {
-                    throw GradleException ("Formatting warning found. Check prettier-result.txt")
-                }
-            }
-        }
+    val test by registering {
+        dependsOn(yarnTest)
     }
 
     check {
-        dependsOn(checkFormat)
         dependsOn(lint)
         dependsOn(test)
     }
 
     assemble {
-        dependsOn(yarn_build)
+        dependsOn(yarnBuild)
     }
 
-    clean {
-        dependsOn("cleanYarn_build")
-        dependsOn("cleanYarn_test")
-        dependsOn("cleanYarn_lint")
+    val clean by getting {
+        dependsOn("cleanYarnBuild")
+        dependsOn("cleanYarnTest")
     }
 }
