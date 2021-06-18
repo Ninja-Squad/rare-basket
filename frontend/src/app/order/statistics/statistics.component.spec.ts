@@ -160,7 +160,15 @@ describe('StatisticsComponent', () => {
     grcService.list.and.returnValue(of(allGrcs));
 
     TestBed.configureTestingModule({
-      imports: [I18nTestingModule, RbNgbTestingModule, ReactiveFormsModule, ChartModule, RouterTestingModule, SharedModule, ValdemortModule],
+      imports: [
+        I18nTestingModule,
+        RbNgbTestingModule,
+        ReactiveFormsModule,
+        ChartModule,
+        RouterTestingModule,
+        SharedModule,
+        ValdemortModule
+      ],
       declarations: [StatisticsComponent, OrderStatusEnumPipe, ValidationDefaultsComponent],
       providers: [
         { provide: ActivatedRoute, useValue: route },

@@ -15,15 +15,8 @@
       "prefix": "rb",
       "architect": {
         "build": {
-          // use a custom builder to provide an extra webpack config
-          // allwoing to get rid of moment.js (dragged in by chart.js)
-          // see https://github.com/just-jeb/angular-builders/tree/master/packages/custom-webpack#Custom-webpack-browser
-          "builder": "@angular-builders/custom-webpack:browser",
+          "builder": "@angular-devkit/build-angular:browser",
           "options": {
-            // this is the custom Webpack config
-            "customWebpackConfig": {
-              "path": "./extra-webpack.config.js"
-            },
             "outputPath": "dist/rare-basket-frontend",
             "index": "src/index.html",
             "main": "src/main.ts",
@@ -56,7 +49,6 @@
               "optimization": true,
               "outputHashing": "all",
               "sourceMap": false,
-              "extractCss": true,
               "namedChunks": false,
               "extractLicenses": true,
               "vendorChunk": false,
@@ -73,24 +65,26 @@
                   "maximumError": "10kb"
                 }
               ]
-            }
-          }
+            },
+            "development": {}
+          },
+          "defaultConfiguration": "production"
         },
         "serve": {
-          // use a custom builder to provide an extra webpack config
-          // allwoing to get rid of moment.js (dragged in by chart.js)
-          // see https://github.com/just-jeb/angular-builders/tree/master/packages/custom-webpack#Custom-webpack-browser
-          "builder": "@angular-builders/custom-webpack:dev-server",
+          "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "browserTarget": "rare-basket-frontend:build",
             "proxyConfig": "proxy.conf.json",
             "port": 4201
           },
           "configurations": {
             "production": {
               "browserTarget": "rare-basket-frontend:build:production"
+            },
+            "development": {
+              "browserTarget": "rare-basket-frontend:build:development"
             }
-          }
+          },
+          "defaultConfiguration": "development"
         },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
@@ -116,18 +110,19 @@
           }
         },
         "lint": {
-          "builder": "@angular-devkit/build-angular:tslint",
+          "builder": "@angular-eslint/builder:lint",
           "options": {
-            "tsConfig": [
-              "tsconfig.app.json",
-              "tsconfig.spec.json"
-            ],
-            "exclude": [
-              "**/node_modules/**"
+            "lintFilePatterns": [
+              "src/**/*.ts",
+              "src/**/*.html"
             ]
           }
         }
       }
-    }},
-  "defaultProject": "rare-basket-frontend"
+    }
+  },
+  "defaultProject": "rare-basket-frontend",
+  "cli": {
+    "defaultCollection": "@angular-eslint/schematics"
+  }
 }

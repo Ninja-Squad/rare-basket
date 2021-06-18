@@ -26,7 +26,11 @@ describe('ErrorInterceptorService', () => {
   });
 
   it('should do nothing if no error', () => {
-    httpClient.get('api/foo').subscribe({ error: () => {} });
+    httpClient.get('api/foo').subscribe({
+      error: () => {
+        // ignore
+      }
+    });
 
     http.expectOne('api/foo').flush('test');
 
@@ -34,7 +38,11 @@ describe('ErrorInterceptorService', () => {
   });
 
   it('should signal functional errors', () => {
-    httpClient.get('api/foo').subscribe({ error: () => {} });
+    httpClient.get('api/foo').subscribe({
+      error: () => {
+        // ignore
+      }
+    });
 
     http.expectOne('api/foo').flush({ functionalError: 'FOO' }, { status: 400, statusText: 'Bad Request' });
 
@@ -42,7 +50,11 @@ describe('ErrorInterceptorService', () => {
   });
 
   it('should signal server errors', () => {
-    httpClient.get('api/foo').subscribe({ error: () => {} });
+    httpClient.get('api/foo').subscribe({
+      error: () => {
+        // ignore
+      }
+    });
 
     http.expectOne('api/foo').flush({ message: 'FOO' }, { status: 400, statusText: 'Bad Request' });
 
@@ -50,7 +62,11 @@ describe('ErrorInterceptorService', () => {
   });
 
   it('should signal client errors', () => {
-    httpClient.get('api/foo').subscribe({ error: () => {} });
+    httpClient.get('api/foo').subscribe({
+      error: () => {
+        // ignore
+      }
+    });
 
     http.expectOne('api/foo').error(new ErrorEvent('error'));
 

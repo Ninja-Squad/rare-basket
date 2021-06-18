@@ -150,7 +150,7 @@ export class StatisticsComponent implements OnInit {
         cutoutPercentage: 70,
         tooltips: {
           callbacks: {
-            label: (tooltipItem, chart) => {
+            label: tooltipItem => {
               const label = labels[tooltipItem.index];
               const stat = this.stats.customerTypeStatistics[tooltipItem.index];
               const count = formatNumber(stat.finalizedOrderCount, this.locale);
@@ -185,7 +185,7 @@ export class StatisticsComponent implements OnInit {
         cutoutPercentage: 70,
         tooltips: {
           callbacks: {
-            label: (tooltipItem, chart) => {
+            label: tooltipItem => {
               const label = labels[tooltipItem.index];
               const stat = this.stats.orderStatusStatistics[tooltipItem.index];
               const orderCount = formatNumber(stat.createdOrderCount, this.locale);

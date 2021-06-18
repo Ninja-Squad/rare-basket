@@ -6,7 +6,7 @@ import { faCheckCircle, faExclamationCircle } from '@fortawesome/free-solid-svg-
   selector: 'rb-toasts',
   templateUrl: './toasts.component.html',
   styleUrls: ['./toasts.component.scss'],
-  // tslint:disable-next-line:no-host-metadata-property
+  // eslint-disable-next-line @angular-eslint/no-host-metadata-property
   host: { '[class.ngb-toasts]': 'true' }
 })
 export class ToastsComponent implements OnInit {

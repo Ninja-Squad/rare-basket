@@ -26,14 +26,14 @@ describe('AuthenticationInterceptorService', () => {
     httpClient = TestBed.inject(HttpClient);
 
     const fakeInjector = jasmine.createSpyObj<Injector>('Injector', ['get']);
-    // tslint:disable-next-line:deprecation
+
     fakeInjector.get.and.returnValue(oidcSecurityService);
     const interceptor = TestBed.inject(AuthenticationInterceptorService);
     (interceptor as any).injector = fakeInjector;
   });
 
   it('should not do anything if not authenticated', () => {
-    httpClient.get('api/foo').subscribe(() => {});
+    httpClient.get('api/foo').subscribe();
 
     const testRequest = httpTestingController.expectOne('api/foo');
     expect(testRequest.request.headers.get('Authorization')).toBeNull();
@@ -41,7 +41,7 @@ describe('AuthenticationInterceptorService', () => {
 
   it('should not do anything if not to api', () => {
     oidcSecurityService.getToken.and.returnValue('token');
-    httpClient.get('http://foo.bar.comapi/foo').subscribe(() => {});
+    httpClient.get('http://foo.bar.comapi/foo').subscribe();
 
     const testRequest = httpTestingController.expectOne('http://foo.bar.comapi/foo');
     expect(testRequest.request.headers.get('Authorization')).toBeNull();
@@ -49,7 +49,7 @@ describe('AuthenticationInterceptorService', () => {
 
   it('should add token if authenticated and request to api', () => {
     oidcSecurityService.getToken.and.returnValue('token');
-    httpClient.get('api/foo').subscribe(() => {});
+    httpClient.get('api/foo').subscribe();
 
     const testRequest = httpTestingController.expectOne('api/foo');
     expect(testRequest.request.headers.get('Authorization')).toBe('Bearer token');

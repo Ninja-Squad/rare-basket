@@ -173,7 +173,7 @@ describe('OrderService', () => {
       const reader = new FileReader();
 
       // This fires after the blob has been read/loaded.
-      reader.addEventListener('loadend', e => {
+      reader.addEventListener('loadend', () => {
         resolve(reader.result as string);
       });
 

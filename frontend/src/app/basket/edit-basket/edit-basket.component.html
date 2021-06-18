@@ -47,7 +47,7 @@
         </div>
         <div class="form-group">
           <label for="rationale" translate="basket.edit-basket.rationale"></label>
-          <textarea formControlName="rationale" id="rationale" class="form-control" style="height: 8rem;"></textarea>
+          <textarea formControlName="rationale" id="rationale" class="form-control" style="height: 8rem"></textarea>
           <small class="text-muted form-text">
             <span translate="basket.edit-basket.rationale-hint"></span>
             <ul>
@@ -68,8 +68,8 @@
             <thead class="thead-light">
               <tr>
                 <th translate="basket.edit-basket.accession-heading"></th>
-                <th *ngIf="quantityDisplayed" translate="basket.edit-basket.quantity-heading" style="width: 25%;"></th>
-                <th style="width: 20%;"><span class="sr-only" translate="basket.edit-basket.actions-heading"></span></th>
+                <th *ngIf="quantityDisplayed" translate="basket.edit-basket.quantity-heading" style="width: 25%"></th>
+                <th style="width: 20%"><span class="sr-only" translate="basket.edit-basket.actions-heading"></span></th>
               </tr>
             </thead>
             <tbody>
@@ -113,7 +113,7 @@
             <input formControlName="gdprAgreement" type="checkbox" class="form-check-input" id="gdpr-agreement" />
             <label
               class="form-check-label"
-              style="margin-top: 2px;"
+              style="margin-top: 2px"
               for="gdpr-agreement"
               translate="basket.edit-basket.gdpr-agreement"
             ></label>

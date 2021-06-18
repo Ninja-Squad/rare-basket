@@ -28,7 +28,7 @@ let counter = 0;
  */
 @Directive({
   selector: '[rbRouterNavLink]',
-  // tslint:disable-next-line:no-host-metadata-property
+  // eslint-disable-next-line @angular-eslint/no-host-metadata-property
   host: {
     '[attr.role]': `'tab'`,
     '[attr.aria-selected]': 'selected',
@@ -58,7 +58,7 @@ export class RouterNavLinkDirective {
 
 @Directive({
   selector: '[rbRouterNavPanel]',
-  // tslint:disable-next-line:no-host-metadata-property
+  // eslint-disable-next-line @angular-eslint/no-host-metadata-property
   host: {
     '[attr.role]': `'tabpanel'`,
     '[attr.aria-labelledby]': 'nav.selectedId'
@@ -74,7 +74,7 @@ export class RouterNavPanelDirective {
 @Directive({
   selector: '[rbRouterNav]',
   exportAs: 'rbRouterNav',
-  // tslint:disable-next-line:no-host-metadata-property
+  // eslint-disable-next-line @angular-eslint/no-host-metadata-property
   host: {
     '[attr.role]': `'tablist'`,
     '[class.nav]': 'true'

@@ -7,8 +7,6 @@ import { Accession } from '../basket/basket.model';
   providedIn: 'root'
 })
 export class OrderCsvParserService {
-  constructor() {}
-
   parse(input: string): CsvResult {
     const parseResult = Papa.parse(input, {
       skipEmptyLines: true

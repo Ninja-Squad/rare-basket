@@ -18,11 +18,11 @@ describe('AuthenticationService', () => {
   let locationStrategy: jasmine.SpyObj<LocationStrategy>;
 
   beforeEach(() => {
-    fakeWindow = ({
+    fakeWindow = {
       origin: 'http://localhost:4201',
       location: 'http://localhost:4201/orders',
       sessionStorage: jasmine.createSpyObj<Storage>('SessionStorage', ['getItem', 'setItem', 'removeItem'])
-    } as unknown) as Window;
+    } as unknown as Window;
 
     oidcConfigService = jasmine.createSpyObj<OidcConfigService>('OidcConfigService', ['withConfig']);
 

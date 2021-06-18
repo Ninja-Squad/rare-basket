@@ -18,7 +18,9 @@ class FormComponent {
   personForm = new FormGroup({
     lastName: new FormControl('', Validators.required)
   });
-  submit() {}
+  submit() {
+    // do nothing
+  }
 }
 
 class FormComponentTester extends ComponentTester<FormComponent> {

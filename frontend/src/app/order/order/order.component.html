@@ -88,7 +88,7 @@
 
     <h2 translate="order.order.documents"></h2>
 
-    <div *ngIf="order.documents.length == 0" class="text-muted my-2" translate="order.order.no-document"></div>
+    <div *ngIf="order.documents.length === 0" class="text-muted my-2" translate="order.order.no-document"></div>
 
     <div *ngFor="let document of order.documents" class="my-2 document">
       <div class="d-flex">

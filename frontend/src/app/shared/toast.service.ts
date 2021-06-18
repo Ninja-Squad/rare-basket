@@ -15,11 +15,11 @@ export class ToastService {
 
   constructor(private translateService: TranslateService) {}
 
-  error(messageKey: string, interpolateParams?: object) {
+  error(messageKey: string, interpolateParams?: Record<string, unknown>) {
     this.signal(messageKey, 'error', interpolateParams);
   }
 
-  success(messageKey: string, interpolateParams?: object) {
+  success(messageKey: string, interpolateParams?: Record<string, unknown>) {
     this.signal(messageKey, 'success', interpolateParams);
   }
 
@@ -27,7 +27,7 @@ export class ToastService {
     return this.toastSubject.asObservable();
   }
 
-  private signal(messageKey: string, type: 'success' | 'error', interpolateParams?: object) {
+  private signal(messageKey: string, type: 'success' | 'error', interpolateParams?: Record<string, unknown>) {
     this.translateService.get(messageKey, interpolateParams).subscribe(message => this.toastSubject.next({ message, type }));
   }
 }
