@@ -7,7 +7,7 @@ import { Chart, ChartConfiguration } from 'chart.js';
   styleUrls: ['./chart.component.scss']
 })
 export class ChartComponent implements AfterViewInit, OnChanges, OnDestroy {
-  @Input() configuration: ChartConfiguration;
+  @Input() configuration: ChartConfiguration<any>;
   @ViewChild('canvas') canvas: ElementRef<HTMLCanvasElement>;
 
   private chart: Chart;

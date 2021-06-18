@@ -1,6 +1,6 @@
 import { ChartComponent } from './chart.component';
 import { Component } from '@angular/core';
-import { ChartConfiguration } from 'chart.js';
+import { ArcElement, Chart, ChartConfiguration, DoughnutController } from 'chart.js';
 import { TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 
@@ -8,8 +8,8 @@ import { By } from '@angular/platform-browser';
   template: '<rb-chart [configuration]="configuration"></rb-chart>'
 })
 class TestComponent {
-  configuration: ChartConfiguration = {
-    type: 'pie',
+  configuration: ChartConfiguration<'doughnut'> = {
+    type: 'doughnut',
     data: {
       datasets: [
         {
@@ -27,6 +27,8 @@ class TestComponent {
 
 describe('ChartComponent', () => {
   beforeEach(() => {
+    Chart.register(DoughnutController, ArcElement);
+
     TestBed.configureTestingModule({
       declarations: [ChartComponent, TestComponent]
     });
@@ -50,7 +52,7 @@ describe('ChartComponent', () => {
     const firstImage = canvas.toDataURL();
     const chartComponent: ChartComponent = fixture.debugElement.query(By.directive(ChartComponent)).componentInstance;
 
-    const newConfiguration: ChartConfiguration = {
+    const newConfiguration: ChartConfiguration<'doughnut'> = {
       type: 'doughnut',
       data: {
         datasets: [

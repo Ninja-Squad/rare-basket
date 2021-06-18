@@ -1,7 +1,7 @@
 import { Component, Inject, LOCALE_ID, OnInit } from '@angular/core';
 import { OrderService } from '../order.service';
 import { CustomerTypeStatistics, OrderStatistics, OrderStatusStatistics } from '../order.model';
-import { ChartConfiguration } from 'chart.js';
+import { ArcElement, Chart, ChartConfiguration, DoughnutController, Legend, Tooltip } from 'chart.js';
 import { COLORS } from '../../chart/colors';
 import { TranslateService } from '@ngx-translate/core';
 import { formatDate, formatNumber, formatPercent } from '@angular/common';
@@ -35,8 +35,8 @@ export class StatisticsComponent implements OnInit {
   form: FormGroup;
 
   stats: OrderStatistics;
-  customerTypeDoughnut: ChartConfiguration;
-  orderStatusDoughnut: ChartConfiguration;
+  customerTypeDoughnut: ChartConfiguration<'doughnut'>;
+  orderStatusDoughnut: ChartConfiguration<'doughnut'>;
   colors = COLORS;
   user: User;
   perimeterEdited = false;
@@ -131,6 +131,8 @@ export class StatisticsComponent implements OnInit {
   }
 
   private createCustomerTypeDoughnutChart() {
+    Chart.register(DoughnutController, ArcElement, Tooltip, Legend);
+
     const shortLabels: Array<string> = [];
     const labels: Array<string> = [];
     const data: Array<number> = [];
@@ -147,20 +149,22 @@ export class StatisticsComponent implements OnInit {
       type: 'doughnut',
       data: { labels: shortLabels, datasets: [{ data, backgroundColor }] },
       options: {
-        cutoutPercentage: 70,
-        tooltips: {
-          callbacks: {
-            label: tooltipItem => {
-              const label = labels[tooltipItem.index];
-              const stat = this.stats.customerTypeStatistics[tooltipItem.index];
-              const count = formatNumber(stat.finalizedOrderCount, this.locale);
-              const percentage = formatPercent(this.finalizedOrderCountRatio(stat), this.locale, '.0-0');
-              return `${label}: ${count} (${percentage})`;
+        cutout: '70%',
+        plugins: {
+          tooltip: {
+            callbacks: {
+              label: tooltipItem => {
+                const label = tooltipItem.label;
+                const stat = this.stats.customerTypeStatistics[tooltipItem.dataIndex];
+                const count = formatNumber(stat.finalizedOrderCount, this.locale);
+                const percentage = formatPercent(this.finalizedOrderCountRatio(stat), this.locale, '.0-0');
+                return `${label}: ${count} (${percentage})`;
+              }
             }
+          },
+          legend: {
+            display: false
           }
-        },
-        legend: {
-          display: false
         },
         aspectRatio: 2
       }
@@ -168,6 +172,8 @@ export class StatisticsComponent implements OnInit {
   }
 
   private createOrderStatusDoughnutChart() {
+    Chart.register(DoughnutController, ArcElement, Tooltip, Legend);
+
     const labels: Array<string> = [];
     const data: Array<number> = [];
     const backgroundColor: Array<string> = [];
@@ -182,20 +188,22 @@ export class StatisticsComponent implements OnInit {
       type: 'doughnut',
       data: { labels, datasets: [{ data, backgroundColor }] },
       options: {
-        cutoutPercentage: 70,
-        tooltips: {
-          callbacks: {
-            label: tooltipItem => {
-              const label = labels[tooltipItem.index];
-              const stat = this.stats.orderStatusStatistics[tooltipItem.index];
-              const orderCount = formatNumber(stat.createdOrderCount, this.locale);
-              const percentage = formatPercent(this.createdOrderCountRatio(stat), this.locale, '.0-0');
-              return `${label}: ${orderCount} (${percentage})`;
+        cutout: '70%',
+        plugins: {
+          tooltip: {
+            callbacks: {
+              label: tooltipItem => {
+                const label = tooltipItem.label;
+                const stat = this.stats.orderStatusStatistics[tooltipItem.dataIndex];
+                const orderCount = formatNumber(stat.createdOrderCount, this.locale);
+                const percentage = formatPercent(this.createdOrderCountRatio(stat), this.locale, '.0-0');
+                return `${label}: ${orderCount} (${percentage})`;
+              }
             }
+          },
+          legend: {
+            display: false
           }
-        },
-        legend: {
-          display: false
         },
         aspectRatio: 2
       }
