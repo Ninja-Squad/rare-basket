@@ -24,13 +24,6 @@ java {
 
 repositories {
     mavenCentral()
-
-    // TODO remove this once spring-boot depends on version 5.5.1 or later
-    //   it's necessary because version 5.5.0 has the issue https://github.com/spring-projects/spring-security/issues/9794
-    //   which breaks the keycloak adapter
-    maven {
-        url = uri("https://repo.spring.io/snapshot")
-    }
 }
 
 tasks {
@@ -82,7 +75,7 @@ tasks {
 // TODO remove this once spring-boot depends on version 5.5.1 or later
 //   it's necessary because version 5.5.0 has the issue https://github.com/spring-projects/spring-security/issues/9794
 //   which breaks the keycloak adapter
-extra["spring-security.version"] = "5.5.1-SNAPSHOT"
+extra["spring-security.version"] = "5.5.1"
 
 dependencyManagement {
     imports {
