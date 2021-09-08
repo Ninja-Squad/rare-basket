@@ -6,8 +6,7 @@ stages:
  - deploy-staging
  - deploy-production
 
-image: circleci/openjdk:11-browsers
-# image: $CI_REGISTRY_IMAGE:latest
+image: $CI_REGISTRY_IMAGE:latest
 
 # Disable the Gradle daemon for Continuous Integration servers as correctness
 # is usually a priority over speed in CI environments. Using a fresh
@@ -25,10 +24,6 @@ test:
  tags:
   - openstack
  script:
-  # I know this looks weird, but apt-get update is consistently failing the first time...
-  # running it twice fixes the issue
-  - sudo apt-get update || sudo apt-get update
-  - sudo apt-get install -y postgresql-client
   # create the test db before running the tests
   - psql -h postgres -U postgres -f backend/database/setup/setup.sql
   - ./gradlew check build --no-daemon --parallel
@@ -56,7 +51,6 @@ build-docker:
     - mkdir -p /kaniko/.docker
     - echo "{\"auths\":{\"$CI_REGISTRY\":{\"auth\":\"$(echo -n ${CI_REGISTRY_USER}:${CI_REGISTRY_PASSWORD} | base64)\"}}}" > /kaniko/.docker/config.json
     - if [ "${CI_COMMIT_REF_SLUG}" == "master" ] ; then TAG=latest ; else TAG=${CI_COMMIT_REF_SLUG} ; fi; # build and push tag based on branch name
-    - TAG=latest
     - /kaniko/executor --cache --cache-copy-layers --context $CI_PROJECT_DIR --destination ${CI_REGISTRY_IMAGE}:${TAG}
   allow_failure: true
   only:
