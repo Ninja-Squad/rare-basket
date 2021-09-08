@@ -7,6 +7,7 @@ stages:
  - deploy-production
 
 image: circleci/openjdk:11-browsers
+# image: $CI_REGISTRY_IMAGE:latest
 
 # Disable the Gradle daemon for Continuous Integration servers as correctness
 # is usually a priority over speed in CI environments. Using a fresh
@@ -43,6 +44,24 @@ test:
    - frontend/.gradle/
    - frontend/node_modules/
  allow_failure: false
+
+build-docker:
+  stage: test
+  tags:
+    - openstack
+  image: docker:20.10.8
+  services:
+    - docker:20.10.8-dind
+  script:
+    - if [ "${CI_COMMIT_REF_SLUG}" == "master" ] ; then TAG=latest ; else TAG=$CI_COMMIT_REF_SLUG ; fi ;
+    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+    - docker build -t $CI_REGISTRY_IMAGE:$TAG .
+    - docker push $CI_REGISTRY_IMAGE:$TAG
+  allow_failure: true
+  only:
+    changes:
+    - .gitlab-ci.yml
+    - DockerFile
 
 .deploy-to-vm: &deploy-to-vm
  tags:
@@ -118,7 +137,6 @@ deploy-to-staging:
    - master
  when: manual
 
-# ALPHA
 deploy-to-prod:
  stage: deploy-production
  tags:
