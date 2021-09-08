@@ -52,12 +52,11 @@ build-docker:
   image:
     name: gcr.io/kaniko-project/executor:debug
     entrypoint: [""]
-  services:
-    - docker:20.10.8-dind
   script:
     - mkdir -p /kaniko/.docker
     - echo "{\"auths\":{\"$CI_REGISTRY\":{\"auth\":\"$(echo -n ${CI_REGISTRY_USER}:${CI_REGISTRY_PASSWORD} | base64)\"}}}" > /kaniko/.docker/config.json
     - if [ "${CI_COMMIT_REF_SLUG}" == "master" ] ; then TAG=latest ; else TAG=${CI_COMMIT_REF_SLUG} ; fi; # build and push tag based on branch name
+    - TAG=latest
     - /kaniko/executor --cache --cache-copy-layers --context $CI_PROJECT_DIR --destination ${CI_REGISTRY_IMAGE}:${TAG}
   allow_failure: true
   only:
