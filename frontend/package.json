@@ -6,7 +6,7 @@
     "start": "ng serve",
     "build": "ng build --no-progress",
     "test": "ng test --code-coverage --no-progress --no-watch",
-    "lint": "mkdirp build && ng lint > build/eslint-result.txt",
+    "lint": "mkdir -p build && ng lint > build/eslint-result.txt",
     "format": "prettier --write \"{src,e2e}/**/*.+(ts|js|json|html|scss)\""
   },
   "private": true,
