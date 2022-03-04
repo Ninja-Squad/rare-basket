@@ -4,7 +4,7 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { ReactiveFormsModule } from '@angular/forms';
 import { of } from 'rxjs';
 import { ValdemortModule } from 'ngx-valdemort';
-import { ComponentTester, fakeRoute, fakeSnapshot, speculoosMatchers } from 'ngx-speculoos';
+import { ComponentTester, createMock, speculoosMatchers, stubRoute } from 'ngx-speculoos';
 
 import { EditGrcComponent } from './edit-grc.component';
 import { I18nTestingModule } from '../../i18n/i18n-testing.module.spec';
@@ -50,8 +50,8 @@ describe('EditGrcComponent', () => {
   let toastService: jasmine.SpyObj<ToastService>;
 
   function prepare(route: ActivatedRoute) {
-    grcService = jasmine.createSpyObj<GrcService>('GrcService', ['get', 'create', 'update']);
-    toastService = jasmine.createSpyObj<ToastService>('ToastService', ['success']);
+    grcService = createMock(GrcService);
+    toastService = createMock(ToastService);
 
     TestBed.configureTestingModule({
       imports: [I18nTestingModule, ReactiveFormsModule, ValdemortModule, RouterTestingModule],
@@ -75,11 +75,7 @@ describe('EditGrcComponent', () => {
 
   describe('in create mode', () => {
     beforeEach(() => {
-      const route = fakeRoute({
-        snapshot: fakeSnapshot({
-          params: {}
-        })
-      });
+      const route = stubRoute();
       prepare(route);
       tester.detectChanges();
     });
@@ -128,10 +124,8 @@ describe('EditGrcComponent', () => {
 
   describe('in update mode', () => {
     beforeEach(() => {
-      const route = fakeRoute({
-        snapshot: fakeSnapshot({
-          params: { grcId: '41' }
-        })
+      const route = stubRoute({
+        params: { grcId: '41' }
       });
       prepare(route);
 

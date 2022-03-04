@@ -1,9 +1,8 @@
 import { TestBed } from '@angular/core/testing';
 
 import { BasketComponent } from './basket.component';
-import { ComponentTester, fakeRoute, fakeSnapshot, speculoosMatchers } from 'ngx-speculoos';
+import { ComponentTester, createMock, speculoosMatchers, stubRoute } from 'ngx-speculoos';
 import { EditBasketComponent } from '../edit-basket/edit-basket.component';
-import { By } from '@angular/platform-browser';
 import { ActivatedRoute } from '@angular/router';
 import { Basket, BasketCommand } from '../basket.model';
 import { BasketService } from '../basket.service';
@@ -28,15 +27,15 @@ class BasketComponentTester extends ComponentTester<BasketComponent> {
   }
 
   get editBasketComponent(): EditBasketComponent {
-    return this.debugElement.query(By.directive(EditBasketComponent))?.componentInstance ?? null;
+    return this.component(EditBasketComponent);
   }
 
   get editConfirmationComponent(): EditConfirmationComponent {
-    return this.debugElement.query(By.directive(EditConfirmationComponent))?.componentInstance ?? null;
+    return this.component(EditConfirmationComponent);
   }
 
   get confirmedComponent(): ConfirmedComponent {
-    return this.debugElement.query(By.directive(ConfirmedComponent))?.componentInstance ?? null;
+    return this.component(ConfirmedComponent);
   }
 }
 
@@ -45,15 +44,13 @@ describe('BasketComponent', () => {
   let basketService: jasmine.SpyObj<BasketService>;
 
   beforeEach(() => {
-    const route = fakeRoute({
-      snapshot: fakeSnapshot({
-        params: {
-          reference: 'ABCDEFGH'
-        }
-      })
+    const route = stubRoute({
+      params: {
+        reference: 'ABCDEFGH'
+      }
     });
 
-    basketService = jasmine.createSpyObj<BasketService>('BasketService', ['get', 'save', 'confirm']);
+    basketService = createMock(BasketService);
 
     TestBed.configureTestingModule({
       declarations: [BasketComponent, EditBasketComponent, EditConfirmationComponent, ConfirmedComponent, BasketContentComponent],

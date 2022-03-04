@@ -3,8 +3,7 @@ import { fakeAsync, TestBed, tick } from '@angular/core/testing';
 import { PaginationComponent } from './pagination.component';
 import { NgbPagination, NgbPaginationModule } from '@ng-bootstrap/ng-bootstrap';
 import { Component } from '@angular/core';
-import { ComponentTester, fakeRoute, speculoosMatchers } from 'ngx-speculoos';
-import { By } from '@angular/platform-browser';
+import { ActivatedRouteStub, ComponentTester, speculoosMatchers, stubRoute } from 'ngx-speculoos';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Page } from '../../shared/page.model';
 
@@ -28,8 +27,7 @@ class TestComponentTester extends ComponentTester<TestComponent> {
   }
 
   get ngbPagination(): NgbPagination {
-    const debugElement = this.debugElement.query(By.directive(NgbPagination));
-    return debugElement ? debugElement.componentInstance : null;
+    return this.component(NgbPagination);
   }
 
   get firstPageLink() {
@@ -82,11 +80,11 @@ describe('PaginationComponent', () => {
   });
 
   describe('with routing', () => {
-    let route: ActivatedRoute;
+    let route: ActivatedRouteStub;
     let router: jasmine.SpyObj<Router>;
 
     beforeEach(() => {
-      route = fakeRoute({});
+      route = stubRoute();
       router = jasmine.createSpyObj('router', ['navigate']);
 
       TestBed.configureTestingModule({

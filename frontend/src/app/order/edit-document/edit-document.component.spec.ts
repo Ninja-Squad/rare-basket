@@ -33,7 +33,7 @@ class TestComponentTester extends ComponentTester<TestComponent> {
   }
 
   get editDocumentComponent(): EditDocumentComponent {
-    return this.debugElement.query(By.directive(EditDocumentComponent)).componentInstance;
+    return this.component(EditDocumentComponent);
   }
 
   get type() {

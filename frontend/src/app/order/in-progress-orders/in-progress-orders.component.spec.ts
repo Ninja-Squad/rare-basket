@@ -1,11 +1,10 @@
 import { TestBed } from '@angular/core/testing';
 
 import { InProgressOrdersComponent } from './in-progress-orders.component';
-import { ComponentTester, fakeRoute, speculoosMatchers } from 'ngx-speculoos';
+import { ActivatedRouteStub, ComponentTester, createMock, speculoosMatchers, stubRoute } from 'ngx-speculoos';
 import { OrdersComponent } from '../orders/orders.component';
-import { By } from '@angular/platform-browser';
 import { ActivatedRoute } from '@angular/router';
-import { BehaviorSubject, EMPTY, of } from 'rxjs';
+import { EMPTY, of } from 'rxjs';
 import { OrderService } from '../order.service';
 import { Order } from '../order.model';
 import { Page } from '../../shared/page.model';
@@ -20,7 +19,7 @@ class InProgressOrdersComponentTester extends ComponentTester<InProgressOrdersCo
   }
 
   get ordersComponent(): OrdersComponent | null {
-    return this.debugElement.query(By.directive(OrdersComponent))?.componentInstance ?? null;
+    return this.component(OrdersComponent);
   }
 
   get noOrderMessage() {
@@ -30,15 +29,12 @@ class InProgressOrdersComponentTester extends ComponentTester<InProgressOrdersCo
 
 describe('InProgressOrdersComponent', () => {
   let tester: InProgressOrdersComponentTester;
-  let queryParamsSubject: BehaviorSubject<{ [key: string]: string }>;
+  let route: ActivatedRouteStub;
   let orderService: jasmine.SpyObj<OrderService>;
 
   beforeEach(() => {
-    queryParamsSubject = new BehaviorSubject<{ [key: string]: string }>({});
-    const route = fakeRoute({
-      queryParams: queryParamsSubject
-    });
-    orderService = jasmine.createSpyObj<OrderService>('OrderService', ['listInProgress']);
+    route = stubRoute();
+    orderService = createMock(OrderService);
 
     TestBed.configureTestingModule({
       declarations: [InProgressOrdersComponent, OrdersComponent],
@@ -81,14 +77,14 @@ describe('InProgressOrdersComponent', () => {
 
     orderService.listInProgress.and.returnValues(of(page1), of(page0));
 
-    queryParamsSubject.next({ page: '1' });
+    route.setQueryParam('page', '1');
     tester.detectChanges();
 
     expect(tester.noOrderMessage).toBeNull();
     expect(tester.ordersComponent).not.toBeNull();
     expect(tester.ordersComponent.orders).toBe(page1);
 
-    queryParamsSubject.next({ page: '0' });
+    route.setQueryParam('page', '0');
     tester.detectChanges();
     expect(tester.ordersComponent.orders).toBe(page0);
   });
@@ -104,7 +100,7 @@ describe('InProgressOrdersComponent', () => {
 
     orderService.listInProgress.and.returnValue(of(page0));
 
-    queryParamsSubject.next({ page: '0' });
+    route.setQueryParam('page', '0');
     tester.detectChanges();
 
     expect(tester.noOrderMessage).not.toBeNull();

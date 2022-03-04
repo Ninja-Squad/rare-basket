@@ -1,7 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 
 import { EditUserComponent } from './edit-user.component';
-import { ComponentTester, fakeRoute, fakeSnapshot, speculoosMatchers, TestInput } from 'ngx-speculoos';
+import { ComponentTester, createMock, speculoosMatchers, stubRoute, TestInput } from 'ngx-speculoos';
 import { AccessionHolder, Grc, User, UserCommand } from '../../shared/user.model';
 import { I18nTestingModule } from '../../i18n/i18n-testing.module.spec';
 import { ReactiveFormsModule } from '@angular/forms';
@@ -86,10 +86,10 @@ describe('EditUserComponent', () => {
   let toastService: jasmine.SpyObj<ToastService>;
 
   function prepare(route: ActivatedRoute) {
-    userService = jasmine.createSpyObj<UserService>('UserService', ['get', 'create', 'update']);
-    accessionHolderService = jasmine.createSpyObj<AccessionHolderService>('AccessionHolderService', ['list']);
-    grcService = jasmine.createSpyObj<GrcService>('GrcService', ['list']);
-    toastService = jasmine.createSpyObj<ToastService>('ToastService', ['success']);
+    userService = createMock(UserService);
+    accessionHolderService = createMock(AccessionHolderService);
+    grcService = createMock(GrcService);
+    toastService = createMock(ToastService);
 
     TestBed.configureTestingModule({
       imports: [I18nTestingModule, ReactiveFormsModule, ValdemortModule, RouterTestingModule],
@@ -157,11 +157,7 @@ describe('EditUserComponent', () => {
 
   describe('in create mode', () => {
     beforeEach(() => {
-      const route = fakeRoute({
-        snapshot: fakeSnapshot({
-          params: {}
-        })
-      });
+      const route = stubRoute();
       prepare(route);
       tester.detectChanges();
     });
@@ -269,10 +265,8 @@ describe('EditUserComponent', () => {
 
   describe('in update mode', () => {
     beforeEach(() => {
-      const route = fakeRoute({
-        snapshot: fakeSnapshot({
-          params: { userId: '42' }
-        })
+      const route = stubRoute({
+        params: { userId: '42' }
       });
       prepare(route);
 

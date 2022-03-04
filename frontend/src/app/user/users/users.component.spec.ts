@@ -1,8 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 
 import { UsersComponent } from './users.component';
-import { ComponentTester, fakeRoute, speculoosMatchers, TestButton } from 'ngx-speculoos';
-import { By } from '@angular/platform-browser';
+import { ComponentTester, createMock, speculoosMatchers, stubRoute, TestButton } from 'ngx-speculoos';
 import { PaginationComponent } from '../../rb-ngb/pagination/pagination.component';
 import { I18nTestingModule } from '../../i18n/i18n-testing.module.spec';
 import { RouterTestingModule } from '@angular/router/testing';
@@ -26,7 +25,7 @@ class UsersComponentTester extends ComponentTester<UsersComponent> {
   }
 
   get paginationComponent(): PaginationComponent | null {
-    return this.debugElement.query(By.directive(PaginationComponent))?.componentInstance ?? null;
+    return this.component(PaginationComponent);
   }
 
   get createLink() {
@@ -45,13 +44,13 @@ describe('UsersComponent', () => {
   let toastService: jasmine.SpyObj<ToastService>;
 
   beforeEach(() => {
-    const route = fakeRoute({
-      queryParams: of({ page: '1' })
+    const route = stubRoute({
+      queryParams: { page: '1' }
     });
 
-    userService = jasmine.createSpyObj<UserService>('UserService', ['list', 'delete']);
-    confirmationService = jasmine.createSpyObj<ConfirmationService>('ConfirmationService', ['confirm']);
-    toastService = jasmine.createSpyObj<ToastService>('ToastService', ['success']);
+    userService = createMock(UserService);
+    confirmationService = createMock(ConfirmationService);
+    toastService = createMock(ToastService);
 
     TestBed.configureTestingModule({
       imports: [I18nTestingModule, FontAwesomeModule, RbNgbTestingModule, RouterTestingModule],

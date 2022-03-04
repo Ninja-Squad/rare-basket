@@ -4,6 +4,7 @@ import { ErrorInterceptorService } from './error-interceptor.service';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { HTTP_INTERCEPTORS, HttpClient } from '@angular/common/http';
 import { ToastService } from './toast.service';
+import { createMock } from 'ngx-speculoos';
 
 describe('ErrorInterceptorService', () => {
   let http: HttpTestingController;
@@ -11,7 +12,7 @@ describe('ErrorInterceptorService', () => {
   let toastService: jasmine.SpyObj<ToastService>;
 
   beforeEach(() => {
-    toastService = jasmine.createSpyObj<ToastService>('ToastService', ['error']);
+    toastService = createMock(ToastService);
 
     TestBed.configureTestingModule({
       imports: [HttpClientTestingModule],

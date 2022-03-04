@@ -4,6 +4,7 @@ import { AuthenticationGuard } from './authentication.guard';
 import { AuthenticationService } from './authentication.service';
 import { of } from 'rxjs';
 import { RouterStateSnapshot } from '@angular/router';
+import { createMock } from 'ngx-speculoos';
 
 describe('AuthenticationGuard', () => {
   let guard: AuthenticationGuard;
@@ -11,7 +12,7 @@ describe('AuthenticationGuard', () => {
   let state: RouterStateSnapshot;
 
   beforeEach(() => {
-    authenticationService = jasmine.createSpyObj<AuthenticationService>('AuthenticationService', ['isAuthenticated', 'login']);
+    authenticationService = createMock(AuthenticationService);
 
     TestBed.configureTestingModule({
       providers: [{ provide: AuthenticationService, useValue: authenticationService }]

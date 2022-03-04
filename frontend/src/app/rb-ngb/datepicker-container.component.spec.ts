@@ -1,11 +1,11 @@
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { TestBed } from '@angular/core/testing';
 import { Component } from '@angular/core';
-import { By } from '@angular/platform-browser';
 import { NgbDatepicker } from '@ng-bootstrap/ng-bootstrap';
 import { ComponentTester, speculoosMatchers } from 'ngx-speculoos';
 import { I18nTestingModule } from '../i18n/i18n-testing.module.spec';
 import { RbNgbTestingModule } from './rb-ngb-testing.module';
+import { DatepickerContainerComponent } from './datepicker-container.component';
 
 @Component({
   template: `
@@ -32,11 +32,11 @@ class TestComponentTester extends ComponentTester<TestComponent> {
   }
 
   get datepicker() {
-    return this.debugElement.query(By.directive(NgbDatepicker)) ?? null;
+    return this.element(NgbDatepicker);
   }
 
   get container() {
-    return this.element('rb-datepicker-container');
+    return this.element(DatepickerContainerComponent);
   }
 }
 
