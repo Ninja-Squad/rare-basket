@@ -253,7 +253,6 @@
       "description": "Description",
       "description-error-label": "La description",
       "file": "Fichier",
-      "file-placeholder": "Choisissez ou déposez un fichier",
       "file-error-label": "Le fichier",
       "invalid-file": "Le fichier doit avoir l'une des extensions suivantes\u00a0: {{ acceptedExtensions }}",
       "invalid-file-size": "Le fichier est trop volumineux. Il ne doit pas dépasser {{ max }}\u00a0MB",

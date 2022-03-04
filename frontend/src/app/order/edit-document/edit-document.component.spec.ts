@@ -67,10 +67,6 @@ class TestComponentTester extends ComponentTester<TestComponent> {
   get progressBar(): NgbProgressbar | null {
     return this.debugElement.query(By.directive(NgbProgressbar))?.componentInstance ?? null;
   }
-
-  get customFileInput() {
-    return this.element('.custom-file');
-  }
 }
 
 describe('EditDocumentComponent', () => {
@@ -195,31 +191,18 @@ describe('EditDocumentComponent', () => {
     expect(tester.componentInstance.cancelled).toBe(true);
   });
 
-  it('should display label based on selected file', () => {
-    expect(tester.customFileInput).toContainText('Choisissez ou déposez un fichier');
-
-    const selectedFile = { name: 'foo.txt' } as File;
-    spyOnProperty(tester.editDocumentComponent, 'selectedFile', 'get').and.returnValue(selectedFile);
-
-    tester.detectChanges();
-
-    expect(tester.customFileInput).toContainText('foo.txt');
-  });
-
   it('should drag and drop file on input', () => {
-    const fileLabel = tester.customFileInput.element('label');
+    tester.file.dispatchEvent(new DragEvent('dragenter'));
+    expect(tester.file).toHaveClass('highlighted');
 
-    tester.customFileInput.dispatchEvent(new DragEvent('dragenter'));
-    expect(fileLabel).toHaveClass('highlighted');
+    tester.file.dispatchEvent(new DragEvent('dragexit'));
+    expect(tester.file).not.toHaveClass('highlighted');
 
-    tester.customFileInput.dispatchEvent(new DragEvent('dragexit'));
-    expect(fileLabel).not.toHaveClass('highlighted');
+    tester.file.dispatchEvent(new DragEvent('dragenter'));
+    expect(tester.file).toHaveClass('highlighted');
 
-    tester.customFileInput.dispatchEvent(new DragEvent('dragenter'));
-    expect(fileLabel).toHaveClass('highlighted');
-
-    tester.customFileInput.dispatchEvent(new DragEvent('dragleave'));
-    expect(fileLabel).not.toHaveClass('highlighted');
+    tester.file.dispatchEvent(new DragEvent('dragleave'));
+    expect(tester.file).not.toHaveClass('highlighted');
 
     // quite hard to test drop event
   });

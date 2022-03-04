@@ -1,17 +1,19 @@
 <div *ngIf="form">
   <form [formGroup]="form" (ngSubmit)="refresh()">
-    <div class="form-inline">
-      <label class="mb-2 mr-sm-2" for="from" translate="order.statistics.from"></label>
-      <rb-datepicker-container class="mb-2 mr-sm-4">
-        <input id="from" class="form-control datepicker" formControlName="from" ngbDatepicker />
-      </rb-datepicker-container>
+    <div class="mb-3">
+      <div class="row row-cols-sm-auto gy-0 gx-2 align-items-center">
+        <label class="col-12 col-form-label" for="from" translate="order.statistics.from"></label>
+        <rb-datepicker-container class="col-12 me-sm-2 w-auto">
+          <input id="from" class="form-control datepicker" formControlName="from" ngbDatepicker />
+        </rb-datepicker-container>
 
-      <label class="mb-2 mr-sm-2" for="to" translate="order.statistics.to"></label>
-      <rb-datepicker-container class="mb-2 mr-sm-2">
-        <input id="to" class="form-control datepicker" formControlName="to" ngbDatepicker />
-      </rb-datepicker-container>
+        <label class="col-12 col-form-label" for="to" translate="order.statistics.to"></label>
+        <rb-datepicker-container class="col-12 w-auto">
+          <input id="to" class="form-control datepicker" formControlName="to" ngbDatepicker />
+        </rb-datepicker-container>
+      </div>
+      <val-errors [control]="form" [label]="'order.statistics.date-range-error-label' | translate"></val-errors>
     </div>
-    <val-errors [control]="form" [label]="'order.statistics.date-range-error-label' | translate"></val-errors>
 
     <div *ngIf="!perimeterEdited" class="mb-2">
       <span *ngIf="form.value.global" translate="order.statistics.global-perimeter" id="perimeter"></span>
@@ -25,7 +27,7 @@
         href="#"
         role="button"
         *ngIf="perimeterModifiable"
-        class="small ml-2"
+        class="small ms-2"
         translate="order.statistics.edit-perimeter"
         (click)="perimeterEdited = true; $event.preventDefault()"
         id="edit-perimeter"
@@ -65,7 +67,7 @@
 
   <div *ngIf="stats">
     <h2 translate="order.statistics.key-numbers"></h2>
-    <div class="form-row align-items-stretch" id="numbers">
+    <div class="row g-2 align-items-stretch" id="numbers">
       <div class="mb-2 col-md-4 col-lg d-flex">
         <div class="border rounded bg-light text-center p-2 flex-grow-1">
           <div class="key-number" [class.refreshed]="refreshed">{{ stats.createdOrderCount | number }}</div>
@@ -124,7 +126,7 @@
       </div>
       <div class="col-md">
         <table class="table table-sm">
-          <thead class="thead-light">
+          <thead class="table-light">
             <tr>
               <th translate="order.statistics.customer-type"></th>
               <th translate="order.statistics.order-count"></th>
@@ -158,7 +160,7 @@
       </div>
       <div class="col-md">
         <table class="table table-sm">
-          <thead class="thead-light">
+          <thead class="table-light">
             <tr>
               <th translate="order.statistics.order-status"></th>
               <th translate="order.statistics.order-count"></th>

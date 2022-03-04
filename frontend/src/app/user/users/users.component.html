@@ -4,8 +4,8 @@
   <div class="content mt-2">
     <div *ngFor="let user of users.content">
       <div class="d-flex">
-        <div><fa-icon [icon]="userIcon" class="mr-2"></fa-icon></div>
-        <div class="flex-grow-1 row user mr-2">
+        <div><fa-icon [icon]="userIcon" class="me-2"></fa-icon></div>
+        <div class="flex-grow-1 row user me-2">
           <div class="col-md-3">
             <a [routerLink]="['/users', user.id, 'edit']">{{ user.name }}</a>
           </div>
@@ -13,10 +13,10 @@
             {{ permissions(user) }}
           </div>
         </div>
-        <div class="text-right">
+        <div class="text-end">
           <button (click)="deleteUser(user)" type="button" class="btn btn-outline-danger btn-sm delete-user-button">
             <fa-icon [icon]="deleteUserIcon"></fa-icon>
-            <span class="sr-only" translate="user.users.delete"></span>
+            <span class="visually-hidden" translate="user.users.delete"></span>
           </button>
         </div>
       </div>
@@ -26,9 +26,9 @@
     <rb-pagination class="d-flex justify-content-center mt-4" [page]="users" [navigate]="true"></rb-pagination>
   </div>
 
-  <div class="text-right mt-2">
+  <div class="text-end mt-2">
     <a class="btn btn-outline-secondary" id="create-user" routerLink="/users/new">
-      <fa-icon [icon]="createUserIcon" class="mr-1"></fa-icon>
+      <fa-icon [icon]="createUserIcon" class="me-1"></fa-icon>
       <span translate="user.users.create"></span>
     </a>
   </div>

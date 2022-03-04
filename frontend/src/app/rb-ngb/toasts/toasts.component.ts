@@ -5,9 +5,7 @@ import { faCheckCircle, faExclamationCircle } from '@fortawesome/free-solid-svg-
 @Component({
   selector: 'rb-toasts',
   templateUrl: './toasts.component.html',
-  styleUrls: ['./toasts.component.scss'],
-  // eslint-disable-next-line @angular-eslint/no-host-metadata-property
-  host: { '[class.ngb-toasts]': 'true' }
+  styleUrls: ['./toasts.component.scss']
 })
 export class ToastsComponent implements OnInit {
   toasts: Array<Toast> = [];

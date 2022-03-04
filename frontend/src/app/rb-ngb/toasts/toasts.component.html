@@ -1,8 +1,10 @@
-<ngb-toast *ngFor="let toast of toasts" [class]="toast.type" [autohide]="true" [delay]="5000" (hidden)="remove(toast)">
-  <div class="d-flex">
-    <div class="mr-2">
-      <fa-icon [icon]="icon(toast)"></fa-icon>
+<div class="toast-container position-absolute p-3 top-0 end-0">
+  <ngb-toast *ngFor="let toast of toasts" [class]="toast.type" [autohide]="true" [delay]="5000" (hidden)="remove(toast)">
+    <div class="d-flex">
+      <div class="me-2">
+        <fa-icon [icon]="icon(toast)"></fa-icon>
+      </div>
+      <div class="flex-grow-1">{{ toast.message }}</div>
     </div>
-    <div class="flex-grow-1">{{ toast.message }}</div>
-  </div>
-</ngb-toast>
+  </ngb-toast>
+</div>

@@ -1,6 +1,9 @@
 // make the placeholders lighter
 $input-placeholder-color: #dcdedf;
 
+$link-decoration: none;
+$form-label-margin-bottom: 0.25rem;
+
 $custom-file-text: (
   en: 'Browse',
   fr: 'Parcourir'
@@ -9,3 +12,4 @@ $custom-file-text: (
 @import '~bootstrap/scss/functions';
 @import '~bootstrap/scss/variables';
 @import '~bootstrap/scss/mixins';
+@import '~bootstrap/scss/utilities';
