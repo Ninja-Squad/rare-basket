@@ -1,10 +1,9 @@
 import { TestBed } from '@angular/core/testing';
 
-import { ComponentTester, fakeRoute, speculoosMatchers } from 'ngx-speculoos';
+import { ActivatedRouteStub, ComponentTester, createMock, speculoosMatchers, stubRoute } from 'ngx-speculoos';
 import { OrdersComponent } from '../orders/orders.component';
-import { By } from '@angular/platform-browser';
 import { ActivatedRoute } from '@angular/router';
-import { BehaviorSubject, EMPTY, of } from 'rxjs';
+import { EMPTY, of } from 'rxjs';
 import { OrderService } from '../order.service';
 import { Order } from '../order.model';
 import { Page } from '../../shared/page.model';
@@ -19,21 +18,18 @@ class DoneOrdersComponentTester extends ComponentTester<DoneOrdersComponent> {
   }
 
   get ordersComponent(): OrdersComponent | null {
-    return this.debugElement.query(By.directive(OrdersComponent))?.componentInstance ?? null;
+    return this.component(OrdersComponent);
   }
 }
 
 describe('DoneOrdersComponent', () => {
   let tester: DoneOrdersComponentTester;
-  let queryParamsSubject: BehaviorSubject<{ [key: string]: string }>;
   let orderService: jasmine.SpyObj<OrderService>;
+  let route: ActivatedRouteStub;
 
   beforeEach(() => {
-    queryParamsSubject = new BehaviorSubject<{ [key: string]: string }>({});
-    const route = fakeRoute({
-      queryParams: queryParamsSubject
-    });
-    orderService = jasmine.createSpyObj<OrderService>('OrderService', ['listDone']);
+    route = stubRoute();
+    orderService = createMock(OrderService);
 
     TestBed.configureTestingModule({
       declarations: [DoneOrdersComponent, OrdersComponent],
@@ -75,13 +71,13 @@ describe('DoneOrdersComponent', () => {
 
     orderService.listDone.and.returnValues(of(page1), of(page0));
 
-    queryParamsSubject.next({ page: '1' });
+    route.setQueryParam('page', '1');
     tester.detectChanges();
 
     expect(tester.ordersComponent).not.toBeNull();
     expect(tester.ordersComponent.orders).toBe(page1);
 
-    queryParamsSubject.next({ page: '0' });
+    route.setQueryParam('page', '0');
     tester.detectChanges();
     expect(tester.ordersComponent.orders).toBe(page0);
   });

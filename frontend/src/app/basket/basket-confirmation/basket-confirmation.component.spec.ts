@@ -1,7 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 
 import { BasketConfirmationComponent } from './basket-confirmation.component';
-import { ComponentTester, fakeRoute, fakeSnapshot, speculoosMatchers } from 'ngx-speculoos';
+import { ComponentTester, createMock, speculoosMatchers, stubRoute } from 'ngx-speculoos';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { RouterTestingModule } from '@angular/router/testing';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -24,18 +24,16 @@ describe('BasketConfirmationComponent', () => {
   let basketService: jasmine.SpyObj<BasketService>;
 
   beforeEach(() => {
-    const route = fakeRoute({
-      snapshot: fakeSnapshot({
-        params: {
-          reference: 'ABCDEFGH'
-        },
-        queryParams: {
-          code: 'XYXWVUTS'
-        }
-      })
+    const route = stubRoute({
+      params: {
+        reference: 'ABCDEFGH'
+      },
+      queryParams: {
+        code: 'XYXWVUTS'
+      }
     });
 
-    basketService = jasmine.createSpyObj<BasketService>('BasketService', ['confirm']);
+    basketService = createMock(BasketService);
 
     TestBed.configureTestingModule({
       declarations: [BasketConfirmationComponent],

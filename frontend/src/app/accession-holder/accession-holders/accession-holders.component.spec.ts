@@ -1,6 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 
-import { ComponentTester, speculoosMatchers, TestButton } from 'ngx-speculoos';
+import { ComponentTester, createMock, speculoosMatchers, TestButton } from 'ngx-speculoos';
 import { I18nTestingModule } from '../../i18n/i18n-testing.module.spec';
 import { RouterTestingModule } from '@angular/router/testing';
 import { EMPTY, of } from 'rxjs';
@@ -37,9 +37,9 @@ describe('AccessionHoldersComponent', () => {
   let toastService: jasmine.SpyObj<ToastService>;
 
   beforeEach(() => {
-    accessionHolderService = jasmine.createSpyObj<AccessionHolderService>('AccessionHolderService', ['list', 'delete']);
-    confirmationService = jasmine.createSpyObj<ConfirmationService>('ConfirmationService', ['confirm']);
-    toastService = jasmine.createSpyObj<ToastService>('ToastService', ['success']);
+    accessionHolderService = createMock(AccessionHolderService);
+    confirmationService = createMock(ConfirmationService);
+    toastService = createMock(ToastService);
 
     TestBed.configureTestingModule({
       imports: [I18nTestingModule, FontAwesomeModule, RbNgbTestingModule, RouterTestingModule],

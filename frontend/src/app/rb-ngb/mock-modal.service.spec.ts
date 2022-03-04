@@ -7,7 +7,7 @@ import { EMPTY, of, throwError } from 'rxjs';
  * You have to get it and call one of the `mockXXXModal` to set up the modal.
  * ```
  * const modalService: MockModalService<MyModalComponent> = TestBed.inject(MockModalService);
- * const fakeModalComponent = jasmine.createSpyObj<MyModalComponent>(['prepare']);
+ * const fakeModalComponent = createMock(MyModalComponent);
  * modalService.mockClosedModal(fakeModalComponent);
  * ```
  * In this example, the modal will use the given component and will close immediately.

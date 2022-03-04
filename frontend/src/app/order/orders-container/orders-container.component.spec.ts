@@ -3,7 +3,6 @@ import { TestBed } from '@angular/core/testing';
 import { OrdersContainerComponent } from './orders-container.component';
 import { ComponentTester, speculoosMatchers } from 'ngx-speculoos';
 import { RouterOutlet } from '@angular/router';
-import { By } from '@angular/platform-browser';
 import { RouterTestingModule } from '@angular/router/testing';
 import { I18nTestingModule } from '../../i18n/i18n-testing.module.spec';
 import { AuthenticationService } from '../../shared/authentication.service';
@@ -17,7 +16,7 @@ class OrdersContainerComponentTester extends ComponentTester<OrdersContainerComp
   }
 
   get routerOutlet() {
-    return this.debugElement.query(By.directive(RouterOutlet));
+    return this.element(RouterOutlet);
   }
 
   get tabs() {

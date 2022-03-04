@@ -1,7 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 
 import { ExportOrdersComponent } from './export-orders.component';
-import { ComponentTester, speculoosMatchers } from 'ngx-speculoos';
+import { ComponentTester, createMock, speculoosMatchers } from 'ngx-speculoos';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { ReactiveFormsModule } from '@angular/forms';
 import { OrderService } from '../order.service';
@@ -45,8 +45,8 @@ describe('ExportOrdersComponent', () => {
   let downloadService: jasmine.SpyObj<DownloadService>;
 
   beforeEach(() => {
-    orderService = jasmine.createSpyObj<OrderService>('OrderService', ['exportReport']);
-    downloadService = jasmine.createSpyObj<DownloadService>('DownloadService', ['download']);
+    orderService = createMock(OrderService);
+    downloadService = createMock(DownloadService);
 
     TestBed.configureTestingModule({
       imports: [I18nTestingModule, RbNgbTestingModule, FontAwesomeModule, ReactiveFormsModule, ValdemortModule],

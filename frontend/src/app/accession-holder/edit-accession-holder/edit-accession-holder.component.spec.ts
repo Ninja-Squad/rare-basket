@@ -4,7 +4,7 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { ReactiveFormsModule } from '@angular/forms';
 import { of } from 'rxjs';
 import { ValdemortModule } from 'ngx-valdemort';
-import { ComponentTester, fakeRoute, fakeSnapshot, speculoosMatchers } from 'ngx-speculoos';
+import { ComponentTester, createMock, speculoosMatchers, stubRoute } from 'ngx-speculoos';
 
 import { EditAccessionHolderComponent } from './edit-accession-holder.component';
 import { AccessionHolderService } from '../../shared/accession-holder.service';
@@ -56,9 +56,9 @@ describe('EditAccessionHolderComponent', () => {
   let toastService: jasmine.SpyObj<ToastService>;
 
   function prepare(route: ActivatedRoute) {
-    accessionHolderService = jasmine.createSpyObj<AccessionHolderService>('AccessionHolderService', ['get', 'create', 'update']);
-    grcService = jasmine.createSpyObj<GrcService>('GrcService', ['list']);
-    toastService = jasmine.createSpyObj<ToastService>('ToastService', ['success']);
+    accessionHolderService = createMock(AccessionHolderService);
+    grcService = createMock(GrcService);
+    toastService = createMock(ToastService);
 
     TestBed.configureTestingModule({
       imports: [I18nTestingModule, ReactiveFormsModule, ValdemortModule, RouterTestingModule],
@@ -96,11 +96,7 @@ describe('EditAccessionHolderComponent', () => {
 
   describe('in create mode', () => {
     beforeEach(() => {
-      const route = fakeRoute({
-        snapshot: fakeSnapshot({
-          params: {}
-        })
-      });
+      const route = stubRoute();
       prepare(route);
       tester.detectChanges();
     });
@@ -157,10 +153,8 @@ describe('EditAccessionHolderComponent', () => {
 
   describe('in update mode', () => {
     beforeEach(() => {
-      const route = fakeRoute({
-        snapshot: fakeSnapshot({
-          params: { accessionHolderId: '41' }
-        })
+      const route = stubRoute({
+        params: { accessionHolderId: '41' }
       });
       prepare(route);
 

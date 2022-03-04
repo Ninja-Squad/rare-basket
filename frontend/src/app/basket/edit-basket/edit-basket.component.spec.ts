@@ -1,7 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 
 import { EditBasketComponent } from './edit-basket.component';
-import { ComponentTester, speculoosMatchers, TestButton } from 'ngx-speculoos';
+import { ComponentTester, createMock, speculoosMatchers, TestButton } from 'ngx-speculoos';
 import { Component } from '@angular/core';
 import { Basket, BasketCommand } from '../basket.model';
 import { ValidationDefaultsComponent } from '../../validation-defaults/validation-defaults.component';
@@ -97,7 +97,7 @@ describe('EditBasketComponent', () => {
   let confirmationService: jasmine.SpyObj<ConfirmationService>;
 
   beforeEach(() => {
-    confirmationService = jasmine.createSpyObj<ConfirmationService>('ConfirmationService', ['confirm']);
+    confirmationService = createMock(ConfirmationService);
 
     TestBed.configureTestingModule({
       declarations: [EditBasketComponent, TestComponent, ValidationDefaultsComponent],

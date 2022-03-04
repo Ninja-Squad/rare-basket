@@ -10,8 +10,8 @@ import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { ValdemortModule } from 'ngx-valdemort';
 import { ValidationDefaultsComponent } from './validation-defaults/validation-defaults.component';
 import { I18nModule } from './i18n/i18n.module';
-import { AuthModule } from 'angular-auth-oidc-client';
-import { AuthenticationService, CustomSecurityStorage } from './shared/authentication.service';
+import { AuthModule, StsConfigLoader } from 'angular-auth-oidc-client';
+import { AuthenticationConfigService, authFactory } from './shared/authentication.service';
 import { AuthenticationInterceptorService } from './shared/authentication-interceptor.service';
 import { NavbarComponent } from './navbar/navbar.component';
 import { ErrorInterceptorService } from './shared/error-interceptor.service';
@@ -28,7 +28,11 @@ import { RbNgbModule } from './rb-ngb/rb-ngb.module';
     I18nModule,
     RbNgbModule,
     AuthModule.forRoot({
-      storage: CustomSecurityStorage
+      loader: {
+        provide: StsConfigLoader,
+        useFactory: authFactory,
+        deps: [AuthenticationConfigService]
+      }
     })
   ],
   providers: [
@@ -37,8 +41,4 @@ import { RbNgbModule } from './rb-ngb/rb-ngb.module';
   ],
   bootstrap: [AppComponent]
 })
-export class AppModule {
-  constructor(authenticationService: AuthenticationService) {
-    authenticationService.init();
-  }
-}
+export class AppModule {}

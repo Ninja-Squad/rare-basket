@@ -1,7 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 
 import { GrcsComponent } from './grcs.component';
-import { ComponentTester, speculoosMatchers, TestButton } from 'ngx-speculoos';
+import { ComponentTester, createMock, speculoosMatchers, TestButton } from 'ngx-speculoos';
 import { ConfirmationService } from '../../shared/confirmation.service';
 import { I18nTestingModule } from '../../i18n/i18n-testing.module.spec';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
@@ -37,9 +37,9 @@ describe('GrcsComponent', () => {
   let toastService: jasmine.SpyObj<ToastService>;
 
   beforeEach(() => {
-    grcService = jasmine.createSpyObj<GrcService>('GrcService', ['list', 'delete']);
-    confirmationService = jasmine.createSpyObj<ConfirmationService>('ConfirmationService', ['confirm']);
-    toastService = jasmine.createSpyObj<ToastService>('ToastService', ['success']);
+    grcService = createMock(GrcService);
+    confirmationService = createMock(ConfirmationService);
+    toastService = createMock(ToastService);
 
     TestBed.configureTestingModule({
       imports: [I18nTestingModule, FontAwesomeModule, RbNgbTestingModule, RouterTestingModule],

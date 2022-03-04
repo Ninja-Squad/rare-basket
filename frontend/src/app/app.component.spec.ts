@@ -1,8 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 import { AppComponent } from './app.component';
 import { RouterTestingModule } from '@angular/router/testing';
-import { ComponentTester } from 'ngx-speculoos';
-import { By } from '@angular/platform-browser';
+import { ComponentTester, createMock } from 'ngx-speculoos';
 import { RouterOutlet } from '@angular/router';
 import { ValidationDefaultsComponent } from './validation-defaults/validation-defaults.component';
 import { ValdemortModule } from 'ngx-valdemort';
@@ -20,23 +19,24 @@ class AppComponentTester extends ComponentTester<AppComponent> {
   }
 
   get navbar() {
-    return this.debugElement.query(By.directive(NavbarComponent));
+    return this.element(NavbarComponent);
   }
 
   get routerOutlet() {
-    return this.debugElement.query(By.directive(RouterOutlet));
+    return this.element(RouterOutlet);
   }
 
   get toasts() {
-    return this.debugElement.query(By.directive(ToastsComponent));
+    return this.element(ToastsComponent);
   }
 }
 
 describe('AppComponent', () => {
   let tester: AppComponentTester;
+  let authenticationService: jasmine.SpyObj<AuthenticationService>;
 
   beforeEach(() => {
-    const authenticationService = jasmine.createSpyObj<AuthenticationService>('AuthenticationService', ['getCurrentUser']);
+    authenticationService = createMock(AuthenticationService);
     authenticationService.getCurrentUser.and.returnValue(of(null));
 
     TestBed.configureTestingModule({
@@ -47,6 +47,10 @@ describe('AppComponent', () => {
 
     tester = new AppComponentTester();
     tester.detectChanges();
+  });
+
+  it('should initialize auth', () => {
+    expect(authenticationService.init).toHaveBeenCalled();
   });
 
   it('should have a router outlet', () => {

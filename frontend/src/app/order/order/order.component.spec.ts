@@ -1,7 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 
 import { OrderComponent } from './order.component';
-import { ComponentTester, fakeRoute, fakeSnapshot, speculoosMatchers, TestButton } from 'ngx-speculoos';
+import { ComponentTester, createMock, speculoosMatchers, stubRoute, TestButton } from 'ngx-speculoos';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { RouterTestingModule } from '@angular/router/testing';
 import { ActivatedRoute } from '@angular/router';
@@ -44,7 +44,7 @@ class OrderComponentTester extends ComponentTester<OrderComponent> {
   }
 
   get editOrderComponent(): EditOrderComponent | null {
-    return this.debugElement.query(By.directive(EditOrderComponent))?.componentInstance ?? null;
+    return this.component(EditOrderComponent);
   }
 
   get finalizeOrderButton() {
@@ -99,10 +99,8 @@ describe('OrderComponent', () => {
   let order: DetailedOrder;
 
   beforeEach(() => {
-    const route = fakeRoute({
-      snapshot: fakeSnapshot({
-        params: { orderId: 42 }
-      })
+    const route = stubRoute({
+      params: { orderId: 42 }
     });
 
     orderService = jasmine.createSpyObj<OrderService>('OrderService', [
@@ -115,9 +113,9 @@ describe('OrderComponent', () => {
       'downloadDocument',
       'downloadDeliveryForm'
     ]);
-    confirmationService = jasmine.createSpyObj<ConfirmationService>('ConfirmationService', ['confirm']);
-    downloadService = jasmine.createSpyObj<DownloadService>('DownloadService', ['download']);
-    toastService = jasmine.createSpyObj<ToastService>('ToastService', ['success']);
+    confirmationService = createMock(ConfirmationService);
+    downloadService = createMock(DownloadService);
+    toastService = createMock(ToastService);
 
     TestBed.configureTestingModule({
       declarations: [OrderComponent, EditOrderComponent, OrderStatusEnumPipe, DocumentTypeEnumPipe, EditDocumentComponent],
@@ -330,7 +328,7 @@ describe('OrderComponent', () => {
 
     tester.detectChanges();
 
-    const warningsComponent = jasmine.createSpyObj<FinalizationWarningsModalComponent>(['init']);
+    const warningsComponent = createMock(FinalizationWarningsModalComponent);
     modalService.mockClosedModal(warningsComponent);
 
     tester.finalizeOrderButton.click();
