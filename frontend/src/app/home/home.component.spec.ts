@@ -1,7 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 
 import { HomeComponent } from './home.component';
-import { ComponentTester, speculoosMatchers } from 'ngx-speculoos';
+import { ComponentTester, createMock, speculoosMatchers } from 'ngx-speculoos';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { AuthenticationService } from '../shared/authentication.service';
 import { Subject } from 'rxjs';
@@ -34,7 +34,7 @@ describe('HomeComponent', () => {
 
   beforeEach(() => {
     userSubject = new Subject<User>();
-    authenticationService = jasmine.createSpyObj<AuthenticationService>('AuthenticationService', ['login', 'logout', 'getCurrentUser']);
+    authenticationService = createMock(AuthenticationService);
     authenticationService.getCurrentUser.and.returnValue(userSubject);
 
     TestBed.configureTestingModule({

@@ -1,7 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 
 import { CsvModalComponent } from './csv-modal.component';
-import { ComponentTester, speculoosMatchers } from 'ngx-speculoos';
+import { ComponentTester, createMock, speculoosMatchers } from 'ngx-speculoos';
 import { OrderCsvParserService } from '../order-csv-parser.service';
 import { ReactiveFormsModule } from '@angular/forms';
 import { I18nTestingModule } from '../../i18n/i18n-testing.module.spec';
@@ -45,8 +45,8 @@ describe('CsvModalComponent', () => {
   let activeModal: jasmine.SpyObj<NgbActiveModal>;
 
   beforeEach(() => {
-    parser = jasmine.createSpyObj<OrderCsvParserService>('OrderCsvParserService', ['parse']);
-    activeModal = jasmine.createSpyObj<NgbActiveModal>('NgbActiveModal', ['close', 'dismiss']);
+    parser = createMock(OrderCsvParserService);
+    activeModal = createMock(NgbActiveModal);
 
     TestBed.configureTestingModule({
       declarations: [CsvModalComponent],

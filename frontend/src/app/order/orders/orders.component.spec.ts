@@ -6,7 +6,6 @@ import { Order } from '../order.model';
 import { Page } from '../../shared/page.model';
 import { ComponentTester, speculoosMatchers } from 'ngx-speculoos';
 import { PaginationComponent } from '../../rb-ngb/pagination/pagination.component';
-import { By } from '@angular/platform-browser';
 import { CustomerTypeEnumPipe } from '../../shared/customer-type-enum.pipe';
 import { RouterTestingModule } from '@angular/router/testing';
 import { I18nTestingModule } from '../../i18n/i18n-testing.module.spec';
@@ -60,7 +59,7 @@ class TestComponentTester extends ComponentTester<TestComponent> {
   }
 
   get pagination(): PaginationComponent {
-    return this.debugElement.query(By.directive(PaginationComponent)).componentInstance;
+    return this.component(PaginationComponent);
   }
 
   get rows() {

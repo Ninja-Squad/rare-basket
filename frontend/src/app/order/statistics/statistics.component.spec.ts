@@ -1,12 +1,12 @@
 import { TestBed } from '@angular/core/testing';
 
 import { StatisticsComponent } from './statistics.component';
-import { ComponentTester, fakeRoute, fakeSnapshot, speculoosMatchers, TestInput } from 'ngx-speculoos';
+import { ActivatedRouteStub, ComponentTester, createMock, speculoosMatchers, stubRoute, TestInput } from 'ngx-speculoos';
 import { I18nTestingModule } from '../../i18n/i18n-testing.module.spec';
 import { ReactiveFormsModule } from '@angular/forms';
 import { ChartModule } from '../../chart/chart.module';
 import { of } from 'rxjs';
-import { ActivatedRoute, Params, Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { OrderService } from '../order.service';
 import { SharedModule } from '../../shared/shared.module';
@@ -87,18 +87,13 @@ describe('StatisticsComponent', () => {
   let router: jasmine.SpyObj<Router>;
   let orderService: jasmine.SpyObj<OrderService>;
   let grcService: jasmine.SpyObj<GrcService>;
-  let queryParams: Params;
   let user: User;
   let allGrcs: Array<Grc>;
   let statistics: OrderStatistics;
+  let route: ActivatedRouteStub;
 
   beforeEach(() => {
-    queryParams = {};
-    const route = fakeRoute({
-      snapshot: fakeSnapshot({
-        queryParams
-      })
-    });
+    route = stubRoute();
 
     user = {
       globalVisualization: true,
@@ -148,15 +143,15 @@ describe('StatisticsComponent', () => {
       ]
     };
 
-    router = jasmine.createSpyObj<Router>('Router', ['navigate']);
+    router = createMock(Router);
 
-    orderService = jasmine.createSpyObj<OrderService>('OrderService', ['getStatistics']);
+    orderService = createMock(OrderService);
     orderService.getStatistics.and.returnValue(of(statistics));
 
-    const authenticationService = jasmine.createSpyObj<AuthenticationService>('AuthenticationService', ['getCurrentUser']);
+    const authenticationService = createMock(AuthenticationService);
     authenticationService.getCurrentUser.and.returnValue(of(user));
 
-    grcService = jasmine.createSpyObj<GrcService>('GrcService', ['list']);
+    grcService = createMock(GrcService);
     grcService.list.and.returnValue(of(allGrcs));
 
     TestBed.configureTestingModule({
@@ -213,10 +208,11 @@ describe('StatisticsComponent', () => {
     });
 
     it('should initialize form when query params present', () => {
-      queryParams.from = '2019-01-01';
-      queryParams.to = '2020-01-01';
-      queryParams.grcs = ['2', '3'];
-
+      route.setQueryParams({
+        from: '2019-01-01',
+        to: '2020-01-01',
+        grcs: ['2', '3']
+      });
       tester.detectChanges();
 
       expect(tester.from).toHaveValue(`01/01/2019`);
@@ -270,9 +266,11 @@ describe('StatisticsComponent', () => {
     });
 
     it('should display charts and tables for the given parameters', () => {
-      queryParams.from = '2019-01-01';
-      queryParams.to = '2020-01-01';
-      queryParams.grcs = ['2', '3'];
+      route.setQueryParams({
+        from: '2019-01-01',
+        to: '2020-01-01',
+        grcs: ['2', '3']
+      });
 
       tester.detectChanges();
 
@@ -310,9 +308,11 @@ describe('StatisticsComponent', () => {
     });
 
     it('should initialize form when query params present', () => {
-      queryParams.from = '2019-01-01';
-      queryParams.to = '2020-01-01';
-      queryParams.grcs = ['2'];
+      route.setQueryParams({
+        from: '2019-01-01',
+        to: '2020-01-01',
+        grcs: ['2']
+      });
 
       tester.detectChanges();
 
@@ -346,10 +346,11 @@ describe('StatisticsComponent', () => {
     });
 
     it('should display charts and tables for the given parameters', () => {
-      queryParams.from = '2019-01-01';
-      queryParams.to = '2020-01-01';
-      queryParams.grcs = ['2'];
-
+      route.setQueryParams({
+        from: '2019-01-01',
+        to: '2020-01-01',
+        grcs: ['2']
+      });
       tester.detectChanges();
 
       expect(tester.from).toHaveValue('01/01/2019');
@@ -380,10 +381,11 @@ describe('StatisticsComponent', () => {
     });
 
     it('should initialize form when query params present', () => {
-      queryParams.from = '2019-01-01';
-      queryParams.to = '2020-01-01';
-      queryParams.grcs = ['1'];
-
+      route.setQueryParams({
+        from: '2019-01-01',
+        to: '2020-01-01',
+        grcs: ['1']
+      });
       tester.detectChanges();
 
       expect(tester.from).toHaveValue(`01/01/2019`);
@@ -409,10 +411,11 @@ describe('StatisticsComponent', () => {
     });
 
     it('should display charts and tables for the given parameters', () => {
-      queryParams.from = '2019-01-01';
-      queryParams.to = '2020-01-01';
-      queryParams.grcs = ['1'];
-
+      route.setQueryParams({
+        from: '2019-01-01',
+        to: '2020-01-01',
+        grcs: ['1']
+      });
       tester.detectChanges();
 
       expect(tester.from).toHaveValue('01/01/2019');

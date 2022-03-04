@@ -1,7 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 
 import { FinalizationWarningsModalComponent } from './finalization-warnings-modal.component';
-import { ComponentTester, speculoosMatchers } from 'ngx-speculoos';
+import { ComponentTester, createMock, speculoosMatchers } from 'ngx-speculoos';
 import { I18nTestingModule } from '../../i18n/i18n-testing.module.spec';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
@@ -30,7 +30,7 @@ describe('FinalizationWarningsModalComponent', () => {
   let activeModal: jasmine.SpyObj<NgbActiveModal>;
 
   beforeEach(() => {
-    activeModal = jasmine.createSpyObj<NgbActiveModal>('NgbActiveModal', ['close', 'dismiss']);
+    activeModal = createMock(NgbActiveModal);
 
     TestBed.configureTestingModule({
       imports: [I18nTestingModule, RbNgbTestingModule, FontAwesomeModule],
