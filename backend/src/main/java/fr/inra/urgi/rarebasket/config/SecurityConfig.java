@@ -28,15 +28,6 @@ import org.springframework.security.web.authentication.session.SessionAuthentica
 public class SecurityConfig extends KeycloakWebSecurityConfigurerAdapter {
 
     /**
-     * This makes sure that the keycloak configuration is read from the standard Spring Boot
-     * location (application.yml in our case) rather that the keycloak.json file
-     */
-    @Bean
-    public KeycloakSpringBootConfigResolver keycloakConfigResolver() {
-        return new KeycloakSpringBootConfigResolver();
-    }
-
-    /**
      * Register KeycloakAuthenticationProvider with the authentication manager.
      * In this way, Keycloak will be responsible for providing authentication services.
      * Spring Security has a convention to handle security roles in a format like ROLE_XX (where XXX is the actual
