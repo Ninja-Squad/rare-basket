@@ -1,7 +1,7 @@
 import { fakeAsync, TestBed, tick } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { Component } from '@angular/core';
-import { ComponentTester, speculoosMatchers } from 'ngx-speculoos';
+import { ComponentTester } from 'ngx-speculoos';
 import { Router } from '@angular/router';
 import { RbNgbTestingModule } from './rb-ngb-testing.module';
 
@@ -65,8 +65,6 @@ describe('router nav directive', () => {
     TestBed.inject(Router).initialNavigation();
 
     tester.detectChanges();
-
-    jasmine.addMatchers(speculoosMatchers);
   });
 
   it('should add class and accessibility attributes', fakeAsync(() => {

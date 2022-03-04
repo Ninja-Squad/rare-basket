@@ -3,7 +3,7 @@ import { TestBed } from '@angular/core/testing';
 import { EditConfirmationComponent } from './edit-confirmation.component';
 import { Component } from '@angular/core';
 import { Basket } from '../basket.model';
-import { ComponentTester, speculoosMatchers, TestButton } from 'ngx-speculoos';
+import { ComponentTester, TestButton } from 'ngx-speculoos';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { ReactiveFormsModule } from '@angular/forms';
 import { BasketContentComponent } from '../basket-content/basket-content.component';
@@ -59,8 +59,6 @@ describe('EditConfirmationComponent', () => {
 
     tester = new TestComponentTester();
     tester.detectChanges();
-
-    jasmine.addMatchers(speculoosMatchers);
   });
 
   it('should display empty form', () => {

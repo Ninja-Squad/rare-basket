@@ -1,7 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 
 import { EditUserComponent } from './edit-user.component';
-import { ComponentTester, createMock, speculoosMatchers, stubRoute, TestInput } from 'ngx-speculoos';
+import { ComponentTester, createMock, stubRoute, TestInput } from 'ngx-speculoos';
 import { AccessionHolder, Grc, User, UserCommand } from '../../shared/user.model';
 import { I18nTestingModule } from '../../i18n/i18n-testing.module.spec';
 import { ReactiveFormsModule } from '@angular/forms';
@@ -107,8 +107,6 @@ describe('EditUserComponent', () => {
     spyOn(router, 'navigate');
 
     TestBed.createComponent(ValidationDefaultsComponent).detectChanges();
-
-    jasmine.addMatchers(speculoosMatchers);
 
     accessionHolderService.list.and.returnValue(
       of([

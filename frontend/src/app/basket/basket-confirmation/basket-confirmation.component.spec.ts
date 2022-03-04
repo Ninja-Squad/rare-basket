@@ -1,7 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 
 import { BasketConfirmationComponent } from './basket-confirmation.component';
-import { ComponentTester, createMock, speculoosMatchers, stubRoute } from 'ngx-speculoos';
+import { ComponentTester, createMock, stubRoute } from 'ngx-speculoos';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { RouterTestingModule } from '@angular/router/testing';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -45,8 +45,6 @@ describe('BasketConfirmationComponent', () => {
     });
 
     tester = new BasketConfirmationComponentTester();
-
-    jasmine.addMatchers(speculoosMatchers);
   });
 
   it('should confirm and redirect if successful', () => {

@@ -3,7 +3,7 @@ import { TestBed } from '@angular/core/testing';
 import { BasketContentComponent } from './basket-content.component';
 import { Component } from '@angular/core';
 import { Basket } from '../basket.model';
-import { ComponentTester, speculoosMatchers } from 'ngx-speculoos';
+import { ComponentTester } from 'ngx-speculoos';
 import { SharedModule } from '../../shared/shared.module';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { I18nTestingModule } from '../../i18n/i18n-testing.module.spec';
@@ -99,7 +99,6 @@ describe('BasketContentComponent', () => {
     });
 
     tester = new TestComponentTester();
-    jasmine.addMatchers(speculoosMatchers);
   });
 
   it('should display customer information', () => {

@@ -3,7 +3,7 @@ import { TestBed } from '@angular/core/testing';
 import { EditDocumentComponent } from './edit-document.component';
 import { Component } from '@angular/core';
 import { ALL_DOCUMENT_TYPES, DetailedOrder, Document, DocumentCommand } from '../order.model';
-import { ComponentTester, speculoosMatchers } from 'ngx-speculoos';
+import { ComponentTester } from 'ngx-speculoos';
 import { NgbProgressbar } from '@ng-bootstrap/ng-bootstrap';
 import { By } from '@angular/platform-browser';
 import { DocumentTypeEnumPipe } from '../document-type-enum.pipe';
@@ -80,7 +80,6 @@ describe('EditDocumentComponent', () => {
 
     TestBed.createComponent(ValidationDefaultsComponent).detectChanges();
 
-    jasmine.addMatchers(speculoosMatchers);
     tester = new TestComponentTester();
     tester.detectChanges();
   });

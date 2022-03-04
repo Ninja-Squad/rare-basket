@@ -1,7 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 
 import { EditCustomerInformationComponent } from './edit-customer-information.component';
-import { ComponentTester, speculoosMatchers } from 'ngx-speculoos';
+import { ComponentTester } from 'ngx-speculoos';
 import { Component } from '@angular/core';
 import { ALL_CUSTOMER_TYPES, ALL_LANGUAGES } from '../../basket/basket.model';
 import { CustomerInformationCommand } from '../order.model';
@@ -108,7 +108,6 @@ describe('EditCustomerComponent', () => {
     TestBed.createComponent(ValidationDefaultsComponent).detectChanges();
 
     tester = new TestComponentTester();
-    jasmine.addMatchers(speculoosMatchers);
   });
 
   it('should display a filled form', () => {

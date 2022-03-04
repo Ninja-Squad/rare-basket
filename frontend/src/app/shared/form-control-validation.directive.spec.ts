@@ -2,7 +2,7 @@ import { FormControlValidationDirective } from './form-control-validation.direct
 import { Component } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { TestBed } from '@angular/core/testing';
-import { ComponentTester, speculoosMatchers } from 'ngx-speculoos';
+import { ComponentTester } from 'ngx-speculoos';
 
 @Component({
   template: `
@@ -48,8 +48,6 @@ describe('FormControlValidationDirective', () => {
 
     tester = new FormComponentTester();
     tester.detectChanges();
-
-    jasmine.addMatchers(speculoosMatchers);
   });
 
   it('should add the is-invalid CSS class when touched', () => {

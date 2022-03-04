@@ -1,7 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 
 import { UsersComponent } from './users.component';
-import { ComponentTester, createMock, speculoosMatchers, stubRoute, TestButton } from 'ngx-speculoos';
+import { ComponentTester, createMock, stubRoute, TestButton } from 'ngx-speculoos';
 import { PaginationComponent } from '../../rb-ngb/pagination/pagination.component';
 import { I18nTestingModule } from '../../i18n/i18n-testing.module.spec';
 import { RouterTestingModule } from '@angular/router/testing';
@@ -63,7 +63,6 @@ describe('UsersComponent', () => {
       ]
     });
 
-    jasmine.addMatchers(speculoosMatchers);
     tester = new UsersComponentTester();
   });
 

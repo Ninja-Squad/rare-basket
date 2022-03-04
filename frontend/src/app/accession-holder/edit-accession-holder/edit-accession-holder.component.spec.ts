@@ -4,7 +4,7 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { ReactiveFormsModule } from '@angular/forms';
 import { of } from 'rxjs';
 import { ValdemortModule } from 'ngx-valdemort';
-import { ComponentTester, createMock, speculoosMatchers, stubRoute } from 'ngx-speculoos';
+import { ComponentTester, createMock, stubRoute } from 'ngx-speculoos';
 
 import { EditAccessionHolderComponent } from './edit-accession-holder.component';
 import { AccessionHolderService } from '../../shared/accession-holder.service';
@@ -75,8 +75,6 @@ describe('EditAccessionHolderComponent', () => {
     spyOn(router, 'navigate');
 
     TestBed.createComponent(ValidationDefaultsComponent).detectChanges();
-
-    jasmine.addMatchers(speculoosMatchers);
 
     grcService.list.and.returnValue(
       of([

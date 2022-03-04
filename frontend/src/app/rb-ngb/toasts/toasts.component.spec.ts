@@ -1,7 +1,7 @@
 import { fakeAsync, TestBed, tick } from '@angular/core/testing';
 
 import { ToastsComponent } from './toasts.component';
-import { ComponentTester, createMock, speculoosMatchers } from 'ngx-speculoos';
+import { ComponentTester, createMock } from 'ngx-speculoos';
 import { NgbToast } from '@ng-bootstrap/ng-bootstrap';
 import { Subject } from 'rxjs';
 import { Toast, ToastService } from '../../shared/toast.service';
@@ -32,7 +32,6 @@ describe('ToastsComponent', () => {
       providers: [{ provide: ToastService, useValue: toastService }]
     });
 
-    jasmine.addMatchers(speculoosMatchers);
     tester = new ToastsComponentTester();
     tester.detectChanges();
   });

@@ -1,7 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 
 import { StatisticsComponent } from './statistics.component';
-import { ActivatedRouteStub, ComponentTester, createMock, speculoosMatchers, stubRoute, TestInput } from 'ngx-speculoos';
+import { ActivatedRouteStub, ComponentTester, createMock, stubRoute, TestInput } from 'ngx-speculoos';
 import { I18nTestingModule } from '../../i18n/i18n-testing.module.spec';
 import { ReactiveFormsModule } from '@angular/forms';
 import { ChartModule } from '../../chart/chart.module';
@@ -177,8 +177,6 @@ describe('StatisticsComponent', () => {
     TestBed.createComponent(ValidationDefaultsComponent).detectChanges();
 
     tester = new StatisticsComponentTester();
-
-    jasmine.addMatchers(speculoosMatchers);
   });
 
   describe('initialization, with global visualization user', () => {

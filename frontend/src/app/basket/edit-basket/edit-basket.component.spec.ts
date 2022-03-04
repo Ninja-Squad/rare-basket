@@ -1,7 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 
 import { EditBasketComponent } from './edit-basket.component';
-import { ComponentTester, createMock, speculoosMatchers, TestButton } from 'ngx-speculoos';
+import { ComponentTester, createMock, TestButton } from 'ngx-speculoos';
 import { Component } from '@angular/core';
 import { Basket, BasketCommand } from '../basket.model';
 import { ValidationDefaultsComponent } from '../../validation-defaults/validation-defaults.component';
@@ -108,8 +108,6 @@ describe('EditBasketComponent', () => {
     TestBed.createComponent(ValidationDefaultsComponent).detectChanges();
 
     tester = new TestComponentTester();
-
-    jasmine.addMatchers(speculoosMatchers);
   });
 
   describe('with an empty draft basket', () => {
