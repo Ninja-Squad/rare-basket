@@ -6,7 +6,7 @@ buildscript {
     }
 
     dependencies {
-        classpath("org.postgresql:postgresql:42.2.19")
+        classpath("org.postgresql:postgresql:42.3.3")
     }
 }
 
@@ -72,15 +72,10 @@ tasks {
     }
 }
 
-// TODO remove this once spring-boot depends on version 5.5.1 or later
-//   it's necessary because version 5.5.0 has the issue https://github.com/spring-projects/spring-security/issues/9794
-//   which breaks the keycloak adapter
-extra["spring-security.version"] = "5.5.1"
-
 dependencyManagement {
     imports {
-        mavenBom("org.keycloak.bom:keycloak-adapter-bom:13.0.1")
-        mavenBom("org.springframework.cloud:spring-cloud-dependencies:2020.0.3")
+        mavenBom("org.keycloak.bom:keycloak-adapter-bom:17.0.0")
+        mavenBom("org.springframework.cloud:spring-cloud-dependencies:2021.0.1")
     }
 }
 
