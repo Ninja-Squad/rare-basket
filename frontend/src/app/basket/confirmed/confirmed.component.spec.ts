@@ -1,7 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 
 import { ConfirmedComponent } from './confirmed.component';
-import { ComponentTester, speculoosMatchers } from 'ngx-speculoos';
+import { ComponentTester } from 'ngx-speculoos';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { Component } from '@angular/core';
 import { Basket } from '../basket.model';
@@ -38,8 +38,6 @@ describe('ConfirmedComponent', () => {
 
     tester = new TestComponentTester();
     tester.detectChanges();
-
-    jasmine.addMatchers(speculoosMatchers);
   });
 
   it('should display some text, containing the email', () => {

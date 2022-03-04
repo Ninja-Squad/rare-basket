@@ -1,7 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 
 import { InProgressOrdersComponent } from './in-progress-orders.component';
-import { ActivatedRouteStub, ComponentTester, createMock, speculoosMatchers, stubRoute } from 'ngx-speculoos';
+import { ActivatedRouteStub, ComponentTester, createMock, stubRoute } from 'ngx-speculoos';
 import { OrdersComponent } from '../orders/orders.component';
 import { ActivatedRoute } from '@angular/router';
 import { EMPTY, of } from 'rxjs';
@@ -46,7 +46,6 @@ describe('InProgressOrdersComponent', () => {
     });
 
     tester = new InProgressOrdersComponentTester();
-    jasmine.addMatchers(speculoosMatchers);
   });
 
   it('should not display anything until orders are present', () => {

@@ -1,7 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 
 import { ExportOrdersComponent } from './export-orders.component';
-import { ComponentTester, createMock, speculoosMatchers } from 'ngx-speculoos';
+import { ComponentTester, createMock } from 'ngx-speculoos';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { ReactiveFormsModule } from '@angular/forms';
 import { OrderService } from '../order.service';
@@ -58,8 +58,6 @@ describe('ExportOrdersComponent', () => {
     });
 
     TestBed.createComponent(ValidationDefaultsComponent).detectChanges();
-
-    jasmine.addMatchers(speculoosMatchers);
 
     tester = new ExportOrdersComponentTester();
     tester.detectChanges();

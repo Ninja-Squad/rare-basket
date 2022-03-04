@@ -4,7 +4,7 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { ReactiveFormsModule } from '@angular/forms';
 import { of } from 'rxjs';
 import { ValdemortModule } from 'ngx-valdemort';
-import { ComponentTester, createMock, speculoosMatchers, stubRoute } from 'ngx-speculoos';
+import { ComponentTester, createMock, stubRoute } from 'ngx-speculoos';
 
 import { EditGrcComponent } from './edit-grc.component';
 import { I18nTestingModule } from '../../i18n/i18n-testing.module.spec';
@@ -67,8 +67,6 @@ describe('EditGrcComponent', () => {
     spyOn(router, 'navigate');
 
     TestBed.createComponent(ValidationDefaultsComponent).detectChanges();
-
-    jasmine.addMatchers(speculoosMatchers);
 
     tester = new EditGrcComponentTester();
   }

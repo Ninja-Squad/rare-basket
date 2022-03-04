@@ -1,7 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 
 import { BasketComponent } from './basket.component';
-import { ComponentTester, createMock, speculoosMatchers, stubRoute } from 'ngx-speculoos';
+import { ComponentTester, createMock, stubRoute } from 'ngx-speculoos';
 import { EditBasketComponent } from '../edit-basket/edit-basket.component';
 import { ActivatedRoute } from '@angular/router';
 import { Basket, BasketCommand } from '../basket.model';
@@ -62,8 +62,6 @@ describe('BasketComponent', () => {
     });
 
     tester = new BasketComponentTester();
-
-    jasmine.addMatchers(speculoosMatchers);
   });
 
   describe('with draft basket', () => {

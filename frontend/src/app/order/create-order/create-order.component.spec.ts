@@ -1,7 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 
 import { CreateOrderComponent } from './create-order.component';
-import { ComponentTester, createMock, speculoosMatchers } from 'ngx-speculoos';
+import { ComponentTester, createMock } from 'ngx-speculoos';
 import { ReactiveFormsModule } from '@angular/forms';
 import { ValdemortModule } from 'ngx-valdemort';
 import { I18nTestingModule } from '../../i18n/i18n-testing.module.spec';
@@ -47,7 +47,6 @@ describe('CreateOrderComponent', () => {
 
     tester = new CreateOrderComponentTester();
 
-    jasmine.addMatchers(speculoosMatchers);
     router = TestBed.inject(Router);
     spyOn(router, 'navigate');
     tester.detectChanges();

@@ -1,6 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 
-import { ComponentTester, createMock, speculoosMatchers, TestButton } from 'ngx-speculoos';
+import { ComponentTester, createMock, TestButton } from 'ngx-speculoos';
 import { I18nTestingModule } from '../../i18n/i18n-testing.module.spec';
 import { RouterTestingModule } from '@angular/router/testing';
 import { EMPTY, of } from 'rxjs';
@@ -51,7 +51,6 @@ describe('AccessionHoldersComponent', () => {
       ]
     });
 
-    jasmine.addMatchers(speculoosMatchers);
     tester = new AccessionHoldersComponentTester();
   });
 

@@ -1,7 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 
 import { GrcsComponent } from './grcs.component';
-import { ComponentTester, createMock, speculoosMatchers, TestButton } from 'ngx-speculoos';
+import { ComponentTester, createMock, TestButton } from 'ngx-speculoos';
 import { ConfirmationService } from '../../shared/confirmation.service';
 import { I18nTestingModule } from '../../i18n/i18n-testing.module.spec';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
@@ -50,8 +50,6 @@ describe('GrcsComponent', () => {
         { provide: ToastService, useValue: toastService }
       ]
     });
-
-    jasmine.addMatchers(speculoosMatchers);
     tester = new GrcsComponentTester();
   });
 

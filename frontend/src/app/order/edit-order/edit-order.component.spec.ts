@@ -3,7 +3,7 @@ import { TestBed } from '@angular/core/testing';
 import { EditOrderComponent } from './edit-order.component';
 import { Component } from '@angular/core';
 import { Order, OrderCommand, OrderItemCommand } from '../order.model';
-import { ComponentTester, speculoosMatchers, TestButton } from 'ngx-speculoos';
+import { ComponentTester, TestButton } from 'ngx-speculoos';
 import { I18nTestingModule } from '../../i18n/i18n-testing.module.spec';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { ReactiveFormsModule } from '@angular/forms';
@@ -104,7 +104,6 @@ describe('EditOrderComponent', () => {
     TestBed.createComponent(ValidationDefaultsComponent).detectChanges();
 
     tester = new TestComponentTester();
-    jasmine.addMatchers(speculoosMatchers);
   });
 
   it('should display a filled form', () => {

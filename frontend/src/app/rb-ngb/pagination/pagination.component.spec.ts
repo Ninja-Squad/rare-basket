@@ -3,7 +3,7 @@ import { fakeAsync, TestBed, tick } from '@angular/core/testing';
 import { PaginationComponent } from './pagination.component';
 import { NgbPagination, NgbPaginationModule } from '@ng-bootstrap/ng-bootstrap';
 import { Component } from '@angular/core';
-import { ActivatedRouteStub, ComponentTester, speculoosMatchers, stubRoute } from 'ngx-speculoos';
+import { ActivatedRouteStub, ComponentTester, stubRoute } from 'ngx-speculoos';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Page } from '../../shared/page.model';
 
@@ -46,8 +46,6 @@ describe('PaginationComponent', () => {
       });
 
       tester = new TestComponentTester();
-
-      jasmine.addMatchers(speculoosMatchers);
     });
 
     it('should not display pagination if page is empty', () => {
@@ -98,8 +96,6 @@ describe('PaginationComponent', () => {
 
       tester = new TestComponentTester();
       tester.componentInstance.page = { content: ['a'], number: 1, totalElements: 21, size: 20, totalPages: 2 };
-
-      jasmine.addMatchers(speculoosMatchers);
     });
 
     it('should not navigate if navigate is false', fakeAsync(() => {

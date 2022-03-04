@@ -1,7 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 
 import { HomeComponent } from './home.component';
-import { ComponentTester, createMock, speculoosMatchers } from 'ngx-speculoos';
+import { ComponentTester, createMock } from 'ngx-speculoos';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { AuthenticationService } from '../shared/authentication.service';
 import { Subject } from 'rxjs';
@@ -42,8 +42,6 @@ describe('HomeComponent', () => {
       imports: [I18nTestingModule, FontAwesomeModule, RouterTestingModule],
       providers: [{ provide: AuthenticationService, useValue: authenticationService }]
     });
-
-    jasmine.addMatchers(speculoosMatchers);
 
     tester = new HomeComponentTester();
     tester.detectChanges();

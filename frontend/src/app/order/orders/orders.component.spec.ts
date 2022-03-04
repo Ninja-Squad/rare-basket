@@ -4,7 +4,7 @@ import { OrdersComponent } from './orders.component';
 import { Component, LOCALE_ID } from '@angular/core';
 import { Order } from '../order.model';
 import { Page } from '../../shared/page.model';
-import { ComponentTester, speculoosMatchers } from 'ngx-speculoos';
+import { ComponentTester } from 'ngx-speculoos';
 import { PaginationComponent } from '../../rb-ngb/pagination/pagination.component';
 import { CustomerTypeEnumPipe } from '../../shared/customer-type-enum.pipe';
 import { RouterTestingModule } from '@angular/router/testing';
@@ -79,7 +79,6 @@ describe('OrdersComponent', () => {
 
     tester = new TestComponentTester();
     tester.detectChanges();
-    jasmine.addMatchers(speculoosMatchers);
   });
 
   it('should have a pagination', () => {

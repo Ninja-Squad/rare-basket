@@ -1,7 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 
 import { OrderComponent } from './order.component';
-import { ComponentTester, createMock, speculoosMatchers, stubRoute, TestButton } from 'ngx-speculoos';
+import { ComponentTester, createMock, stubRoute, TestButton } from 'ngx-speculoos';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { RouterTestingModule } from '@angular/router/testing';
 import { ActivatedRoute } from '@angular/router';
@@ -142,7 +142,6 @@ describe('OrderComponent', () => {
     modalService = TestBed.inject(MockModalService);
 
     tester = new OrderComponentTester();
-    jasmine.addMatchers(speculoosMatchers);
 
     order = {
       id: 42,

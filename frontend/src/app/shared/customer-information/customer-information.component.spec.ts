@@ -1,6 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 import { Component } from '@angular/core';
-import { ComponentTester, speculoosMatchers } from 'ngx-speculoos';
+import { ComponentTester } from 'ngx-speculoos';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { I18nTestingModule } from '../../i18n/i18n-testing.module.spec';
 import { Customer } from '../../basket/basket.model';
@@ -43,7 +43,6 @@ describe('CustomerInformationComponent', () => {
     });
 
     tester = new TestComponentTester();
-    jasmine.addMatchers(speculoosMatchers);
   });
 
   it('should display customer information', () => {

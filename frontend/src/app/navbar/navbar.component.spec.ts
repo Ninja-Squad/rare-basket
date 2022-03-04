@@ -1,7 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 
 import { NavbarComponent } from './navbar.component';
-import { ComponentTester, createMock, speculoosMatchers } from 'ngx-speculoos';
+import { ComponentTester, createMock } from 'ngx-speculoos';
 import { I18nTestingModule } from '../i18n/i18n-testing.module.spec';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { AuthenticationService } from '../shared/authentication.service';
@@ -59,7 +59,6 @@ describe('NavbarComponent', () => {
       providers: [{ provide: AuthenticationService, useValue: authenticationService }]
     });
 
-    jasmine.addMatchers(speculoosMatchers);
     tester = new NavbarComponentTester();
     tester.detectChanges();
   });

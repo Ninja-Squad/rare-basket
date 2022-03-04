@@ -2,7 +2,7 @@ import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { TestBed } from '@angular/core/testing';
 import { Component } from '@angular/core';
 import { NgbDatepicker } from '@ng-bootstrap/ng-bootstrap';
-import { ComponentTester, speculoosMatchers } from 'ngx-speculoos';
+import { ComponentTester } from 'ngx-speculoos';
 import { I18nTestingModule } from '../i18n/i18n-testing.module.spec';
 import { RbNgbTestingModule } from './rb-ngb-testing.module';
 import { DatepickerContainerComponent } from './datepicker-container.component';
@@ -48,8 +48,6 @@ describe('DatepickerContainerComponent', () => {
       imports: [I18nTestingModule, RbNgbTestingModule, ReactiveFormsModule],
       declarations: [TestComponent]
     });
-
-    jasmine.addMatchers(speculoosMatchers);
 
     tester = new TestComponentTester();
     tester.detectChanges();
