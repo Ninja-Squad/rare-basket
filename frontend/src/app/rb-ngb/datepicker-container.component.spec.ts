@@ -28,7 +28,7 @@ class TestComponentTester extends ComponentTester<TestComponent> {
   }
 
   get toggleButton() {
-    return this.button('.input-group-append button');
+    return this.button('button.btn-outline-secondary');
   }
 
   get datepicker() {

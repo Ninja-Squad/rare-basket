@@ -1,9 +1,9 @@
 <form [formGroup]="form" (ngSubmit)="save()" #formDirective="ngForm">
-  <div class="form-row">
+  <div class="row gy-1">
     <div class="col-md-6">
-      <div class="form-group">
-        <label translate="order.edit-document.type" for="document-type"></label>
-        <select formControlName="type" class="form-control custom-select-sm" id="document-type">
+      <div class="mb-3">
+        <label class="form-label" translate="order.edit-document.type" for="document-type"></label>
+        <select formControlName="type" class="form-select form-select-sm" id="document-type">
           <option [ngValue]="null"></option>
           <option *ngFor="let documentType of documentTypes" [value]="documentType">{{ documentType | documentTypeEnum }}</option>
         </select>
@@ -11,39 +11,33 @@
       </div>
     </div>
     <div class="col-md-6">
-      <div class="form-group">
-        <label translate="order.edit-document.description" for="document-description"></label>
+      <div class="mb-3">
+        <label class="form-label" translate="order.edit-document.description" for="document-description"></label>
         <input formControlName="description" class="form-control form-control-sm" id="document-description" />
         <val-errors controlName="description" [label]="'order.edit-document.description-error-label' | translate"></val-errors>
       </div>
     </div>
   </div>
-  <div class="form-row">
+  <div class="row gy-1">
     <div class="col-md-6">
-      <div class="form-group">
-        <label translate="order.edit-document.file" for="document-file"></label>
-        <div
-          class="custom-file"
+      <div class="mb-3">
+        <label class="form-label" translate="order.edit-document.file" for="document-file"></label>
+        <input
+          #fileInput
+          type="file"
+          class="form-control from-control-sm"
+          id="document-file"
+          [accept]="fileAccept"
+          (change)="fileChanged()"
+          [disabled]="uploadProgress !== null"
+          [class.is-invalid]="formDirective.submitted && hasFileError()"
+          [class.highlighted]="highlightFileInput"
           (drop)="fileDropped($event); highlightFileInput = false"
           (dragenter)="highlightFileInput = true"
           (dragleave)="highlightFileInput = false"
           (dragexit)="highlightFileInput = false"
           (dragover)="$event.preventDefault()"
-        >
-          <input
-            #fileInput
-            type="file"
-            class="custom-file-input"
-            id="document-file"
-            [accept]="fileAccept"
-            (change)="fileChanged()"
-            [disabled]="uploadProgress !== null"
-            [class.is-invalid]="formDirective.submitted && hasFileError()"
-          />
-          <label class="custom-file-label" for="" [class.highlighted]="highlightFileInput" [class.placeholder]="!selectedFile">
-            {{ selectedFile?.name || ('order.edit-document.file-placeholder' | translate) }}
-          </label>
-        </div>
+        />
         <div class="invalid-feedback" [class.d-none]="!formDirective.submitted">
           <div
             *ngIf="!selectedFile"
@@ -64,10 +58,10 @@
       </div>
     </div>
     <div class="col-md-6">
-      <div class="form-group">
-        <label translate="order.edit-document.delivery-form" for=""></label>
-        <div class="custom-control custom-switch mt-md-2">
-          <input formControlName="onDeliveryForm" type="checkbox" class="custom-control-input" id="on-delivery-form" />
+      <div class="mb-3">
+        <label class="form-label" translate="order.edit-document.delivery-form" for=""></label>
+        <div class="form-check form-switch mt-md-2">
+          <input class="form-label" formControlName="onDeliveryForm" type="checkbox" class="form-check-input" id="on-delivery-form" />
           <label class="custom-control-label" for="on-delivery-form" translate="order.edit-document.on-delivery-form"></label>
         </div>
       </div>
@@ -86,9 +80,9 @@
     </div>
   </div>
 
-  <div class="mt-2 text-right">
-    <button class="btn btn-sm btn-primary mr-2" [disabled]="uploadProgress !== null" id="document-save-button">
-      <fa-icon [icon]="saveIcon" class="mr-1"></fa-icon>
+  <div class="mt-2 text-end">
+    <button class="btn btn-sm btn-primary me-2" [disabled]="uploadProgress !== null" id="document-save-button">
+      <fa-icon [icon]="saveIcon" class="me-1"></fa-icon>
       <span translate="order.edit-document.save"></span>
     </button>
     <button

@@ -1,11 +1,11 @@
-<h1 class="sr-only" translate="home.title"></h1>
+<h1 class="visually-hidden" translate="home.title"></h1>
 <div class="d-flex align-items-center justify-content-around bg">
   <div class="card" *ngIf="user !== undefined">
     <div class="card-body">
       <h2 *ngIf="user" translate="home.welcome" [translateParams]="user"></h2>
       <p translate="home.message"></p>
       <button *ngIf="user === null" class="btn btn-secondary" (click)="login()" id="login-button">
-        <fa-icon [icon]="loginIcon" class="mr-1"></fa-icon>
+        <fa-icon [icon]="loginIcon" class="me-1"></fa-icon>
         <span translate="home.login"></span>
       </button>
       <a
@@ -14,7 +14,7 @@
         class="btn btn-secondary"
         id="orders-link"
       >
-        <fa-icon [icon]="ordersIcon" class="mr-1"></fa-icon>
+        <fa-icon [icon]="ordersIcon" class="me-1"></fa-icon>
         <span translate="home.orders"></span>
       </a>
     </div>

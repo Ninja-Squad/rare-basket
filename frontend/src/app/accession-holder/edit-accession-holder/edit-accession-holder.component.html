@@ -2,28 +2,28 @@
 
 <div class="content mt-2">
   <form [formGroup]="form" (ngSubmit)="save()">
-    <div class="form-group">
-      <label for="name" translate="accession-holder.edit.name"></label>
+    <div class="mb-3">
+      <label class="form-label" for="name" translate="accession-holder.edit.name"></label>
       <input class="form-control" formControlName="name" id="name" />
       <small id="name-hint" class="form-text text-muted" translate="accession-holder.edit.name-hint"></small>
       <val-errors controlName="name" [label]="'accession-holder.edit.name-error-label' | translate"></val-errors>
     </div>
 
-    <div class="form-group">
-      <label for="email" translate="accession-holder.edit.email"></label>
+    <div class="mb-3">
+      <label class="form-label" for="email" translate="accession-holder.edit.email"></label>
       <input class="form-control" formControlName="email" id="email" type="email" />
       <val-errors controlName="email" [label]="'accession-holder.edit.email-error-label' | translate"></val-errors>
     </div>
 
-    <div class="form-group">
-      <label for="phone" translate="accession-holder.edit.phone"></label>
+    <div class="mb-3">
+      <label class="form-label" for="phone" translate="accession-holder.edit.phone"></label>
       <input class="form-control" formControlName="phone" id="phone" type="tel" />
       <val-errors controlName="phone" [label]="'accession-holder.edit.phone-error-label' | translate"></val-errors>
     </div>
 
-    <div class="form-group">
-      <label for="grc" translate="accession-holder.edit.grc"></label>
-      <select class="form-control custom-select" formControlName="grcId" id="grc">
+    <div class="mb-3">
+      <label class="form-label" for="grc" translate="accession-holder.edit.grc"></label>
+      <select class="form-select" formControlName="grcId" id="grc">
         <option [ngValue]="null"></option>
         <option *ngFor="let grc of grcs" [ngValue]="grc.id">{{ grc.name }}</option>
       </select>
@@ -31,7 +31,7 @@
     </div>
 
     <div>
-      <button class="btn btn-primary mr-2" translate="accession-holder.edit.save" id="save-button"></button>
+      <button class="btn btn-primary me-2" translate="accession-holder.edit.save" id="save-button"></button>
       <a routerLink="/accession-holders" class="btn btn-danger" translate="accession-holder.edit.cancel"></a>
     </div>
   </form>

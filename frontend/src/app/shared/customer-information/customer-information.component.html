@@ -1,56 +1,56 @@
 <div class="d-flex">
-  <div class="mr-2">
+  <div class="me-2">
     <fa-icon [icon]="nameIcon" [fixedWidth]="true"></fa-icon>
-    <span class="sr-only" translate="common.customer-information.name"></span>
+    <span class="visually-hidden" translate="common.customer-information.name"></span>
   </div>
   <div class="flex-grow-1">{{ customer.name }}</div>
 </div>
 <div class="d-flex" *ngIf="customer.organization">
-  <div class="mr-2">
+  <div class="me-2">
     <fa-icon [icon]="organizationIcon" [fixedWidth]="true"></fa-icon>
-    <span class="sr-only" translate="common.customer-information.organization"></span>
+    <span class="visually-hidden" translate="common.customer-information.organization"></span>
   </div>
   <div class="flex-grow-1">{{ customer.organization }}</div>
 </div>
 <div class="d-flex">
-  <div class="mr-2">
+  <div class="me-2">
     <fa-icon [icon]="emailIcon" [fixedWidth]="true"></fa-icon>
-    <span class="sr-only" translate="common.customer-information.email"></span>
+    <span class="visually-hidden" translate="common.customer-information.email"></span>
   </div>
   <div class="flex-grow-1">{{ customer.email }}</div>
 </div>
 <div class="d-flex">
-  <div class="mr-2">
+  <div class="me-2">
     <fa-icon [icon]="deliveryAddressIcon" [fixedWidth]="true"></fa-icon>
-    <span class="sr-only" translate="common.customer-information.delivery-address"></span>
+    <span class="visually-hidden" translate="common.customer-information.delivery-address"></span>
   </div>
   <div class="flex-grow-1" style="white-space: pre-wrap">{{ customer.deliveryAddress }}</div>
 </div>
 <div class="d-flex">
-  <div class="mr-2">
+  <div class="me-2">
     <fa-icon [icon]="billingAddressIcon" [fixedWidth]="true"></fa-icon>
-    <span class="sr-only" translate="common.customer-information.billing-address"></span>
+    <span class="visually-hidden" translate="common.customer-information.billing-address"></span>
   </div>
   <div class="flex-grow-1" style="white-space: pre-wrap">{{ customer.billingAddress }}</div>
 </div>
 <div class="d-flex">
-  <div class="mr-2">
+  <div class="me-2">
     <fa-icon [icon]="customerTypeIcon" [fixedWidth]="true"></fa-icon>
-    <span class="sr-only" translate="common.customer-information.type"></span>
+    <span class="visually-hidden" translate="common.customer-information.type"></span>
   </div>
   <div class="flex-grow-1">{{ customer.type | customerTypeEnum }}</div>
 </div>
 <div class="d-flex" *ngIf="withLanguage">
-  <div class="mr-2">
+  <div class="me-2">
     <fa-icon [icon]="languageIcon" [fixedWidth]="true"></fa-icon>
-    <span class="sr-only" translate="common.customer-information.language"></span>
+    <span class="visually-hidden" translate="common.customer-information.language"></span>
   </div>
   <div class="flex-grow-1">{{ customer.language | languageEnum }}</div>
 </div>
 <div class="d-flex" *ngIf="rationale">
-  <div class="mr-2">
+  <div class="me-2">
     <fa-icon [icon]="rationaleIcon" [fixedWidth]="true"></fa-icon>
-    <span class="sr-only" translate="common.customer-information.rationale"></span>
+    <span class="visually-hidden" translate="common.customer-information.rationale"></span>
   </div>
   <div class="flex-grow-1" style="white-space: pre-wrap">{{ rationale }}</div>
 </div>

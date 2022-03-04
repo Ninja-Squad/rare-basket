@@ -7,7 +7,7 @@
       [class.cancelled]="order.status === 'CANCELLED'"
     ></div>
     <div>
-      <span class="badge badge-secondary ml-2" [class.status-changed]="statusChanged">{{ order.status | orderStatusEnum }}</span>
+      <span class="badge bg-secondary ms-2" [class.status-changed]="statusChanged">{{ order.status | orderStatusEnum }}</span>
     </div>
   </h1>
 
@@ -27,7 +27,7 @@
             [withLanguage]="true"
           ></rb-customer-information>
 
-          <div *ngIf="order.status === 'DRAFT'" class="text-right">
+          <div *ngIf="order.status === 'DRAFT'" class="text-end">
             <button
               type="button"
               class="btn btn-sm btn-outline-primary"
@@ -35,7 +35,7 @@
               [disabled]="operationInProgress"
               (click)="editCustomer()"
             >
-              <fa-icon [icon]="editIcon" class="mr-1"></fa-icon>
+              <fa-icon [icon]="editIcon" class="me-1"></fa-icon>
               <span translate="order.order.edit"></span>
             </button>
           </div>
@@ -53,7 +53,7 @@
         <div *ngIf="!editing">
           <div class="scrolling-accessions mb-2">
             <table class="table table-sm mb-0">
-              <thead class="thead-light">
+              <thead class="table-light">
                 <tr>
                   <th translate="order.order.accession-heading"></th>
                   <th translate="order.order.quantity-heading"></th>
@@ -67,7 +67,7 @@
               </tbody>
             </table>
           </div>
-          <div *ngIf="order.status === 'DRAFT'" class="text-right">
+          <div *ngIf="order.status === 'DRAFT'" class="text-end">
             <button
               type="button"
               class="btn btn-sm btn-outline-primary"
@@ -75,7 +75,7 @@
               [disabled]="operationInProgress"
               (click)="edit()"
             >
-              <fa-icon [icon]="editIcon" class="mr-1"></fa-icon>
+              <fa-icon [icon]="editIcon" class="me-1"></fa-icon>
               <span translate="order.order.edit"></span>
             </button>
           </div>
@@ -92,7 +92,7 @@
 
     <div *ngFor="let document of order.documents" class="my-2 document">
       <div class="d-flex">
-        <div class="mr-2">
+        <div class="me-2">
           <fa-icon *ngIf="document.onDeliveryForm" [icon]="documentOnDeliveryFormIcon"></fa-icon>
           <fa-icon *ngIf="!document.onDeliveryForm" [icon]="documentNotOnDeliveryFormIcon"></fa-icon>
         </div>
@@ -101,7 +101,7 @@
             <div class="file-name">
               <button class="btn btn-link p-0 download-button" (click)="download(document, $event)" [disabled]="isDownloading(document)">
                 {{ document.originalFileName }}
-                <fa-icon *ngIf="isDownloading(document)" [icon]="downloadingIcon" [spin]="true" class="ml-1 download-spinner"></fa-icon>
+                <fa-icon *ngIf="isDownloading(document)" [icon]="downloadingIcon" [spin]="true" class="ms-1 download-spinner"></fa-icon>
               </button>
             </div>
             <small class="text-muted">
@@ -113,12 +113,12 @@
           </div>
           <div class="col-md-5 col-lg-4">
             <div>
-              <span class="badge badge-secondary document-type">{{ document.type | documentTypeEnum }}</span>
+              <span class="badge bg-secondary document-type">{{ document.type | documentTypeEnum }}</span>
             </div>
             <small class="text-muted">{{ document.description }}</small>
           </div>
         </div>
-        <div *ngIf="order.status === 'DRAFT'" class="ml-2">
+        <div *ngIf="order.status === 'DRAFT'" class="ms-2">
           <button
             type="button"
             class="btn btn-sm btn-outline-danger delete-document-button"
@@ -126,7 +126,7 @@
             (click)="deleteDocument(document)"
           >
             <fa-icon [icon]="deleteDocumentIcon"></fa-icon>
-            <span class="sr-only" translate="order.order.delete-document"></span>
+            <span class="visually-hidden" translate="order.order.delete-document"></span>
           </button>
         </div>
       </div>
@@ -141,7 +141,7 @@
         [disabled]="operationInProgress"
         id="add-document-button"
       >
-        <fa-icon [icon]="addDocumentIcon" class="mr-1"></fa-icon>
+        <fa-icon [icon]="addDocumentIcon" class="me-1"></fa-icon>
         <span translate="order.order.add-document"></span>
       </button>
     </div>
@@ -164,10 +164,10 @@
         (click)="finalizeOrder()"
         [disabled]="operationInProgress"
         type="button"
-        class="btn btn-primary btn-sm-block my-1 mr-md-2"
+        class="btn btn-primary btn-sm-block my-1 me-md-2"
         id="finalize-order-button"
       >
-        <fa-icon [icon]="finalizeOrderIcon" class="mr-1"></fa-icon>
+        <fa-icon [icon]="finalizeOrderIcon" class="me-1"></fa-icon>
         <span translate="order.order.finalize"></span>
       </button>
 
@@ -179,18 +179,18 @@
         class="btn btn-danger btn-sm-block"
         id="cancel-order-button"
       >
-        <fa-icon [icon]="cancelOrderIcon" class="mr-1"></fa-icon>
+        <fa-icon [icon]="cancelOrderIcon" class="me-1"></fa-icon>
         <span translate="order.order.cancel"></span>
       </button>
 
       <button
         *ngIf="order.status === 'FINALIZED'"
-        class="btn btn-primary btn-sm-block my-1 mr-md-2"
+        class="btn btn-primary btn-sm-block my-1 me-md-2"
         [disabled]="downloadingDeliveryForm"
         (click)="downloadDeliveryForm()"
         id="delivery-form-button"
       >
-        <fa-icon [icon]="deliveryFormIcon" class="mr-1"></fa-icon>
+        <fa-icon [icon]="deliveryFormIcon" class="me-1"></fa-icon>
         <span translate="order.order.delivery-form"></span>
       </button>
 
@@ -201,14 +201,14 @@
         [disabled]="downloadingDeliveryForm"
         id="complete-delivery-form-button"
       >
-        <fa-icon [icon]="completeDeliveryFormIcon" class="mr-1"></fa-icon>
+        <fa-icon [icon]="completeDeliveryFormIcon" class="me-1"></fa-icon>
         <span translate="order.order.complete-delivery-form"></span>
       </button>
     </div>
   </div>
 
   <a routerLink="/orders" class="btn btn-outline-secondary">
-    <fa-icon [icon]="allOrdersIcon" class="mr-1"></fa-icon>
+    <fa-icon [icon]="allOrdersIcon" class="me-1"></fa-icon>
     <span translate="order.order.all-orders"></span>
   </a>
 </div>

@@ -4,7 +4,7 @@
   <div class="content mt-2">
     <div *ngFor="let accessionHolder of accessionHolders">
       <div class="d-flex">
-        <div><fa-icon [icon]="accessionHolderIcon" class="mr-2"></fa-icon></div>
+        <div><fa-icon [icon]="accessionHolderIcon" class="me-2"></fa-icon></div>
         <div class="flex-grow-1 row accession-holder">
           <div class="col-6 col-md-4">
             <a [routerLink]="['/accession-holders', accessionHolder.id, 'edit']">{{ accessionHolder.name }}</a>
@@ -12,14 +12,14 @@
           <div class="col-6 col-md-4">{{ accessionHolder.email }}</div>
           <div class="col-12 col-md-4">{{ accessionHolder.grc.name }}</div>
         </div>
-        <div class="text-right">
+        <div class="text-end">
           <button
             (click)="deleteAccessionHolder(accessionHolder)"
             type="button"
             class="btn btn-outline-danger btn-sm delete-accession-holder-button"
           >
             <fa-icon [icon]="deleteAccessionHolderIcon"></fa-icon>
-            <span class="sr-only" translate="accession-holder.accession-holders.delete"></span>
+            <span class="visually-hidden" translate="accession-holder.accession-holders.delete"></span>
           </button>
         </div>
       </div>
@@ -27,9 +27,9 @@
     </div>
   </div>
 
-  <div class="text-right mt-2">
+  <div class="text-end mt-2">
     <a class="btn btn-outline-secondary" id="create-accession-holder" routerLink="/accession-holders/new">
-      <fa-icon [icon]="createAccessionHolderIcon" class="mr-1"></fa-icon>
+      <fa-icon [icon]="createAccessionHolderIcon" class="me-1"></fa-icon>
       <span translate="accession-holder.accession-holders.create"></span>
     </a>
   </div>

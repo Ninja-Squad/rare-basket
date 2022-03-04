@@ -1,7 +1,5 @@
 <ng-content></ng-content>
-<div class="input-group-append">
-  <button type="button" class="btn btn-outline-secondary" (click)="toggle()">
-    <fa-icon [icon]="dateIcon"></fa-icon>
-    <span class="sr-only" translate="common.open-datepicker"></span>
-  </button>
-</div>
+<button type="button" class="btn btn-outline-secondary" (click)="toggle()">
+  <fa-icon [icon]="dateIcon"></fa-icon>
+  <span class="visually-hidden" translate="common.open-datepicker"></span>
+</button>

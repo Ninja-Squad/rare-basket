@@ -1,6 +1,6 @@
 <div class="alert alert-info" role="alert">
   <div class="d-flex">
-    <div class="mr-4">
+    <div class="me-4">
       <fa-icon [icon]="infoIcon"></fa-icon>
     </div>
     <div class="flex-grow-1">
@@ -30,18 +30,22 @@
 
 <div class="content mt-2">
   <div class="d-flex justify-content-center">
-    <form [formGroup]="form" (ngSubmit)="confirm()" class="form-inline">
-      <label for="confirmation-code" class="sr-only" translate="basket.edit-confirmation.confirmation-code"></label>
-      <input
-        formControlName="confirmationCode"
-        id="confirmation-code"
-        class="form-control form-control-lg mb-2 mr-sm-2"
-        [placeholder]="'basket.edit-confirmation.confirmation-code' | translate"
-      />
-      <button class="btn btn-primary btn-lg mb-2" [disabled]="form.invalid" id="confirm-button">
-        <fa-icon [icon]="confirmIcon" class="mr-1"></fa-icon>
-        <span translate="basket.edit-confirmation.confirm"></span>
-      </button>
+    <form [formGroup]="form" (ngSubmit)="confirm()" class="row g-2">
+      <label for="confirmation-code" class="visually-hidden" translate="basket.edit-confirmation.confirmation-code"></label>
+      <div class="col-12 col-sm-auto">
+        <input
+          formControlName="confirmationCode"
+          id="confirmation-code"
+          class="col-12 form-control form-control-lg"
+          [placeholder]="'basket.edit-confirmation.confirmation-code' | translate"
+        />
+      </div>
+      <div class="col-12 col-sm-auto">
+        <button class="btn btn-primary btn-lg d-block d-sm-inline w-100 me-sm-auto" [disabled]="form.invalid" id="confirm-button">
+          <fa-icon [icon]="confirmIcon" class="me-1"></fa-icon>
+          <span translate="basket.edit-confirmation.confirm"></span>
+        </button>
+      </div>
     </form>
   </div>
 

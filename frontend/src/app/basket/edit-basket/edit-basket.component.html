@@ -6,47 +6,47 @@
       <div class="col-sm">
         <h2 translate="basket.edit-basket.personal-information"></h2>
         <div formGroupName="customer">
-          <div class="form-group">
-            <label for="name" translate="basket.edit-basket.name"></label>
+          <div class="mb-3">
+            <label class="form-label" for="name" translate="basket.edit-basket.name"></label>
             <input formControlName="name" id="name" class="form-control" />
             <val-errors controlName="name" [label]="'basket.edit-basket.name-error-label' | translate"></val-errors>
           </div>
-          <div class="form-group">
-            <label for="organization" translate="basket.edit-basket.organization"></label>
+          <div class="mb-3">
+            <label class="form-label" for="organization" translate="basket.edit-basket.organization"></label>
             <input formControlName="organization" id="organization" class="form-control" />
           </div>
-          <div class="form-group">
-            <label for="email" translate="basket.edit-basket.email"></label>
+          <div class="mb-3">
+            <label class="form-label" for="email" translate="basket.edit-basket.email"></label>
             <input type="email" formControlName="email" id="email" class="form-control" />
             <val-errors controlName="email" [label]="'basket.edit-basket.email-error-label' | translate"></val-errors>
           </div>
-          <div class="form-group">
-            <label for="delivery-address" translate="basket.edit-basket.delivery-address"></label>
+          <div class="mb-3">
+            <label class="form-label" for="delivery-address" translate="basket.edit-basket.delivery-address"></label>
             <textarea formControlName="deliveryAddress" id="delivery-address" class="form-control"></textarea>
             <val-errors controlName="deliveryAddress" [label]="'basket.edit-basket.delivery-address-error-label' | translate"></val-errors>
           </div>
-          <div class="form-group">
-            <label for="billing-address" translate="basket.edit-basket.billing-address"></label>
-            <div class="custom-control custom-switch" [class.mb-2]="!useDeliveryAddressControl.value">
-              <input [formControl]="useDeliveryAddressControl" type="checkbox" class="custom-control-input" id="use-delivery-address" />
-              <label class="custom-control-label" for="use-delivery-address" translate="basket.edit-basket.use-delivery-address"></label>
+          <div class="mb-3">
+            <label class="form-label" for="billing-address" translate="basket.edit-basket.billing-address"></label>
+            <div class="form-check form-switch" [class.mb-2]="!useDeliveryAddressControl.value">
+              <input [formControl]="useDeliveryAddressControl" type="checkbox" class="form-check-input" id="use-delivery-address" />
+              <label class="form-check-label" for="use-delivery-address" translate="basket.edit-basket.use-delivery-address"></label>
             </div>
             <div [ngbCollapse]="useDeliveryAddressControl.value">
               <textarea formControlName="billingAddress" id="billing-address" class="form-control"></textarea>
             </div>
             <val-errors controlName="billingAddress" [label]="'basket.edit-basket.billing-address-error-label' | translate"></val-errors>
           </div>
-          <div class="form-group">
-            <label for="type" translate="basket.edit-basket.customer-type"></label>
-            <select formControlName="type" id="type" class="form-control custom-select">
+          <div class="mb-3">
+            <label class="form-label" for="type" translate="basket.edit-basket.customer-type"></label>
+            <select formControlName="type" id="type" class="form-select">
               <option [ngValue]="null"></option>
               <option *ngFor="let customerType of customerTypes" [value]="customerType">{{ customerType | customerTypeEnum }}</option>
             </select>
             <val-errors controlName="type" [label]="'basket.edit-basket.customer-type-error-label' | translate"></val-errors>
           </div>
         </div>
-        <div class="form-group">
-          <label for="rationale" translate="basket.edit-basket.rationale"></label>
+        <div class="mb-3">
+          <label class="form-label" for="rationale" translate="basket.edit-basket.rationale"></label>
           <textarea formControlName="rationale" id="rationale" class="form-control" style="height: 8rem"></textarea>
           <small class="text-muted form-text">
             <span translate="basket.edit-basket.rationale-hint"></span>
@@ -65,18 +65,18 @@
           <h3>{{ accessionHolderBasket.grcName }} - {{ accessionHolderBasket.accessionHolderName }}</h3>
 
           <table class="table table-sm">
-            <thead class="thead-light">
+            <thead class="table-light">
               <tr>
                 <th translate="basket.edit-basket.accession-heading"></th>
                 <th *ngIf="quantityDisplayed" translate="basket.edit-basket.quantity-heading" style="width: 25%"></th>
-                <th style="width: 20%"><span class="sr-only" translate="basket.edit-basket.actions-heading"></span></th>
+                <th style="width: 20%"><span class="visually-hidden" translate="basket.edit-basket.actions-heading"></span></th>
               </tr>
             </thead>
             <tbody>
               <tr *ngFor="let item of accessionHolderBasket.items; index as itemIndex" class="accession">
                 <td><rb-accession [accession]="item.accession"></rb-accession></td>
                 <td *ngIf="quantityDisplayed">{{ item.quantity | number }} {{ item.unit }}</td>
-                <td class="text-right">
+                <td class="text-end">
                   <button
                     [disabled]="deleteItemDisabled"
                     type="button"
@@ -85,7 +85,7 @@
                   >
                     <fa-icon [icon]="deleteIcon"></fa-icon>
                     <span
-                      class="sr-only"
+                      class="visually-hidden"
                       translate="basket.edit-basket.delete-accession"
                       [translateParams]="{
                         name: item.accession.name,
@@ -108,25 +108,18 @@
           <a [href]="gdprDetailsUrl" target="_blank" translate="basket.edit-basket.data-collection-link"></a>
         </div>
 
-        <div class="form-group form-check mb-0">
-          <div class="small">
-            <input formControlName="gdprAgreement" type="checkbox" class="form-check-input" id="gdpr-agreement" />
-            <label
-              class="form-check-label"
-              style="margin-top: 2px"
-              for="gdpr-agreement"
-              translate="basket.edit-basket.gdpr-agreement"
-            ></label>
-          </div>
-          <val-errors controlName="gdprAgreement">
-            <ng-template valError="required"><span translate="basket.edit-basket.gdpr-agreement-required"></span></ng-template>
-          </val-errors>
+        <div class="form-check small">
+          <input formControlName="gdprAgreement" type="checkbox" class="form-check-input" id="gdpr-agreement" />
+          <label class="form-check-label" for="gdpr-agreement" translate="basket.edit-basket.gdpr-agreement"></label>
         </div>
+        <val-errors controlName="gdprAgreement">
+          <ng-template valError="required"><span translate="basket.edit-basket.gdpr-agreement-required"></span></ng-template>
+        </val-errors>
       </div>
 
       <div class="text-center mt-4">
         <button class="btn btn-primary" id="save" [class.save-forbidden]="saveForbidden">
-          <fa-icon [icon]="saveIcon" class="mr-1"></fa-icon>
+          <fa-icon [icon]="saveIcon" class="me-1"></fa-icon>
           <span translate="basket.edit-basket.save"></span>
         </button>
       </div>
