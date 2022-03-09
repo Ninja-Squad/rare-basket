@@ -7,9 +7,9 @@ plugins {
 }
 
 node {
-    version.set("14.17.0")
-    npmVersion.set("6.14.10")
-    yarnVersion.set("1.22.10")
+    version.set("16.14.0")
+    npmVersion.set("6.14.16")
+    yarnVersion.set("1.22.17")
     download.set(true)
 }
 
