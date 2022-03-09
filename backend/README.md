@@ -18,6 +18,12 @@ There are actually two databases available: one to actually run the application,
 used for the unit tests (in order to be able to run the application and unit tests
 at the same time, without the tests erasing the data of the application).
 
+You can populate the database with testing data, using:
+
+```bash
+psql -h localhost -U rarebasket -f ./backend/database/testing/testing-data.sql
+```
+
 ## Database schema migrations
 
 [Flyway](https://flywaydb.org/) is used to handle the schema migrations, which are executed automatically
