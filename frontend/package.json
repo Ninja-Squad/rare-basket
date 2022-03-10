@@ -61,5 +61,8 @@
     "ngx-speculoos": "7.2.0",
     "prettier": "2.5.1",
     "typescript": "4.5.5"
+  },
+  "resolutions": {
+    "@fortawesome/fontawesome-common-types": "0.2.36"
   }
 }
