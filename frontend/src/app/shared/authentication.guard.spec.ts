@@ -21,27 +21,21 @@ describe('AuthenticationGuard', () => {
     state = { url: '/foo' } as RouterStateSnapshot;
   });
 
-  it(
-    'should route if authenticated',
-    waitForAsync(() => {
-      authenticationService.isAuthenticated.and.returnValue(of(true));
-      guard.canActivate(null, state).subscribe(value => expect(value).toBe(true));
-      guard.canActivateChild(null, state).subscribe(value => expect(value).toBe(true));
-    })
-  );
+  it('should route if authenticated', waitForAsync(() => {
+    authenticationService.isAuthenticated.and.returnValue(of(true));
+    guard.canActivate(null, state).subscribe(value => expect(value).toBe(true));
+    guard.canActivateChild(null, state).subscribe(value => expect(value).toBe(true));
+  }));
 
-  it(
-    'should login if not authenticated',
-    waitForAsync(() => {
-      authenticationService.isAuthenticated.and.returnValue(of(false));
-      guard.canActivate(null, state).subscribe(value => {
-        expect(value).toBe(false);
-        expect(authenticationService.login).toHaveBeenCalledWith(state.url);
-      });
-      guard.canActivateChild(null, state).subscribe(value => {
-        expect(value).toBe(false);
-        expect(authenticationService.login).toHaveBeenCalledWith(state.url);
-      });
-    })
-  );
+  it('should login if not authenticated', waitForAsync(() => {
+    authenticationService.isAuthenticated.and.returnValue(of(false));
+    guard.canActivate(null, state).subscribe(value => {
+      expect(value).toBe(false);
+      expect(authenticationService.login).toHaveBeenCalledWith(state.url);
+    });
+    guard.canActivateChild(null, state).subscribe(value => {
+      expect(value).toBe(false);
+      expect(authenticationService.login).toHaveBeenCalledWith(state.url);
+    });
+  }));
 });
