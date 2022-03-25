@@ -8,7 +8,7 @@ jobs: # a collection of steps
 
     docker: # run the steps with Docker
       - image: cimg/openjdk:11.0-browsers # ...with this image as the primary container; this is where all `steps` will run
-      - image: circleci/postgres:11.1-alpine-ram # this is a deprecated image, but we can't use cimg/postgres as it does not have the FR locale https://github.com/CircleCI-Public/cimg-postgres/issues/17
+      - image: postgres:11.1-alpine
         name: postgres
 
     steps: # a collection of executable commands
