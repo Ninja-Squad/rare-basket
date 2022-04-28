@@ -2,7 +2,7 @@ import { TestBed } from '@angular/core/testing';
 
 import { AuthenticationService } from './authentication.service';
 import { WINDOW } from './window.service';
-import { LoginResponse, OidcConfigService, OidcSecurityService } from 'angular-auth-oidc-client';
+import { LoginResponse, OidcSecurityService } from 'angular-auth-oidc-client';
 import { Router } from '@angular/router';
 import { Subject } from 'rxjs';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
@@ -11,7 +11,6 @@ import { createMock } from 'ngx-speculoos';
 describe('AuthenticationService', () => {
   let service: AuthenticationService;
   let fakeWindow: Window;
-  let oidcConfigService: jasmine.SpyObj<OidcConfigService>;
   let oidcSecurityService: jasmine.SpyObj<OidcSecurityService>;
   let router: jasmine.SpyObj<Router>;
   let http: HttpTestingController;
@@ -22,8 +21,6 @@ describe('AuthenticationService', () => {
       location: 'http://localhost:4201/orders',
       sessionStorage: jasmine.createSpyObj<Storage>('SessionStorage', ['getItem', 'setItem', 'removeItem'])
     } as unknown as Window;
-
-    oidcConfigService = createMock(OidcConfigService);
 
     oidcSecurityService = jasmine.createSpyObj<OidcSecurityService>('OidcSecurityService', [
       'authorize',
@@ -39,7 +36,6 @@ describe('AuthenticationService', () => {
       providers: [
         { provide: WINDOW, useValue: fakeWindow },
         { provide: OidcSecurityService, useValue: oidcSecurityService },
-        { provide: OidcConfigService, useValue: oidcConfigService },
         { provide: Router, useValue: router }
       ]
     });

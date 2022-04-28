@@ -6,6 +6,7 @@ import { HTTP_INTERCEPTORS, HttpClient } from '@angular/common/http';
 import { OidcSecurityService } from 'angular-auth-oidc-client';
 import { Injector } from '@angular/core';
 import { createMock } from 'ngx-speculoos';
+import { of } from 'rxjs';
 
 describe('AuthenticationInterceptorService', () => {
   let httpTestingController: HttpTestingController;
@@ -34,6 +35,7 @@ describe('AuthenticationInterceptorService', () => {
   });
 
   it('should not do anything if not authenticated', () => {
+    oidcSecurityService.getAccessToken.and.returnValue(of(null));
     httpClient.get('api/foo').subscribe();
 
     const testRequest = httpTestingController.expectOne('api/foo');
@@ -41,7 +43,7 @@ describe('AuthenticationInterceptorService', () => {
   });
 
   it('should not do anything if not to api', () => {
-    oidcSecurityService.getAccessToken.and.returnValue('token');
+    oidcSecurityService.getAccessToken.and.returnValue(of('token'));
     httpClient.get('http://foo.bar.comapi/foo').subscribe();
 
     const testRequest = httpTestingController.expectOne('http://foo.bar.comapi/foo');
@@ -49,7 +51,7 @@ describe('AuthenticationInterceptorService', () => {
   });
 
   it('should add token if authenticated and request to api', () => {
-    oidcSecurityService.getAccessToken.and.returnValue('token');
+    oidcSecurityService.getAccessToken.and.returnValue(of('token'));
     httpClient.get('api/foo').subscribe();
 
     const testRequest = httpTestingController.expectOne('api/foo');

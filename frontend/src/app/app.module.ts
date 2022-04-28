@@ -10,8 +10,8 @@ import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { ValdemortModule } from 'ngx-valdemort';
 import { ValidationDefaultsComponent } from './validation-defaults/validation-defaults.component';
 import { I18nModule } from './i18n/i18n.module';
-import { AuthModule, StsConfigLoader } from 'angular-auth-oidc-client';
-import { AuthenticationConfigService, authFactory } from './shared/authentication.service';
+import { AbstractSecurityStorage, AuthModule, StsConfigLoader } from 'angular-auth-oidc-client';
+import { AuthenticationConfigService, authFactory, CustomSecurityStorage } from './shared/authentication.service';
 import { AuthenticationInterceptorService } from './shared/authentication-interceptor.service';
 import { NavbarComponent } from './navbar/navbar.component';
 import { ErrorInterceptorService } from './shared/error-interceptor.service';
@@ -37,7 +37,8 @@ import { RbNgbModule } from './rb-ngb/rb-ngb.module';
   ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: AuthenticationInterceptorService, multi: true },
-    { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptorService, multi: true }
+    { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptorService, multi: true },
+    { provide: AbstractSecurityStorage, useClass: CustomSecurityStorage }
   ],
   bootstrap: [AppComponent]
 })
