@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 
@@ -68,8 +69,14 @@ class DeliveryFormGeneratorTest {
 
         ResourceBundleMessageSource messageSource = new ResourceBundleMessageSource();
         messageSource.setBasename("messages");
+        messageSource.setDefaultEncoding(StandardCharsets.UTF_8.name());
         byte[] pdf = new DeliveryFormGenerator(messageSource).generate(order);
         assertThat(pdf).isNotEmpty();
+
+        // uncomment this (and add the necessary imports) to have a look at the generated PDF
+        // Path pdfFile = Files.write(Files.createTempFile("", ".pdf"), pdf);
+        // Desktop.getDesktop().open(pdfFile.toFile());
+
         PdfDocument parsed = new PdfDocument(new PdfReader(new ByteArrayInputStream(pdf)));
         assertThat(parsed.getNumberOfPages()).isEqualTo(1);
     }
