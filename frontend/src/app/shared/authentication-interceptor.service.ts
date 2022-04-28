@@ -1,6 +1,6 @@
 import { Injectable, Injector } from '@angular/core';
 import { HttpEvent, HttpHandler, HttpInterceptor, HttpRequest } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, first, switchMap } from 'rxjs';
 import { OidcSecurityService } from 'angular-auth-oidc-client';
 
 @Injectable()
@@ -16,13 +16,19 @@ export class AuthenticationInterceptorService implements HttpInterceptor {
       this.oidcSecurityService = this.injector.get(OidcSecurityService);
     }
 
-    let request = req;
     if (req.url.startsWith('api')) {
-      const token = this.oidcSecurityService.getAccessToken();
-      if (token) {
-        request = req.clone({ setHeaders: { Authorization: `Bearer ${token}` } });
-      }
+      return this.oidcSecurityService.getAccessToken().pipe(
+        first(),
+        switchMap(token => {
+          let request = req;
+          if (token) {
+            request = req.clone({ setHeaders: { Authorization: `Bearer ${token}` } });
+          }
+          return next.handle(request);
+        })
+      );
+    } else {
+      return next.handle(req);
     }
-    return next.handle(request);
   }
 }

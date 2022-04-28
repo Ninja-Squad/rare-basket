@@ -96,7 +96,8 @@ export class AuthenticationService {
  * We use local storage instead of the default local storage, otherwise we can't even open
  * a link in a new tab without losing authentication
  */
-class CustomSecurityStorage extends AbstractSecurityStorage {
+@Injectable()
+export class CustomSecurityStorage extends AbstractSecurityStorage {
   constructor() {
     super();
   }
@@ -170,7 +171,6 @@ export class AuthenticationConfigService {
       useRefreshToken: true,
       ignoreNonceAfterRefresh: true,
       autoUserInfo: false,
-      storage: new CustomSecurityStorage(),
       authWellknownEndpoints
     };
   }
