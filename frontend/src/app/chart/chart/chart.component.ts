@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, ElementRef, Input, OnChanges, OnDestroy, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, Input, NgZone, OnChanges, OnDestroy, ViewChild } from '@angular/core';
 import { Chart, ChartConfiguration } from 'chart.js';
 
 @Component({
@@ -11,6 +11,8 @@ export class ChartComponent implements AfterViewInit, OnChanges, OnDestroy {
   @ViewChild('canvas') canvas: ElementRef<HTMLCanvasElement>;
 
   private chart: Chart;
+
+  constructor(private zone: NgZone) {}
 
   ngOnChanges() {
     this.createChart();
@@ -32,7 +34,9 @@ export class ChartComponent implements AfterViewInit, OnChanges, OnDestroy {
     }
     if (this.canvas) {
       const ctx = this.canvas.nativeElement;
-      this.chart = new Chart(ctx, this.configuration);
+      this.zone.runOutsideAngular(() => {
+        this.chart = new Chart(ctx, this.configuration);
+      });
     }
   }
 }
