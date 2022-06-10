@@ -1,6 +1,6 @@
 import { AfterViewInit, Component, ElementRef, EventEmitter, Input, OnInit, Output, QueryList, ViewChildren } from '@angular/core';
 import { Order, OrderCommand, OrderItemCommand } from '../order.model';
-import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { UntypedFormArray, UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { faFileCsv, faPlus, faTrash } from '@fortawesome/free-solid-svg-icons';
 import { ModalService } from '../../rb-ngb/modal.service';
 import { CsvModalComponent } from '../csv-modal/csv-modal.component';
@@ -34,13 +34,13 @@ export class EditOrderComponent implements OnInit, AfterViewInit {
   @ViewChildren('name')
   nameInputs: QueryList<ElementRef<HTMLInputElement>>;
 
-  form: FormGroup;
+  form: UntypedFormGroup;
 
   deleteIcon = faTrash;
   addItemIcon = faPlus;
   csvIcon = faFileCsv;
 
-  constructor(private fb: FormBuilder, private modalService: ModalService) {}
+  constructor(private fb: UntypedFormBuilder, private modalService: ModalService) {}
 
   ngOnInit() {
     this.form = this.fb.group({
@@ -61,8 +61,8 @@ export class EditOrderComponent implements OnInit, AfterViewInit {
     this.nameInputs.first?.nativeElement?.focus();
   }
 
-  get itemGroups(): FormArray {
-    return this.form.get('items') as FormArray;
+  get itemGroups(): UntypedFormArray {
+    return this.form.get('items') as UntypedFormArray;
   }
 
   save() {
@@ -96,7 +96,7 @@ export class EditOrderComponent implements OnInit, AfterViewInit {
     this.cancelled.emit(undefined);
   }
 
-  private createItemGroup(name: string, identifier: string, quantity: number | null, unit: string | null): FormGroup {
+  private createItemGroup(name: string, identifier: string, quantity: number | null, unit: string | null): UntypedFormGroup {
     return this.fb.group({
       name: [name, Validators.required],
       identifier: [identifier, Validators.required],

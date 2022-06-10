@@ -1,5 +1,5 @@
 import { Component, ElementRef, EventEmitter, Input, OnChanges, Output, SimpleChanges, ViewChild } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import {
   ALL_DOCUMENT_TYPES,
   DetailedOrder,
@@ -19,7 +19,7 @@ const maxFileSize = 10 * 1024 * 1024; // 10 MB
   styleUrls: ['./edit-document.component.scss']
 })
 export class EditDocumentComponent implements OnChanges {
-  form: FormGroup;
+  form: UntypedFormGroup;
 
   @ViewChild('fileInput')
   fileInput: ElementRef<HTMLInputElement>;
@@ -40,7 +40,7 @@ export class EditDocumentComponent implements OnChanges {
   documentTypes: Array<DocumentType>;
   saveIcon = faFileUpload;
 
-  constructor(fb: FormBuilder) {
+  constructor(fb: UntypedFormBuilder) {
     const typeControl = fb.control(null, Validators.required);
     const descriptionControl = fb.control('');
     const onDeliveryFormControl = fb.control(false);

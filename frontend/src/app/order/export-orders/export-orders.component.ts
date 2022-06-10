@@ -1,5 +1,5 @@
 import { Component, Inject, LOCALE_ID } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { formatDate } from '@angular/common';
 import { OrderService } from '../order.service';
 import { DownloadService } from '../../shared/download.service';
@@ -13,12 +13,12 @@ import { validDateRange } from '../../shared/validators';
   styleUrls: ['./export-orders.component.scss']
 })
 export class ExportOrdersComponent {
-  form: FormGroup;
+  form: UntypedFormGroup;
   exporting = false;
   exportingIcon = faSpinner;
 
   constructor(
-    fb: FormBuilder,
+    fb: UntypedFormBuilder,
     @Inject(LOCALE_ID) locale: string,
     private orderService: OrderService,
     private downloadService: DownloadService

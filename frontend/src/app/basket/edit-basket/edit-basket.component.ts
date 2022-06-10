@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Inject, Input, LOCALE_ID, OnInit, Output } from '@angular/core';
 import { ALL_CUSTOMER_TYPES, Basket, BasketCommand, BasketItemCommand, CustomerType, Language } from '../basket.model';
-import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
 import { faCheck, faTrash } from '@fortawesome/free-solid-svg-icons';
 import { ConfirmationService } from '../../shared/confirmation.service';
 import { environment } from '../../../environments/environment';
@@ -33,8 +33,8 @@ export class EditBasketComponent implements OnInit {
 
   gdprDetailsUrl = environment.gdprDetailsUrl;
   customerTypes = ALL_CUSTOMER_TYPES;
-  form: FormGroup;
-  useDeliveryAddressControl: FormControl;
+  form: UntypedFormGroup;
+  useDeliveryAddressControl: UntypedFormControl;
 
   deleteIcon = faTrash;
   saveIcon = faCheck;
@@ -43,7 +43,11 @@ export class EditBasketComponent implements OnInit {
   deleteItemDisabled = false;
   saveForbidden = false;
 
-  constructor(private fb: FormBuilder, private confirmationService: ConfirmationService, @Inject(LOCALE_ID) private language: Language) {}
+  constructor(
+    private fb: UntypedFormBuilder,
+    private confirmationService: ConfirmationService,
+    @Inject(LOCALE_ID) private language: Language
+  ) {}
 
   ngOnInit(): void {
     const customer = this.basket.customer;

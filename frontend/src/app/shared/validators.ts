@@ -1,6 +1,6 @@
-import { FormGroup, ValidationErrors } from '@angular/forms';
+import { UntypedFormGroup, ValidationErrors } from '@angular/forms';
 
-export function validDateRange(group: FormGroup): ValidationErrors | null {
+export function validDateRange(group: UntypedFormGroup): ValidationErrors | null {
   const from = group.value.from;
   const to = group.value.to;
 

@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AccessionHolder, Grc, Permission, User, UserCommand } from '../../shared/user.model';
-import { AbstractControl, FormArray, FormBuilder, FormGroup, ValidationErrors, Validators } from '@angular/forms';
+import { AbstractControl, UntypedFormArray, UntypedFormBuilder, UntypedFormGroup, ValidationErrors, Validators } from '@angular/forms';
 import { UserService } from '../user.service';
 import { combineLatest, Observable, of } from 'rxjs';
 import { environment } from '../../../environments/environment';
@@ -37,14 +37,14 @@ function atLeastOneSelection(control: AbstractControl): ValidationErrors | null 
 export class EditUserComponent implements OnInit {
   mode: 'create' | 'update' | null = null;
   editedUser: User;
-  form: FormGroup;
+  form: UntypedFormGroup;
 
   grcOptionGroups: Array<GrcOptionGroup>;
   keycloakUrl = `${environment.keycloakUrl}${environment.usersRealmPath}`;
 
   constructor(
     private route: ActivatedRoute,
-    private fb: FormBuilder,
+    private fb: UntypedFormBuilder,
     private userService: UserService,
     private accessionHolderService: AccessionHolderService,
     private grcService: GrcService,
@@ -94,8 +94,8 @@ export class EditUserComponent implements OnInit {
     });
   }
 
-  get visualizationGrcs(): FormArray {
-    return this.form.get('visualizationGrcs') as FormArray;
+  get visualizationGrcs(): UntypedFormArray {
+    return this.form.get('visualizationGrcs') as UntypedFormArray;
   }
 
   ngOnInit() {

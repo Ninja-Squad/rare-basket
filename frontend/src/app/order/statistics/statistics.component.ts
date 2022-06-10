@@ -5,7 +5,7 @@ import { ArcElement, Chart, ChartConfiguration, DoughnutController, Legend, Tool
 import { COLORS } from '../../chart/colors';
 import { TranslateService } from '@ngx-translate/core';
 import { formatDate, formatNumber, formatPercent } from '@angular/common';
-import { AbstractControl, FormArray, FormBuilder, FormGroup, ValidationErrors, Validators } from '@angular/forms';
+import { AbstractControl, UntypedFormArray, UntypedFormBuilder, UntypedFormGroup, ValidationErrors, Validators } from '@angular/forms';
 import { ActivatedRoute, Params, Router } from '@angular/router';
 import { validDateRange } from '../../shared/validators';
 import { Grc, User } from '../../shared/user.model';
@@ -32,7 +32,7 @@ function atLeastOneSelection(control: AbstractControl): ValidationErrors | null 
   styleUrls: ['./statistics.component.scss']
 })
 export class StatisticsComponent implements OnInit {
-  form: FormGroup;
+  form: UntypedFormGroup;
 
   stats: OrderStatistics;
   customerTypeDoughnut: ChartConfiguration<'doughnut'>;
@@ -44,7 +44,7 @@ export class StatisticsComponent implements OnInit {
   private choosableGrcs: Array<Grc>;
 
   constructor(
-    private fb: FormBuilder,
+    private fb: UntypedFormBuilder,
     private router: Router,
     private route: ActivatedRoute,
     private orderService: OrderService,
@@ -109,8 +109,8 @@ export class StatisticsComponent implements OnInit {
     return stat.finalizedOrderCount / this.stats.finalizedOrderCount;
   }
 
-  get grcs(): FormArray {
-    return this.form.get('grcs') as FormArray;
+  get grcs(): UntypedFormArray {
+    return this.form.get('grcs') as UntypedFormArray;
   }
 
   get constrainedPerimeterGrcs(): string {
@@ -210,7 +210,7 @@ export class StatisticsComponent implements OnInit {
     };
   }
 
-  private createForm(): FormGroup {
+  private createForm(): UntypedFormGroup {
     const now = new Date();
     const startOfYear = new Date();
     startOfYear.setDate(1);

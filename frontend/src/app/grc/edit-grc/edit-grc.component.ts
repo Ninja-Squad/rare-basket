@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Grc, GrcCommand } from '../../shared/user.model';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { GrcService } from '../../shared/grc.service';
 import { Observable } from 'rxjs';
@@ -20,11 +20,11 @@ interface FormValue {
 export class EditGrcComponent implements OnInit {
   mode: 'create' | 'update' = 'create';
   editedGrc: Grc;
-  form: FormGroup;
+  form: UntypedFormGroup;
 
   constructor(
     private route: ActivatedRoute,
-    fb: FormBuilder,
+    fb: UntypedFormBuilder,
     private grcService: GrcService,
     private router: Router,
     private toastService: ToastService

@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { AccessionHolder, AccessionHolderCommand, Grc } from '../../shared/user.model';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AccessionHolderService } from '../../shared/accession-holder.service';
 import { GrcService } from '../../shared/grc.service';
@@ -22,12 +22,12 @@ interface FormValue {
 export class EditAccessionHolderComponent implements OnInit {
   mode: 'create' | 'update' = 'create';
   editedAccessionHolder: AccessionHolder;
-  form: FormGroup;
+  form: UntypedFormGroup;
   grcs: Array<Grc>;
 
   constructor(
     private route: ActivatedRoute,
-    fb: FormBuilder,
+    fb: UntypedFormBuilder,
     private accessionHolderService: AccessionHolderService,
     private grcService: GrcService,
     private router: Router,

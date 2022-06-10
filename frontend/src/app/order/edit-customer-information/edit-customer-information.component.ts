@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { ALL_CUSTOMER_TYPES, ALL_LANGUAGES, CustomerCommand } from '../../basket/basket.model';
-import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
 import { CustomerInformationCommand } from '../order.model';
 
 @Component({
@@ -21,12 +21,12 @@ export class EditCustomerInformationComponent implements OnInit {
   @Output()
   readonly cancelled = new EventEmitter<void>();
 
-  form: FormGroup;
-  useDeliveryAddressControl: FormControl;
+  form: UntypedFormGroup;
+  useDeliveryAddressControl: UntypedFormControl;
   customerTypes = ALL_CUSTOMER_TYPES;
   languages = ALL_LANGUAGES;
 
-  constructor(fb: FormBuilder) {
+  constructor(fb: UntypedFormBuilder) {
     this.useDeliveryAddressControl = fb.control(false);
     this.form = fb.group({
       customer: fb.group({
