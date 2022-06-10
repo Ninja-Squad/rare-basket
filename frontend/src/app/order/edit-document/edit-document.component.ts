@@ -1,5 +1,5 @@
 import { Component, ElementRef, EventEmitter, Input, OnChanges, Output, SimpleChanges, ViewChild } from '@angular/core';
-import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
+import { NonNullableFormBuilder, Validators } from '@angular/forms';
 import {
   ALL_DOCUMENT_TYPES,
   DetailedOrder,
@@ -19,7 +19,11 @@ const maxFileSize = 10 * 1024 * 1024; // 10 MB
   styleUrls: ['./edit-document.component.scss']
 })
 export class EditDocumentComponent implements OnChanges {
-  form: UntypedFormGroup;
+  form = this.fb.group({
+    type: [null as DocumentType, Validators.required],
+    description: '',
+    onDeliveryForm: false
+  });
 
   @ViewChild('fileInput')
   fileInput: ElementRef<HTMLInputElement>;
@@ -40,18 +44,10 @@ export class EditDocumentComponent implements OnChanges {
   documentTypes: Array<DocumentType>;
   saveIcon = faFileUpload;
 
-  constructor(fb: UntypedFormBuilder) {
-    const typeControl = fb.control(null, Validators.required);
-    const descriptionControl = fb.control('');
-    const onDeliveryFormControl = fb.control(false);
-
-    this.form = fb.group({
-      type: typeControl,
-      description: descriptionControl,
-      onDeliveryForm: onDeliveryFormControl
-    });
-
-    typeControl.valueChanges.subscribe((newType: DocumentType) => {
+  constructor(private fb: NonNullableFormBuilder) {
+    const descriptionControl = this.form.get('description');
+    const onDeliveryFormControl = this.form.get('onDeliveryForm');
+    this.form.get('type').valueChanges.subscribe((newType: DocumentType) => {
       descriptionControl.setValidators(newType === 'OTHER' ? Validators.required : []);
       descriptionControl.updateValueAndValidity();
 
@@ -100,7 +96,14 @@ export class EditDocumentComponent implements OnChanges {
     }
 
     const document = this.form.value;
-    const command = { file: this.selectedFile, document };
+    const command: DocumentCommand = {
+      file: this.selectedFile,
+      document: {
+        type: document.type,
+        description: document.description,
+        onDeliveryForm: document.onDeliveryForm
+      }
+    };
     this.saved.emit(command);
   }
 

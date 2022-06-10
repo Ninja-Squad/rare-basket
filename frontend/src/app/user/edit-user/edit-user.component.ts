@@ -1,23 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AccessionHolder, Grc, Permission, User, UserCommand } from '../../shared/user.model';
-import { AbstractControl, UntypedFormArray, UntypedFormBuilder, UntypedFormGroup, ValidationErrors, Validators } from '@angular/forms';
+import { AbstractControl, FormArray, FormControl, FormGroup, NonNullableFormBuilder, ValidationErrors, Validators } from '@angular/forms';
 import { UserService } from '../user.service';
 import { combineLatest, Observable, of } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { AccessionHolderService } from '../../shared/accession-holder.service';
 import { GrcService } from '../../shared/grc.service';
 import { ToastService } from '../../shared/toast.service';
-
-interface FormValue {
-  name: string;
-  orderManagement: boolean;
-  accessionHolderId: number;
-  orderVisualization: boolean;
-  globalVisualization: boolean;
-  visualizationGrcs: Array<{ grc: Grc; selected: boolean }>;
-  administration: boolean;
-}
 
 interface GrcOptionGroup {
   name: string;
@@ -37,30 +27,28 @@ function atLeastOneSelection(control: AbstractControl): ValidationErrors | null 
 export class EditUserComponent implements OnInit {
   mode: 'create' | 'update' | null = null;
   editedUser: User;
-  form: UntypedFormGroup;
+  form = this.fb.group({
+    name: ['', Validators.required],
+    orderManagement: false,
+    accessionHolderId: [null as number, Validators.required],
+    orderVisualization: false,
+    globalVisualization: false,
+    visualizationGrcs: this.fb.array<FormGroup<{ grc: FormControl<Grc>; selected: FormControl<boolean> }>>([], atLeastOneSelection),
+    administration: false
+  });
 
   grcOptionGroups: Array<GrcOptionGroup>;
   keycloakUrl = `${environment.keycloakUrl}${environment.usersRealmPath}`;
 
   constructor(
     private route: ActivatedRoute,
-    private fb: UntypedFormBuilder,
+    private fb: NonNullableFormBuilder,
     private userService: UserService,
     private accessionHolderService: AccessionHolderService,
     private grcService: GrcService,
     private router: Router,
     private toastService: ToastService
   ) {
-    this.form = fb.group({
-      name: ['', Validators.required],
-      orderManagement: false,
-      accessionHolderId: [null, Validators.required],
-      orderVisualization: false,
-      globalVisualization: false,
-      visualizationGrcs: fb.array([], atLeastOneSelection),
-      administration: false
-    });
-
     this.form.get('orderManagement').valueChanges.subscribe(orderManagementSelected => {
       const accessionHolderControl = this.form.get('accessionHolderId');
       if (orderManagementSelected) {
@@ -86,7 +74,7 @@ export class EditUserComponent implements OnInit {
     });
 
     this.form.get('globalVisualization').valueChanges.subscribe(globalVisualizationSelected => {
-      if ((this.form.value as FormValue).orderVisualization && !globalVisualizationSelected) {
+      if (this.form.value.orderVisualization && !globalVisualizationSelected) {
         this.visualizationGrcs.enable();
       } else {
         this.visualizationGrcs.disable();
@@ -94,8 +82,8 @@ export class EditUserComponent implements OnInit {
     });
   }
 
-  get visualizationGrcs(): UntypedFormArray {
-    return this.form.get('visualizationGrcs') as UntypedFormArray;
+  get visualizationGrcs() {
+    return this.form.get('visualizationGrcs') as FormArray<FormGroup<{ grc: FormControl<Grc>; selected: FormControl<boolean> }>>;
   }
 
   ngOnInit() {
@@ -110,7 +98,7 @@ export class EditUserComponent implements OnInit {
         this.visualizationGrcs.push(
           this.fb.group({
             grc,
-            selected: false
+            selected: false as boolean
           })
         );
       });
@@ -126,7 +114,7 @@ export class EditUserComponent implements OnInit {
       this.editedUser = user;
       if (user) {
         this.mode = 'update';
-        const formValue: FormValue = {
+        this.form.setValue({
           name: user.name,
           orderManagement: user.permissions.includes('ORDER_MANAGEMENT'),
           accessionHolderId: user.accessionHolder?.id ?? null,
@@ -137,9 +125,7 @@ export class EditUserComponent implements OnInit {
             selected: user.visualizationGrcs.some(g => g.id === grc.id)
           })),
           administration: user.permissions.includes('ADMINISTRATION')
-        };
-
-        this.form.setValue(formValue);
+        });
       } else {
         this.mode = 'create';
       }
@@ -151,7 +137,7 @@ export class EditUserComponent implements OnInit {
       return;
     }
 
-    const formValue: FormValue = this.form.value;
+    const formValue = this.form.value;
     const permissions: Array<Permission> = [];
     if (formValue.orderManagement) {
       permissions.push('ORDER_MANAGEMENT');

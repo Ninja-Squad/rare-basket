@@ -1,25 +1,10 @@
 import { Component, EventEmitter, Inject, Input, LOCALE_ID, OnInit, Output } from '@angular/core';
 import { ALL_CUSTOMER_TYPES, Basket, BasketCommand, BasketItemCommand, CustomerType, Language } from '../basket.model';
-import { UntypedFormBuilder, UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
+import { NonNullableFormBuilder, Validators } from '@angular/forms';
 import { faCheck, faTrash } from '@fortawesome/free-solid-svg-icons';
 import { ConfirmationService } from '../../shared/confirmation.service';
 import { environment } from '../../../environments/environment';
 import { timer } from 'rxjs';
-
-interface FormValue {
-  customer: {
-    name: string;
-    organization: string;
-    email: string;
-    deliveryAddress: string;
-    billingAddress: string;
-    useDeliveryAddress: boolean;
-    type: CustomerType;
-    language: Language;
-  };
-  rationale: string;
-  rgpdAgreement: boolean;
-}
 
 @Component({
   selector: 'rb-edit-basket',
@@ -33,8 +18,20 @@ export class EditBasketComponent implements OnInit {
 
   gdprDetailsUrl = environment.gdprDetailsUrl;
   customerTypes = ALL_CUSTOMER_TYPES;
-  form: UntypedFormGroup;
-  useDeliveryAddressControl: UntypedFormControl;
+  form = this.fb.group({
+    customer: this.fb.group({
+      name: [null as string, Validators.required],
+      organization: [null as string],
+      email: [null as string, [Validators.required, Validators.email]],
+      deliveryAddress: [null as string, Validators.required],
+      billingAddress: [null as string, Validators.required],
+      type: [null as CustomerType, Validators.required],
+      language: this.language
+    }),
+    rationale: null as string,
+    gdprAgreement: [false, Validators.requiredTrue]
+  });
+  useDeliveryAddressControl = this.fb.control(false);
 
   deleteIcon = faTrash;
   saveIcon = faCheck;
@@ -44,30 +41,30 @@ export class EditBasketComponent implements OnInit {
   saveForbidden = false;
 
   constructor(
-    private fb: UntypedFormBuilder,
+    private fb: NonNullableFormBuilder,
     private confirmationService: ConfirmationService,
     @Inject(LOCALE_ID) private language: Language
   ) {}
 
   ngOnInit(): void {
     const customer = this.basket.customer;
-    const customerGroup = this.fb.group({
-      name: [customer?.name ?? null, Validators.required],
-      organization: [customer?.organization ?? null],
-      email: [customer?.email ?? null, [Validators.required, Validators.email]],
-      deliveryAddress: [customer?.deliveryAddress ?? null, Validators.required],
-      billingAddress: [customer?.billingAddress ?? null, Validators.required],
-      type: [customer?.type ?? null, Validators.required],
+    const customerGroup = {
+      name: customer?.name ?? null,
+      organization: customer?.organization ?? null,
+      email: customer?.email ?? null,
+      deliveryAddress: customer?.deliveryAddress ?? null,
+      billingAddress: customer?.billingAddress ?? null,
+      type: customer?.type ?? null,
       language: this.language
-    });
-    this.form = this.fb.group({
+    };
+    this.form.setValue({
       customer: customerGroup,
-      rationale: [this.basket.rationale],
-      gdprAgreement: [false, Validators.requiredTrue]
+      rationale: this.basket.rationale ?? null,
+      gdprAgreement: false
     });
-    this.useDeliveryAddressControl = this.fb.control(customer?.deliveryAddress && customer?.deliveryAddress === customer?.billingAddress);
+    this.useDeliveryAddressControl.setValue(customer?.deliveryAddress && customer?.deliveryAddress === customer?.billingAddress);
     this.useDeliveryAddressControl.valueChanges.subscribe(useDeliveryAddress => {
-      const billingAddressControl = customerGroup.get('billingAddress');
+      const billingAddressControl = this.form.get('customer.billingAddress');
       if (useDeliveryAddress) {
         billingAddressControl.disable();
       } else {
@@ -109,12 +106,20 @@ export class EditBasketComponent implements OnInit {
       });
     });
 
-    const value: FormValue = this.form.value as FormValue;
+    const value = this.form.value;
     // use the delivery address for the billing address if necessary
     const customer = value.customer;
     customer.billingAddress = this.useDeliveryAddressControl.value ? customer.deliveryAddress : customer.billingAddress;
     const command: BasketCommand = {
-      customer,
+      customer: {
+        name: customer.name,
+        type: customer.type,
+        email: customer.email,
+        billingAddress: customer.billingAddress,
+        deliveryAddress: customer.deliveryAddress,
+        language: customer.language,
+        organization: customer.organization
+      },
       rationale: value.rationale,
       complete: true,
       items: itemCommands

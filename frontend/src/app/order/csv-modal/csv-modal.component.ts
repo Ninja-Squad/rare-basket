@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { UntypedFormBuilder, UntypedFormGroup } from '@angular/forms';
+import { NonNullableFormBuilder } from '@angular/forms';
 import { CsvResult, OrderCsvParserService } from '../order-csv-parser.service';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 
@@ -9,19 +9,16 @@ import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
   styleUrls: ['./csv-modal.component.scss']
 })
 export class CsvModalComponent {
-  form: UntypedFormGroup;
+  form = this.fb.group({
+    csv: ''
+  });
   result: CsvResult = {
     errors: [],
     items: []
   };
 
-  constructor(fb: UntypedFormBuilder, private modal: NgbActiveModal, private csvParser: OrderCsvParserService) {
-    const csvControl = fb.control('');
-    this.form = fb.group({
-      csv: csvControl
-    });
-
-    csvControl.valueChanges.subscribe(csv => (this.result = this.csvParser.parse(csv)));
+  constructor(private fb: NonNullableFormBuilder, private modal: NgbActiveModal, private csvParser: OrderCsvParserService) {
+    this.form.get('csv').valueChanges.subscribe(csv => (this.result = this.csvParser.parse(csv)));
   }
 
   close() {

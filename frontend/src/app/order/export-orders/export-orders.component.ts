@@ -1,5 +1,5 @@
 import { Component, Inject, LOCALE_ID } from '@angular/core';
-import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
+import { NonNullableFormBuilder, Validators } from '@angular/forms';
 import { formatDate } from '@angular/common';
 import { OrderService } from '../order.service';
 import { DownloadService } from '../../shared/download.service';
@@ -13,12 +13,18 @@ import { validDateRange } from '../../shared/validators';
   styleUrls: ['./export-orders.component.scss']
 })
 export class ExportOrdersComponent {
-  form: UntypedFormGroup;
+  form = this.fb.group(
+    {
+      from: [null as string, Validators.required],
+      to: [null as string, Validators.required]
+    },
+    { validators: validDateRange }
+  );
   exporting = false;
   exportingIcon = faSpinner;
 
   constructor(
-    fb: UntypedFormBuilder,
+    private fb: NonNullableFormBuilder,
     @Inject(LOCALE_ID) locale: string,
     private orderService: OrderService,
     private downloadService: DownloadService
@@ -28,13 +34,10 @@ export class ExportOrdersComponent {
     startOfYear.setDate(1);
     startOfYear.setMonth(0);
 
-    this.form = fb.group(
-      {
-        from: [formatDate(startOfYear, 'yyyy-MM-dd', locale), Validators.required],
-        to: [formatDate(now, 'yyyy-MM-dd', locale), Validators.required]
-      },
-      { validators: validDateRange }
-    );
+    this.form.setValue({
+      from: formatDate(startOfYear, 'yyyy-MM-dd', locale),
+      to: formatDate(now, 'yyyy-MM-dd', locale)
+    });
   }
 
   export() {

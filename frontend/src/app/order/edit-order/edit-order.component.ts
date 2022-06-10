@@ -1,6 +1,6 @@
 import { AfterViewInit, Component, ElementRef, EventEmitter, Input, OnInit, Output, QueryList, ViewChildren } from '@angular/core';
 import { Order, OrderCommand, OrderItemCommand } from '../order.model';
-import { UntypedFormArray, UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
+import { FormControl, FormGroup, NonNullableFormBuilder, Validators } from '@angular/forms';
 import { faFileCsv, faPlus, faTrash } from '@fortawesome/free-solid-svg-icons';
 import { ModalService } from '../../rb-ngb/modal.service';
 import { CsvModalComponent } from '../csv-modal/csv-modal.component';
@@ -10,10 +10,6 @@ interface ItemFormValue {
   identifier: string;
   quantity: number | null;
   unit: string | null;
-}
-
-export interface FormValue {
-  items: Array<ItemFormValue>;
 }
 
 @Component({
@@ -34,22 +30,31 @@ export class EditOrderComponent implements OnInit, AfterViewInit {
   @ViewChildren('name')
   nameInputs: QueryList<ElementRef<HTMLInputElement>>;
 
-  form: UntypedFormGroup;
+  itemGroups = this.fb.array<
+    FormGroup<{
+      name: FormControl<string>;
+      identifier: FormControl<string>;
+      quantity: FormControl<number | null>;
+      unit: FormControl<string | null>;
+    }>
+  >([]);
+
+  form = this.fb.group({
+    items: this.itemGroups
+  });
 
   deleteIcon = faTrash;
   addItemIcon = faPlus;
   csvIcon = faFileCsv;
 
-  constructor(private fb: UntypedFormBuilder, private modalService: ModalService) {}
+  constructor(private fb: NonNullableFormBuilder, private modalService: ModalService) {}
 
   ngOnInit() {
-    this.form = this.fb.group({
-      items: this.fb.array(
-        this.order.items.map(orderItem =>
-          this.createItemGroup(orderItem.accession.name, orderItem.accession.identifier, orderItem.quantity, orderItem.unit)
-        )
+    this.order.items.forEach(orderItem =>
+      this.itemGroups.push(
+        this.createItemGroup(orderItem.accession.name, orderItem.accession.identifier, orderItem.quantity, orderItem.unit)
       )
-    });
+    );
 
     // add item right away if there is none
     if (this.order.items.length === 0) {
@@ -61,17 +66,13 @@ export class EditOrderComponent implements OnInit, AfterViewInit {
     this.nameInputs.first?.nativeElement?.focus();
   }
 
-  get itemGroups(): UntypedFormArray {
-    return this.form.get('items') as UntypedFormArray;
-  }
-
   save() {
     if (this.form.invalid) {
       return;
     }
 
     const command: OrderCommand = {
-      items: (this.form.value as FormValue).items.map(item => ({
+      items: this.form.value.items.map(item => ({
         accession: {
           name: item.name,
           identifier: item.identifier
@@ -96,7 +97,7 @@ export class EditOrderComponent implements OnInit, AfterViewInit {
     this.cancelled.emit(undefined);
   }
 
-  private createItemGroup(name: string, identifier: string, quantity: number | null, unit: string | null): UntypedFormGroup {
+  private createItemGroup(name: string, identifier: string, quantity: number | null, unit: string | null) {
     return this.fb.group({
       name: [name, Validators.required],
       identifier: [identifier, Validators.required],
@@ -111,7 +112,7 @@ export class EditOrderComponent implements OnInit, AfterViewInit {
       // from scratch, and immediately open this component with an empty order item
       if (this.itemGroups.length > 0) {
         const lastIndex = this.itemGroups.length - 1;
-        const lastItemValue: ItemFormValue = this.itemGroups.controls[lastIndex].value;
+        const lastItemValue = this.itemGroups.controls[lastIndex].value;
         if (this.isBlank(lastItemValue)) {
           this.delete(lastIndex);
         }
@@ -122,7 +123,7 @@ export class EditOrderComponent implements OnInit, AfterViewInit {
     });
   }
 
-  private isBlank(value: ItemFormValue) {
+  private isBlank(value: Partial<ItemFormValue>) {
     return !value.name?.trim() && !value.identifier?.trim() && !value.quantity && !value.unit?.trim();
   }
 }

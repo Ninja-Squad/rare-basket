@@ -47,7 +47,7 @@
       </div>
       <div *ngIf="!this.form.value.global">
         <div formArrayName="grcs" class="border rounded py-1 px-2 grcs">
-          <div class="form-check" *ngFor="let grcGroup of grcs.controls; index as i" [formGroupName]="i">
+          <div class="form-check" *ngFor="let grcGroup of grcsFormArray.controls; index as i" [formGroupName]="i">
             <input formControlName="selected" class="form-check-input" type="checkbox" [id]="'grc-' + grcGroup.value.grc.id" />
             <label class="form-check-label" [for]="'grc-' + grcGroup.value.grc.id">
               {{ grcGroup.value.grc.name }}

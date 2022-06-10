@@ -1,18 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { AccessionHolder, AccessionHolderCommand, Grc } from '../../shared/user.model';
-import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
+import { NonNullableFormBuilder, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AccessionHolderService } from '../../shared/accession-holder.service';
 import { GrcService } from '../../shared/grc.service';
 import { Observable } from 'rxjs';
 import { ToastService } from '../../shared/toast.service';
-
-interface FormValue {
-  name: string;
-  email: string;
-  phone: string;
-  grcId: number;
-}
 
 @Component({
   selector: 'rb-edit-accession-holder',
@@ -22,24 +15,22 @@ interface FormValue {
 export class EditAccessionHolderComponent implements OnInit {
   mode: 'create' | 'update' = 'create';
   editedAccessionHolder: AccessionHolder;
-  form: UntypedFormGroup;
+  form = this.fb.group({
+    name: ['', Validators.required],
+    email: ['', [Validators.required, Validators.email]],
+    phone: ['', Validators.required],
+    grcId: [null as number, Validators.required]
+  });
   grcs: Array<Grc>;
 
   constructor(
     private route: ActivatedRoute,
-    fb: UntypedFormBuilder,
+    private fb: NonNullableFormBuilder,
     private accessionHolderService: AccessionHolderService,
     private grcService: GrcService,
     private router: Router,
     private toastService: ToastService
-  ) {
-    this.form = fb.group({
-      name: ['', Validators.required],
-      email: ['', [Validators.required, Validators.email]],
-      phone: ['', Validators.required],
-      grcId: [null, Validators.required]
-    });
-  }
+  ) {}
 
   ngOnInit(): void {
     this.grcService.list().subscribe(grcs => (this.grcs = grcs));
@@ -48,14 +39,12 @@ export class EditAccessionHolderComponent implements OnInit {
       this.mode = 'update';
       this.accessionHolderService.get(+accessionHolderId).subscribe(accessionHolder => {
         this.editedAccessionHolder = accessionHolder;
-
-        const formValue: FormValue = {
+        this.form.setValue({
           name: accessionHolder.name,
           email: accessionHolder.email,
           phone: accessionHolder.phone,
           grcId: accessionHolder.grc.id
-        };
-        this.form.setValue(formValue);
+        });
       });
     }
   }
@@ -65,7 +54,7 @@ export class EditAccessionHolderComponent implements OnInit {
       return;
     }
 
-    const formValue: FormValue = this.form.value;
+    const formValue = this.form.value;
     const command: AccessionHolderCommand = {
       name: formValue.name,
       email: formValue.email,

@@ -5,7 +5,7 @@ import { ArcElement, Chart, ChartConfiguration, DoughnutController, Legend, Tool
 import { COLORS } from '../../chart/colors';
 import { TranslateService } from '@ngx-translate/core';
 import { formatDate, formatNumber, formatPercent } from '@angular/common';
-import { AbstractControl, UntypedFormArray, UntypedFormBuilder, UntypedFormGroup, ValidationErrors, Validators } from '@angular/forms';
+import { AbstractControl, FormControl, FormGroup, NonNullableFormBuilder, ValidationErrors, Validators } from '@angular/forms';
 import { ActivatedRoute, Params, Router } from '@angular/router';
 import { validDateRange } from '../../shared/validators';
 import { Grc, User } from '../../shared/user.model';
@@ -32,7 +32,16 @@ function atLeastOneSelection(control: AbstractControl): ValidationErrors | null 
   styleUrls: ['./statistics.component.scss']
 })
 export class StatisticsComponent implements OnInit {
-  form: UntypedFormGroup;
+  grcsFormArray = this.fb.array<FormGroup<{ grc: FormControl<Grc>; selected: FormControl<boolean> }>>([], atLeastOneSelection);
+  form = this.fb.group(
+    {
+      from: [null as string, Validators.required],
+      to: [null as string, Validators.required],
+      global: null as boolean,
+      grcs: this.grcsFormArray
+    },
+    { validators: validDateRange }
+  );
 
   stats: OrderStatistics;
   customerTypeDoughnut: ChartConfiguration<'doughnut'>;
@@ -44,7 +53,7 @@ export class StatisticsComponent implements OnInit {
   private choosableGrcs: Array<Grc>;
 
   constructor(
-    private fb: UntypedFormBuilder,
+    private fb: NonNullableFormBuilder,
     private router: Router,
     private route: ActivatedRoute,
     private orderService: OrderService,
@@ -64,7 +73,7 @@ export class StatisticsComponent implements OnInit {
       )
       .subscribe(grcs => {
         this.choosableGrcs = grcs;
-        this.form = this.createForm();
+        this.populateForm();
         this.initializeForm();
         this.refresh();
       });
@@ -77,7 +86,7 @@ export class StatisticsComponent implements OnInit {
 
     this.refreshed = false;
     this.perimeterEdited = false;
-    const formValue: FormValue = this.form.value;
+    const formValue = this.form.value;
     const grcIds = formValue.global ? [] : formValue.grcs.filter(({ selected }) => selected).map(({ grc }) => grc.id);
 
     const queryParams: Params = {
@@ -109,12 +118,8 @@ export class StatisticsComponent implements OnInit {
     return stat.finalizedOrderCount / this.stats.finalizedOrderCount;
   }
 
-  get grcs(): UntypedFormArray {
-    return this.form.get('grcs') as UntypedFormArray;
-  }
-
   get constrainedPerimeterGrcs(): string {
-    const formValue: FormValue = this.form.value;
+    const formValue = this.form.value;
     return formValue.grcs
       .filter(({ selected }) => selected)
       .map(({ grc }) => grc.name)
@@ -134,12 +139,10 @@ export class StatisticsComponent implements OnInit {
     Chart.register(DoughnutController, ArcElement, Tooltip, Legend);
 
     const shortLabels: Array<string> = [];
-    const labels: Array<string> = [];
     const data: Array<number> = [];
     const backgroundColor: Array<string> = [];
 
     this.stats.customerTypeStatistics.forEach((value, index) => {
-      labels.push(this.translateService.instant(`enums.customer-type.${value.customerType}`));
       shortLabels.push(this.translateService.instant(`enums.short-customer-type.${value.customerType}`));
       data.push(value.finalizedOrderCount);
       backgroundColor.push(COLORS[index % COLORS.length]);
@@ -210,43 +213,34 @@ export class StatisticsComponent implements OnInit {
     };
   }
 
-  private createForm(): UntypedFormGroup {
+  private populateForm() {
     const now = new Date();
     const startOfYear = new Date();
     startOfYear.setDate(1);
     startOfYear.setMonth(0);
 
-    const grcsFormArray = this.fb.array([], atLeastOneSelection);
     this.choosableGrcs.forEach(grc => {
-      grcsFormArray.push(
+      this.grcsFormArray.push(
         this.fb.group({
           grc,
-          selected: false
+          selected: false as boolean
         })
       );
     });
-
-    const globalControl = this.fb.control(this.user.globalVisualization);
-
-    const result = this.fb.group(
-      {
-        from: [formatDate(startOfYear, 'yyyy-MM-dd', this.locale), Validators.required],
-        to: [formatDate(now, 'yyyy-MM-dd', this.locale), Validators.required],
-        global: globalControl,
-        grcs: grcsFormArray
-      },
-      { validators: validDateRange }
-    );
-
-    concat(of(globalControl.value), globalControl.valueChanges).subscribe(global => {
-      if (global) {
-        grcsFormArray.disable();
-      } else {
-        grcsFormArray.enable();
-      }
+    this.form.patchValue({
+      from: formatDate(startOfYear, 'yyyy-MM-dd', this.locale),
+      to: formatDate(now, 'yyyy-MM-dd', this.locale),
+      global: this.user.globalVisualization
     });
 
-    return result;
+    const globalControl = this.form.get('global');
+    concat(of(globalControl.value), globalControl.valueChanges).subscribe(global => {
+      if (global) {
+        this.grcsFormArray.disable();
+      } else {
+        this.grcsFormArray.enable();
+      }
+    });
   }
 
   private initializeForm() {

@@ -1,16 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { Grc, GrcCommand } from '../../shared/user.model';
-import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
+import { NonNullableFormBuilder, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { GrcService } from '../../shared/grc.service';
 import { Observable } from 'rxjs';
 import { ToastService } from '../../shared/toast.service';
-
-interface FormValue {
-  name: string;
-  institution: string;
-  address: string;
-}
 
 @Component({
   selector: 'rb-edit-grc',
@@ -20,21 +14,19 @@ interface FormValue {
 export class EditGrcComponent implements OnInit {
   mode: 'create' | 'update' = 'create';
   editedGrc: Grc;
-  form: UntypedFormGroup;
+  form = this.fb.group({
+    name: ['', Validators.required],
+    institution: ['', Validators.required],
+    address: ['', Validators.required]
+  });
 
   constructor(
     private route: ActivatedRoute,
-    fb: UntypedFormBuilder,
+    private fb: NonNullableFormBuilder,
     private grcService: GrcService,
     private router: Router,
     private toastService: ToastService
-  ) {
-    this.form = fb.group({
-      name: ['', Validators.required],
-      institution: ['', Validators.required],
-      address: ['', Validators.required]
-    });
-  }
+  ) {}
 
   ngOnInit(): void {
     const grcId = this.route.snapshot.paramMap.get('grcId');
@@ -42,13 +34,11 @@ export class EditGrcComponent implements OnInit {
       this.mode = 'update';
       this.grcService.get(+grcId).subscribe(grc => {
         this.editedGrc = grc;
-
-        const formValue: FormValue = {
+        this.form.setValue({
           name: grc.name,
           institution: grc.institution,
           address: grc.address
-        };
-        this.form.setValue(formValue);
+        });
       });
     }
   }
@@ -58,7 +48,7 @@ export class EditGrcComponent implements OnInit {
       return;
     }
 
-    const formValue: FormValue = this.form.value;
+    const formValue = this.form.value;
     const command: GrcCommand = {
       name: formValue.name,
       institution: formValue.institution,

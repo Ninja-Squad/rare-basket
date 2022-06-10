@@ -1,4 +1,4 @@
-import { UntypedFormControl, ReactiveFormsModule } from '@angular/forms';
+import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { TestBed } from '@angular/core/testing';
 import { Component } from '@angular/core';
 import { NgbDatepicker } from '@ng-bootstrap/ng-bootstrap';
@@ -15,7 +15,7 @@ import { DatepickerContainerComponent } from './datepicker-container.component';
   `
 })
 class TestComponent {
-  dateCtrl = new UntypedFormControl();
+  dateCtrl = new FormControl(null as string);
 }
 
 class TestComponentTester extends ComponentTester<TestComponent> {

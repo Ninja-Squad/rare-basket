@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { ALL_CUSTOMER_TYPES, ALL_LANGUAGES, CustomerCommand } from '../../basket/basket.model';
-import { UntypedFormBuilder, UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
+import { ALL_CUSTOMER_TYPES, ALL_LANGUAGES, CustomerCommand, CustomerType } from '../../basket/basket.model';
+import { NonNullableFormBuilder, Validators } from '@angular/forms';
 import { CustomerInformationCommand } from '../order.model';
 
 @Component({
@@ -21,26 +21,23 @@ export class EditCustomerInformationComponent implements OnInit {
   @Output()
   readonly cancelled = new EventEmitter<void>();
 
-  form: UntypedFormGroup;
-  useDeliveryAddressControl: UntypedFormControl;
+  form = this.fb.group({
+    customer: this.fb.group({
+      name: [null as string, Validators.required],
+      organization: null as string,
+      email: [null as string, [Validators.required, Validators.email]],
+      deliveryAddress: [null as string, Validators.required],
+      billingAddress: [null as string, Validators.required],
+      type: [null as CustomerType, Validators.required],
+      language: [null as string, Validators.required]
+    }),
+    rationale: null as string
+  });
+  useDeliveryAddressControl = this.fb.control(false);
   customerTypes = ALL_CUSTOMER_TYPES;
   languages = ALL_LANGUAGES;
 
-  constructor(fb: UntypedFormBuilder) {
-    this.useDeliveryAddressControl = fb.control(false);
-    this.form = fb.group({
-      customer: fb.group({
-        name: [null, Validators.required],
-        organization: null,
-        email: [null, [Validators.required, Validators.email]],
-        deliveryAddress: [null, Validators.required],
-        billingAddress: [null, Validators.required],
-        type: [null, Validators.required],
-        language: [null, Validators.required]
-      }),
-      rationale: null
-    });
-  }
+  constructor(private fb: NonNullableFormBuilder) {}
 
   ngOnInit(): void {
     // if we use the delivery address as the billing address

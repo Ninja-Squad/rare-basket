@@ -1,6 +1,6 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { Basket } from '../basket.model';
-import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
+import { NonNullableFormBuilder, Validators } from '@angular/forms';
 import { faCheckCircle, faInfoCircle } from '@fortawesome/free-solid-svg-icons';
 
 /**
@@ -12,23 +12,19 @@ import { faCheckCircle, faInfoCircle } from '@fortawesome/free-solid-svg-icons';
   templateUrl: './edit-confirmation.component.html',
   styleUrls: ['./edit-confirmation.component.scss']
 })
-export class EditConfirmationComponent implements OnInit {
+export class EditConfirmationComponent {
   @Input() basket: Basket;
 
   @Output() readonly basketConfirmed = new EventEmitter<string>();
   @Output() readonly refreshRequested = new EventEmitter<void>();
 
-  form: UntypedFormGroup;
+  form = this.fb.group({
+    confirmationCode: ['', Validators.required]
+  });
   infoIcon = faInfoCircle;
   confirmIcon = faCheckCircle;
 
-  constructor(private fb: UntypedFormBuilder) {}
-
-  ngOnInit(): void {
-    this.form = this.fb.group({
-      confirmationCode: ['', Validators.required]
-    });
-  }
+  constructor(private fb: NonNullableFormBuilder) {}
 
   confirm() {
     if (this.form.invalid) {
