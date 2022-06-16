@@ -1484,10 +1484,10 @@
     minimatch "^3.1.2"
     strip-json-comments "^3.1.1"
 
-"@fortawesome/angular-fontawesome@0.11.0":
-  version "0.11.0"
-  resolved "https://registry.yarnpkg.com/@fortawesome/angular-fontawesome/-/angular-fontawesome-0.11.0.tgz#2f4af0e7373599432e5550e08d42977cca16c69a"
-  integrity sha512-/WbG9s83dmZn2FBkCN6IjlhODmMUbkzkMxPjFokKKprlB7QXR047avG3xDTfxPJEcLDGNQmdX/vbsEhoT36/bA==
+"@fortawesome/angular-fontawesome@0.11.1":
+  version "0.11.1"
+  resolved "https://registry.yarnpkg.com/@fortawesome/angular-fontawesome/-/angular-fontawesome-0.11.1.tgz#f55789b1229bc6ff53816050689f361041e42c6a"
+  integrity sha512-Ngzm5MVxk76ZhYpPTNOI/mpYNz9bzwfBXC5L9mktLgOONjBuYBPVt+bH8lny8hNtDk0ppZzXsMN6CO7hckdfnw==
   dependencies:
     tslib "^2.4.0"
 
