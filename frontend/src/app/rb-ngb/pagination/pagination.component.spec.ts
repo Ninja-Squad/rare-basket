@@ -6,6 +6,7 @@ import { Component } from '@angular/core';
 import { ActivatedRouteStub, ComponentTester, stubRoute } from 'ngx-speculoos';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Page } from '../../shared/page.model';
+import { RouterTestingModule } from '@angular/router/testing';
 
 @Component({
   template: `<rb-pagination [page]="page" (pageChanged)="pageChanged($event)" [navigate]="navigate"></rb-pagination>`
@@ -42,7 +43,7 @@ describe('PaginationComponent', () => {
     beforeEach(() => {
       TestBed.configureTestingModule({
         declarations: [PaginationComponent, TestComponent],
-        imports: [NgbPaginationModule]
+        imports: [NgbPaginationModule, RouterTestingModule]
       });
 
       tester = new TestComponentTester();
