@@ -3,7 +3,6 @@
 stages:
  - test
  - deploy-beta
- - deploy-staging
  - deploy-production
 
 image: $CI_REGISTRY_IMAGE:latest
@@ -82,13 +81,6 @@ build-docker:
   APP_CONTEXT: ${APP_NAME}-${ENV}
   SERVER_IP: ${SERVER_IP_DEV}
 
-.variables-staging: &variables-staging
- variables:
-  ENV: staging
-  APP_PORT: ${PORT_STAGING}
-  APP_CONTEXT: ${APP_NAME}-${ENV}
-  SERVER_IP: ${SERVER_IP_DEV}
-
 .variables-prod: &variables-prod
  variables:
   ENV: prod
@@ -113,24 +105,6 @@ deploy-to-beta:
   refs:
    - master
  allow_failure: false # mandatory to block the execution of the pipeline
-
-deploy-to-staging:
- stage: deploy-staging
- tags:
-  - openstack
- <<: *variables-staging
- <<: *deploy-to-vm
- only:
-  changes:
-   - backend/src/**/*
-   - frontend/**/*
-   - .gitlab-ci.yml
-  refs:
-   - branches
- except:
-  refs:
-   - master
- when: manual
 
 deploy-to-prod:
  stage: deploy-production

@@ -26,6 +26,7 @@ spring:
     import: 'optional:configserver:'
   cloud:
     config:
+      name: rare-basket
       uri: ${SPRING_CONFIG_URI:http://localhost:8888}
   datasource:
     url: jdbc:postgresql:rarebasket
@@ -52,6 +53,7 @@ logging.level:
   org.springframework:
     boot.web.embedded.tomcat.TomcatWebServer: INFO
     web.client.RestTemplate: INFO
+    boot.context.config.ConfigDataLoader: INFO
 
 # These settings are documented here: https://www.keycloak.org/docs/latest/securing_apps/index.html#_java_adapter_config
 keycloak:
