@@ -72,20 +72,18 @@ build-docker:
   # Restarting service with the updated jar and the according Spring profiles enabled
   - ssh ${SERVER_USER}@${SERVER_IP} "sudo systemctl restart bootapp@${APP_NAME}-${ENV}"
   - eval $(ssh-agent -k)
-  - echo "Deploy done. Application should be available at http://${SERVER_IP}:${APP_PORT}/${APP_CONTEXT}"
+  - echo "Deploy done. Application should be available at http://${SERVER_IP}:${APP_PORT}/${APP_NAME}"
 
 .variables-beta: &variables-beta
  variables:
   ENV: beta
   APP_PORT: ${PORT_BETA}
-  APP_CONTEXT: ${APP_NAME}-${ENV}
   SERVER_IP: ${SERVER_IP_DEV}
 
 .variables-prod: &variables-prod
  variables:
   ENV: prod
   APP_PORT: ${PORT_PROD}
-  APP_CONTEXT: ${APP_NAME}
   SERVER_IP: ${SERVER_IP_PROD}
 
 deploy-to-beta:
