@@ -75,7 +75,7 @@ tasks {
 dependencyManagement {
     imports {
         mavenBom("org.keycloak.bom:keycloak-adapter-bom:17.0.0")
-        mavenBom("org.springframework.cloud:spring-cloud-dependencies:2021.0.1")
+        mavenBom("org.springframework.cloud:spring-cloud-dependencies:2021.0.4")
     }
 }
 
