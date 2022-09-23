@@ -16,7 +16,8 @@ export const ORDER_ROUTES: Routes = [
       {
         path: '',
         pathMatch: 'full',
-        canActivate: [OrdersGuard]
+        canActivate: [OrdersGuard],
+        children: [] // necessary for the router to be happy
       },
       {
         path: 'in-progress',
