@@ -1,9 +1,11 @@
 package fr.inra.urgi.rarebasket.config;
 
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 /**
  * The security configuration used in MVC tests, by annotating them with <code>ActiveProfiles("test")</code>.
@@ -15,9 +17,10 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
  */
 @Configuration
 @Profile("test")
-public class TestSecurityConfig extends WebSecurityConfigurerAdapter {
-    @Override
-    protected void configure(HttpSecurity http) throws Exception {
+public class TestSecurityConfig implements WebMvcConfigurer {
+    @Bean
+    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         SecurityConfig.configureHttp(http);
+        return http.build();
     }
 }
