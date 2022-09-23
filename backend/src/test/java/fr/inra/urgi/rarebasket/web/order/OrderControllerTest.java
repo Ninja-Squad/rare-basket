@@ -136,7 +136,7 @@ class OrderControllerTest {
         when(mockCurrentUser.getVisualizationPerimeter()).thenReturn(VisualizationPerimeter.constrained(Set.of(1L, 2L)));
         when(mockOrderDao.findById(order.getId())).thenReturn(Optional.of(order));
 
-        when(mockAccessionHolderDao.getById(accessionHolderId)).thenReturn(accessionHolder);
+        when(mockAccessionHolderDao.getReferenceById(accessionHolderId)).thenReturn(accessionHolder);
     }
 
     @Test
