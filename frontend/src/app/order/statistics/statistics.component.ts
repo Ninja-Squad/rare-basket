@@ -11,7 +11,7 @@ import { validDateRange } from '../../shared/validators';
 import { Grc, User } from '../../shared/user.model';
 import { AuthenticationService } from '../../shared/authentication.service';
 import { GrcService } from '../../shared/grc.service';
-import { first, switchMap, tap } from 'rxjs/operators';
+import { first, map, switchMap } from 'rxjs/operators';
 import { concat, of } from 'rxjs';
 
 export interface FormValue {
@@ -68,10 +68,13 @@ export class StatisticsComponent implements OnInit {
       .getCurrentUser()
       .pipe(
         first(),
-        tap(user => (this.user = user)),
-        switchMap(user => (user.globalVisualization ? this.grcService.list() : of(user.visualizationGrcs)))
+        switchMap(user => {
+          const grcs$ = user.globalVisualization ? this.grcService.list() : of(user.visualizationGrcs);
+          return grcs$.pipe(map(grcs => ({ grcs, user })));
+        })
       )
-      .subscribe(grcs => {
+      .subscribe(({ grcs, user }) => {
+        this.user = user;
         this.choosableGrcs = grcs;
         this.populateForm();
         this.initializeForm();
