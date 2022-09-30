@@ -40,6 +40,13 @@ tasks {
         outputs.dir("coverage")
     }
 
+    val yarnE2e by registering(YarnTask::class) {
+        args.set(listOf("e2e"))
+        dependsOn(prepare)
+        inputs.dir("src")
+        outputs.dir("playwright-report")
+    }
+
     val yarnLint by registering(YarnTask::class){
         args.set(listOf("lint"))
         dependsOn(prepare)
@@ -57,9 +64,14 @@ tasks {
         dependsOn(yarnTest)
     }
 
+    val e2e by registering {
+        dependsOn(yarnE2e)
+    }
+
     check {
         dependsOn(lint)
         dependsOn(test)
+        dependsOn(e2e)
     }
 
     assemble {
@@ -69,5 +81,6 @@ tasks {
     val clean by getting {
         dependsOn("cleanYarnBuild")
         dependsOn("cleanYarnTest")
+        dependsOn("cleanYarnE2e")
     }
 }

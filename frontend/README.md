@@ -25,15 +25,15 @@ You can check if the code is properly formatted using `yarn format:check`.
 
 ## Unit tests
 
-`ng test` lauches a Chrome headless browser instead of an actual Chrome browser. 
+`ng test` launches a Chrome headless browser instead of an actual Chrome browser. 
 
 You can still debug a test by launching the browser by yourself and going to `http://localhost:9876`.
 
 ## End-to-end tests
 
-The support for end-to-end tests using Protractor has been removed. If we end up writing end-to-end
-tests, using [Cypress](https://www.cypress.io/) (installed using the [Cypress schematic](https://github.com/briebug/cypress-schematic))
-would be a better option.
+`yarn e2e` runs the end-to-end tests.
+Playwright is used, using its own server.
+See `playwright.config.ts` for more options.
 
 # Compiling and Linting
 

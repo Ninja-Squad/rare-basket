@@ -11,7 +11,7 @@ import { ValdemortModule } from 'ngx-valdemort';
 import { ValidationDefaultsComponent } from './validation-defaults/validation-defaults.component';
 import { I18nModule } from './i18n/i18n.module';
 import { AbstractSecurityStorage, AuthModule, StsConfigLoader } from 'angular-auth-oidc-client';
-import { AuthenticationConfigService, authFactory, CustomSecurityStorage } from './shared/authentication.service';
+import { AuthenticationConfigService, authFactory, CustomSecurityStorage } from './shared/authentication-config.service';
 import { AuthenticationInterceptorService } from './shared/authentication-interceptor.service';
 import { NavbarComponent } from './navbar/navbar.component';
 import { ErrorInterceptorService } from './shared/error-interceptor.service';
