@@ -48,3 +48,4 @@ Thumbs.db
 tslint-result.txt
 prettier-result.txt
 .angular
+playwright-report
