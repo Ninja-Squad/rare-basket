@@ -55,18 +55,18 @@ test.describe('Orders', () => {
     await expect(page.locator('a.active')).toHaveText('In progress');
 
     // one order in progress
-    await expect(page.locator('text=1 order(s) in progress')).toBeVisible();
-    await expect(page.locator('text=OMGVJPNK')).toBeVisible();
+    await expect(page.getByText('1 order(s) in progress')).toBeVisible();
+    await expect(page.getByText('OMGVJPNK')).toBeVisible();
 
     // create an order
-    await page.locator('text=Create an order').click();
-    await page.locator('text=Customer name').fill('Ninja Squad');
-    await page.locator('text=Customer email').fill('contact@ninja-squad.com');
-    await page.locator('text=Delivery address of the customer').fill('13 lot les Tilleuls, 42170 ST JUST ST RAMBERT');
-    await page.locator('text=Use the delivery address as the billing address').check();
-    await page.locator('text=Customer category').selectOption({ label: 'French private company' });
-    await page.locator('text=Preferred language of the customer').selectOption({ label: 'French' });
-    await page.locator('text=Save').click();
+    await page.getByText('Create an order').click();
+    await page.getByText('Customer name').fill('Ninja Squad');
+    await page.getByText('Customer email').fill('contact@ninja-squad.com');
+    await page.getByText('Delivery address of the customer').fill('13 lot les Tilleuls, 42170 ST JUST ST RAMBERT');
+    await page.getByText('Use the delivery address as the billing address').check();
+    await page.getByText('Customer category').selectOption({ label: 'French private company' });
+    await page.getByText('Preferred language of the customer').selectOption({ label: 'French' });
+    await page.getByText('Save').click();
 
     // accession selection
     await expect(page.locator('h1')).toContainText('Order OMGVJPNK');
