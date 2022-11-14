@@ -30,7 +30,7 @@
     "@popperjs/core": "2.11.6",
     "angular-auth-oidc-client": "14.1.5",
     "bootstrap": "5.2.2",
-    "chart.js": "3.9.1",
+    "chart.js": "4.0.1",
     "ngx-valdemort": "8.1.0",
     "papaparse": "5.3.2",
     "rxjs": "7.5.7",
