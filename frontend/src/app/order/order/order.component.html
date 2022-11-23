@@ -15,7 +15,7 @@
     <p
       class="text-muted"
       translate="order.order.creation-date"
-      [translateParams]="{ date: order.basket.confirmationInstant | date: 'longDate' }"
+      [translateParams]="{ date: order.basket.confirmationInstant | date : 'longDate' }"
     ></p>
     <div class="row">
       <div class="col-md-5">
@@ -105,7 +105,7 @@
               </button>
             </div>
             <small class="text-muted">
-              <span>{{ document.creationInstant | date: 'medium' }}</span>
+              <span>{{ document.creationInstant | date : 'medium' }}</span>
               &ngsp;&mdash;&ngsp;
               <span *ngIf="document.onDeliveryForm" translate="order.order.document-on-delivery-form"></span>
               <span *ngIf="!document.onDeliveryForm" translate="order.order.document-not-on-delivery-form"></span>
