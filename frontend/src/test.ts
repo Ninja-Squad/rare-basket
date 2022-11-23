@@ -6,7 +6,10 @@ import { BrowserDynamicTestingModule, platformBrowserDynamicTesting } from '@ang
 import { speculoosMatchers } from 'ngx-speculoos';
 
 // First, initialize the Angular testing environment.
-getTestBed().initTestEnvironment(BrowserDynamicTestingModule, platformBrowserDynamicTesting());
+getTestBed().initTestEnvironment(BrowserDynamicTestingModule, platformBrowserDynamicTesting(), {
+  errorOnUnknownElements: true,
+  errorOnUnknownProperties: true
+});
 
 beforeEach(() => {
   jasmine.addMatchers(speculoosMatchers);
