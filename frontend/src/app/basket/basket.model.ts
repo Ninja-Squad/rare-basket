@@ -9,7 +9,7 @@ export const ALL_CUSTOMER_TYPES = [
   'CITIZEN',
   'OTHER'
 ] as const;
-export type CustomerType = typeof ALL_CUSTOMER_TYPES[number];
+export type CustomerType = (typeof ALL_CUSTOMER_TYPES)[number];
 
 export interface Accession {
   name: string;
@@ -51,7 +51,7 @@ export interface Basket {
 }
 
 export const ALL_LANGUAGES = ['en', 'fr'] as const;
-export type Language = typeof ALL_LANGUAGES[number];
+export type Language = (typeof ALL_LANGUAGES)[number];
 
 export interface CustomerCommand {
   name: string;
