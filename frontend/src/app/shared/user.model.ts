@@ -27,7 +27,7 @@ export interface AccessionHolderCommand {
 }
 
 export const ALL_PERMISSIONS = ['ORDER_MANAGEMENT', 'ORDER_VISUALIZATION', 'ADMINISTRATION'] as const;
-export type Permission = typeof ALL_PERMISSIONS[number];
+export type Permission = (typeof ALL_PERMISSIONS)[number];
 
 export interface User {
   id: number;
