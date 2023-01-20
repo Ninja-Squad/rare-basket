@@ -1,14 +1,13 @@
 import { TestBed } from '@angular/core/testing';
 
-import { OrdersGuard } from './orders.guard';
+import { ordersGuard } from './orders.guard';
 import { AuthenticationService } from '../shared/authentication.service';
 import { BehaviorSubject } from 'rxjs';
 import { User } from '../shared/user.model';
 import { RouterTestingModule } from '@angular/router/testing';
 import { UrlTree } from '@angular/router';
 
-describe('OrdersGuard', () => {
-  let guard: OrdersGuard;
+describe('ordersGuard', () => {
   let authenticationService: jasmine.SpyObj<AuthenticationService>;
   let currentUserSubject: BehaviorSubject<User>;
 
@@ -23,13 +22,11 @@ describe('OrdersGuard', () => {
       imports: [RouterTestingModule],
       providers: [{ provide: AuthenticationService, useValue: authenticationService }]
     });
-
-    guard = TestBed.inject(OrdersGuard);
   });
 
   it('should redirect to in progress orders if user has permission ORDER_MANAGEMENT', () => {
     let result: UrlTree = null;
-    guard.canActivate().subscribe(r => (result = r));
+    TestBed.runInInjectionContext(() => ordersGuard()).subscribe(r => (result = r));
     expect(result.toString()).toBe('/orders/in-progress');
   });
 
@@ -38,7 +35,7 @@ describe('OrdersGuard', () => {
       permissions: ['ORDER_VISUALIZATION']
     } as User);
     let result: UrlTree = null;
-    guard.canActivate().subscribe(r => (result = r));
+    TestBed.runInInjectionContext(() => ordersGuard()).subscribe(r => (result = r));
     expect(result.toString()).toBe('/orders/stats');
   });
 });
