@@ -4,7 +4,7 @@ import { AuthenticationService } from './authentication.service';
 import { WINDOW } from './window.service';
 import { LoginResponse, OidcSecurityService } from 'angular-auth-oidc-client';
 import { Router } from '@angular/router';
-import { Subject } from 'rxjs';
+import { defer, of, Subject } from 'rxjs';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { createMock } from 'ngx-speculoos';
 
@@ -56,8 +56,16 @@ describe('AuthenticationService', () => {
   });
 
   it('should logout', () => {
+    let subscribed = false;
+    oidcSecurityService.logoff.and.returnValue(
+      defer(() => {
+        subscribed = true;
+        return of(undefined);
+      })
+    );
     service.logout();
     expect(oidcSecurityService.logoff).toHaveBeenCalled();
+    expect(subscribed).toBeTrue();
   });
 
   it('should tell if the user is authenticated when authentication check succeeds', () => {
