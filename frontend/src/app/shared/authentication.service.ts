@@ -66,7 +66,7 @@ export class AuthenticationService {
 
   logout() {
     this.currentUser.next(null);
-    this.oidcSecurityService.logoff();
+    this.oidcSecurityService.logoff().subscribe();
   }
 
   isAuthenticated(): Observable<boolean> {
