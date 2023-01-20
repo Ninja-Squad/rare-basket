@@ -1,6 +1,6 @@
 import { Routes } from '@angular/router';
 import { HomeComponent } from './home/home.component';
-import { AuthenticationGuard } from './shared/authentication.guard';
+import { authenticationGuard } from './shared/authentication.guard';
 
 export const APP_ROUTES: Routes = [
   {
@@ -13,7 +13,7 @@ export const APP_ROUTES: Routes = [
   },
   {
     path: '',
-    canActivate: [AuthenticationGuard],
+    canActivate: [authenticationGuard],
     children: [
       {
         path: 'orders',
