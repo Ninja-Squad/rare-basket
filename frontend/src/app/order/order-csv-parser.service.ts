@@ -94,7 +94,7 @@ export interface CsvResult {
   errors: Array<CsvError>;
 }
 
-export interface CsvError {
+interface CsvError {
   row: number;
   key: string;
 }

@@ -8,7 +8,7 @@ import { RbNgbTestingModule } from './rb-ngb-testing.module';
 @Component({
   template: 'Hello'
 })
-export class TestModalComponent {}
+class TestModalComponent {}
 
 describe('ModalService', () => {
   let ngbModal: NgbModal;

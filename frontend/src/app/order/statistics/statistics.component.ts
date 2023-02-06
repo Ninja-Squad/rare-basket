@@ -14,13 +14,6 @@ import { GrcService } from '../../shared/grc.service';
 import { first, map, switchMap } from 'rxjs/operators';
 import { concat, of } from 'rxjs';
 
-export interface FormValue {
-  from: string;
-  to: string;
-  global: boolean;
-  grcs: Array<{ grc: Grc; selected: boolean }>;
-}
-
 function atLeastOneSelection(control: AbstractControl): ValidationErrors | null {
   const value: Array<{ grc: Grc; selected: boolean }> = control.value;
   return value.some(item => item.selected) ? null : { required: true };
@@ -247,7 +240,12 @@ export class StatisticsComponent implements OnInit {
   }
 
   private initializeForm() {
-    const newValue: Partial<FormValue> = {};
+    const newValue: {
+      from?: string;
+      to?: string;
+      global?: boolean;
+      grcs?: Array<{ grc: Grc; selected: boolean }>;
+    } = {};
     const paramMap = this.route.snapshot.queryParamMap;
     if (paramMap.get('from')) {
       newValue.from = paramMap.get('from');

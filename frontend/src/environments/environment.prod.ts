@@ -1,3 +1,4 @@
+// ts-prune-ignore-next
 export const environment = {
   production: true,
   keycloakUrl: 'https://urgi.versailles.inrae.fr/keycloak',

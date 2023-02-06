@@ -8,6 +8,7 @@ import { map } from 'rxjs/operators';
  * to avoid messing around keycloack.
  * It always returns a logged in user (admi, with all permissions).
  */
+// ts-prune-ignore-next
 @Injectable({
   providedIn: 'root'
 })
