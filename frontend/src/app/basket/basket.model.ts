@@ -26,20 +26,20 @@ export interface Customer {
   language: Language | null;
 }
 
-export interface BasketItem {
+interface BasketItem {
   id: number;
   accession: Accession;
   quantity: number | null;
   unit: string | null;
 }
 
-export interface AccessionHolderBasket {
+interface AccessionHolderBasket {
   grcName: string;
   accessionHolderName: string;
   items: Array<BasketItem>;
 }
 
-export type BasketStatus = 'DRAFT' | 'SAVED' | 'CONFIRMED';
+type BasketStatus = 'DRAFT' | 'SAVED' | 'CONFIRMED';
 
 export interface Basket {
   id: number;

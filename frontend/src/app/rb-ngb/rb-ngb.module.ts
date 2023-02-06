@@ -26,7 +26,7 @@ import { RouterNavDirective, RouterNavLinkDirective, RouterNavPanelDirective } f
 @Injectable({
   providedIn: 'root'
 })
-export class RbNgbDatepickerConfig extends NgbDatepickerConfig {
+class RbNgbDatepickerConfig extends NgbDatepickerConfig {
   constructor() {
     super();
     this.minDate = { year: 2020, month: 1, day: 1 };

@@ -1,6 +1,6 @@
 import { Accession, Customer, CustomerCommand, CustomerType } from '../basket/basket.model';
 
-export interface OrderItem {
+interface OrderItem {
   id: number;
   accession: Accession;
   quantity: number | null;
@@ -9,7 +9,7 @@ export interface OrderItem {
 
 export type OrderStatus = 'DRAFT' | 'FINALIZED' | 'CANCELLED';
 
-export interface BasketInformation {
+interface BasketInformation {
   reference: string;
   customer: Customer;
   rationale: string;
