@@ -2,10 +2,8 @@ import { TestBed } from '@angular/core/testing';
 
 import { FinalizationWarningsModalComponent } from './finalization-warnings-modal.component';
 import { ComponentTester, createMock } from 'ngx-speculoos';
-import { I18nTestingModule } from '../../i18n/i18n-testing.module.spec';
-import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
-import { RbNgbTestingModule } from '../../rb-ngb/rb-ngb-testing.module';
+import { provideI18nTesting } from '../../i18n/mock-18n.spec';
 
 class FinalizationWarningsModalComponentTester extends ComponentTester<FinalizationWarningsModalComponent> {
   constructor() {
@@ -33,9 +31,7 @@ describe('FinalizationWarningsModalComponent', () => {
     activeModal = createMock(NgbActiveModal);
 
     TestBed.configureTestingModule({
-      imports: [I18nTestingModule, RbNgbTestingModule, FontAwesomeModule],
-      declarations: [FinalizationWarningsModalComponent],
-      providers: [{ provide: NgbActiveModal, useValue: activeModal }]
+      providers: [provideI18nTesting(), { provide: NgbActiveModal, useValue: activeModal }]
     });
 
     tester = new FinalizationWarningsModalComponentTester();

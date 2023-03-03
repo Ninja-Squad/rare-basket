@@ -1,9 +1,14 @@
 import { AfterViewInit, Component, ElementRef, EventEmitter, Input, OnInit, Output, QueryList, ViewChildren } from '@angular/core';
 import { Order, OrderCommand, OrderItemCommand } from '../order.model';
-import { FormControl, FormGroup, NonNullableFormBuilder, Validators } from '@angular/forms';
+import { FormControl, FormGroup, NonNullableFormBuilder, Validators, ReactiveFormsModule } from '@angular/forms';
 import { faFileCsv, faPlus, faTrash } from '@fortawesome/free-solid-svg-icons';
 import { ModalService } from '../../rb-ngb/modal.service';
 import { CsvModalComponent } from '../csv-modal/csv-modal.component';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { ValidationErrorsComponent } from 'ngx-valdemort';
+import { FormControlValidationDirective } from '../../shared/form-control-validation.directive';
+import { TranslateModule } from '@ngx-translate/core';
+import { NgFor } from '@angular/common';
 
 interface ItemFormValue {
   name: string;
@@ -15,7 +20,9 @@ interface ItemFormValue {
 @Component({
   selector: 'rb-edit-order',
   templateUrl: './edit-order.component.html',
-  styleUrls: ['./edit-order.component.scss']
+  styleUrls: ['./edit-order.component.scss'],
+  standalone: true,
+  imports: [ReactiveFormsModule, NgFor, TranslateModule, FormControlValidationDirective, ValidationErrorsComponent, FontAwesomeModule]
 })
 export class EditOrderComponent implements OnInit, AfterViewInit {
   @Input()

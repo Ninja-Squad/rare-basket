@@ -3,14 +3,12 @@ import { TestBed } from '@angular/core/testing';
 import { GrcsComponent } from './grcs.component';
 import { ComponentTester, createMock, TestButton } from 'ngx-speculoos';
 import { ConfirmationService } from '../../shared/confirmation.service';
-import { I18nTestingModule } from '../../i18n/i18n-testing.module.spec';
-import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
-import { RouterTestingModule } from '@angular/router/testing';
 import { EMPTY, of } from 'rxjs';
 import { Grc } from '../../shared/user.model';
 import { GrcService } from '../../shared/grc.service';
 import { ToastService } from '../../shared/toast.service';
-import { RbNgbTestingModule } from '../../rb-ngb/rb-ngb-testing.module';
+import { provideI18nTesting } from '../../i18n/mock-18n.spec';
+import { provideRouter } from '@angular/router';
 
 class GrcsComponentTester extends ComponentTester<GrcsComponent> {
   constructor() {
@@ -42,9 +40,9 @@ describe('GrcsComponent', () => {
     toastService = createMock(ToastService);
 
     TestBed.configureTestingModule({
-      imports: [I18nTestingModule, FontAwesomeModule, RbNgbTestingModule, RouterTestingModule],
-      declarations: [GrcsComponent],
       providers: [
+        provideRouter([]),
+        provideI18nTesting(),
         { provide: GrcService, useValue: grcService },
         { provide: ConfirmationService, useValue: confirmationService },
         { provide: ToastService, useValue: toastService }

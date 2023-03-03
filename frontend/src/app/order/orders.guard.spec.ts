@@ -4,7 +4,6 @@ import { ordersGuard } from './orders.guard';
 import { AuthenticationService } from '../shared/authentication.service';
 import { BehaviorSubject } from 'rxjs';
 import { User } from '../shared/user.model';
-import { RouterTestingModule } from '@angular/router/testing';
 import { UrlTree } from '@angular/router';
 
 describe('ordersGuard', () => {
@@ -19,7 +18,6 @@ describe('ordersGuard', () => {
     authenticationService.getCurrentUser.and.returnValue(currentUserSubject);
 
     TestBed.configureTestingModule({
-      imports: [RouterTestingModule],
       providers: [{ provide: AuthenticationService, useValue: authenticationService }]
     });
   });

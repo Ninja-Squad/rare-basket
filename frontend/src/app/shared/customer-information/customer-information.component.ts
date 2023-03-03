@@ -10,11 +10,18 @@ import {
   faSitemap,
   faUser
 } from '@fortawesome/free-solid-svg-icons';
+import { LanguageEnumPipe } from '../language-enum.pipe';
+import { CustomerTypeEnumPipe } from '../customer-type-enum.pipe';
+import { NgIf } from '@angular/common';
+import { TranslateModule } from '@ngx-translate/core';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 
 @Component({
   selector: 'rb-customer-information',
   templateUrl: './customer-information.component.html',
-  styleUrls: ['./customer-information.component.scss']
+  styleUrls: ['./customer-information.component.scss'],
+  standalone: true,
+  imports: [FontAwesomeModule, TranslateModule, NgIf, CustomerTypeEnumPipe, LanguageEnumPipe]
 })
 export class CustomerInformationComponent {
   @Input()

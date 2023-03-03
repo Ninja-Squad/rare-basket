@@ -8,9 +8,7 @@ import { OrderService } from '../order.service';
 import { Order } from '../order.model';
 import { Page } from '../../shared/page.model';
 import { DoneOrdersComponent } from './done-orders.component';
-import { RouterTestingModule } from '@angular/router/testing';
-import { I18nTestingModule } from '../../i18n/i18n-testing.module.spec';
-import { RbNgbTestingModule } from '../../rb-ngb/rb-ngb-testing.module';
+import { provideI18nTesting } from '../../i18n/mock-18n.spec';
 
 class DoneOrdersComponentTester extends ComponentTester<DoneOrdersComponent> {
   constructor() {
@@ -32,12 +30,7 @@ describe('DoneOrdersComponent', () => {
     orderService = createMock(OrderService);
 
     TestBed.configureTestingModule({
-      declarations: [DoneOrdersComponent, OrdersComponent],
-      imports: [I18nTestingModule, RouterTestingModule, RbNgbTestingModule],
-      providers: [
-        { provide: ActivatedRoute, useValue: route },
-        { provide: OrderService, useValue: orderService }
-      ]
+      providers: [provideI18nTesting(), { provide: ActivatedRoute, useValue: route }, { provide: OrderService, useValue: orderService }]
     });
 
     tester = new DoneOrdersComponentTester();

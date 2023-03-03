@@ -2,12 +2,11 @@ import { TestBed } from '@angular/core/testing';
 
 import { NavbarComponent } from './navbar.component';
 import { ComponentTester, createMock } from 'ngx-speculoos';
-import { I18nTestingModule } from '../i18n/i18n-testing.module.spec';
-import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { AuthenticationService } from '../shared/authentication.service';
 import { Subject } from 'rxjs';
-import { RouterTestingModule } from '@angular/router/testing';
 import { User } from '../shared/user.model';
+import { provideI18nTesting } from '../i18n/mock-18n.spec';
+import { provideRouter } from '@angular/router';
 
 class NavbarComponentTester extends ComponentTester<NavbarComponent> {
   constructor() {
@@ -54,9 +53,7 @@ describe('NavbarComponent', () => {
     authenticationService.getCurrentUser.and.returnValue(userSubject);
 
     TestBed.configureTestingModule({
-      declarations: [NavbarComponent],
-      imports: [I18nTestingModule, FontAwesomeModule, RouterTestingModule],
-      providers: [{ provide: AuthenticationService, useValue: authenticationService }]
+      providers: [provideRouter([]), provideI18nTesting(), { provide: AuthenticationService, useValue: authenticationService }]
     });
 
     tester = new NavbarComponentTester();

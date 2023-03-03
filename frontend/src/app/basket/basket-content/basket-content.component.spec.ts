@@ -4,12 +4,12 @@ import { BasketContentComponent } from './basket-content.component';
 import { Component } from '@angular/core';
 import { Basket } from '../basket.model';
 import { ComponentTester } from 'ngx-speculoos';
-import { SharedModule } from '../../shared/shared.module';
-import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
-import { I18nTestingModule } from '../../i18n/i18n-testing.module.spec';
+import { provideI18nTesting } from '../../i18n/mock-18n.spec';
 
 @Component({
-  template: '<rb-basket-content [basket]="basket"></rb-basket-content>'
+  template: '<rb-basket-content [basket]="basket"></rb-basket-content>',
+  standalone: true,
+  imports: [BasketContentComponent]
 })
 class TestComponent {
   basket = {
@@ -94,8 +94,7 @@ describe('BasketContentComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      declarations: [BasketContentComponent, TestComponent],
-      imports: [I18nTestingModule, SharedModule, FontAwesomeModule]
+      providers: [provideI18nTesting()]
     });
 
     tester = new TestComponentTester();

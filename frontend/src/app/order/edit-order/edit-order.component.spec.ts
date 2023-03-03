@@ -4,16 +4,15 @@ import { EditOrderComponent } from './edit-order.component';
 import { Component } from '@angular/core';
 import { Order, OrderCommand, OrderItemCommand } from '../order.model';
 import { ComponentTester, TestButton } from 'ngx-speculoos';
-import { I18nTestingModule } from '../../i18n/i18n-testing.module.spec';
-import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
-import { ReactiveFormsModule } from '@angular/forms';
-import { ValdemortModule } from 'ngx-valdemort';
 import { ValidationDefaultsComponent } from '../../validation-defaults/validation-defaults.component';
-import { MockModalService, ModalTestingModule } from '../../rb-ngb/mock-modal.service.spec';
+import { MockModalService, provideModalTesting } from '../../rb-ngb/mock-modal.service.spec';
 import { CsvModalComponent } from '../csv-modal/csv-modal.component';
+import { provideI18nTesting } from '../../i18n/mock-18n.spec';
 
 @Component({
-  template: '<rb-edit-order [order]="order" (cancelled)="cancelled = true" (saved)="saved = $event"></rb-edit-order>'
+  template: '<rb-edit-order [order]="order" (cancelled)="cancelled = true" (saved)="saved = $event"></rb-edit-order>',
+  standalone: true,
+  imports: [EditOrderComponent]
 })
 class TestComponent {
   cancelled = false;
@@ -97,8 +96,7 @@ describe('EditOrderComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [I18nTestingModule, FontAwesomeModule, ReactiveFormsModule, ValdemortModule, ModalTestingModule],
-      declarations: [EditOrderComponent, TestComponent, ValidationDefaultsComponent]
+      providers: [provideI18nTesting(), provideModalTesting()]
     });
 
     TestBed.createComponent(ValidationDefaultsComponent).detectChanges();

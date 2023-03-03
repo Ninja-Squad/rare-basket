@@ -1,15 +1,16 @@
 import { fakeAsync, TestBed, tick } from '@angular/core/testing';
 
 import { PaginationComponent } from './pagination.component';
-import { NgbPagination, NgbPaginationModule } from '@ng-bootstrap/ng-bootstrap';
+import { NgbPagination } from '@ng-bootstrap/ng-bootstrap';
 import { Component } from '@angular/core';
 import { ActivatedRouteStub, ComponentTester, stubRoute } from 'ngx-speculoos';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Page } from '../../shared/page.model';
-import { RouterTestingModule } from '@angular/router/testing';
 
 @Component({
-  template: `<rb-pagination [page]="page" (pageChanged)="pageChanged($event)" [navigate]="navigate"></rb-pagination>`
+  template: `<rb-pagination [page]="page" (pageChanged)="pageChanged($event)" [navigate]="navigate"></rb-pagination>`,
+  standalone: true,
+  imports: [PaginationComponent]
 })
 class TestComponent {
   page: Page<string>;
@@ -41,10 +42,7 @@ describe('PaginationComponent', () => {
 
   describe('without routing', () => {
     beforeEach(() => {
-      TestBed.configureTestingModule({
-        declarations: [PaginationComponent, TestComponent],
-        imports: [NgbPaginationModule, RouterTestingModule]
-      });
+      TestBed.configureTestingModule({});
 
       tester = new TestComponentTester();
     });
@@ -87,8 +85,6 @@ describe('PaginationComponent', () => {
       router = jasmine.createSpyObj('router', ['navigate']);
 
       TestBed.configureTestingModule({
-        declarations: [PaginationComponent, TestComponent],
-        imports: [NgbPaginationModule],
         providers: [
           { provide: ActivatedRoute, useValue: route },
           { provide: Router, useValue: router }

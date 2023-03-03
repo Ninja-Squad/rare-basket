@@ -1,8 +1,9 @@
 import { TestBed } from '@angular/core/testing';
-import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
+import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 
 import { GrcService } from './grc.service';
 import { Grc, GrcCommand } from './user.model';
+import { provideHttpClient } from '@angular/common/http';
 
 describe('GrcService', () => {
   let service: GrcService;
@@ -10,7 +11,7 @@ describe('GrcService', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [HttpClientTestingModule]
+      providers: [provideHttpClient(), provideHttpClientTesting()]
     });
     service = TestBed.inject(GrcService);
     http = TestBed.inject(HttpTestingController);

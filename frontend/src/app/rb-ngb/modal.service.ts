@@ -24,9 +24,9 @@ export class Modal<T> {
   }
 }
 
-// not provided in root, otherwise it doesn't work properly when used in a lazy module.
-// See https://github.com/ng-bootstrap/ng-bootstrap/issues/3784
-@Injectable()
+@Injectable({
+  providedIn: 'root'
+})
 export class ModalService {
   constructor(private ngbModal: NgbModal) {}
 

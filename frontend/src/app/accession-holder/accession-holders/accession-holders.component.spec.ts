@@ -1,16 +1,14 @@
 import { TestBed } from '@angular/core/testing';
 
 import { ComponentTester, createMock, TestButton } from 'ngx-speculoos';
-import { I18nTestingModule } from '../../i18n/i18n-testing.module.spec';
-import { RouterTestingModule } from '@angular/router/testing';
 import { EMPTY, of } from 'rxjs';
 import { AccessionHolder } from '../../shared/user.model';
-import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { ConfirmationService } from '../../shared/confirmation.service';
 import { AccessionHoldersComponent } from './accession-holders.component';
 import { AccessionHolderService } from '../../shared/accession-holder.service';
 import { ToastService } from '../../shared/toast.service';
-import { RbNgbTestingModule } from '../../rb-ngb/rb-ngb-testing.module';
+import { provideI18nTesting } from '../../i18n/mock-18n.spec';
+import { provideRouter } from '@angular/router';
 
 class AccessionHoldersComponentTester extends ComponentTester<AccessionHoldersComponent> {
   constructor() {
@@ -42,9 +40,9 @@ describe('AccessionHoldersComponent', () => {
     toastService = createMock(ToastService);
 
     TestBed.configureTestingModule({
-      imports: [I18nTestingModule, FontAwesomeModule, RbNgbTestingModule, RouterTestingModule],
-      declarations: [AccessionHoldersComponent],
       providers: [
+        provideRouter([]),
+        provideI18nTesting(),
         { provide: AccessionHolderService, useValue: accessionHolderService },
         { provide: ConfirmationService, useValue: confirmationService },
         { provide: ToastService, useValue: toastService }

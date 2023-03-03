@@ -12,7 +12,9 @@ import { ComponentTester } from 'ngx-speculoos';
       </div>
       <button id="save">Save</button>
     </form>
-  `
+  `,
+  standalone: true,
+  imports: [ReactiveFormsModule, FormControlValidationDirective]
 })
 class FormComponent {
   personForm = new FormGroup({
@@ -41,10 +43,7 @@ describe('FormControlValidationDirective', () => {
   let tester: FormComponentTester;
 
   beforeEach(() => {
-    TestBed.configureTestingModule({
-      imports: [ReactiveFormsModule],
-      declarations: [FormComponent, FormControlValidationDirective]
-    });
+    TestBed.configureTestingModule({});
 
     tester = new FormComponentTester();
     tester.detectChanges();

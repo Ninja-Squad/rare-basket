@@ -3,11 +3,27 @@ import { AuthenticationService } from '../../shared/authentication.service';
 import { Permission } from '../../shared/user.model';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
+import { NgIf, AsyncPipe } from '@angular/common';
+import { RouterNavDirective, RouterNavLinkDirective, RouterNavPanelDirective } from '../../rb-ngb/router-nav.directive';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'rb-orders-container',
   templateUrl: './orders-container.component.html',
-  styleUrls: ['./orders-container.component.scss']
+  styleUrls: ['./orders-container.component.scss'],
+  standalone: true,
+  imports: [
+    TranslateModule,
+    RouterNavDirective,
+    NgIf,
+    RouterLink,
+    RouterLinkActive,
+    RouterNavLinkDirective,
+    RouterNavPanelDirective,
+    RouterOutlet,
+    AsyncPipe
+  ]
 })
 export class OrdersContainerComponent {
   constructor(private authenticationService: AuthenticationService) {}

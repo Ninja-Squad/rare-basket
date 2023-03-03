@@ -1,7 +1,8 @@
 import { TestBed } from '@angular/core/testing';
+import { HttpStatusCode, provideHttpClient } from '@angular/common/http';
+import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 
 import { BasketService } from './basket.service';
-import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { Basket, BasketCommand } from './basket.model';
 
 describe('BasketService', () => {
@@ -10,7 +11,7 @@ describe('BasketService', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [HttpClientTestingModule]
+      providers: [provideHttpClient(), provideHttpClientTesting()]
     });
     service = TestBed.inject(BasketService);
     http = TestBed.inject(HttpTestingController);
@@ -59,7 +60,7 @@ describe('BasketService', () => {
     service.confirm('ref1', confirmationCode).subscribe(() => (done = true));
     http
       .expectOne({ method: 'PUT', url: 'api/baskets/ref1/confirmation' })
-      .flush({ functionalError: 'BASKET_ALREADY_CONFIRMED' }, { status: 400, statusText: 'Bad Request' });
+      .flush({ functionalError: 'BASKET_ALREADY_CONFIRMED' }, { status: HttpStatusCode.BadRequest, statusText: 'Bad Request' });
 
     expect(done).toBe(true);
   });
@@ -69,7 +70,9 @@ describe('BasketService', () => {
 
     const confirmationCode = 'ZYXWVUTS';
     service.confirm('ref1', confirmationCode).subscribe({ error: () => (done = true) });
-    http.expectOne({ method: 'PUT', url: 'api/baskets/ref1/confirmation' }).flush({}, { status: 400, statusText: 'Bad Request' });
+    http
+      .expectOne({ method: 'PUT', url: 'api/baskets/ref1/confirmation' })
+      .flush({}, { status: HttpStatusCode.BadRequest, statusText: 'Bad Request' });
 
     expect(done).toBe(true);
   });

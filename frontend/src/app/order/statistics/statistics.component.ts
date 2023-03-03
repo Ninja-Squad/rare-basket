@@ -3,9 +3,17 @@ import { OrderService } from '../order.service';
 import { CustomerTypeStatistics, OrderStatistics, OrderStatusStatistics } from '../order.model';
 import { ArcElement, Chart, ChartConfiguration, DoughnutController, Legend, Tooltip } from 'chart.js';
 import { COLORS } from '../../chart/colors';
-import { TranslateService } from '@ngx-translate/core';
-import { formatDate, formatNumber, formatPercent } from '@angular/common';
-import { AbstractControl, FormControl, FormGroup, NonNullableFormBuilder, ValidationErrors, Validators } from '@angular/forms';
+import { TranslateService, TranslateModule } from '@ngx-translate/core';
+import { formatDate, formatNumber, formatPercent, NgIf, NgFor, DecimalPipe, PercentPipe } from '@angular/common';
+import {
+  AbstractControl,
+  FormControl,
+  FormGroup,
+  NonNullableFormBuilder,
+  ValidationErrors,
+  Validators,
+  ReactiveFormsModule
+} from '@angular/forms';
 import { ActivatedRoute, Params, Router } from '@angular/router';
 import { validDateRange } from '../../shared/validators';
 import { Grc, User } from '../../shared/user.model';
@@ -13,6 +21,13 @@ import { AuthenticationService } from '../../shared/authentication.service';
 import { GrcService } from '../../shared/grc.service';
 import { first, map, switchMap } from 'rxjs/operators';
 import { concat, of } from 'rxjs';
+import { OrderStatusEnumPipe } from '../order-status-enum.pipe';
+import { CustomerTypeEnumPipe } from '../../shared/customer-type-enum.pipe';
+import { ChartComponent } from '../../chart/chart/chart.component';
+import { ValidationErrorsComponent, ValidationErrorDirective } from 'ngx-valdemort';
+import { FormControlValidationDirective } from '../../shared/form-control-validation.directive';
+import { NgbInputDatepicker } from '@ng-bootstrap/ng-bootstrap';
+import { DatepickerContainerComponent } from '../../rb-ngb/datepicker-container.component';
 
 function atLeastOneSelection(control: AbstractControl): ValidationErrors | null {
   const value: Array<{ grc: Grc; selected: boolean }> = control.value;
@@ -22,7 +37,24 @@ function atLeastOneSelection(control: AbstractControl): ValidationErrors | null 
 @Component({
   selector: 'rb-statistics',
   templateUrl: './statistics.component.html',
-  styleUrls: ['./statistics.component.scss']
+  styleUrls: ['./statistics.component.scss'],
+  standalone: true,
+  imports: [
+    NgIf,
+    ReactiveFormsModule,
+    TranslateModule,
+    DatepickerContainerComponent,
+    NgbInputDatepicker,
+    FormControlValidationDirective,
+    ValidationErrorsComponent,
+    NgFor,
+    ValidationErrorDirective,
+    ChartComponent,
+    DecimalPipe,
+    PercentPipe,
+    CustomerTypeEnumPipe,
+    OrderStatusEnumPipe
+  ]
 })
 export class StatisticsComponent implements OnInit {
   grcsFormArray = this.fb.array<FormGroup<{ grc: FormControl<Grc>; selected: FormControl<boolean> }>>([], atLeastOneSelection);

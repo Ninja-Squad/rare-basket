@@ -1,7 +1,11 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { Basket } from '../basket.model';
-import { NonNullableFormBuilder, Validators } from '@angular/forms';
+import { NonNullableFormBuilder, Validators, ReactiveFormsModule } from '@angular/forms';
 import { faCheckCircle, faInfoCircle } from '@fortawesome/free-solid-svg-icons';
+import { BasketContentComponent } from '../basket-content/basket-content.component';
+import { FormControlValidationDirective } from '../../shared/form-control-validation.directive';
+import { TranslateModule } from '@ngx-translate/core';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 
 /**
  * Component displayed once the user has saved the basket, informing the customer about the
@@ -10,7 +14,9 @@ import { faCheckCircle, faInfoCircle } from '@fortawesome/free-solid-svg-icons';
 @Component({
   selector: 'rb-edit-confirmation',
   templateUrl: './edit-confirmation.component.html',
-  styleUrls: ['./edit-confirmation.component.scss']
+  styleUrls: ['./edit-confirmation.component.scss'],
+  standalone: true,
+  imports: [FontAwesomeModule, TranslateModule, ReactiveFormsModule, FormControlValidationDirective, BasketContentComponent]
 })
 export class EditConfirmationComponent {
   @Input() basket: Basket;

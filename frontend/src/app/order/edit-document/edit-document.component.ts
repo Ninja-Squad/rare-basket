@@ -1,5 +1,5 @@
 import { Component, ElementRef, EventEmitter, Input, OnChanges, Output, SimpleChanges, ViewChild } from '@angular/core';
-import { NonNullableFormBuilder, Validators } from '@angular/forms';
+import { NonNullableFormBuilder, Validators, ReactiveFormsModule } from '@angular/forms';
 import {
   ALL_DOCUMENT_TYPES,
   DetailedOrder,
@@ -9,6 +9,13 @@ import {
   ON_DELIVERY_FORM_BY_DEFAULT_DOCUMENT_TYPES
 } from '../order.model';
 import { faFileUpload } from '@fortawesome/free-solid-svg-icons';
+import { DocumentTypeEnumPipe } from '../document-type-enum.pipe';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { NgbProgressbar } from '@ng-bootstrap/ng-bootstrap';
+import { FormControlValidationDirective } from '../../shared/form-control-validation.directive';
+import { ValidationErrorsComponent } from 'ngx-valdemort';
+import { NgFor, NgIf, DecimalPipe } from '@angular/common';
+import { TranslateModule } from '@ngx-translate/core';
 
 const validExtensions = ['.pdf', '.txt', '.eml', '.pst', '.ost'];
 const maxFileSize = 10 * 1024 * 1024; // 10 MB
@@ -16,7 +23,20 @@ const maxFileSize = 10 * 1024 * 1024; // 10 MB
 @Component({
   selector: 'rb-edit-document',
   templateUrl: './edit-document.component.html',
-  styleUrls: ['./edit-document.component.scss']
+  styleUrls: ['./edit-document.component.scss'],
+  standalone: true,
+  imports: [
+    ReactiveFormsModule,
+    TranslateModule,
+    NgFor,
+    ValidationErrorsComponent,
+    FormControlValidationDirective,
+    NgIf,
+    NgbProgressbar,
+    FontAwesomeModule,
+    DecimalPipe,
+    DocumentTypeEnumPipe
+  ]
 })
 export class EditDocumentComponent implements OnChanges {
   form = this.fb.group({

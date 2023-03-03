@@ -4,7 +4,8 @@ import { TranslateService } from '@ngx-translate/core';
 import { DocumentType } from './order.model';
 
 @Pipe({
-  name: 'documentTypeEnum'
+  name: 'documentTypeEnum',
+  standalone: true
 })
 export class DocumentTypeEnumPipe extends BaseEnumPipe<DocumentType> implements PipeTransform {
   constructor(translateService: TranslateService) {

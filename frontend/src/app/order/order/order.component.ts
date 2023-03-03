@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, RouterLink } from '@angular/router';
 import { OrderService } from '../order.service';
 import { CustomerInformationCommand, DetailedOrder, Document, DocumentCommand, OrderCommand } from '../order.model';
 import {
@@ -19,11 +19,20 @@ import { filter, finalize, switchMap, tap } from 'rxjs/operators';
 import { ConfirmationService } from '../../shared/confirmation.service';
 import { HttpEventType } from '@angular/common/http';
 import { DownloadService } from '../../shared/download.service';
-import { TranslateService } from '@ngx-translate/core';
+import { TranslateService, TranslateModule } from '@ngx-translate/core';
 import { FinalizationWarningsModalComponent } from '../finalization-warnings-modal/finalization-warnings-modal.component';
 import { Observable } from 'rxjs';
 import { ModalService } from '../../rb-ngb/modal.service';
 import { ToastService } from '../../shared/toast.service';
+import { DocumentTypeEnumPipe } from '../document-type-enum.pipe';
+import { OrderStatusEnumPipe } from '../order-status-enum.pipe';
+import { EditDocumentComponent } from '../edit-document/edit-document.component';
+import { EditOrderComponent } from '../edit-order/edit-order.component';
+import { AccessionComponent } from '../../shared/accession/accession.component';
+import { EditCustomerInformationComponent } from '../edit-customer-information/edit-customer-information.component';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { CustomerInformationComponent } from '../../shared/customer-information/customer-information.component';
+import { NgIf, NgFor, DecimalPipe, DatePipe } from '@angular/common';
 
 /**
  * Component displaying the details of an order to a GRC user
@@ -31,7 +40,24 @@ import { ToastService } from '../../shared/toast.service';
 @Component({
   selector: 'rb-order',
   templateUrl: './order.component.html',
-  styleUrls: ['./order.component.scss']
+  styleUrls: ['./order.component.scss'],
+  standalone: true,
+  imports: [
+    NgIf,
+    TranslateModule,
+    CustomerInformationComponent,
+    FontAwesomeModule,
+    EditCustomerInformationComponent,
+    NgFor,
+    AccessionComponent,
+    EditOrderComponent,
+    EditDocumentComponent,
+    RouterLink,
+    DecimalPipe,
+    DatePipe,
+    OrderStatusEnumPipe,
+    DocumentTypeEnumPipe
+  ]
 })
 export class OrderComponent implements OnInit {
   order: DetailedOrder;

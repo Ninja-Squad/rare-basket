@@ -1,14 +1,14 @@
 import { BaseEnumPipe } from './base-enum-pipe';
 import { TranslateService } from '@ngx-translate/core';
 import { TestBed } from '@angular/core/testing';
-import { I18nTestingModule } from '../i18n/i18n-testing.module.spec';
+import { provideI18nTesting } from '../i18n/mock-18n.spec';
 
 export function testEnumPipe<T extends string>(
   factory: (translateService: TranslateService) => BaseEnumPipe<T>,
   expectedTranslations: Partial<Record<T, string>>
 ) {
   TestBed.configureTestingModule({
-    imports: [I18nTestingModule]
+    providers: [provideI18nTesting()]
   });
 
   const pipe = factory(TestBed.inject(TranslateService));

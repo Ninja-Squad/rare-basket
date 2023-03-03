@@ -2,15 +2,14 @@ import { TestBed } from '@angular/core/testing';
 
 import { ConfirmedComponent } from './confirmed.component';
 import { ComponentTester } from 'ngx-speculoos';
-import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { Component } from '@angular/core';
 import { Basket } from '../basket.model';
-import { BasketContentComponent } from '../basket-content/basket-content.component';
-import { SharedModule } from '../../shared/shared.module';
-import { I18nTestingModule } from '../../i18n/i18n-testing.module.spec';
+import { provideI18nTesting } from '../../i18n/mock-18n.spec';
 
 @Component({
-  template: `<rb-confirmed [basket]="basket"></rb-confirmed>`
+  template: `<rb-confirmed [basket]="basket"></rb-confirmed>`,
+  standalone: true,
+  imports: [ConfirmedComponent]
 })
 class TestComponent {
   basket = {
@@ -32,8 +31,7 @@ describe('ConfirmedComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      declarations: [ConfirmedComponent, TestComponent, BasketContentComponent],
-      imports: [I18nTestingModule, FontAwesomeModule, SharedModule]
+      providers: [provideI18nTesting()]
     });
 
     tester = new TestComponentTester();

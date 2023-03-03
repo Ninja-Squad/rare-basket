@@ -1,16 +1,33 @@
 import { Component, Inject, LOCALE_ID } from '@angular/core';
-import { NonNullableFormBuilder, Validators } from '@angular/forms';
-import { formatDate } from '@angular/common';
+import { NonNullableFormBuilder, Validators, ReactiveFormsModule } from '@angular/forms';
+import { formatDate, NgIf } from '@angular/common';
 import { OrderService } from '../order.service';
 import { DownloadService } from '../../shared/download.service';
 import { finalize } from 'rxjs/operators';
 import { faSpinner } from '@fortawesome/free-solid-svg-icons';
 import { validDateRange } from '../../shared/validators';
+import { ValidationErrorsComponent } from 'ngx-valdemort';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { FormControlValidationDirective } from '../../shared/form-control-validation.directive';
+import { NgbInputDatepicker } from '@ng-bootstrap/ng-bootstrap';
+import { DatepickerContainerComponent } from '../../rb-ngb/datepicker-container.component';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'rb-export-orders',
   templateUrl: './export-orders.component.html',
-  styleUrls: ['./export-orders.component.scss']
+  styleUrls: ['./export-orders.component.scss'],
+  standalone: true,
+  imports: [
+    TranslateModule,
+    ReactiveFormsModule,
+    DatepickerContainerComponent,
+    NgbInputDatepicker,
+    FormControlValidationDirective,
+    NgIf,
+    FontAwesomeModule,
+    ValidationErrorsComponent
+  ]
 })
 export class ExportOrdersComponent {
   form = this.fb.group(

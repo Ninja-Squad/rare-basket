@@ -1,12 +1,30 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { ALL_CUSTOMER_TYPES, ALL_LANGUAGES, CustomerCommand, CustomerType } from '../../basket/basket.model';
-import { NonNullableFormBuilder, Validators } from '@angular/forms';
+import { NonNullableFormBuilder, Validators, ReactiveFormsModule } from '@angular/forms';
 import { CustomerInformationCommand } from '../order.model';
+import { LanguageEnumPipe } from '../../shared/language-enum.pipe';
+import { CustomerTypeEnumPipe } from '../../shared/customer-type-enum.pipe';
+import { NgFor } from '@angular/common';
+import { NgbCollapse } from '@ng-bootstrap/ng-bootstrap';
+import { ValidationErrorsComponent } from 'ngx-valdemort';
+import { FormControlValidationDirective } from '../../shared/form-control-validation.directive';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'rb-edit-customer-information',
   templateUrl: './edit-customer-information.component.html',
-  styleUrls: ['./edit-customer-information.component.scss']
+  styleUrls: ['./edit-customer-information.component.scss'],
+  standalone: true,
+  imports: [
+    ReactiveFormsModule,
+    TranslateModule,
+    FormControlValidationDirective,
+    ValidationErrorsComponent,
+    NgbCollapse,
+    NgFor,
+    CustomerTypeEnumPipe,
+    LanguageEnumPipe
+  ]
 })
 export class EditCustomerInformationComponent implements OnInit {
   @Input()

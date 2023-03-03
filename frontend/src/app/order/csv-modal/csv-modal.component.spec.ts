@@ -3,11 +3,9 @@ import { TestBed } from '@angular/core/testing';
 import { CsvModalComponent } from './csv-modal.component';
 import { ComponentTester, createMock } from 'ngx-speculoos';
 import { OrderCsvParserService } from '../order-csv-parser.service';
-import { ReactiveFormsModule } from '@angular/forms';
-import { I18nTestingModule } from '../../i18n/i18n-testing.module.spec';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
-import { SharedModule } from '../../shared/shared.module';
 import { OrderItemCommand } from '../order.model';
+import { provideI18nTesting } from '../../i18n/mock-18n.spec';
 
 class CsvModalComponentTester extends ComponentTester<CsvModalComponent> {
   constructor() {
@@ -49,9 +47,8 @@ describe('CsvModalComponent', () => {
     activeModal = createMock(NgbActiveModal);
 
     TestBed.configureTestingModule({
-      declarations: [CsvModalComponent],
-      imports: [ReactiveFormsModule, I18nTestingModule, SharedModule],
       providers: [
+        provideI18nTesting(),
         { provide: OrderCsvParserService, useValue: parser },
         { provide: NgbActiveModal, useValue: activeModal }
       ]

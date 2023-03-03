@@ -3,10 +3,10 @@ import { Component } from '@angular/core';
 import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 
 import { ModalOptions, ModalService } from './modal.service';
-import { RbNgbTestingModule } from './rb-ngb-testing.module';
 
 @Component({
-  template: 'Hello'
+  template: 'Hello',
+  standalone: true
 })
 class TestModalComponent {}
 
@@ -16,10 +16,7 @@ describe('ModalService', () => {
   const fakeModalComponent = jasmine.createSpyObj<TestModalComponent>(['']);
 
   beforeEach(() => {
-    TestBed.configureTestingModule({
-      declarations: [TestModalComponent],
-      imports: [RbNgbTestingModule]
-    });
+    TestBed.configureTestingModule({});
     ngbModal = TestBed.inject(NgbModal);
     modalService = TestBed.inject(ModalService);
   });

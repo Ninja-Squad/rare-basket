@@ -3,17 +3,14 @@ import { TestBed } from '@angular/core/testing';
 import { UsersComponent } from './users.component';
 import { ComponentTester, createMock, stubRoute, TestButton } from 'ngx-speculoos';
 import { PaginationComponent } from '../../rb-ngb/pagination/pagination.component';
-import { I18nTestingModule } from '../../i18n/i18n-testing.module.spec';
-import { RouterTestingModule } from '@angular/router/testing';
 import { ActivatedRoute } from '@angular/router';
 import { EMPTY, of } from 'rxjs';
 import { UserService } from '../user.service';
 import { Page } from '../../shared/page.model';
 import { User } from '../../shared/user.model';
-import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { ConfirmationService } from '../../shared/confirmation.service';
 import { ToastService } from '../../shared/toast.service';
-import { RbNgbTestingModule } from '../../rb-ngb/rb-ngb-testing.module';
+import { provideI18nTesting } from '../../i18n/mock-18n.spec';
 
 class UsersComponentTester extends ComponentTester<UsersComponent> {
   constructor() {
@@ -53,9 +50,8 @@ describe('UsersComponent', () => {
     toastService = createMock(ToastService);
 
     TestBed.configureTestingModule({
-      imports: [I18nTestingModule, FontAwesomeModule, RbNgbTestingModule, RouterTestingModule],
-      declarations: [UsersComponent],
       providers: [
+        provideI18nTesting(),
         { provide: ActivatedRoute, useValue: route },
         { provide: UserService, useValue: userService },
         { provide: ConfirmationService, useValue: confirmationService },

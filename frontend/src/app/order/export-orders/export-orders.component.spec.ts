@@ -2,16 +2,13 @@ import { TestBed } from '@angular/core/testing';
 
 import { ExportOrdersComponent } from './export-orders.component';
 import { ComponentTester, createMock } from 'ngx-speculoos';
-import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
-import { ReactiveFormsModule } from '@angular/forms';
 import { OrderService } from '../order.service';
 import { DownloadService } from '../../shared/download.service';
-import { I18nTestingModule } from '../../i18n/i18n-testing.module.spec';
 import { HttpResponse } from '@angular/common/http';
 import { Subject } from 'rxjs';
-import { ValdemortModule } from 'ngx-valdemort';
 import { ValidationDefaultsComponent } from '../../validation-defaults/validation-defaults.component';
-import { RbNgbTestingModule } from '../../rb-ngb/rb-ngb-testing.module';
+import { provideI18nTesting } from '../../i18n/mock-18n.spec';
+import { provideNgbDatepickerServices } from '../../rb-ngb/datepicker-providers';
 
 class ExportOrdersComponentTester extends ComponentTester<ExportOrdersComponent> {
   constructor() {
@@ -49,9 +46,9 @@ describe('ExportOrdersComponent', () => {
     downloadService = createMock(DownloadService);
 
     TestBed.configureTestingModule({
-      imports: [I18nTestingModule, RbNgbTestingModule, FontAwesomeModule, ReactiveFormsModule, ValdemortModule],
-      declarations: [ExportOrdersComponent, ValidationDefaultsComponent],
       providers: [
+        provideI18nTesting(),
+        provideNgbDatepickerServices(),
         { provide: OrderService, useValue: orderService },
         { provide: DownloadService, useValue: downloadService }
       ]

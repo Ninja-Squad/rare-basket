@@ -7,15 +7,9 @@ import { ActivatedRoute } from '@angular/router';
 import { Basket, BasketCommand } from '../basket.model';
 import { BasketService } from '../basket.service';
 import { of } from 'rxjs';
-import { ReactiveFormsModule } from '@angular/forms';
-import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
-import { SharedModule } from '../../shared/shared.module';
-import { ValdemortModule } from 'ngx-valdemort';
 import { EditConfirmationComponent } from '../edit-confirmation/edit-confirmation.component';
 import { ConfirmedComponent } from '../confirmed/confirmed.component';
-import { BasketContentComponent } from '../basket-content/basket-content.component';
-import { I18nTestingModule } from '../../i18n/i18n-testing.module.spec';
-import { RbNgbTestingModule } from '../../rb-ngb/rb-ngb-testing.module';
+import { provideI18nTesting } from '../../i18n/mock-18n.spec';
 
 class BasketComponentTester extends ComponentTester<BasketComponent> {
   constructor() {
@@ -53,12 +47,7 @@ describe('BasketComponent', () => {
     basketService = createMock(BasketService);
 
     TestBed.configureTestingModule({
-      declarations: [BasketComponent, EditBasketComponent, EditConfirmationComponent, ConfirmedComponent, BasketContentComponent],
-      imports: [I18nTestingModule, RbNgbTestingModule, ReactiveFormsModule, FontAwesomeModule, SharedModule, ValdemortModule],
-      providers: [
-        { provide: ActivatedRoute, useValue: route },
-        { provide: BasketService, useValue: basketService }
-      ]
+      providers: [provideI18nTesting(), { provide: ActivatedRoute, useValue: route }, { provide: BasketService, useValue: basketService }]
     });
 
     tester = new BasketComponentTester();

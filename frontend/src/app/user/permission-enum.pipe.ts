@@ -4,7 +4,8 @@ import { Permission } from '../shared/user.model';
 import { TranslateService } from '@ngx-translate/core';
 
 @Pipe({
-  name: 'permissionEnum'
+  name: 'permissionEnum',
+  standalone: true
 })
 export class PermissionEnumPipe extends BaseEnumPipe<Permission> implements PipeTransform {
   constructor(translateService: TranslateService) {

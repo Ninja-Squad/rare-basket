@@ -34,7 +34,8 @@ let counter = 0;
     '[attr.aria-selected]': 'selected',
     '[attr.id]': 'id',
     '[class.nav-link]': 'true'
-  }
+  },
+  standalone: true
 })
 export class RouterNavLinkDirective {
   /**
@@ -62,7 +63,8 @@ export class RouterNavLinkDirective {
   host: {
     '[attr.role]': `'tabpanel'`,
     '[attr.aria-labelledby]': 'nav.selectedId'
-  }
+  },
+  standalone: true
 })
 export class RouterNavPanelDirective {
   /**
@@ -78,7 +80,8 @@ export class RouterNavPanelDirective {
   host: {
     '[attr.role]': `'tablist'`,
     '[class.nav]': 'true'
-  }
+  },
+  standalone: true
 })
 export class RouterNavDirective {
   @ContentChildren(RouterNavLinkDirective, { descendants: true })

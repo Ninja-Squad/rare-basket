@@ -2,19 +2,13 @@ import { TestBed } from '@angular/core/testing';
 
 import { CreateOrderComponent } from './create-order.component';
 import { ComponentTester, createMock } from 'ngx-speculoos';
-import { ReactiveFormsModule } from '@angular/forms';
-import { ValdemortModule } from 'ngx-valdemort';
-import { I18nTestingModule } from '../../i18n/i18n-testing.module.spec';
-import { LanguageEnumPipe } from '../../shared/language-enum.pipe';
-import { CustomerTypeEnumPipe } from '../../shared/customer-type-enum.pipe';
 import { OrderService } from '../order.service';
-import { RouterTestingModule } from '@angular/router/testing';
 import { Router } from '@angular/router';
 import { EditCustomerInformationComponent } from '../edit-customer-information/edit-customer-information.component';
 import { CustomerInformationCommand, DetailedOrder } from '../order.model';
 import { of } from 'rxjs';
 import { ToastService } from '../../shared/toast.service';
-import { RbNgbTestingModule } from '../../rb-ngb/rb-ngb-testing.module';
+import { provideI18nTesting } from '../../i18n/mock-18n.spec';
 
 class CreateOrderComponentTester extends ComponentTester<CreateOrderComponent> {
   constructor() {
@@ -37,9 +31,8 @@ describe('CreateOrderComponent', () => {
     toastService = createMock(ToastService);
 
     TestBed.configureTestingModule({
-      imports: [I18nTestingModule, RbNgbTestingModule, ReactiveFormsModule, ValdemortModule, RouterTestingModule],
-      declarations: [CreateOrderComponent, EditCustomerInformationComponent, LanguageEnumPipe, CustomerTypeEnumPipe],
       providers: [
+        provideI18nTesting(),
         { provide: OrderService, useValue: orderService },
         { provide: ToastService, useValue: toastService }
       ]

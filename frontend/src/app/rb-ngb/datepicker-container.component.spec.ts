@@ -1,18 +1,20 @@
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { TestBed } from '@angular/core/testing';
 import { Component } from '@angular/core';
-import { NgbDatepicker } from '@ng-bootstrap/ng-bootstrap';
+import { NgbDatepicker, NgbInputDatepicker } from '@ng-bootstrap/ng-bootstrap';
 import { ComponentTester } from 'ngx-speculoos';
-import { I18nTestingModule } from '../i18n/i18n-testing.module.spec';
-import { RbNgbTestingModule } from './rb-ngb-testing.module';
 import { DatepickerContainerComponent } from './datepicker-container.component';
+import { provideI18nTesting } from '../i18n/mock-18n.spec';
+import { provideNgbDatepickerServices } from './datepicker-providers';
 
 @Component({
   template: `
     <rb-datepicker-container class="foo">
       <input class="form-control" [formControl]="dateCtrl" ngbDatepicker />
     </rb-datepicker-container>
-  `
+  `,
+  standalone: true,
+  imports: [DatepickerContainerComponent, NgbInputDatepicker, ReactiveFormsModule]
 })
 class TestComponent {
   dateCtrl = new FormControl(null as string);
@@ -45,8 +47,7 @@ describe('DatepickerContainerComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [I18nTestingModule, RbNgbTestingModule, ReactiveFormsModule],
-      declarations: [TestComponent]
+      providers: [provideI18nTesting(), provideNgbDatepickerServices()]
     });
 
     tester = new TestComponentTester();

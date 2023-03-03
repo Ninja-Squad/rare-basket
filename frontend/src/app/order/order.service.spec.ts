@@ -1,11 +1,11 @@
 import { TestBed } from '@angular/core/testing';
 
 import { OrderService } from './order.service';
-import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
-import { Document, DocumentCommand, Order, OrderCommand, CustomerInformationCommand, OrderStatistics } from './order.model';
+import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
+import { CustomerInformationCommand, Document, DocumentCommand, Order, OrderCommand, OrderStatistics } from './order.model';
 import { Page } from '../shared/page.model';
 import { filter } from 'rxjs/operators';
-import { HttpEventType, HttpResponse } from '@angular/common/http';
+import { HttpEventType, HttpResponse, provideHttpClient } from '@angular/common/http';
 
 describe('OrderService', () => {
   let service: OrderService;
@@ -13,7 +13,7 @@ describe('OrderService', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [HttpClientTestingModule]
+      providers: [provideHttpClient(), provideHttpClientTesting()]
     });
     service = TestBed.inject(OrderService);
     http = TestBed.inject(HttpTestingController);

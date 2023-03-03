@@ -6,17 +6,15 @@ import { ALL_DOCUMENT_TYPES, DetailedOrder, Document, DocumentCommand } from '..
 import { ComponentTester } from 'ngx-speculoos';
 import { NgbProgressbar } from '@ng-bootstrap/ng-bootstrap';
 import { By } from '@angular/platform-browser';
-import { DocumentTypeEnumPipe } from '../document-type-enum.pipe';
-import { I18nTestingModule } from '../../i18n/i18n-testing.module.spec';
-import { ReactiveFormsModule } from '@angular/forms';
-import { ValdemortModule } from 'ngx-valdemort';
 import { ValidationDefaultsComponent } from '../../validation-defaults/validation-defaults.component';
-import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
-import { RbNgbTestingModule } from '../../rb-ngb/rb-ngb-testing.module';
+import { provideI18nTesting } from '../../i18n/mock-18n.spec';
+import { provideRouter } from '@angular/router';
 
 @Component({
   template:
-    '<rb-edit-document [order]="order" [uploadProgress]="progress" (saved)="saved = $event" (cancelled)="cancelled = true"></rb-edit-document>'
+    '<rb-edit-document [order]="order" [uploadProgress]="progress" (saved)="saved = $event" (cancelled)="cancelled = true"></rb-edit-document>',
+  standalone: true,
+  imports: [EditDocumentComponent]
 })
 class TestComponent {
   order = {
@@ -74,8 +72,7 @@ describe('EditDocumentComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [I18nTestingModule, FontAwesomeModule, ReactiveFormsModule, RbNgbTestingModule, ValdemortModule],
-      declarations: [TestComponent, EditDocumentComponent, DocumentTypeEnumPipe, ValidationDefaultsComponent]
+      providers: [provideRouter([]), provideI18nTesting()]
     });
 
     TestBed.createComponent(ValidationDefaultsComponent).detectChanges();

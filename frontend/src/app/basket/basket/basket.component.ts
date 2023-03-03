@@ -3,11 +3,18 @@ import { BasketService } from '../basket.service';
 import { Basket, BasketCommand } from '../basket.model';
 import { ActivatedRoute } from '@angular/router';
 import { switchMap } from 'rxjs/operators';
+import { ConfirmedComponent } from '../confirmed/confirmed.component';
+import { EditConfirmationComponent } from '../edit-confirmation/edit-confirmation.component';
+import { EditBasketComponent } from '../edit-basket/edit-basket.component';
+import { TranslateModule } from '@ngx-translate/core';
+import { NgIf } from '@angular/common';
 
 @Component({
   selector: 'rb-basket',
   templateUrl: './basket.component.html',
-  styleUrls: ['./basket.component.scss']
+  styleUrls: ['./basket.component.scss'],
+  standalone: true,
+  imports: [NgIf, TranslateModule, EditBasketComponent, EditConfirmationComponent, ConfirmedComponent]
 })
 export class BasketComponent implements OnInit {
   basket: Basket | null = null;

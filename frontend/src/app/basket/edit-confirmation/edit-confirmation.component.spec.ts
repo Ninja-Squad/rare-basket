@@ -4,11 +4,7 @@ import { EditConfirmationComponent } from './edit-confirmation.component';
 import { Component } from '@angular/core';
 import { Basket } from '../basket.model';
 import { ComponentTester, TestButton } from 'ngx-speculoos';
-import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
-import { ReactiveFormsModule } from '@angular/forms';
-import { BasketContentComponent } from '../basket-content/basket-content.component';
-import { SharedModule } from '../../shared/shared.module';
-import { I18nTestingModule } from '../../i18n/i18n-testing.module.spec';
+import { provideI18nTesting } from '../../i18n/mock-18n.spec';
 
 @Component({
   template: `
@@ -17,7 +13,9 @@ import { I18nTestingModule } from '../../i18n/i18n-testing.module.spec';
       (basketConfirmed)="confirmationCode = $event"
       (refreshRequested)="refreshRequested = true"
     ></rb-edit-confirmation>
-  `
+  `,
+  standalone: true,
+  imports: [EditConfirmationComponent]
 })
 class TestComponent {
   basket = {
@@ -53,8 +51,7 @@ describe('EditConfirmationComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      declarations: [EditConfirmationComponent, TestComponent, BasketContentComponent],
-      imports: [I18nTestingModule, FontAwesomeModule, ReactiveFormsModule, SharedModule]
+      providers: [provideI18nTesting()]
     });
 
     tester = new TestComponentTester();

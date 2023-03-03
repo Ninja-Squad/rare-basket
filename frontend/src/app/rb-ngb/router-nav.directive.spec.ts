@@ -1,12 +1,13 @@
 import { fakeAsync, TestBed, tick } from '@angular/core/testing';
-import { RouterTestingModule } from '@angular/router/testing';
 import { Component } from '@angular/core';
 import { ComponentTester } from 'ngx-speculoos';
-import { Router } from '@angular/router';
-import { RbNgbTestingModule } from './rb-ngb-testing.module';
+import { provideRouter, Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
+import { RouterNavDirective, RouterNavLinkDirective, RouterNavPanelDirective } from './router-nav.directive';
+import { NgIf } from '@angular/common';
 
 @Component({
-  template: ''
+  template: '',
+  standalone: true
 })
 class PlaceholderComponent {}
 
@@ -24,7 +25,9 @@ class PlaceholderComponent {}
     <div [rbRouterNavPanel]="nav">
       <router-outlet></router-outlet>
     </div>
-  `
+  `,
+  standalone: true,
+  imports: [NgIf, RouterLink, RouterLinkActive, RouterOutlet, RouterNavDirective, RouterNavPanelDirective, RouterNavLinkDirective]
 })
 class TestComponent {}
 
@@ -46,15 +49,13 @@ class TestComponentTester extends ComponentTester<TestComponent> {
   }
 }
 
-describe('router nav directive', () => {
+describe('Router nav directives', () => {
   let tester: TestComponentTester;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      declarations: [TestComponent, PlaceholderComponent],
-      imports: [
-        RbNgbTestingModule,
-        RouterTestingModule.withRoutes([
+      providers: [
+        provideRouter([
           { path: 'foo', component: PlaceholderComponent },
           { path: 'bar', component: PlaceholderComponent }
         ])

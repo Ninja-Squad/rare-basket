@@ -4,7 +4,8 @@ import { OrderStatus } from './order.model';
 import { TranslateService } from '@ngx-translate/core';
 
 @Pipe({
-  name: 'orderStatusEnum'
+  name: 'orderStatusEnum',
+  standalone: true
 })
 export class OrderStatusEnumPipe extends BaseEnumPipe<OrderStatus> implements PipeTransform {
   constructor(translateService: TranslateService) {

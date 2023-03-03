@@ -1,18 +1,15 @@
 import { TestBed } from '@angular/core/testing';
 import { ActivatedRoute, Router } from '@angular/router';
-import { RouterTestingModule } from '@angular/router/testing';
-import { ReactiveFormsModule } from '@angular/forms';
 import { of } from 'rxjs';
-import { ValdemortModule } from 'ngx-valdemort';
 import { ComponentTester, createMock, stubRoute } from 'ngx-speculoos';
 
 import { EditAccessionHolderComponent } from './edit-accession-holder.component';
 import { AccessionHolderService } from '../../shared/accession-holder.service';
-import { I18nTestingModule } from '../../i18n/i18n-testing.module.spec';
 import { ValidationDefaultsComponent } from '../../validation-defaults/validation-defaults.component';
 import { AccessionHolder, AccessionHolderCommand, Grc } from '../../shared/user.model';
 import { GrcService } from '../../shared/grc.service';
 import { ToastService } from '../../shared/toast.service';
+import { provideI18nTesting } from '../../i18n/mock-18n.spec';
 
 class EditAccessionHolderComponentTester extends ComponentTester<EditAccessionHolderComponent> {
   constructor() {
@@ -61,9 +58,8 @@ describe('EditAccessionHolderComponent', () => {
     toastService = createMock(ToastService);
 
     TestBed.configureTestingModule({
-      imports: [I18nTestingModule, ReactiveFormsModule, ValdemortModule, RouterTestingModule],
-      declarations: [EditAccessionHolderComponent, ValidationDefaultsComponent],
       providers: [
+        provideI18nTesting(),
         { provide: AccessionHolderService, useValue: accessionHolderService },
         { provide: GrcService, useValue: grcService },
         { provide: ActivatedRoute, useValue: route },

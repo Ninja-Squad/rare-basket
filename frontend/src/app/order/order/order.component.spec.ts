@@ -2,29 +2,21 @@ import { TestBed } from '@angular/core/testing';
 
 import { OrderComponent } from './order.component';
 import { ComponentTester, createMock, stubRoute, TestButton } from 'ngx-speculoos';
-import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
-import { RouterTestingModule } from '@angular/router/testing';
 import { ActivatedRoute } from '@angular/router';
 import { OrderService } from '../order.service';
 import { EMPTY, of, Subject } from 'rxjs';
 import { DetailedOrder, Document, DocumentCommand, OrderCommand } from '../order.model';
 import { LOCALE_ID } from '@angular/core';
-import { SharedModule } from '../../shared/shared.module';
-import { I18nTestingModule } from '../../i18n/i18n-testing.module.spec';
 import { EditOrderComponent } from '../edit-order/edit-order.component';
 import { By } from '@angular/platform-browser';
-import { ValdemortModule } from 'ngx-valdemort';
-import { ReactiveFormsModule } from '@angular/forms';
 import { ConfirmationService } from '../../shared/confirmation.service';
-import { OrderStatusEnumPipe } from '../order-status-enum.pipe';
-import { DocumentTypeEnumPipe } from '../document-type-enum.pipe';
 import { EditDocumentComponent } from '../edit-document/edit-document.component';
 import { HttpEvent, HttpEventType, HttpProgressEvent, HttpResponse } from '@angular/common/http';
 import { DownloadService } from '../../shared/download.service';
-import { MockModalService, ModalTestingModule } from '../../rb-ngb/mock-modal.service.spec';
+import { MockModalService, provideModalTesting } from '../../rb-ngb/mock-modal.service.spec';
 import { FinalizationWarningsModalComponent } from '../finalization-warnings-modal/finalization-warnings-modal.component';
 import { ToastService } from '../../shared/toast.service';
-import { RbNgbTestingModule } from 'src/app/rb-ngb/rb-ngb-testing.module';
+import { provideI18nTesting } from '../../i18n/mock-18n.spec';
 
 class OrderComponentTester extends ComponentTester<OrderComponent> {
   constructor() {
@@ -118,18 +110,9 @@ describe('OrderComponent', () => {
     toastService = createMock(ToastService);
 
     TestBed.configureTestingModule({
-      declarations: [OrderComponent, EditOrderComponent, OrderStatusEnumPipe, DocumentTypeEnumPipe, EditDocumentComponent],
-      imports: [
-        I18nTestingModule,
-        FontAwesomeModule,
-        RouterTestingModule,
-        SharedModule,
-        ReactiveFormsModule,
-        ValdemortModule,
-        RbNgbTestingModule,
-        ModalTestingModule
-      ],
       providers: [
+        provideI18nTesting(),
+        provideModalTesting(),
         { provide: ActivatedRoute, useValue: route },
         { provide: OrderService, useValue: orderService },
         { provide: ConfirmationService, useValue: confirmationService },

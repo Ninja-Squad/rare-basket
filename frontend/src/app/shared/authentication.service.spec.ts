@@ -5,8 +5,9 @@ import { WINDOW } from './window.service';
 import { LoginResponse, OidcSecurityService } from 'angular-auth-oidc-client';
 import { Router } from '@angular/router';
 import { defer, of, Subject } from 'rxjs';
-import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
+import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { createMock } from 'ngx-speculoos';
+import { provideHttpClient } from '@angular/common/http';
 
 describe('AuthenticationService', () => {
   let service: AuthenticationService;
@@ -32,8 +33,9 @@ describe('AuthenticationService', () => {
     router = createMock(Router);
 
     TestBed.configureTestingModule({
-      imports: [HttpClientTestingModule],
       providers: [
+        provideHttpClient(),
+        provideHttpClientTesting(),
         { provide: WINDOW, useValue: fakeWindow },
         { provide: OidcSecurityService, useValue: oidcSecurityService },
         { provide: Router, useValue: router }

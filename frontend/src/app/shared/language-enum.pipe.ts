@@ -4,7 +4,8 @@ import { Language } from '../basket/basket.model';
 import { TranslateService } from '@ngx-translate/core';
 
 @Pipe({
-  name: 'languageEnum'
+  name: 'languageEnum',
+  standalone: true
 })
 export class LanguageEnumPipe extends BaseEnumPipe<Language> implements PipeTransform {
   constructor(translateService: TranslateService) {

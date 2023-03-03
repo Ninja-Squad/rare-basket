@@ -1,14 +1,13 @@
 import { TestBed } from '@angular/core/testing';
 
-import { AuthenticationInterceptorService } from './authentication-interceptor.service';
-import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
-import { HTTP_INTERCEPTORS, HttpClient } from '@angular/common/http';
+import { authenticationInterceptor } from './authentication.interceptor';
+import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
+import { HttpClient, provideHttpClient, withInterceptors } from '@angular/common/http';
 import { OidcSecurityService } from 'angular-auth-oidc-client';
-import { Injector } from '@angular/core';
 import { createMock } from 'ngx-speculoos';
 import { of } from 'rxjs';
 
-describe('AuthenticationInterceptorService', () => {
+describe('authenticationInterceptor', () => {
   let httpTestingController: HttpTestingController;
   let httpClient: HttpClient;
   let oidcSecurityService: jasmine.SpyObj<OidcSecurityService>;
@@ -17,21 +16,18 @@ describe('AuthenticationInterceptorService', () => {
     oidcSecurityService = createMock(OidcSecurityService);
 
     TestBed.configureTestingModule({
-      imports: [HttpClientTestingModule],
       providers: [
-        { provide: AuthenticationInterceptorService, useClass: AuthenticationInterceptorService },
-        { provide: HTTP_INTERCEPTORS, useExisting: AuthenticationInterceptorService, multi: true }
+        provideHttpClient(withInterceptors([authenticationInterceptor])),
+        provideHttpClientTesting(),
+        {
+          provide: OidcSecurityService,
+          useValue: oidcSecurityService
+        }
       ]
     });
 
     httpTestingController = TestBed.inject(HttpTestingController);
     httpClient = TestBed.inject(HttpClient);
-
-    const fakeInjector = jasmine.createSpyObj<Injector>('Injector', ['get']);
-
-    fakeInjector.get.and.returnValue(oidcSecurityService);
-    const interceptor = TestBed.inject(AuthenticationInterceptorService);
-    (interceptor as any).injector = fakeInjector;
   });
 
   it('should not do anything if not authenticated', () => {

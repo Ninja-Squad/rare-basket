@@ -1,15 +1,38 @@
 import { Component, EventEmitter, Inject, Input, LOCALE_ID, OnInit, Output } from '@angular/core';
 import { ALL_CUSTOMER_TYPES, Basket, BasketCommand, BasketItemCommand, CustomerType, Language } from '../basket.model';
-import { NonNullableFormBuilder, Validators } from '@angular/forms';
+import { NonNullableFormBuilder, Validators, ReactiveFormsModule } from '@angular/forms';
 import { faCheck, faTrash } from '@fortawesome/free-solid-svg-icons';
 import { ConfirmationService } from '../../shared/confirmation.service';
 import { environment } from '../../../environments/environment';
 import { timer } from 'rxjs';
+import { CustomerTypeEnumPipe } from '../../shared/customer-type-enum.pipe';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { AccessionComponent } from '../../shared/accession/accession.component';
+import { NgFor, NgIf, DecimalPipe } from '@angular/common';
+import { NgbCollapse } from '@ng-bootstrap/ng-bootstrap';
+import { ValidationErrorsComponent, ValidationErrorDirective } from 'ngx-valdemort';
+import { FormControlValidationDirective } from '../../shared/form-control-validation.directive';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'rb-edit-basket',
   templateUrl: './edit-basket.component.html',
-  styleUrls: ['./edit-basket.component.scss']
+  styleUrls: ['./edit-basket.component.scss'],
+  standalone: true,
+  imports: [
+    TranslateModule,
+    ReactiveFormsModule,
+    FormControlValidationDirective,
+    ValidationErrorsComponent,
+    NgbCollapse,
+    NgFor,
+    NgIf,
+    AccessionComponent,
+    FontAwesomeModule,
+    ValidationErrorDirective,
+    DecimalPipe,
+    CustomerTypeEnumPipe
+  ]
 })
 export class EditBasketComponent implements OnInit {
   @Input() basket: Basket;

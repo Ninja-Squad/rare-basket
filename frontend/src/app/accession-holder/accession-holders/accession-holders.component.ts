@@ -5,11 +5,17 @@ import { AccessionHolderService } from '../../shared/accession-holder.service';
 import { switchMap, tap } from 'rxjs/operators';
 import { ConfirmationService } from '../../shared/confirmation.service';
 import { ToastService } from '../../shared/toast.service';
+import { RouterLink } from '@angular/router';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { NgIf, NgFor } from '@angular/common';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'rb-accession-holders',
   templateUrl: './accession-holders.component.html',
-  styleUrls: ['./accession-holders.component.scss']
+  styleUrls: ['./accession-holders.component.scss'],
+  standalone: true,
+  imports: [TranslateModule, NgIf, NgFor, FontAwesomeModule, RouterLink]
 })
 export class AccessionHoldersComponent implements OnInit {
   accessionHolders: Array<AccessionHolder>;

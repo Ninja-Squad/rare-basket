@@ -5,13 +5,8 @@ import { ComponentTester } from 'ngx-speculoos';
 import { Component } from '@angular/core';
 import { ALL_CUSTOMER_TYPES, ALL_LANGUAGES } from '../../basket/basket.model';
 import { CustomerInformationCommand } from '../order.model';
-import { I18nTestingModule } from '../../i18n/i18n-testing.module.spec';
 import { ValidationDefaultsComponent } from '../../validation-defaults/validation-defaults.component';
-import { ValdemortModule } from 'ngx-valdemort';
-import { ReactiveFormsModule } from '@angular/forms';
-import { LanguageEnumPipe } from '../../shared/language-enum.pipe';
-import { CustomerTypeEnumPipe } from '../../shared/customer-type-enum.pipe';
-import { RbNgbTestingModule } from '../../rb-ngb/rb-ngb-testing.module';
+import { provideI18nTesting } from '../../i18n/mock-18n.spec';
 
 @Component({
   template: `
@@ -22,7 +17,9 @@ import { RbNgbTestingModule } from '../../rb-ngb/rb-ngb-testing.module';
       (cancelled)="cancelled = true"
     >
     </rb-edit-customer-information>
-  `
+  `,
+  standalone: true,
+  imports: [EditCustomerInformationComponent]
 })
 class TestComponent {
   customerInformation: CustomerInformationCommand = {
@@ -101,8 +98,7 @@ describe('EditCustomerComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [I18nTestingModule, RbNgbTestingModule, ReactiveFormsModule, ValdemortModule],
-      declarations: [EditCustomerInformationComponent, TestComponent, ValidationDefaultsComponent, LanguageEnumPipe, CustomerTypeEnumPipe]
+      providers: [provideI18nTesting()]
     });
 
     TestBed.createComponent(ValidationDefaultsComponent).detectChanges();

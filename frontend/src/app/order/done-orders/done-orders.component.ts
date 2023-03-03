@@ -4,11 +4,15 @@ import { OrderService } from '../order.service';
 import { map, switchMap } from 'rxjs/operators';
 import { Order } from '../order.model';
 import { Page } from '../../shared/page.model';
+import { OrdersComponent } from '../orders/orders.component';
+import { NgIf } from '@angular/common';
 
 @Component({
   selector: 'rb-done-orders',
   templateUrl: './done-orders.component.html',
-  styleUrls: ['./done-orders.component.scss']
+  styleUrls: ['./done-orders.component.scss'],
+  standalone: true,
+  imports: [NgIf, OrdersComponent]
 })
 export class DoneOrdersComponent implements OnInit {
   orders: Page<Order>;

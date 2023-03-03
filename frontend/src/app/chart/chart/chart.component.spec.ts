@@ -5,7 +5,9 @@ import { TestBed } from '@angular/core/testing';
 import { ComponentTester } from 'ngx-speculoos';
 
 @Component({
-  template: '<rb-chart [configuration]="configuration"></rb-chart>'
+  template: '<rb-chart [configuration]="configuration"></rb-chart>',
+  standalone: true,
+  imports: [ChartComponent]
 })
 class TestComponent {
   configuration: ChartConfiguration<'doughnut'> = {
@@ -29,9 +31,7 @@ describe('ChartComponent', () => {
   beforeEach(() => {
     Chart.register(DoughnutController, ArcElement);
 
-    TestBed.configureTestingModule({
-      declarations: [ChartComponent, TestComponent]
-    });
+    TestBed.configureTestingModule({});
   });
 
   it('should display a chart', () => {

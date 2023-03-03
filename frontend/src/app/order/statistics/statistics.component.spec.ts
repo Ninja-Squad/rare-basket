@@ -2,23 +2,17 @@ import { TestBed } from '@angular/core/testing';
 
 import { StatisticsComponent } from './statistics.component';
 import { ActivatedRouteStub, ComponentTester, createMock, stubRoute, TestInput } from 'ngx-speculoos';
-import { I18nTestingModule } from '../../i18n/i18n-testing.module.spec';
-import { ReactiveFormsModule } from '@angular/forms';
-import { ChartModule } from '../../chart/chart.module';
 import { of } from 'rxjs';
 import { ActivatedRoute, Router } from '@angular/router';
-import { RouterTestingModule } from '@angular/router/testing';
 import { OrderService } from '../order.service';
-import { SharedModule } from '../../shared/shared.module';
-import { OrderStatusEnumPipe } from '../order-status-enum.pipe';
 import { ValidationDefaultsComponent } from '../../validation-defaults/validation-defaults.component';
-import { ValdemortModule } from 'ngx-valdemort';
 import { formatDate } from '@angular/common';
 import { Grc, User } from '../../shared/user.model';
 import { AuthenticationService } from '../../shared/authentication.service';
 import { GrcService } from '../../shared/grc.service';
 import { OrderStatistics } from '../order.model';
-import { RbNgbTestingModule } from 'src/app/rb-ngb/rb-ngb-testing.module';
+import { provideI18nTesting } from '../../i18n/mock-18n.spec';
+import { provideNgbDatepickerServices } from '../../rb-ngb/datepicker-providers';
 
 class StatisticsComponentTester extends ComponentTester<StatisticsComponent> {
   constructor() {
@@ -155,17 +149,9 @@ describe('StatisticsComponent', () => {
     grcService.list.and.returnValue(of(allGrcs));
 
     TestBed.configureTestingModule({
-      imports: [
-        I18nTestingModule,
-        RbNgbTestingModule,
-        ReactiveFormsModule,
-        ChartModule,
-        RouterTestingModule,
-        SharedModule,
-        ValdemortModule
-      ],
-      declarations: [StatisticsComponent, OrderStatusEnumPipe, ValidationDefaultsComponent],
       providers: [
+        provideI18nTesting(),
+        provideNgbDatepickerServices(),
         { provide: ActivatedRoute, useValue: route },
         { provide: Router, useValue: router },
         { provide: OrderService, useValue: orderService },

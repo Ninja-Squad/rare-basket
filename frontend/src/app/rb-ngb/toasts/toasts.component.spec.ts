@@ -5,7 +5,7 @@ import { ComponentTester, createMock } from 'ngx-speculoos';
 import { NgbToast } from '@ng-bootstrap/ng-bootstrap';
 import { Subject } from 'rxjs';
 import { Toast, ToastService } from '../../shared/toast.service';
-import { RbNgbTestingModule } from '../rb-ngb-testing.module';
+import { provideDisabledNgbAnimation } from '../disable-animations';
 
 class ToastsComponentTester extends ComponentTester<ToastsComponent> {
   constructor() {
@@ -27,9 +27,7 @@ describe('ToastsComponent', () => {
     toastService.toasts.and.returnValue(toastsSubject);
 
     TestBed.configureTestingModule({
-      imports: [RbNgbTestingModule],
-      declarations: [ToastsComponent],
-      providers: [{ provide: ToastService, useValue: toastService }]
+      providers: [provideDisabledNgbAnimation(), { provide: ToastService, useValue: toastService }]
     });
 
     tester = new ToastsComponentTester();

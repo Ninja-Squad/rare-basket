@@ -2,13 +2,11 @@ import { TestBed } from '@angular/core/testing';
 
 import { OrdersContainerComponent } from './orders-container.component';
 import { ComponentTester } from 'ngx-speculoos';
-import { RouterOutlet } from '@angular/router';
-import { RouterTestingModule } from '@angular/router/testing';
-import { I18nTestingModule } from '../../i18n/i18n-testing.module.spec';
+import { provideRouter, RouterOutlet } from '@angular/router';
 import { AuthenticationService } from '../../shared/authentication.service';
 import { User } from '../../shared/user.model';
 import { BehaviorSubject } from 'rxjs';
-import { RbNgbTestingModule } from '../../rb-ngb/rb-ngb-testing.module';
+import { provideI18nTesting } from '../../i18n/mock-18n.spec';
 
 class OrdersContainerComponentTester extends ComponentTester<OrdersContainerComponent> {
   constructor() {
@@ -37,9 +35,7 @@ describe('OrdersContainerComponent', () => {
     authenticationService.getCurrentUser.and.returnValue(currentUserSubject);
 
     TestBed.configureTestingModule({
-      declarations: [OrdersContainerComponent],
-      imports: [I18nTestingModule, RouterTestingModule, RbNgbTestingModule],
-      providers: [{ provide: AuthenticationService, useValue: authenticationService }]
+      providers: [provideRouter([]), provideI18nTesting(), { provide: AuthenticationService, useValue: authenticationService }]
     });
 
     tester = new OrdersContainerComponentTester();

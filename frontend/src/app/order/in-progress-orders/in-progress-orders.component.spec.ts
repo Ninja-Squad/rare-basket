@@ -8,10 +8,7 @@ import { EMPTY, of } from 'rxjs';
 import { OrderService } from '../order.service';
 import { Order } from '../order.model';
 import { Page } from '../../shared/page.model';
-import { RouterTestingModule } from '@angular/router/testing';
-import { I18nTestingModule } from '../../i18n/i18n-testing.module.spec';
-import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
-import { RbNgbTestingModule } from '../../rb-ngb/rb-ngb-testing.module';
+import { provideI18nTesting } from '../../i18n/mock-18n.spec';
 
 class InProgressOrdersComponentTester extends ComponentTester<InProgressOrdersComponent> {
   constructor() {
@@ -37,12 +34,7 @@ describe('InProgressOrdersComponent', () => {
     orderService = createMock(OrderService);
 
     TestBed.configureTestingModule({
-      declarations: [InProgressOrdersComponent, OrdersComponent],
-      imports: [I18nTestingModule, RouterTestingModule, RbNgbTestingModule, FontAwesomeModule],
-      providers: [
-        { provide: ActivatedRoute, useValue: route },
-        { provide: OrderService, useValue: orderService }
-      ]
+      providers: [provideI18nTesting(), { provide: ActivatedRoute, useValue: route }, { provide: OrderService, useValue: orderService }]
     });
 
     tester = new InProgressOrdersComponentTester();

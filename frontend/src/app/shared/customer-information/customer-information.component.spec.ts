@@ -1,16 +1,15 @@
 import { TestBed } from '@angular/core/testing';
 import { Component } from '@angular/core';
 import { ComponentTester } from 'ngx-speculoos';
-import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
-import { I18nTestingModule } from '../../i18n/i18n-testing.module.spec';
 import { Customer } from '../../basket/basket.model';
 import { CustomerInformationComponent } from './customer-information.component';
-import { LanguageEnumPipe } from '../language-enum.pipe';
-import { CustomerTypeEnumPipe } from '../customer-type-enum.pipe';
+import { provideI18nTesting } from '../../i18n/mock-18n.spec';
 
 @Component({
   template:
-    '<rb-customer-information [customer]="customer" [rationale]="rationale" [withLanguage]="withLanguage"></rb-customer-information>'
+    '<rb-customer-information [customer]="customer" [rationale]="rationale" [withLanguage]="withLanguage"></rb-customer-information>',
+  standalone: true,
+  imports: [CustomerInformationComponent]
 })
 class TestComponent {
   customer: Customer = {
@@ -38,8 +37,7 @@ describe('CustomerInformationComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      declarations: [CustomerInformationComponent, TestComponent, LanguageEnumPipe, CustomerTypeEnumPipe],
-      imports: [I18nTestingModule, FontAwesomeModule]
+      providers: [provideI18nTesting()]
     });
 
     tester = new TestComponentTester();

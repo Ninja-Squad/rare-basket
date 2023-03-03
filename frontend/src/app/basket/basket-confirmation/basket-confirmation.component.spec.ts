@@ -2,12 +2,10 @@ import { TestBed } from '@angular/core/testing';
 
 import { BasketConfirmationComponent } from './basket-confirmation.component';
 import { ComponentTester, createMock, stubRoute } from 'ngx-speculoos';
-import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
-import { RouterTestingModule } from '@angular/router/testing';
 import { ActivatedRoute, Router } from '@angular/router';
 import { BasketService } from '../basket.service';
 import { of, throwError } from 'rxjs';
-import { I18nTestingModule } from '../../i18n/i18n-testing.module.spec';
+import { provideI18nTesting } from '../../i18n/mock-18n.spec';
 
 class BasketConfirmationComponentTester extends ComponentTester<BasketConfirmationComponent> {
   constructor() {
@@ -36,12 +34,7 @@ describe('BasketConfirmationComponent', () => {
     basketService = createMock(BasketService);
 
     TestBed.configureTestingModule({
-      declarations: [BasketConfirmationComponent],
-      imports: [I18nTestingModule, FontAwesomeModule, RouterTestingModule],
-      providers: [
-        { provide: ActivatedRoute, useValue: route },
-        { provide: BasketService, useValue: basketService }
-      ]
+      providers: [provideI18nTesting(), { provide: ActivatedRoute, useValue: route }, { provide: BasketService, useValue: basketService }]
     });
 
     tester = new BasketConfirmationComponentTester();

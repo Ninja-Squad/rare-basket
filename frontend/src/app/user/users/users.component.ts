@@ -2,18 +2,23 @@ import { Component, OnInit } from '@angular/core';
 import { UserService } from '../user.service';
 import { User } from '../../shared/user.model';
 import { Page } from '../../shared/page.model';
-import { TranslateService } from '@ngx-translate/core';
-import { ActivatedRoute } from '@angular/router';
+import { TranslateService, TranslateModule } from '@ngx-translate/core';
+import { ActivatedRoute, RouterLink } from '@angular/router';
 import { map, switchMap, tap } from 'rxjs/operators';
 import { faPlus, faTrash, faUser } from '@fortawesome/free-solid-svg-icons';
 import { ConfirmationService } from '../../shared/confirmation.service';
 import { merge, Subject } from 'rxjs';
 import { ToastService } from '../../shared/toast.service';
+import { PaginationComponent } from '../../rb-ngb/pagination/pagination.component';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { NgIf, NgFor } from '@angular/common';
 
 @Component({
   selector: 'rb-users',
   templateUrl: './users.component.html',
-  styleUrls: ['./users.component.scss']
+  styleUrls: ['./users.component.scss'],
+  standalone: true,
+  imports: [TranslateModule, NgIf, NgFor, FontAwesomeModule, RouterLink, PaginationComponent]
 })
 export class UsersComponent implements OnInit {
   users: Page<User>;

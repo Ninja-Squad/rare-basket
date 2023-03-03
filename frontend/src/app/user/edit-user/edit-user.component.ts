@@ -1,13 +1,27 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { AccessionHolder, Grc, Permission, User, UserCommand } from '../../shared/user.model';
-import { AbstractControl, FormArray, FormControl, FormGroup, NonNullableFormBuilder, ValidationErrors, Validators } from '@angular/forms';
+import {
+  AbstractControl,
+  FormArray,
+  FormControl,
+  FormGroup,
+  NonNullableFormBuilder,
+  ValidationErrors,
+  Validators,
+  ReactiveFormsModule
+} from '@angular/forms';
 import { UserService } from '../user.service';
 import { combineLatest, Observable, of } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { AccessionHolderService } from '../../shared/accession-holder.service';
 import { GrcService } from '../../shared/grc.service';
 import { ToastService } from '../../shared/toast.service';
+import { PermissionEnumPipe } from '../permission-enum.pipe';
+import { ValidationErrorsComponent, ValidationErrorDirective } from 'ngx-valdemort';
+import { FormControlValidationDirective } from '../../shared/form-control-validation.directive';
+import { TranslateModule } from '@ngx-translate/core';
+import { NgIf, NgFor } from '@angular/common';
 
 interface GrcOptionGroup {
   name: string;
@@ -22,7 +36,19 @@ function atLeastOneSelection(control: AbstractControl): ValidationErrors | null 
 @Component({
   selector: 'rb-edit-user',
   templateUrl: './edit-user.component.html',
-  styleUrls: ['./edit-user.component.scss']
+  styleUrls: ['./edit-user.component.scss'],
+  standalone: true,
+  imports: [
+    NgIf,
+    TranslateModule,
+    ReactiveFormsModule,
+    FormControlValidationDirective,
+    ValidationErrorsComponent,
+    NgFor,
+    ValidationErrorDirective,
+    RouterLink,
+    PermissionEnumPipe
+  ]
 })
 export class EditUserComponent implements OnInit {
   mode: 'create' | 'update' | null = null;
