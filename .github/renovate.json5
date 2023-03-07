@@ -1,10 +1,11 @@
 {
   "extends": [
-    "config:base",
-    ":semanticCommitTypeAll(chore)"
+    "config:base"
   ],
-  "enabledManagers": [
-    "npm"
+  // only for frontend and circleci
+  "includePaths": [
+    "frontend/**",
+    ".circleci/**"
   ],
   // target chore/next branch
   "baseBranches": [
