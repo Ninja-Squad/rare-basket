@@ -32,7 +32,7 @@
     "bootstrap": "5.2.3",
     "chart.js": "4.2.1",
     "ngx-valdemort": "9.0.0",
-    "papaparse": "5.4.0",
+    "papaparse": "5.4.1",
     "rxjs": "7.8.0",
     "tslib": "2.5.0",
     "zone.js": "0.13.0"
