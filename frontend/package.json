@@ -31,7 +31,7 @@
     "angular-auth-oidc-client": "15.0.5",
     "bootstrap": "5.2.3",
     "chart.js": "4.3.0",
-    "ngx-valdemort": "9.0.0",
+    "ngx-valdemort": "10.0.1",
     "papaparse": "5.4.1",
     "rxjs": "7.8.1",
     "tslib": "2.5.1",
