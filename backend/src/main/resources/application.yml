@@ -45,6 +45,11 @@ spring:
   mvc:
     pathmatch:
       matching-strategy: ant-path-matcher
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://localhost:8082/auth/realms/rare-basket
 
 logging.level:
   root: ERROR
@@ -54,17 +59,6 @@ logging.level:
     boot.web.embedded.tomcat.TomcatWebServer: INFO
     web.client.RestTemplate: INFO
     boot.context.config.ConfigDataLoader: INFO
-
-# These settings are documented here: https://www.keycloak.org/docs/latest/securing_apps/index.html#_java_adapter_config
-keycloak:
-  realm: rare-basket
-  resource: rare-basket
-  auth-server-url: http://localhost:8082/auth
-  ssl-required: external
-  public-client: true # necessary for basic auth. Not sure why.
-  principal-attribute: preferred_username
-  bearer-only: true
-  enable-basic-auth: true
 
 ---
 spring:

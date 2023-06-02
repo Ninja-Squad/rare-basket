@@ -90,7 +90,7 @@ class ReportQueries {
         " join o.basket basket" +
         " join o.accessionHolder accessionHolder" +
         " join accessionHolder.grc grc" +
-        " where o.status != fr.inra.urgi.rarebasket.domain.OrderStatus.DRAFT" +
+        " where o.status <> fr.inra.urgi.rarebasket.domain.OrderStatus.DRAFT" +
         " and o.closingInstant >= :fromInstant" +
         " and o.closingInstant < :toInstant";
     private static final String END =

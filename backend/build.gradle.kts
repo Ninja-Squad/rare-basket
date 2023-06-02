@@ -6,7 +6,7 @@ buildscript {
     }
 
     dependencies {
-        classpath("org.postgresql:postgresql:42.3.7")
+        classpath("org.postgresql:postgresql:42.6.0")
     }
 }
 
@@ -19,7 +19,7 @@ plugins {
 }
 
 java {
-    sourceCompatibility = JavaVersion.VERSION_11
+    sourceCompatibility = JavaVersion.VERSION_17
 }
 
 repositories {
@@ -74,8 +74,8 @@ tasks {
 
 dependencyManagement {
     imports {
-        mavenBom("org.keycloak.bom:keycloak-adapter-bom:17.0.0")
-        mavenBom("org.springframework.cloud:spring-cloud-dependencies:2021.0.4")
+        mavenBom("org.keycloak.bom:keycloak-adapter-bom:21.1.1")
+        mavenBom("org.springframework.cloud:spring-cloud-dependencies:2022.0.3")
     }
 }
 
@@ -88,12 +88,13 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-security")
     implementation("org.springframework.boot:spring-boot-starter-validation")
     implementation("org.springframework.cloud:spring-cloud-starter-config")
+    implementation("org.springframework.boot:spring-boot-starter-oauth2-resource-server")
     implementation("com.samskivert:jmustache")
-    implementation("org.keycloak:keycloak-spring-boot-starter")
     implementation("com.itextpdf:kernel:$itextVersion")
     implementation("com.itextpdf:io:$itextVersion")
     implementation("com.itextpdf:layout:$itextVersion")
     implementation("net.sf.supercsv:super-csv:2.4.0")
+    implementation("commons-codec:commons-codec")
 
     runtimeOnly("org.postgresql:postgresql")
     runtimeOnly("org.flywaydb:flyway-core")

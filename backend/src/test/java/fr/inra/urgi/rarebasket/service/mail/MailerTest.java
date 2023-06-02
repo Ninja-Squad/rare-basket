@@ -3,8 +3,8 @@ package fr.inra.urgi.rarebasket.service.mail;
 import static org.mockito.Mockito.*;
 
 import java.io.UnsupportedEncodingException;
-import javax.mail.MessagingException;
-import javax.mail.internet.MimeMessage;
+import jakarta.mail.MessagingException;
+import jakarta.mail.internet.MimeMessage;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.mail.javamail.JavaMailSender;

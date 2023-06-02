@@ -7,7 +7,7 @@ jobs: # a collection of steps
     working_directory: ~/rare-basket # directory where steps will run
 
     docker: # run the steps with Docker
-      - image: cimg/openjdk:11.0-browsers # ...with this image as the primary container; this is where all `steps` will run
+      - image: cimg/openjdk:17.0-browsers # ...with this image as the primary container; this is where all `steps` will run
       - image: postgres:15.3-alpine
         name: postgres
         environment:

@@ -4,7 +4,7 @@ import java.security.Principal;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 import fr.inra.urgi.rarebasket.dao.UserDao;
 import fr.inra.urgi.rarebasket.domain.Grc;

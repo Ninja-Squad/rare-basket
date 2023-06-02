@@ -34,14 +34,7 @@ Here are the configuration choices that have been made:
    
 ### Backend
 
-The backend uses the standard, but not very well documented, [Spring Boot and Spring Security
-adapter](https://www.keycloak.org/docs/latest/securing_apps/index.html#_spring_security_adapter) provided by Keycloak. 
-
-Given the poor documentation, the main source of documentation used is 
-[this blog post](https://www.thomasvitale.com/spring-security-keycloak/) by Thomas Vitale.
-
-The backend has been configured to also accept basic authentication, so curl or HTTPie commands
-can easily be used to access the backend HTTP services.
+The backend uses the standard Spring-Security [oauth2-resource-server](https://docs.spring.io/spring-security/reference/servlet/oauth2/resource-server/index.html). 
 
 ### Keycloak configuration
 

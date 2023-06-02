@@ -226,8 +226,8 @@ class AccessionHolderControllerTest {
         );
 
         mockMvc.perform(put("/api/accession-holders/{id}", accessionHolder.getId())
-                                .contentType(MediaType.APPLICATION_JSON)
-                                .content(objectMapper.writeValueAsBytes(command)))
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(objectMapper.writeValueAsBytes(command)))
                .andExpect(status().isNoContent());
 
         assertThat(accessionHolder.getName()).isEqualTo(command.getName());

@@ -1,7 +1,7 @@
 package fr.inra.urgi.rarebasket.web.order;
 
 import java.util.Objects;
-import javax.validation.Valid;
+import jakarta.validation.Valid;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import fr.inra.urgi.rarebasket.web.basket.CustomerCommandDTO;

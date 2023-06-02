@@ -2,7 +2,7 @@ package fr.inra.urgi.rarebasket.exception;
 
 import java.util.Set;
 import java.util.stream.Collectors;
-import javax.validation.ConstraintViolation;
+import jakarta.validation.ConstraintViolation;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
