@@ -1,7 +1,7 @@
 <div *ngIf="orders">
   <div *ngIf="orders.totalElements > 0">
     <div
-      class="small text-muted mb-2"
+      class="small text-body-secondary mb-2"
       translate="order.in-progress-orders.count"
       [translateParams]="{ count: orders.totalElements | number }"
     ></div>
@@ -13,7 +13,7 @@
     <div class="bumped">
       <fa-icon class="text-success" [icon]="noOrderIcon" size="6x"></fa-icon>
     </div>
-    <div class="text-muted mt-2" translate="order.in-progress-orders.no-order"></div>
+    <div class="text-body-secondary mt-2" translate="order.in-progress-orders.no-order"></div>
   </div>
 
   <div class="text-end">

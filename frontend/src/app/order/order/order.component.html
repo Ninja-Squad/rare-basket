@@ -13,7 +13,7 @@
 
   <div class="content mb-2">
     <p
-      class="text-muted"
+      class="text-body-secondary"
       translate="order.order.creation-date"
       [translateParams]="{ date: order.basket.confirmationInstant | date : 'longDate' }"
     ></p>
@@ -88,7 +88,7 @@
 
     <h2 translate="order.order.documents"></h2>
 
-    <div *ngIf="order.documents.length === 0" class="text-muted my-2" translate="order.order.no-document"></div>
+    <div *ngIf="order.documents.length === 0" class="text-body-secondary my-2" translate="order.order.no-document"></div>
 
     <div *ngFor="let document of order.documents" class="my-2 document">
       <div class="d-flex">
@@ -104,7 +104,7 @@
                 <fa-icon *ngIf="isDownloading(document)" [icon]="downloadingIcon" [spin]="true" class="ms-1 download-spinner"></fa-icon>
               </button>
             </div>
-            <small class="text-muted">
+            <small class="text-body-secondary">
               <span>{{ document.creationInstant | date : 'medium' }}</span>
               &ngsp;&mdash;&ngsp;
               <span *ngIf="document.onDeliveryForm" translate="order.order.document-on-delivery-form"></span>
@@ -115,7 +115,7 @@
             <div>
               <span class="badge bg-secondary document-type">{{ document.type | documentTypeEnum }}</span>
             </div>
-            <small class="text-muted">{{ document.description }}</small>
+            <small class="text-body-secondary">{{ document.description }}</small>
           </div>
         </div>
         <div *ngIf="order.status === 'DRAFT'" class="ms-2">
