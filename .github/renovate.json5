@@ -2,6 +2,9 @@
   "extends": [
     "config:base"
   ],
+  lockFileMaintenance: {
+    enabled: true
+  },
   // only for frontend and circleci
   "includePaths": [
     "frontend/**",
