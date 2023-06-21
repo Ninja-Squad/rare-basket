@@ -9,7 +9,7 @@ This project is built with Gradle, and is composed of two sub-projects:
    
 ## Prerequisites
 
-- A [Java 11 SDK](https://adoptopenjdk.net/)
+- A [Java 17 SDK](https://adoptopenjdk.net/)
 - [Docker](https://www.docker.com/) to easily setup a database and an SMTP server
 
 ## Building
