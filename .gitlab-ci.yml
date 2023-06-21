@@ -1,11 +1,12 @@
 ---
 
 stages:
+ - pre-test
  - test
  - deploy-beta
  - deploy-production
 
-image: $CI_REGISTRY_IMAGE:latest
+image: $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG
 
 # Disable the Gradle daemon for Continuous Integration servers as correctness
 # is usually a priority over speed in CI environments. Using a fresh
@@ -14,6 +15,24 @@ image: $CI_REGISTRY_IMAGE:latest
 variables:
  POSTGRES_HOST_AUTH_METHOD: trust
  APP_NAME: rare-basket
+
+build-docker:
+  stage: pre-test
+  tags:
+    - openstack
+  image:
+    name: gcr.io/kaniko-project/executor:debug
+    entrypoint: [""]
+  script:
+    - mkdir -p /kaniko/.docker
+    - echo "{\"auths\":{\"$CI_REGISTRY\":{\"auth\":\"$(echo -n ${CI_REGISTRY_USER}:${CI_REGISTRY_PASSWORD} | base64)\"}}}" > /kaniko/.docker/config.json
+    - if [ "${CI_COMMIT_REF_SLUG}" == "master" ] ; then TAG=latest ; else TAG=${CI_COMMIT_REF_SLUG} ; fi; # build and push tag based on branch name
+    - /kaniko/executor --cache --cache-copy-layers --context $CI_PROJECT_DIR --destination ${CI_REGISTRY_IMAGE}:${TAG}
+  allow_failure: true
+  only:
+    changes:
+    - .gitlab-ci.yml
+    - DockerFile
 
 test:
  stage: test
@@ -38,24 +57,6 @@ test:
    - frontend/.gradle/
    - frontend/node_modules/
  allow_failure: false
-
-build-docker:
-  stage: test
-  tags:
-    - openstack
-  image:
-    name: gcr.io/kaniko-project/executor:debug
-    entrypoint: [""]
-  script:
-    - mkdir -p /kaniko/.docker
-    - echo "{\"auths\":{\"$CI_REGISTRY\":{\"auth\":\"$(echo -n ${CI_REGISTRY_USER}:${CI_REGISTRY_PASSWORD} | base64)\"}}}" > /kaniko/.docker/config.json
-    - if [ "${CI_COMMIT_REF_SLUG}" == "master" ] ; then TAG=latest ; else TAG=${CI_COMMIT_REF_SLUG} ; fi; # build and push tag based on branch name
-    - /kaniko/executor --cache --cache-copy-layers --context $CI_PROJECT_DIR --destination ${CI_REGISTRY_IMAGE}:${TAG}
-  allow_failure: true
-  only:
-    changes:
-    - .gitlab-ci.yml
-    - DockerFile
 
 .deploy-to-vm: &deploy-to-vm
  tags:
