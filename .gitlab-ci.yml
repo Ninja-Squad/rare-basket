@@ -26,13 +26,8 @@ build-docker:
   script:
     - mkdir -p /kaniko/.docker
     - echo "{\"auths\":{\"$CI_REGISTRY\":{\"auth\":\"$(echo -n ${CI_REGISTRY_USER}:${CI_REGISTRY_PASSWORD} | base64)\"}}}" > /kaniko/.docker/config.json
-    - if [ "${CI_COMMIT_REF_SLUG}" == "master" ] ; then TAG=latest ; else TAG=${CI_COMMIT_REF_SLUG} ; fi; # build and push tag based on branch name
-    - /kaniko/executor --cache --cache-copy-layers --context $CI_PROJECT_DIR --destination ${CI_REGISTRY_IMAGE}:${TAG}
+    - /kaniko/executor --cache --cache-copy-layers --context $CI_PROJECT_DIR --destination ${CI_REGISTRY_IMAGE}:${CI_COMMIT_REF_SLUG}
   allow_failure: true
-  only:
-    changes:
-    - .gitlab-ci.yml
-    - DockerFile
 
 test:
  stage: test
