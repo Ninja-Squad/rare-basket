@@ -7,8 +7,8 @@ plugins {
 }
 
 node {
-    version.set("16.17.0")
-    npmVersion.set("6.14.17")
+    version.set("18.16.1")
+    npmVersion.set("8.19.4")
     yarnVersion.set("1.22.19")
     download.set(true)
 }
