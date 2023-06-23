@@ -58,5 +58,10 @@
         "after 1am on Thursday"
       ]
     }
+  ],
+  "ignoreDeps": [
+    // do  not bump cimg/openjdk or circleci/openjdk on CIs as we'll manually handle the JDK bumps
+    "cimg/openjdk",
+    "circleci/openjdk",
   ]
 }
