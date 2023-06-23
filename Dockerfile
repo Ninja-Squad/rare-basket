@@ -1,4 +1,4 @@
-FROM circleci/openjdk:17-buster-browsers
+FROM circleci/openjdk:18-buster-browsers
 
 RUN sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 4EB27DB2A3B88B8B
 
