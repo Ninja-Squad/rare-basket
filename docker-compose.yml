@@ -25,7 +25,7 @@ services:
 
   keycloak:
     # 9.0.2
-    image: quay.io/keycloak/keycloak@sha256:cee8a0b343993b699a3d3eeb90e0b1eca2fa19285a413200af9785db8b00dcd7
+    image: quay.io/keycloak/keycloak@sha256:292d9cf5f767d9d8c7737c119e1541538dcc26fe6c2fb98f073a7aa21a40d42c
     container_name: rare-basket-keycloak
     volumes:
       - ./keycloak:/tmp/keycloak
