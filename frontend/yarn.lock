@@ -2343,10 +2343,10 @@ ajv@^6.10.0, ajv@^6.12.4, ajv@^6.12.5:
     json-schema-traverse "^0.4.1"
     uri-js "^4.2.2"
 
-angular-auth-oidc-client@15.0.5:
-  version "15.0.5"
-  resolved "https://registry.yarnpkg.com/angular-auth-oidc-client/-/angular-auth-oidc-client-15.0.5.tgz#9178b1490bc72146b741fcf61de423ca63f152d0"
-  integrity sha512-7PXsKnV4USoysHN6Y4r/oNot6hXF0tlMo2wHAZXazAaj1W44KESA9pZ79+ZfdStGBx24768ipX2VWFzOo5AnTw==
+angular-auth-oidc-client@16.0.0:
+  version "16.0.0"
+  resolved "https://registry.yarnpkg.com/angular-auth-oidc-client/-/angular-auth-oidc-client-16.0.0.tgz#f49b82b01a4524662269a7089d449b6988109abe"
+  integrity sha512-ej3PTA4yNwXH/NLHnZeSiDz/yMN/Fjua9nk9LoOi/v30PSSxN8cszSv0NZYJzgI/aN8XnUuzEep7cur7uaOj1g==
   dependencies:
     rfc4648 "^1.5.0"
     tslib "^2.3.0"
