@@ -1,8 +1,7 @@
 version: '3.7'
 services:
   postgres:
-    # 11-alpine
-    image: postgres@sha256:362a63cb1e864195ea2bc29b5066bdb222bc9a4461bfaff2418f63a06e56bce0
+    image: postgres:15.3-alpine
     container_name: rare-basket-postgres
     environment:
       - POSTGRES_HOST_AUTH_METHOD=trust
@@ -16,16 +15,14 @@ services:
       - 5432:5432
 
   smtp:
-    # latest
-    image: mailhog/mailhog@sha256:8d76a3d4ffa32a3661311944007a415332c4bb855657f4f6c57996405c009bea
+    image: mailhog/mailhog:v1.0.1
     container_name: rare-basket-smtp
     ports:
       - 25:1025
       - 8025:8025
 
   keycloak:
-    # 9.0.2
-    image: quay.io/keycloak/keycloak@sha256:292d9cf5f767d9d8c7737c119e1541538dcc26fe6c2fb98f073a7aa21a40d42c
+    image: quay.io/keycloak/keycloak:9.0.2
     container_name: rare-basket-keycloak
     volumes:
       - ./keycloak:/tmp/keycloak
