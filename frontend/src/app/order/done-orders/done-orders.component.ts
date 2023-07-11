@@ -17,7 +17,10 @@ import { NgIf } from '@angular/common';
 export class DoneOrdersComponent implements OnInit {
   orders: Page<Order>;
 
-  constructor(private route: ActivatedRoute, private orderService: OrderService) {}
+  constructor(
+    private route: ActivatedRoute,
+    private orderService: OrderService
+  ) {}
 
   ngOnInit() {
     this.route.queryParamMap

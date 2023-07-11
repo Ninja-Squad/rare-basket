@@ -46,7 +46,10 @@ export class RouterNavLinkDirective {
 
   private domId = 'router-nav-link-' + counter++;
 
-  constructor(private routerLinkActive: RouterLinkActive, public nav: RouterNavDirective) {}
+  constructor(
+    private routerLinkActive: RouterLinkActive,
+    public nav: RouterNavDirective
+  ) {}
 
   get selected() {
     return this.routerLinkActive.isActive;

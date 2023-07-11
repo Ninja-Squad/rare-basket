@@ -14,7 +14,11 @@ import { TranslateModule } from '@ngx-translate/core';
   imports: [TranslateModule, EditCustomerInformationComponent]
 })
 export class CreateOrderComponent {
-  constructor(private orderService: OrderService, private router: Router, private toastService: ToastService) {}
+  constructor(
+    private orderService: OrderService,
+    private router: Router,
+    private toastService: ToastService
+  ) {}
 
   save(command: CustomerInformationCommand) {
     this.orderService.createOrder(command).subscribe(order => {

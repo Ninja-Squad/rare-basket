@@ -25,7 +25,11 @@ export class BasketConfirmationComponent implements OnInit {
   errorIcon = faExclamationCircle;
   confirmationFailed = false;
 
-  constructor(private route: ActivatedRoute, private basketService: BasketService, private router: Router) {}
+  constructor(
+    private route: ActivatedRoute,
+    private basketService: BasketService,
+    private router: Router
+  ) {}
 
   ngOnInit(): void {
     this.basketReference = this.route.snapshot.paramMap.get('reference');

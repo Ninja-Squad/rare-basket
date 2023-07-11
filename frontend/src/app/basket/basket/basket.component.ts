@@ -19,7 +19,10 @@ import { NgIf } from '@angular/common';
 export class BasketComponent implements OnInit {
   basket: Basket | null = null;
 
-  constructor(private route: ActivatedRoute, private basketService: BasketService) {}
+  constructor(
+    private route: ActivatedRoute,
+    private basketService: BasketService
+  ) {}
 
   ngOnInit() {
     this.basketService.get(this.route.snapshot.paramMap.get('reference')).subscribe(basket => (this.basket = basket));

@@ -13,7 +13,10 @@ export interface ModalOptions extends NgbModalOptions {
 }
 
 export class Modal<T> {
-  constructor(private ngbModalRef: NgbModalRef, private errorOnClose: boolean) {}
+  constructor(
+    private ngbModalRef: NgbModalRef,
+    private errorOnClose: boolean
+  ) {}
 
   get componentInstance(): T {
     return this.ngbModalRef.componentInstance;
