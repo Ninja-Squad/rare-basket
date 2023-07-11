@@ -23,7 +23,10 @@ export class InProgressOrdersComponent implements OnInit {
   noOrderIcon = faThumbsUp;
   createOrderIcon = faPlus;
 
-  constructor(private route: ActivatedRoute, private orderService: OrderService) {}
+  constructor(
+    private route: ActivatedRoute,
+    private orderService: OrderService
+  ) {}
 
   ngOnInit() {
     this.route.queryParamMap

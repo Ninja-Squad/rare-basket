@@ -24,7 +24,11 @@ export class GrcsComponent implements OnInit {
   createGrcIcon = faPlus;
   deleteGrcIcon = faTrash;
 
-  constructor(private grcService: GrcService, private confirmationService: ConfirmationService, private toastService: ToastService) {}
+  constructor(
+    private grcService: GrcService,
+    private confirmationService: ConfirmationService,
+    private toastService: ToastService
+  ) {}
 
   ngOnInit() {
     this.grcService.list().subscribe(grcs => (this.grcs = grcs));

@@ -54,7 +54,10 @@ export class EditOrderComponent implements OnInit, AfterViewInit {
   addItemIcon = faPlus;
   csvIcon = faFileCsv;
 
-  constructor(private fb: NonNullableFormBuilder, private modalService: ModalService) {}
+  constructor(
+    private fb: NonNullableFormBuilder,
+    private modalService: ModalService
+  ) {}
 
   ngOnInit() {
     this.order.items.forEach(orderItem =>

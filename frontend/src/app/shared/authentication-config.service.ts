@@ -51,7 +51,10 @@ export class CustomSecurityStorage extends AbstractSecurityStorage {
   providedIn: 'root'
 })
 export class AuthenticationConfigService {
-  constructor(@Inject(WINDOW) private window: Window, private locationStrategy: LocationStrategy) {}
+  constructor(
+    @Inject(WINDOW) private window: Window,
+    private locationStrategy: LocationStrategy
+  ) {}
 
   getConfig(): OpenIdConfiguration {
     // create the configuration
