@@ -44,13 +44,6 @@ test:
   paths:
    - backend/build/libs/rare-basket.jar
   expire_in: 1 month
- cache:
-  key: "${CI_COMMIT_REF_NAME}"
-  policy: pull-push
-  paths:
-   - .gradle
-   - frontend/.gradle/
-   - frontend/node_modules/
  allow_failure: false
 
 .deploy-to-vm: &deploy-to-vm
