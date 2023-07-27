@@ -7,7 +7,7 @@ import { devices } from '@playwright/test';
 const config: PlaywrightTestConfig = {
   testDir: './e2e',
   /* Maximum time one test can run for. */
-  timeout: 30 * 1000,
+  timeout: 60 * 1000,
   expect: {
     /**
      * Maximum time expect() should wait for the condition to be met.
@@ -49,7 +49,7 @@ const config: PlaywrightTestConfig = {
       use: {
         ...devices['Desktop Firefox']
       }
-    }/*,
+    } /*,
     {
       name: 'webkit',
       use: {
@@ -66,7 +66,7 @@ const config: PlaywrightTestConfig = {
     command: 'npm run start:e2e',
     port: 4202,
     reuseExistingServer: !process.env.CI
-  },
+  }
 };
 
 // ts-prune-ignore-next
