@@ -23,21 +23,21 @@ const inProgressNinjaSquadOrder = {
 const inProgressOrders = (page: Page) =>
   page.route('**/api/orders?status=DRAFT&page=0', route => {
     route.fulfill({
-      body: JSON.stringify({ content: [inProgressNinjaSquadOrder], totalElements: 1, totalPages: 1, size: 20, number: 0 })
+      json: { content: [inProgressNinjaSquadOrder], totalElements: 1, totalPages: 1, size: 20, number: 0 }
     });
   });
 
 const postOrder = (page: Page) =>
   page.route('**/api/orders', route => {
     route.fulfill({
-      body: JSON.stringify(inProgressNinjaSquadOrder)
+      json: inProgressNinjaSquadOrder
     });
   });
 
 const getOrder = (page: Page) =>
   page.route('**/api/orders/952', route => {
     route.fulfill({
-      body: JSON.stringify(inProgressNinjaSquadOrder)
+      json: inProgressNinjaSquadOrder
     });
   });
 
