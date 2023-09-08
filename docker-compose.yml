@@ -25,11 +25,12 @@ services:
     image: quay.io/keycloak/keycloak:22.0.1
     container_name: rare-basket-keycloak
     volumes:
-      - ./keycloak:/tmp/keycloak
+      - ./keycloak:/opt/keycloak/data/import
     environment:
-      KEYCLOAK_USER: admin
-      KEYCLOAK_PASSWORD: admin
-      KEYCLOAK_IMPORT: /tmp/keycloak/rare-basket-realm.json
+      KEYCLOAK_ADMIN: admin
+      KEYCLOAK_ADMIN_PASSWORD: admin
       DB_VENDOR: h2
+      KC_HTTP_RELATIVE_PATH: /auth
     ports:
       - 8082:8080
+    command: ['start-dev', '--import-realm']
