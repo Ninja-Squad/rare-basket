@@ -9,7 +9,7 @@ persistence layer, and uses PostgreSQL as its database.
 ## Database
 
 The easiest way to have a database running and set up with the expected users and databases is
-to use Docker. Running `docker-compose up` from the root directory os the project will start
+to use Docker. Running `docker compose up` from the root directory os the project will start
 a container with a PostgreSQL database running, as well as an SMTP server which doesn't send any email
 (which is nice for testing), and a pre-configured Keycloak server running on port 8082.
 The PostgreSQL database is configured using the `database/setup/setup.sql` script.

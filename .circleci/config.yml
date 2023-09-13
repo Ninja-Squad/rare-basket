@@ -12,11 +12,32 @@ jobs: # a collection of steps
         name: postgres
         environment:
           - POSTGRES_HOST_AUTH_METHOD=trust
+      - image: quay.io/keycloak/keycloak:22.0.3
+        name: rare-basket-keycloak
+        environment:
+          - KEYCLOAK_ADMIN: admin
+          - KEYCLOAK_ADMIN_PASSWORD: admin
+          - DB_VENDOR: h2
+          - KC_HTTP_RELATIVE_PATH: /auth
+        command: ['start-dev']
 
     steps: # a collection of executable commands
       - browser-tools/install-chrome
       # check out source code to working directory
       - checkout
+      - setup_remote_docker
+      # get the keycloak container name and store it in an environment variable
+      - run: docker container ls
+      - run:
+          command: |
+            KEYCLOAK_NAME=$(docker container ls --filter ancestor=quay.io/keycloak/keycloak:22.0.3 --format='{{json .}}' | jq -r '.Names')
+            echo "export KEYCLOAK_NAME='$KEYCLOAK_NAME'" >> $BASH_ENV
+      - run: echo ${KEYCLOAK_NAME}
+      # copy the Keycloak realm to import
+      - run: docker exec ${KEYCLOAK_NAME} mkdir /opt/keycloak/data/import
+      - run: docker cp keycloak/rare-basket-realm.json ${KEYCLOAK_NAME}:/opt/keycloak/data/import/
+      # import the realm
+      - run: docker exec ${KEYCLOAK_NAME} /opt/keycloak/bin/kc.sh import --file /opt/keycloak/data/import/rare-basket-realm.json
       # install the postgresql client
       - run: sudo apt-get update
       - run: sudo apt-get install postgresql-client

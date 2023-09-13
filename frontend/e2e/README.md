@@ -1,6 +1,6 @@
 # E2E tests using Playwright
 
-Run `yarn e2e` to run the tests
+Run `yarn e2e` to run the tests. You also need to have Keycloak started using `docker compose up`.
 
 Arguments can be passed to the last command. See details at https://playwright.dev/docs/test-cli.
 

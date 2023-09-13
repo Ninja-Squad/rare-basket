@@ -50,7 +50,7 @@ For the authentication to work as expected, the following must be done on the Ke
    to the Keycloak server, and CORS must thus be enabled for requests coming from the frontend.
  - add the necessary users, with their password.
  
-Note that, during development, all this is done automatically by `docker-compose`, which starts
+Note that, during development, all this is done automatically by `docker compose`, which starts
 a Keycloak server exposed on port 8082, and imports the necessary configuration.
 At the time of this writing, this imported configuration contains 4 users named `admin`, `contact11`, `contact12` and `contact21`, 
 all having the password `password`. The `admin` user is allowed to manage users. The other three 

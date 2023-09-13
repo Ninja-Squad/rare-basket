@@ -64,8 +64,8 @@
             "e2e": {
               "fileReplacements": [
                 {
-                  "replace": "src/app/shared/authentication.service.ts",
-                  "with": "src/app/shared/authentication-e2e.service.ts"
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.e2e.ts"
                 }
               ]
             },

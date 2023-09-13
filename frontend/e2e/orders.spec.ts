@@ -1,4 +1,5 @@
 import { expect, Page, test } from '@playwright/test';
+import { login } from './utils';
 
 const inProgressNinjaSquadOrder = {
   id: 952,
@@ -50,7 +51,9 @@ test.describe('Orders', () => {
     // api call to create a new order
     await postOrder(page);
 
-    await page.goto('/rare-basket/orders');
+    await login(page);
+
+    await page.locator('#orders-link').click();
     await expect(page.locator('h1')).toHaveText('Orders');
     await expect(page.locator('a.active')).toHaveText('In progress');
 
