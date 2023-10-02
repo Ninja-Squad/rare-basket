@@ -7,19 +7,23 @@ insert into accession_holder (id, email, name, phone, grc_id) VALUES (21, 'conta
 insert into accession_holder (id, email, name, phone, grc_id) VALUES (22, 'contact2@grc2.fr', 'EP-Coll', '0123456791', 2);
 
 -- admin/password: administrator, may visualize orders of all GRCs, may not manage orders
-insert into app_user (id, name, accession_holder_id, global_visualization) VALUES (1, 'admin', null, true);
+insert into app_user (id, name, global_visualization) VALUES (1, 'admin', true);
 
 -- contact11/password: may visualize orders of GRC 1, may manage orders of accession holder 11
-insert into app_user (id, name, accession_holder_id, global_visualization) VALUES (11, 'contact11', 11, false);
+insert into app_user (id, name, global_visualization) VALUES (11, 'contact11', false);
+insert into user_accession_holder (user_id, accession_holder_id) values (11, 11);
 
 -- contact12/password: may visualize orders of GRC 1, may manage orders of accession holder 12
-insert into app_user (id, name, accession_holder_id, global_visualization) VALUES (12, 'contact12', 12, false);
+insert into app_user (id, name, global_visualization) VALUES (12, 'contact12', false);
+insert into user_accession_holder (user_id, accession_holder_id) values (12, 12);
 
 -- contact21/password: may visualize orders of GRC 2, may manage orders of accession holder 21
-insert into app_user (id, name, accession_holder_id, global_visualization) VALUES (21, 'contact21', 21, false);
+insert into app_user (id, name, global_visualization) VALUES (21, 'contact21', false);
+insert into user_accession_holder (user_id, accession_holder_id) values (21, 21);
 
 -- contact22/password: may visualize orders of GRC 2, may manage orders of accession holder 22
-insert into app_user (id, name, accession_holder_id, global_visualization) VALUES (22, 'contact22', 22, false);
+insert into app_user (id, name, global_visualization) VALUES (22, 'contact22', false);
+insert into user_accession_holder (user_id, accession_holder_id) values (22, 22);
 
 insert into user_permission (id, user_id, permission) VALUES (1, 1, 'ADMINISTRATION');
 insert into user_permission (id, user_id, permission) VALUES (2, 11, 'ORDER_MANAGEMENT');

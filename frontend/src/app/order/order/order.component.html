@@ -43,7 +43,6 @@
         <rb-edit-customer-information
           *ngIf="editingCustomer"
           [customerInformation]="order.basket"
-          [smallButtons]="true"
           (saved)="customerSaved($event)"
           (cancelled)="editingCustomer = false"
         ></rb-edit-customer-information>

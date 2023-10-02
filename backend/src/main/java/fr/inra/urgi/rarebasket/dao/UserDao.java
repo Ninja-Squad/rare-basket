@@ -16,7 +16,7 @@ import org.springframework.data.repository.query.Param;
 public interface UserDao extends JpaRepository<User, Long> {
     @Query(
         "select distinct u from User u"
-        + " left join fetch u.accessionHolder ah"
+        + " left join fetch u.accessionHolders ah"
         + " left join fetch ah.grc"
         + " left join fetch u.permissions"
         + " left join fetch u.visualizationGrcs"
@@ -26,7 +26,7 @@ public interface UserDao extends JpaRepository<User, Long> {
 
     @Query(
         value = "select distinct u from User u"
-            + " left join fetch u.accessionHolder ah"
+            + " left join fetch u.accessionHolders ah"
             + " left join fetch ah.grc"
             + " left join fetch u.permissions"
             + " order by u.name",

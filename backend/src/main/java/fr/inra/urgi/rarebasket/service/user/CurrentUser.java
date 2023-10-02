@@ -4,6 +4,8 @@ import java.security.Principal;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
+
+import fr.inra.urgi.rarebasket.domain.AccessionHolder;
 import jakarta.servlet.http.HttpServletRequest;
 
 import fr.inra.urgi.rarebasket.dao.UserDao;
@@ -39,8 +41,8 @@ public class CurrentUser {
         return this.loadIfNecessary().map(UserInformation::getId);
     }
 
-    public Optional<Long> getAccessionHolderId() {
-        return this.loadIfNecessary().map(UserInformation::getAccessionHolderId);
+    public Set<Long> getAccessionHolderIds() {
+        return this.loadIfNecessary().map(UserInformation::getAccessionHolderIds).orElse(Set.of());
     }
 
     public boolean hasPermission(Permission permission) {
@@ -77,13 +79,16 @@ public class CurrentUser {
 
     private static final class UserInformation {
         private final Long id;
-        private final Long accessionHolderId;
+        private final Set<Long> accessionHolderIds;
         private final Set<Permission> permissions;
         private final VisualizationPerimeter visualizationPerimeter;
 
         public UserInformation(User user) {
             this.id = user.getId();
-            this.accessionHolderId = user.getAccessionHolder() == null ? null : user.getAccessionHolder().getId();
+            this.accessionHolderIds = user.getAccessionHolders()
+                                          .stream()
+                                          .map(AccessionHolder::getId)
+                                          .collect(Collectors.toUnmodifiableSet());
             this.permissions = user.getPermissions()
                                    .stream()
                                    .map(UserPermission::getPermission)
@@ -102,8 +107,8 @@ public class CurrentUser {
             return id;
         }
 
-        public Long getAccessionHolderId() {
-            return accessionHolderId;
+        public Set<Long> getAccessionHolderIds() {
+            return accessionHolderIds;
         }
 
         public Set<Permission> getPermissions() {

@@ -124,12 +124,12 @@ class OrderDaoTest extends BaseDaoTest {
     void shouldPageByAccessionHolder() {
         skipNextLaunch();
         PageRequest pageRequest = PageRequest.of(0, 2);
-        Page<Order> result = dao.pageByAccessionHolder(1L, pageRequest);
+        Page<Order> result = dao.pageByAccessionHolders(Set.of(1L), pageRequest);
         assertThat(result.getTotalElements()).isEqualTo(7);
         assertThat(result.getContent()).extracting(Order::getId).containsExactly(7L, 6L);
 
         pageRequest = PageRequest.of(1, 20);
-        result = dao.pageByAccessionHolder(98765L, pageRequest);
+        result = dao.pageByAccessionHolders(Set.of(98765L), pageRequest);
         assertThat(result.getTotalElements()).isEqualTo(0);
     }
 
@@ -137,19 +137,19 @@ class OrderDaoTest extends BaseDaoTest {
     void shouldPageByAccessionHolderAndStatuses() {
         skipNextLaunch();
         PageRequest pageRequest = PageRequest.of(0, 2);
-        Page<Order> result = dao.pageByAccessionHolderAndStatuses(1L,
-                                                                  EnumSet.of(OrderStatus.CANCELLED,
-                                                                             OrderStatus.FINALIZED),
-                                                                  pageRequest);
+        Page<Order> result = dao.pageByAccessionHoldersAndStatuses(Set.of(1L),
+                                                                   EnumSet.of(OrderStatus.CANCELLED,
+                                                                              OrderStatus.FINALIZED),
+                                                                   pageRequest);
         assertThat(result.getTotalElements()).isEqualTo(5);
         assertThat(result.getContent()).extracting(Order::getId).containsExactly(7L, 5L);
 
-        result = dao.pageByAccessionHolderAndStatuses(1L, EnumSet.of(OrderStatus.DRAFT), pageRequest);
+        result = dao.pageByAccessionHoldersAndStatuses(Set.of(1L), EnumSet.of(OrderStatus.DRAFT), pageRequest);
         assertThat(result.getTotalElements()).isEqualTo(2);
         assertThat(result.getContent()).extracting(Order::getId).containsExactly(6L, 3L);
 
         pageRequest = PageRequest.of(1, 20);
-        result = dao.pageByAccessionHolderAndStatuses(98765L, EnumSet.of(OrderStatus.DRAFT), pageRequest);
+        result = dao.pageByAccessionHoldersAndStatuses(Set.of(98765L), EnumSet.of(OrderStatus.DRAFT), pageRequest);
         assertThat(result.getTotalElements()).isEqualTo(0);
     }
 

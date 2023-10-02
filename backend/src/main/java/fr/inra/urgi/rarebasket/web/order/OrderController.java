@@ -112,10 +112,10 @@ public class OrderController {
 
         Page<Order> orderPage;
         if (statuses == null || statuses.isEmpty()) {
-            orderPage = orderDao.pageByAccessionHolder(getAccessionHolderId(), pageRequest);
+            orderPage = orderDao.pageByAccessionHolders(getAccessionHolderIds(), pageRequest);
         }
         else {
-            orderPage = orderDao.pageByAccessionHolderAndStatuses(getAccessionHolderId(), statuses, pageRequest);
+            orderPage = orderDao.pageByAccessionHoldersAndStatuses(getAccessionHolderIds(), statuses, pageRequest);
         }
         return PageDTO.fromPage(orderPage, OrderDTO::new);
     }
@@ -382,8 +382,12 @@ public class OrderController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public DetailedOrderDTO create(@Validated(BasketCommandDTO.Complete.class) @RequestBody CustomerInformationCommandDTO command) {
+    public DetailedOrderDTO create(@Validated(BasketCommandDTO.Complete.class) @RequestBody OrderCreationCommandDTO command) {
         currentUser.checkPermission(Permission.ORDER_MANAGEMENT);
+
+        if (!getAccessionHolderIds().contains(command.getAccessionHolderId())) {
+            throw new BadRequestException("The accession holder " + command.getAccessionHolderId() + " is not one of your accession holders");
+        }
 
         Basket basket = new Basket();
         basket.setCustomer(createCustomer(command.getCustomer()));
@@ -395,18 +399,15 @@ public class OrderController {
 
         Order order = new Order();
         order.setBasket(basket);
-        order.setAccessionHolder(
-            accessionHolderDao.getReferenceById(
-                currentUser.getAccessionHolderId()
-                           .orElseThrow(() -> new IllegalStateException("Current user should have an accession holder")))
-        );
+        order.setAccessionHolder(accessionHolderDao.getReferenceById(command.getAccessionHolderId()));
+
         orderDao.save(order);
         return new DetailedOrderDTO(order);
     }
 
     private Order getOrderAndCheckAccessible(Long orderId) {
         Order order = orderDao.findById(orderId).orElseThrow(NotFoundException::new);
-        if (!order.getAccessionHolder().getId().equals(getAccessionHolderId())) {
+        if (!getAccessionHolderIds().contains(order.getAccessionHolder().getId())) {
             throw new ForbiddenException();
         }
         return order;
@@ -428,9 +429,12 @@ public class OrderController {
         return order;
     }
 
-    private Long getAccessionHolderId() {
-        return currentUser.getAccessionHolderId()
-                          .orElseThrow(() -> new IllegalStateException("Current user should have an accession holder"));
+    private Set<Long> getAccessionHolderIds() {
+        Set<Long> result = currentUser.getAccessionHolderIds();
+        if (result.isEmpty()) {
+            throw new IllegalStateException("Current user should have at least one accession holder");
+        }
+        return result;
     }
 
     private Customer createCustomer(CustomerCommandDTO command) {

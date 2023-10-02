@@ -11,6 +11,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.SequenceGenerator;
@@ -43,10 +44,15 @@ public class User {
     private Set<UserPermission> permissions = new HashSet<>();
 
     /**
-     * The accession holder for which the user manages orders, if the permission ORDER_MANAGEMENT is present
+     * The accession holders for which the user manages orders, if the permission ORDER_MANAGEMENT is present
      */
-    @ManyToOne(fetch = FetchType.LAZY)
-    private AccessionHolder accessionHolder;
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(
+        name = "user_accession_holder",
+        joinColumns = @JoinColumn(name = "user_id"),
+        inverseJoinColumns = @JoinColumn(name = "accession_holder_id")
+    )
+    private Set<AccessionHolder> accessionHolders = new HashSet<>();
 
     /**
      * If true, and if the user has the permission ORDER_VISUALIZATION, then the user can visualize orders
@@ -103,12 +109,13 @@ public class User {
         permissions.forEach(this::addPermission);
     }
 
-    public AccessionHolder getAccessionHolder() {
-        return accessionHolder;
+    public Set<AccessionHolder> getAccessionHolders() {
+        return Collections.unmodifiableSet(accessionHolders);
     }
 
-    public void setAccessionHolder(AccessionHolder accessionHolder) {
-        this.accessionHolder = accessionHolder;
+    public void setAccessionHolders(Set<AccessionHolder> accessionHolders) {
+        this.accessionHolders.clear();
+        this.accessionHolders.addAll(accessionHolders);
     }
 
     public boolean isGlobalVisualization() {

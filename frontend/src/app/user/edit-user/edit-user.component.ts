@@ -1,16 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { AccessionHolder, Grc, Permission, User, UserCommand } from '../../shared/user.model';
-import {
-  AbstractControl,
-  FormArray,
-  FormControl,
-  FormGroup,
-  NonNullableFormBuilder,
-  ValidationErrors,
-  Validators,
-  ReactiveFormsModule
-} from '@angular/forms';
+import { AbstractControl, FormControl, NonNullableFormBuilder, ReactiveFormsModule, ValidationErrors, Validators } from '@angular/forms';
 import { UserService } from '../user.service';
 import { combineLatest, Observable, of } from 'rxjs';
 import { environment } from '../../../environments/environment';
@@ -18,10 +9,10 @@ import { AccessionHolderService } from '../../shared/accession-holder.service';
 import { GrcService } from '../../shared/grc.service';
 import { ToastService } from '../../shared/toast.service';
 import { PermissionEnumPipe } from '../permission-enum.pipe';
-import { ValidationErrorsComponent, ValidationErrorDirective } from 'ngx-valdemort';
+import { ValidationErrorDirective, ValidationErrorsComponent } from 'ngx-valdemort';
 import { FormControlValidationDirective } from '../../shared/form-control-validation.directive';
 import { TranslateModule } from '@ngx-translate/core';
-import { NgIf, NgFor } from '@angular/common';
+import { NgFor, NgIf } from '@angular/common';
 
 interface GrcOptionGroup {
   name: string;
@@ -29,8 +20,8 @@ interface GrcOptionGroup {
 }
 
 function atLeastOneSelection(control: AbstractControl): ValidationErrors | null {
-  const value: Array<{ grc: Grc; selected: boolean }> = control.value;
-  return value.some(item => item.selected) ? null : { required: true };
+  const value: Record<string, boolean> = control.value;
+  return Object.values(value).some(item => item) ? null : { required: true };
 }
 
 @Component({
@@ -56,14 +47,15 @@ export class EditUserComponent implements OnInit {
   form = this.fb.group({
     name: ['', Validators.required],
     orderManagement: false,
-    accessionHolderId: [null as number, Validators.required],
+    accessionHolders: this.fb.record<FormControl<boolean>>({}, { validators: atLeastOneSelection }),
     orderVisualization: false,
     globalVisualization: false,
-    visualizationGrcs: this.fb.array<FormGroup<{ grc: FormControl<Grc>; selected: FormControl<boolean> }>>([], atLeastOneSelection),
+    visualizationGrcs: this.fb.record<FormControl<boolean>>({}, { validators: atLeastOneSelection }),
     administration: false
   });
 
   grcOptionGroups: Array<GrcOptionGroup>;
+  grcs: Array<Grc> = [];
   keycloakUrl = `${environment.keycloakUrl}${environment.usersRealmPath}`;
 
   constructor(
@@ -75,41 +67,36 @@ export class EditUserComponent implements OnInit {
     private router: Router,
     private toastService: ToastService
   ) {
-    this.form.get('orderManagement').valueChanges.subscribe(orderManagementSelected => {
-      const accessionHolderControl = this.form.get('accessionHolderId');
+    this.form.controls.orderManagement.valueChanges.subscribe(orderManagementSelected => {
       if (orderManagementSelected) {
-        accessionHolderControl.enable();
+        this.form.controls.accessionHolders.enable();
       } else {
-        accessionHolderControl.disable();
+        this.form.controls.accessionHolders.disable();
       }
     });
 
-    this.form.get('orderVisualization').valueChanges.subscribe(orderVisualizationSelected => {
+    this.form.controls.orderVisualization.valueChanges.subscribe(orderVisualizationSelected => {
       const globalVisualizationControl = this.form.get('globalVisualization');
       if (orderVisualizationSelected) {
         globalVisualizationControl.enable();
         if (!this.form.value.globalVisualization) {
-          this.visualizationGrcs.enable();
+          this.form.controls.visualizationGrcs.enable();
         } else {
-          this.visualizationGrcs.disable();
+          this.form.controls.visualizationGrcs.disable();
         }
       } else {
         globalVisualizationControl.disable();
-        this.visualizationGrcs.disable();
+        this.form.controls.visualizationGrcs.disable();
       }
     });
 
     this.form.get('globalVisualization').valueChanges.subscribe(globalVisualizationSelected => {
       if (this.form.value.orderVisualization && !globalVisualizationSelected) {
-        this.visualizationGrcs.enable();
+        this.form.controls.visualizationGrcs.enable();
       } else {
-        this.visualizationGrcs.disable();
+        this.form.controls.visualizationGrcs.disable();
       }
     });
-  }
-
-  get visualizationGrcs() {
-    return this.form.get('visualizationGrcs') as FormArray<FormGroup<{ grc: FormControl<Grc>; selected: FormControl<boolean> }>>;
   }
 
   ngOnInit() {
@@ -120,41 +107,46 @@ export class EditUserComponent implements OnInit {
     const user$: Observable<User | null> = userId ? this.userService.get(+userId) : of(null);
 
     combineLatest([accessionHolders$, grcs$, user$]).subscribe(([accessionHolders, grcs, user]) => {
-      grcs.forEach(grc => {
-        this.visualizationGrcs.push(
-          this.fb.group({
-            grc,
-            selected: false as boolean
-          })
-        );
-      });
+      grcs.forEach(grc => this.form.controls.visualizationGrcs.addControl(grc.id.toString(), this.fb.control<boolean>(false)));
+      accessionHolders.forEach(accessionHolder =>
+        this.form.controls.accessionHolders.addControl(accessionHolder.id.toString(), this.fb.control<boolean>(false))
+      );
 
       // bizarrely, if the array is disabled when still empty, disabling it has no effect.
       // so we disable it here
-      this.form.get('accessionHolderId').disable();
-      this.form.get('globalVisualization').disable();
-      this.visualizationGrcs.disable();
+      this.form.controls.accessionHolders.disable();
+      this.form.controls.globalVisualization.disable();
+      this.form.controls.visualizationGrcs.disable();
 
       this.grcOptionGroups = this.toGrcOptionGroups(accessionHolders);
 
       this.editedUser = user;
       if (user) {
         this.mode = 'update';
+
+        const visualizationGrcsValue: Record<string, boolean> = {};
+        grcs.forEach(grc => (visualizationGrcsValue[grc.id.toString()] = user.visualizationGrcs.some(g => g.id === grc.id)));
+
+        const accessionHoldersValue: Record<string, boolean> = {};
+        accessionHolders.forEach(
+          accessionHolder =>
+            (accessionHoldersValue[accessionHolder.id.toString()] = user.accessionHolders.some(ah => ah.id === accessionHolder.id))
+        );
+
         this.form.setValue({
           name: user.name,
           orderManagement: user.permissions.includes('ORDER_MANAGEMENT'),
-          accessionHolderId: user.accessionHolder?.id ?? null,
+          accessionHolders: accessionHoldersValue,
           orderVisualization: user.permissions.includes('ORDER_VISUALIZATION'),
           globalVisualization: user.globalVisualization,
-          visualizationGrcs: grcs.map(grc => ({
-            grc,
-            selected: user.visualizationGrcs.some(g => g.id === grc.id)
-          })),
+          visualizationGrcs: visualizationGrcsValue,
           administration: user.permissions.includes('ADMINISTRATION')
         });
       } else {
         this.mode = 'create';
       }
+
+      this.grcs = grcs;
     });
   }
 
@@ -176,14 +168,13 @@ export class EditUserComponent implements OnInit {
     }
     const globalVisualization = formValue.orderVisualization && formValue.globalVisualization;
     const visualizationGrcIds =
-      formValue.orderVisualization && !formValue.globalVisualization
-        ? formValue.visualizationGrcs.filter(item => item.selected).map(item => item.grc.id)
-        : [];
+      formValue.orderVisualization && !formValue.globalVisualization ? this.extractSelectedIds(formValue.visualizationGrcs) : [];
+    const accessionHolderIds = formValue.orderManagement ? this.extractSelectedIds(formValue.accessionHolders) : [];
 
     const command: UserCommand = {
       name: formValue.name,
       permissions,
-      accessionHolderId: formValue.accessionHolderId || null,
+      accessionHolderIds,
       globalVisualization,
       visualizationGrcIds
     };
@@ -215,5 +206,14 @@ export class EditUserComponent implements OnInit {
       grcOptionGroup.accessionHolders.push(accessionHolder);
     });
     return Array.from(map.values());
+  }
+
+  private extractSelectedIds(recordValue: Record<string, boolean>): Array<number> {
+    return (
+      Object.entries(recordValue)
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        .filter(([_, selected]) => selected)
+        .map(([idAsString]) => parseInt(idAsString))
+    );
   }
 }

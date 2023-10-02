@@ -10,27 +10,36 @@
         <small class="form-text text-body-secondary" [innerHTML]="'user.edit.name-help' | translate: { keycloakUrl: keycloakUrl }"></small>
       </div>
 
-      <label class="form-label" translate="user.edit.permissions" for=""></label>
+      <h2 class="fs-6" translate="user.edit.permissions"></h2>
       <div class="mb-2">
         <div class="form-check form-switch">
           <input type="checkbox" formControlName="orderManagement" class="form-check-input" id="order-management" />
           <label class="form-check-label" for="order-management">{{ 'ORDER_MANAGEMENT' | permissionEnum }}</label>
         </div>
 
-        <div class="mb-3 ms-4" *ngIf="form.value.orderManagement">
-          <label class="form-label" for="accession-holder" translate="user.edit.accession-holder"></label>
-          <select class="form-control custom-select" formControlName="accessionHolderId" id="accession-holder">
-            <option [ngValue]="null"></option>
-            <optgroup *ngFor="let group of grcOptionGroups" [label]="group.name">
-              <option *ngFor="let accessionHolder of group.accessionHolders" [ngValue]="accessionHolder.id">
-                <ng-container *ngIf="form.value.accessionHolderId === accessionHolder.id; else notSelected">
-                  {{ accessionHolder.grc.name }} - {{ accessionHolder.name }}
-                </ng-container>
-                <ng-template #notSelected>{{ accessionHolder.name }}</ng-template>
-              </option>
-            </optgroup>
-          </select>
-          <val-errors controlName="accessionHolderId" [label]="'user.edit.accession-holder-error-label' | translate"></val-errors>
+        <div class="mt-1 mb-3 ms-4" *ngIf="form.value.orderManagement">
+          <h3 class="fs-6" translate="user.edit.accession-holders"></h3>
+          <div formGroupName="accessionHolders" class="border rounded py-1 px-2 accession-holders">
+            <div *ngFor="let group of grcOptionGroups">
+              <h4 class="fs-6">{{ group.name }}</h4>
+              <div class="ms-3">
+                <div class="form-check" *ngFor="let accessionHolder of group.accessionHolders">
+                  <input
+                    [formControlName]="accessionHolder.id.toString()"
+                    class="form-check-input"
+                    type="checkbox"
+                    [id]="'accession-holder-' + accessionHolder.id"
+                  />
+                  <label class="form-check-label" [for]="'accession-holder-' + accessionHolder.id">
+                    {{ accessionHolder.name }}
+                  </label>
+                </div>
+              </div>
+            </div>
+          </div>
+          <val-errors controlName="accessionHolders">
+            <ng-template valError="required"><span translate="user.edit.accession-holder-required"></span></ng-template>
+          </val-errors>
         </div>
       </div>
 
@@ -54,13 +63,13 @@
             <input formControlName="globalVisualization" class="form-check-input" type="radio" id="global-visualization" [value]="true" />
             <label class="form-check-label" for="global-visualization" translate="user.edit.all-grcs"></label>
           </div>
-          <div class="mb-3" *ngIf="!form.value.globalVisualization">
-            <label class="form-label" translate="user.edit.visualization-grcs" for=""></label>
-            <div formArrayName="visualizationGrcs" class="border rounded py-1 px-2 grcs">
-              <div class="form-check" *ngFor="let grcGroup of visualizationGrcs.controls; index as i" [formGroupName]="i">
-                <input formControlName="selected" class="form-check-input" type="checkbox" [id]="'grc-' + grcGroup.value.grc.id" />
-                <label class="form-check-label" [for]="'grc-' + grcGroup.value.grc.id">
-                  {{ grcGroup.value.grc.name }}
+          <div class="mt-1 mb-3" *ngIf="!form.value.globalVisualization">
+            <h2 class="fs-6" translate="user.edit.visualization-grcs"></h2>
+            <div formGroupName="visualizationGrcs" class="border rounded py-1 px-2 grcs">
+              <div class="form-check" *ngFor="let grc of grcs">
+                <input [formControlName]="grc.id.toString()" class="form-check-input" type="checkbox" [id]="'grc-' + grc.id" />
+                <label class="form-check-label" [for]="'grc-' + grc.id">
+                  {{ grc.name }}
                 </label>
               </div>
             </div>

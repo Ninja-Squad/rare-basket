@@ -18,19 +18,19 @@ public final class UserCommandDTO {
 
     private final Set<Permission> permissions;
 
-    private final Long accessionHolderId;
+    private final Set<Long> accessionHolderIds;
     private final boolean globalVisualization;
     private final Set<Long> visualizationGrcIds;
 
     @JsonCreator
     public UserCommandDTO(@JsonProperty("name") String name,
                           @JsonProperty("permissions") Set<Permission> permissions,
-                          @JsonProperty("accessionHolderId") Long accessionHolderId,
+                          @JsonProperty("accessionHolderIds") Set<Long> accessionHolderIds,
                           @JsonProperty("globalVisualization") boolean globalVisualization,
                           @JsonProperty("visualizationGrcIds") Set<Long> visualizationGrcIds) {
         this.name = name;
         this.permissions = permissions;
-        this.accessionHolderId = accessionHolderId;
+        this.accessionHolderIds = accessionHolderIds;
         this.globalVisualization = globalVisualization;
         this.visualizationGrcIds = visualizationGrcIds;
     }
@@ -43,8 +43,8 @@ public final class UserCommandDTO {
         return permissions;
     }
 
-    public Long getAccessionHolderId() {
-        return accessionHolderId;
+    public Set<Long> getAccessionHolderIds() {
+        return accessionHolderIds;
     }
 
     public boolean isGlobalVisualization() {
@@ -67,13 +67,13 @@ public final class UserCommandDTO {
         return globalVisualization == that.globalVisualization &&
             Objects.equals(name, that.name) &&
             Objects.equals(permissions, that.permissions) &&
-            Objects.equals(accessionHolderId, that.accessionHolderId) &&
+            Objects.equals(accessionHolderIds, that.accessionHolderIds) &&
             Objects.equals(visualizationGrcIds, that.visualizationGrcIds);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(name, permissions, accessionHolderId, globalVisualization, visualizationGrcIds);
+        return Objects.hash(name, permissions, accessionHolderIds, globalVisualization, visualizationGrcIds);
     }
 
     @Override
@@ -81,7 +81,7 @@ public final class UserCommandDTO {
         return "UserCommandDTO{" +
             "name='" + name + '\'' +
             ", permissions=" + permissions +
-            ", accessionHolderId=" + accessionHolderId +
+            ", accessionHolderIds=" + accessionHolderIds +
             ", globalVisualization=" + globalVisualization +
             ", visualizationGrcIds=" + visualizationGrcIds +
             '}';

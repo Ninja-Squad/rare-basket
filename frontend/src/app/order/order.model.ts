@@ -85,6 +85,13 @@ export interface OrderStatistics {
 }
 
 export interface CustomerInformationCommand {
+  accessionHolderId?: number;
+  customer: CustomerCommand;
+  rationale: string | null;
+}
+
+export interface OrderCreationCommand {
+  accessionHolderId: number;
   customer: CustomerCommand;
   rationale: string | null;
 }

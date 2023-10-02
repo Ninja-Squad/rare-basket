@@ -8,7 +8,8 @@ import {
   OrderCommand,
   CustomerInformationCommand,
   OrderStatistics,
-  OrderStatus
+  OrderStatus,
+  OrderCreationCommand
 } from './order.model';
 import { Observable } from 'rxjs';
 import { Page } from '../shared/page.model';
@@ -84,7 +85,7 @@ export class OrderService {
     return this.http.put<void>(`api/orders/${orderId}/customer-information`, command);
   }
 
-  createOrder(command: CustomerInformationCommand): Observable<DetailedOrder> {
+  createOrder(command: OrderCreationCommand): Observable<DetailedOrder> {
     return this.http.post<DetailedOrder>('api/orders', command);
   }
 }

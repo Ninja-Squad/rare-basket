@@ -28,13 +28,15 @@ export class AuthenticationService {
       permissions: ['ADMINISTRATION', 'ORDER_MANAGEMENT', 'ORDER_VISUALIZATION'],
       globalVisualization: true,
       visualizationGrcs: [],
-      accessionHolder: {
-        id: 1,
-        name: 'CBGP',
-        email: 'contact1@grc1.fr',
-        grc: { id: 1, name: 'GRC1', address: '10 rue du Louvres 75000 Paris', institution: 'INRAE' },
-        phone: ''
-      }
+      accessionHolders: [
+        {
+          id: 1,
+          name: 'CBGP',
+          email: 'contact1@grc1.fr',
+          grc: { id: 1, name: 'GRC1', address: '10 rue du Louvres 75000 Paris', institution: 'INRAE' },
+          phone: ''
+        }
+      ]
     });
   }
 
