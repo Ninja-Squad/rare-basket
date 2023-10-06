@@ -9,7 +9,8 @@ CREATE TABLE user_accession_holder
 
 INSERT INTO user_accession_holder (user_id, accession_holder_id)
 SELECT u.id, u.accession_holder_id
-FROM app_user u;
+FROM app_user u
+WHERE u.accession_holder_id IS NOT NULL;
 
 ALTER TABLE app_user
     DROP COLUMN accession_holder_id;
