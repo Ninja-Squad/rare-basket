@@ -181,6 +181,8 @@
       "for-accession-holder": "pour {{ name }}"
     },
     "in-progress-orders": {
+      "accession-holder": "pour",
+      "all-accession-holders": "tous les gestionnaires d'accessions",
       "count": "{{ count }} commande(s) en cours",
       "no-order": "Aucune commande en cours. Beau travail\u00a0!",
       "create": "Créer une commande"

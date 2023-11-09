@@ -106,16 +106,23 @@ public class OrderController {
 
     @GetMapping
     public PageDTO<OrderDTO> list(@RequestParam(name = "status", required = false) Set<OrderStatus> statuses,
-                                  @RequestParam(name = "page", defaultValue = "0") int page) {
+                                  @RequestParam(name = "page", defaultValue = "0") int page,
+                                  @RequestParam(name = "accessionHolderId", required = false) Long accessionHolderId) {
         currentUser.checkPermission(Permission.ORDER_MANAGEMENT);
         PageRequest pageRequest = PageRequest.of(page, PAGE_SIZE);
 
+        Set<Long> accessibleAccessionHolderIds = getAccessionHolderIds();
+        if (accessionHolderId != null && !accessibleAccessionHolderIds.contains(accessionHolderId)) {
+            throw new BadRequestException("You don't have access the the provided accession holder " + accessionHolderId);
+        }
+        Set<Long> accessionHolderIds = accessionHolderId == null ? accessibleAccessionHolderIds : Set.of(accessionHolderId);
+
         Page<Order> orderPage;
         if (statuses == null || statuses.isEmpty()) {
-            orderPage = orderDao.pageByAccessionHolders(getAccessionHolderIds(), pageRequest);
+            orderPage = orderDao.pageByAccessionHolders(accessionHolderIds, pageRequest);
         }
         else {
-            orderPage = orderDao.pageByAccessionHoldersAndStatuses(getAccessionHolderIds(), statuses, pageRequest);
+            orderPage = orderDao.pageByAccessionHoldersAndStatuses(accessionHolderIds, statuses, pageRequest);
         }
         return PageDTO.fromPage(orderPage, OrderDTO::new);
     }

@@ -106,6 +106,7 @@ class OrderControllerTest {
     private Order order;
     private Document document;
     private final Long accessionHolderId = 65L;
+    private final Long otherAccessionHolderId = 66L;
 
     @BeforeEach
     void prepare() {
@@ -133,7 +134,7 @@ class OrderControllerTest {
         document.setDescription("desc");
         order.addDocument(document);
 
-        when(mockCurrentUser.getAccessionHolderIds()).thenReturn(Set.of(accessionHolderId));
+        when(mockCurrentUser.getAccessionHolderIds()).thenReturn(Set.of(accessionHolderId, otherAccessionHolderId));
         when(mockCurrentUser.getVisualizationPerimeter()).thenReturn(VisualizationPerimeter.constrained(Set.of(1L, 2L)));
         when(mockOrderDao.findById(order.getId())).thenReturn(Optional.of(order));
 
@@ -143,7 +144,7 @@ class OrderControllerTest {
     @Test
     void shouldList() throws Exception {
         Pageable pageable = PageRequest.of(0, OrderController.PAGE_SIZE);
-        when(mockOrderDao.pageByAccessionHolders(Set.of(accessionHolderId), pageable)).thenReturn(
+        when(mockOrderDao.pageByAccessionHolders(Set.of(accessionHolderId, otherAccessionHolderId), pageable)).thenReturn(
             new PageImpl<>(List.of(order), pageable, 1)
         );
 
@@ -196,7 +197,7 @@ class OrderControllerTest {
     @Test
     void shouldListByStatus() throws Exception {
         Pageable pageable = PageRequest.of(1, OrderController.PAGE_SIZE);
-        when(mockOrderDao.pageByAccessionHoldersAndStatuses(Set.of(accessionHolderId),
+        when(mockOrderDao.pageByAccessionHoldersAndStatuses(Set.of(accessionHolderId, otherAccessionHolderId),
                                                             EnumSet.of(OrderStatus.CANCELLED, OrderStatus.FINALIZED),
                                                             pageable)).thenReturn(
             new PageImpl<>(List.of(order), pageable, OrderController.PAGE_SIZE + 1)
@@ -212,6 +213,24 @@ class OrderControllerTest {
                .andExpect(jsonPath("$.totalPages").value(2))
                .andExpect(jsonPath("$.content.length()").value(1))
                .andExpect(jsonPath("$.content[0].id").value(order.getId()));
+
+        verify(mockCurrentUser).checkPermission(Permission.ORDER_MANAGEMENT);
+    }
+
+    @Test
+    void shouldListForSpecificAccessionHolder() throws Exception {
+        Pageable pageable = PageRequest.of(0, OrderController.PAGE_SIZE);
+        when(mockOrderDao.pageByAccessionHolders(Set.of(accessionHolderId), pageable)).thenReturn(
+            new PageImpl<>(List.of(order), pageable, 1)
+        );
+
+        mockMvc.perform(get("/api/orders").param("accessionHolderId", accessionHolderId.toString()))
+               .andExpect(status().isOk())
+               .andExpect(jsonPath("$.totalElements").value(1))
+               .andExpect(jsonPath("$.number").value(0))
+               .andExpect(jsonPath("$.size").value(OrderController.PAGE_SIZE))
+               .andExpect(jsonPath("$.totalPages").value(1))
+               .andExpect(jsonPath("$.content.length()").value(1));
 
         verify(mockCurrentUser).checkPermission(Permission.ORDER_MANAGEMENT);
     }
