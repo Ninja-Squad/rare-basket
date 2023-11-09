@@ -7,6 +7,8 @@ import java.util.stream.Collectors;
 import fr.inra.urgi.rarebasket.domain.Order;
 import fr.inra.urgi.rarebasket.domain.OrderItem;
 import fr.inra.urgi.rarebasket.domain.OrderStatus;
+import fr.inra.urgi.rarebasket.web.accessionholder.AccessionHolderDTO;
+import fr.inra.urgi.rarebasket.web.accessionholder.AccessionHolderLightDTO;
 
 /**
  * DTO containing information about an order
@@ -17,15 +19,18 @@ public final class OrderDTO {
     private final Long id;
     private final BasketInformationDTO basket;
     private final OrderStatus status;
+    private final AccessionHolderLightDTO accessionHolder;
     private final List<OrderItemDTO> items;
 
     public OrderDTO(Long id,
                     BasketInformationDTO basket,
                     OrderStatus status,
+                    AccessionHolderLightDTO accessionHolder,
                     List<OrderItemDTO> items) {
         this.id = id;
         this.basket = basket;
         this.status = status;
+        this.accessionHolder = accessionHolder;
         this.items = items;
     }
 
@@ -33,6 +38,7 @@ public final class OrderDTO {
         this(order.getId(),
              new BasketInformationDTO(order.getBasket()),
              order.getStatus(),
+             new AccessionHolderLightDTO(order.getAccessionHolder()),
              order.getItems()
                   .stream()
                   .sorted(Comparator.comparing(OrderItem::getAccession))
@@ -51,6 +57,10 @@ public final class OrderDTO {
 
     public OrderStatus getStatus() {
         return status;
+    }
+
+    public AccessionHolderLightDTO getAccessionHolder() {
+        return accessionHolder;
     }
 
     public List<OrderItemDTO> getItems() {

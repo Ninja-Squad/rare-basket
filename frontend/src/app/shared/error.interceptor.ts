@@ -18,7 +18,7 @@ export const errorInterceptor: HttpInterceptorFn = (req, next) => {
           if (status === HttpStatusCode.BadRequest && functionalError) {
             toastService.error(`common.error-interceptor.functional-error.${functionalError}`);
           } else {
-            const errorMessage = body?.message ?? body;
+            const errorMessage = body?.message ?? body ?? '';
             toastService.error('common.error-interceptor.server-error', { status, message: errorMessage });
           }
         } else {

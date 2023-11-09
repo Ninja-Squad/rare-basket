@@ -14,8 +14,8 @@
   <div class="content mb-2">
     <p
       class="text-body-secondary"
-      translate="order.order.creation-date"
-      [translateParams]="{ date: order.basket.confirmationInstant | date: 'longDate' }"
+      translate="order.order.creation-date-and-accession-holder"
+      [translateParams]="{ date: order.basket.confirmationInstant | date: 'longDate', accessionHolder: order.accessionHolder.name }"
     ></p>
     <div class="row">
       <div class="col-md-5">

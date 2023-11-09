@@ -118,6 +118,7 @@ class OrderControllerTest {
         basket.setConfirmationInstant(Instant.parse("2020-04-02T10:43:00Z"));
 
         AccessionHolder accessionHolder = new AccessionHolder(accessionHolderId);
+        accessionHolder.setName("The flower holder");
         order = new Order(42L);
         order.setBasket(basket);
         order.setStatus(OrderStatus.DRAFT);
@@ -179,6 +180,7 @@ class OrderControllerTest {
                .andExpect(jsonPath("$.content[0].basket.confirmationInstant").value(order.getBasket()
                                                                                          .getConfirmationInstant()
                                                                                          .toString()))
+               .andExpect(jsonPath("$.content[0].accessionHolder.name").value("The flower holder"))
                .andExpect(jsonPath("$.content[0].items.length()").value(2))
                .andExpect(jsonPath("$.content[0].items[0].id").value(421L))
                .andExpect(jsonPath("$.content[0].items[0].accession.name").value("rosa"))
