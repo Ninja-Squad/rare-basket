@@ -38,6 +38,10 @@ export interface Order {
   id: number;
   basket: BasketInformation;
   status: OrderStatus;
+  accessionHolder: {
+    id: number;
+    name: string;
+  };
   items: Array<OrderItem>;
 }
 

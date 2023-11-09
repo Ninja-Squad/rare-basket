@@ -2,6 +2,11 @@
   <div class="row">
     <div class="col-6 col-md-2">
       <a [routerLink]="['/orders', order.id]">{{ order.basket.reference }}</a>
+      <div
+        class="text-body-secondary small"
+        translate="order.orders.for-accession-holder"
+        [translateParams]="{ name: order.accessionHolder.name }"
+      ></div>
     </div>
     <div class="col-6 col-md-2 order-md-3">
       <ng-container [ngPlural]="order.items.length">

@@ -177,7 +177,8 @@
     "orders": {
       "zero-accession": "0 accession",
       "one-accession": "1 accession",
-      "n-accessions": "{{ n }} accessions"
+      "n-accessions": "{{ n }} accessions",
+      "for-accession-holder": "for {{ name }}"
     },
     "in-progress-orders": {
       "count": "{{ count }} order(s) in progress",
@@ -186,7 +187,7 @@
     },
     "order": {
       "title": "Order {{ reference }}",
-      "creation-date": "Order created on {{ date }}",
+      "creation-date-and-accession-holder": "Order created on {{ date }} for {{ accessionHolder }}",
       "customer-information": "Customer information",
       "ordered-accessions": "Ordered accessions",
       "accession-heading": "Accession",
