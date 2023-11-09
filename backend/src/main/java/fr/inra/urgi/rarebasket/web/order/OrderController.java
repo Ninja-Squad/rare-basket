@@ -113,7 +113,7 @@ public class OrderController {
 
         Set<Long> accessibleAccessionHolderIds = getAccessionHolderIds();
         if (accessionHolderId != null && !accessibleAccessionHolderIds.contains(accessionHolderId)) {
-            throw new BadRequestException("You don't have access the the provided accession holder " + accessionHolderId);
+            throw new BadRequestException("You don't have access to the provided accession holder " + accessionHolderId);
         }
         Set<Long> accessionHolderIds = accessionHolderId == null ? accessibleAccessionHolderIds : Set.of(accessionHolderId);
 
