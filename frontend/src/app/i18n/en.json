@@ -181,6 +181,8 @@
       "for-accession-holder": "for {{ name }}"
     },
     "in-progress-orders": {
+      "accession-holder": "for",
+      "all-accession-holders": "all the accession holders",
       "count": "{{ count }} order(s) in progress",
       "no-order": "No in progress order. Good job!",
       "create": "Create an order"

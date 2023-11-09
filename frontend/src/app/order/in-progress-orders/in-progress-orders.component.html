@@ -1,15 +1,24 @@
-<div *ngIf="orders">
-  <div *ngIf="orders.totalElements > 0">
+<ng-container *ngIf="vm$ | async as vm">
+  <div *ngIf="vm.user.accessionHolders.length > 1" class="row gx-2 gy-1 mb-3">
+    <label class="col-sm-auto col-form-label" for="accession-holder" translate="order.in-progress-orders.accession-holder"></label>
+    <div class="col-sm-auto">
+      <select [formControl]="accessionHolderIdCtrl" class="form-select" id="accession-holder">
+        <option [ngValue]="null" translate="order.in-progress-orders.all-accession-holders"></option>
+        <option *ngFor="let ah of vm.user.accessionHolders" [ngValue]="ah.id">{{ ah.name }}</option>
+      </select>
+    </div>
+  </div>
+  <div *ngIf="vm.orders.totalElements > 0">
     <div
       class="small text-body-secondary mb-2"
       translate="order.in-progress-orders.count"
-      [translateParams]="{ count: orders.totalElements | number }"
+      [translateParams]="{ count: vm.orders.totalElements | number }"
     ></div>
 
-    <rb-orders [orders]="orders"></rb-orders>
+    <rb-orders [orders]="vm.orders"></rb-orders>
   </div>
 
-  <div *ngIf="orders.totalElements === 0" class="text-center mb-4" id="no-order-message">
+  <div *ngIf="vm.orders.totalElements === 0" class="text-center mb-4" id="no-order-message">
     <div class="bumped">
       <fa-icon class="text-success" [icon]="noOrderIcon" size="6x"></fa-icon>
     </div>
@@ -22,4 +31,4 @@
       <span translate="order.in-progress-orders.create"></span>
     </a>
   </div>
-</div>
+</ng-container>

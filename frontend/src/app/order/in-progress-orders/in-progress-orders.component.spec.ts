@@ -1,18 +1,25 @@
-import { TestBed } from '@angular/core/testing';
+import { ComponentFixture, fakeAsync, TestBed, tick } from '@angular/core/testing';
 
 import { InProgressOrdersComponent } from './in-progress-orders.component';
-import { ActivatedRouteStub, ComponentTester, createMock, stubRoute } from 'ngx-speculoos';
+import { ComponentTester, createMock } from 'ngx-speculoos';
 import { OrdersComponent } from '../orders/orders.component';
-import { ActivatedRoute } from '@angular/router';
+import { provideRouter, Router } from '@angular/router';
 import { EMPTY, of } from 'rxjs';
 import { OrderService } from '../order.service';
 import { Order } from '../order.model';
 import { Page } from '../../shared/page.model';
 import { provideI18nTesting } from '../../i18n/mock-18n.spec';
+import { AuthenticationService } from '../../shared/authentication.service';
+import { User } from '../../shared/user.model';
+import { RouterTestingHarness } from '@angular/router/testing';
 
-class InProgressOrdersComponentTester extends ComponentTester<InProgressOrdersComponent> {
-  constructor() {
-    super(InProgressOrdersComponent);
+class InProgressOrdersComponentTester extends ComponentTester<unknown> {
+  constructor(fixture: ComponentFixture<unknown>) {
+    super(fixture);
+  }
+
+  get accessionHolder() {
+    return this.select('#accession-holder');
   }
 
   get ordersComponent(): OrdersComponent | null {
@@ -26,31 +33,82 @@ class InProgressOrdersComponentTester extends ComponentTester<InProgressOrdersCo
 
 describe('InProgressOrdersComponent', () => {
   let tester: InProgressOrdersComponentTester;
-  let route: ActivatedRouteStub;
   let orderService: jasmine.SpyObj<OrderService>;
+  let authenticationService: jasmine.SpyObj<AuthenticationService>;
+  let harness: RouterTestingHarness;
+  let router: Router;
 
-  beforeEach(() => {
-    route = stubRoute();
+  beforeEach(async () => {
     orderService = createMock(OrderService);
+    authenticationService = createMock(AuthenticationService);
+    authenticationService.getCurrentUser.and.returnValue(
+      of({
+        accessionHolders: [
+          {
+            id: 42,
+            name: 'AH1'
+          },
+          {
+            id: 43,
+            name: 'AH2'
+          }
+        ]
+      } as User)
+    );
 
     TestBed.configureTestingModule({
-      providers: [provideI18nTesting(), { provide: ActivatedRoute, useValue: route }, { provide: OrderService, useValue: orderService }]
+      providers: [
+        provideI18nTesting(),
+        { provide: OrderService, useValue: orderService },
+        { provide: AuthenticationService, useValue: authenticationService },
+        provideRouter([{ path: 'orders/in-progress', component: InProgressOrdersComponent }])
+      ]
     });
 
-    tester = new InProgressOrdersComponentTester();
+    router = TestBed.inject(Router);
   });
 
-  it('should not display anything until orders are present', () => {
+  it('should not display anything until orders are present', async () => {
     orderService.listInProgress.and.returnValue(EMPTY);
+    harness = await RouterTestingHarness.create('/orders/in-progress');
+    tester = new InProgressOrdersComponentTester(harness.fixture);
 
     tester.detectChanges();
 
     expect(tester.ordersComponent).toBeNull();
     expect(tester.noOrderMessage).toBeNull();
-    expect(orderService.listInProgress).toHaveBeenCalledWith(0);
+    expect(orderService.listInProgress).toHaveBeenCalledWith(0, null);
   });
 
-  it('should display requested page', () => {
+  it('should not display accession holder if only one accessible', async () => {
+    authenticationService.getCurrentUser.and.returnValue(
+      of({
+        accessionHolders: [
+          {
+            id: 42,
+            name: 'AH1'
+          }
+        ]
+      } as User)
+    );
+    const page0 = {
+      number: 0,
+      content: [],
+      totalElements: 1,
+      size: 20,
+      totalPages: 1
+    } as Page<Order>;
+    orderService.listInProgress.and.returnValue(of(page0));
+    harness = await RouterTestingHarness.create('/orders/in-progress');
+    tester = new InProgressOrdersComponentTester(harness.fixture);
+
+    tester.detectChanges();
+
+    expect(tester.accessionHolder).toBeNull();
+    expect(orderService.listInProgress).toHaveBeenCalledWith(0, null);
+  });
+
+  it('should display requested page and accession holder', fakeAsync(async () => {
     const page1 = {
       number: 1,
       content: [],
@@ -65,22 +123,42 @@ describe('InProgressOrdersComponent', () => {
       size: 20,
       totalPages: 1
     } as Page<Order>;
+    const page0ForAccessionHolder42 = {
+      number: 0,
+      content: [],
+      totalElements: 1,
+      size: 20,
+      totalPages: 1
+    } as Page<Order>;
 
-    orderService.listInProgress.and.returnValues(of(page1), of(page0));
+    orderService.listInProgress.withArgs(0, null).and.returnValue(of(page0));
+    orderService.listInProgress.withArgs(1, null).and.returnValue(of(page1));
+    orderService.listInProgress.withArgs(0, 42).and.returnValue(of(page0ForAccessionHolder42));
 
-    route.setQueryParam('page', '1');
+    harness = await RouterTestingHarness.create('/orders/in-progress?page=1');
+    tester = new InProgressOrdersComponentTester(harness.fixture);
     tester.detectChanges();
 
     expect(tester.noOrderMessage).toBeNull();
     expect(tester.ordersComponent).not.toBeNull();
     expect(tester.ordersComponent.orders).toBe(page1);
+    expect(tester.accessionHolder.optionLabels).toEqual([`tous les gestionnaires d'accessions`, 'AH1', 'AH2']);
+    expect(tester.accessionHolder).toHaveSelectedLabel(`tous les gestionnaires d'accessions`);
 
-    route.setQueryParam('page', '0');
+    tester.accessionHolder.selectLabel('AH1');
+    tick();
     tester.detectChanges();
-    expect(tester.ordersComponent.orders).toBe(page0);
-  });
+    expect(router.url).toBe('/orders/in-progress?page=0&h=42');
+    expect(tester.ordersComponent.orders).toBe(page0ForAccessionHolder42);
 
-  it('should display a no order message if there is no order', () => {
+    tester.accessionHolder.selectLabel(`tous les gestionnaires d'accessions`);
+    tick();
+    tester.detectChanges();
+    expect(router.url).toBe('/orders/in-progress?page=0');
+    expect(tester.ordersComponent.orders).toBe(page0);
+  }));
+
+  it('should display a no order message if there is no order', async () => {
     const page0 = {
       number: 0,
       content: [],
@@ -91,7 +169,8 @@ describe('InProgressOrdersComponent', () => {
 
     orderService.listInProgress.and.returnValue(of(page0));
 
-    route.setQueryParam('page', '0');
+    harness = await RouterTestingHarness.create('/orders/in-progress');
+    tester = new InProgressOrdersComponentTester(harness.fixture);
     tester.detectChanges();
 
     expect(tester.noOrderMessage).not.toBeNull();

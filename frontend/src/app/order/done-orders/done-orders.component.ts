@@ -1,33 +1,25 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { OrderService } from '../order.service';
-import { map, switchMap } from 'rxjs/operators';
-import { Order } from '../order.model';
-import { Page } from '../../shared/page.model';
 import { OrdersComponent } from '../orders/orders.component';
-import { NgIf } from '@angular/common';
+import { AsyncPipe, NgForOf, NgIf } from '@angular/common';
+import { Observable } from 'rxjs';
+import { FormControl, ReactiveFormsModule } from '@angular/forms';
+import { OrderListService, OrderListViewModel } from '../order-list.service';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'rb-done-orders',
   templateUrl: './done-orders.component.html',
   styleUrls: ['./done-orders.component.scss'],
   standalone: true,
-  imports: [NgIf, OrdersComponent]
+  imports: [NgIf, OrdersComponent, NgForOf, ReactiveFormsModule, TranslateModule, AsyncPipe]
 })
-export class DoneOrdersComponent implements OnInit {
-  orders: Page<Order>;
+export class DoneOrdersComponent {
+  vm$: Observable<OrderListViewModel>;
 
-  constructor(
-    private route: ActivatedRoute,
-    private orderService: OrderService
-  ) {}
+  accessionHolderIdCtrl = new FormControl<number | null>(null);
 
-  ngOnInit() {
-    this.route.queryParamMap
-      .pipe(
-        map(params => +(params.get('page') || 0)),
-        switchMap(page => this.orderService.listDone(page))
-      )
-      .subscribe(orders => (this.orders = orders));
+  constructor(route: ActivatedRoute, orderListService: OrderListService) {
+    this.vm$ = orderListService.setupDone(route, this.accessionHolderIdCtrl);
   }
 }
