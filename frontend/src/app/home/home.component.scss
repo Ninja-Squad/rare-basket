@@ -3,8 +3,7 @@ h2 {
 }
 
 .bg {
-  // the caret makes sass ignore the fact that it can't find the image
-  background-image: url('^assets/background.jpg');
+  background-image: url('../../media/background.jpg');
   background-size: cover;
   background-position: 50%;
   min-height: 540px;
