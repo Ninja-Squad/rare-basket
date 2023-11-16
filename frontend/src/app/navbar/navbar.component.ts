@@ -15,24 +15,14 @@ import { TranslateModule } from '@ngx-translate/core';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { RouterLink } from '@angular/router';
 import { NgIf } from '@angular/common';
-import { NgbNavbar, NgbDropdown, NgbDropdownToggle, NgbDropdownMenu, NgbDropdownItem } from '@ng-bootstrap/ng-bootstrap';
+import { NgbDropdown, NgbDropdownItem, NgbDropdownMenu, NgbDropdownToggle } from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
   selector: 'rb-navbar',
   templateUrl: './navbar.component.html',
   styleUrls: ['./navbar.component.scss'],
   standalone: true,
-  imports: [
-    NgbNavbar,
-    NgIf,
-    RouterLink,
-    FontAwesomeModule,
-    TranslateModule,
-    NgbDropdown,
-    NgbDropdownToggle,
-    NgbDropdownMenu,
-    NgbDropdownItem
-  ]
+  imports: [NgIf, RouterLink, FontAwesomeModule, TranslateModule, NgbDropdown, NgbDropdownToggle, NgbDropdownMenu, NgbDropdownItem]
 })
 export class NavbarComponent implements OnInit {
   collapsed = true;
