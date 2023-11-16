@@ -1,6 +1,6 @@
 import { ENVIRONMENT_INITIALIZER, importProvidersFrom, inject, LOCALE_ID } from '@angular/core';
 import { TranslateLoader, TranslateModule, TranslateService } from '@ngx-translate/core';
-import { WebpackTranslateLoader } from './webpack-translate-loader';
+import { ModuleTranslateLoader } from './module-translate-loader';
 import { registerLocaleData } from '@angular/common';
 import localeFr from '@angular/common/locales/fr';
 
@@ -30,7 +30,7 @@ export const provideI18n = () => {
       TranslateModule.forRoot({
         loader: {
           provide: TranslateLoader,
-          useClass: WebpackTranslateLoader
+          useClass: ModuleTranslateLoader
         }
       })
     ),
