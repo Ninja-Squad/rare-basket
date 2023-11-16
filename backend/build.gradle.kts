@@ -33,7 +33,7 @@ tasks {
 
         bootInf {
             into("classes/static") {
-                from("${project(":frontend").projectDir}/dist/rare-basket-frontend")
+                from("${project(":frontend").projectDir}/dist/rare-basket-frontend/browser")
             }
         }
         launchScript()
