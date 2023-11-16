@@ -39,17 +39,17 @@
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "16.2.10",
-    "@angular-eslint/builder": "17.0.1",
-    "@angular-eslint/eslint-plugin": "17.0.1",
-    "@angular-eslint/eslint-plugin-template": "17.0.1",
-    "@angular-eslint/template-parser": "17.0.1",
+    "@angular-eslint/builder": "17.1.0",
+    "@angular-eslint/eslint-plugin": "17.1.0",
+    "@angular-eslint/eslint-plugin-template": "17.1.0",
+    "@angular-eslint/template-parser": "17.1.0",
     "@angular/cli": "16.2.10",
     "@angular/compiler-cli": "16.2.12",
     "@playwright/test": "1.39.0",
     "@types/jasmine": "5.1.2",
     "@types/papaparse": "5.3.11",
-    "@typescript-eslint/eslint-plugin": "6.10.0",
-    "@typescript-eslint/parser": "6.10.0",
+    "@typescript-eslint/eslint-plugin": "6.11.0",
+    "@typescript-eslint/parser": "6.11.0",
     "eslint": "8.53.0",
     "eslint-config-prettier": "9.0.0",
     "eslint-plugin-prettier": "5.0.1",
@@ -61,7 +61,7 @@
     "karma-jasmine": "5.1.0",
     "karma-jasmine-html-reporter": "2.1.0",
     "ngx-speculoos": "11.0.0",
-    "prettier": "3.0.3",
+    "prettier": "3.1.0",
     "typescript": "4.9.5"
   }
 }
