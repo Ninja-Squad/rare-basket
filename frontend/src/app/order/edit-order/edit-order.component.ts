@@ -1,6 +1,6 @@
 import { AfterViewInit, Component, ElementRef, EventEmitter, Input, OnInit, Output, QueryList, ViewChildren } from '@angular/core';
 import { Order, OrderCommand, OrderItemCommand } from '../order.model';
-import { FormControl, FormGroup, NonNullableFormBuilder, Validators, ReactiveFormsModule } from '@angular/forms';
+import { FormControl, FormGroup, NonNullableFormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { faFileCsv, faPlus, faTrash } from '@fortawesome/free-solid-svg-icons';
 import { ModalService } from '../../rb-ngb/modal.service';
 import { CsvModalComponent } from '../csv-modal/csv-modal.component';
@@ -20,7 +20,7 @@ interface ItemFormValue {
 @Component({
   selector: 'rb-edit-order',
   templateUrl: './edit-order.component.html',
-  styleUrls: ['./edit-order.component.scss'],
+  styleUrl: './edit-order.component.scss',
   standalone: true,
   imports: [ReactiveFormsModule, NgFor, TranslateModule, FormControlValidationDirective, ValidationErrorsComponent, FontAwesomeModule]
 })

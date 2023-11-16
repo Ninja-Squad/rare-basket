@@ -11,7 +11,7 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 @Component({
   selector: 'rb-confirmed',
   templateUrl: './confirmed.component.html',
-  styleUrls: ['./confirmed.component.scss'],
+  styleUrl: './confirmed.component.scss',
   standalone: true,
   imports: [FontAwesomeModule, TranslateModule, BasketContentComponent]
 })

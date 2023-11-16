@@ -4,7 +4,7 @@ import { Accession } from '../../basket/basket.model';
 @Component({
   selector: 'rb-accession',
   templateUrl: './accession.component.html',
-  styleUrls: ['./accession.component.scss'],
+  styleUrl: './accession.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true
 })

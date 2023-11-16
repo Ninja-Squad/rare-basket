@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Grc, GrcCommand } from '../../shared/user.model';
-import { NonNullableFormBuilder, Validators, ReactiveFormsModule } from '@angular/forms';
+import { NonNullableFormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { GrcService } from '../../shared/grc.service';
 import { Observable } from 'rxjs';
@@ -12,7 +12,7 @@ import { TranslateModule } from '@ngx-translate/core';
 @Component({
   selector: 'rb-edit-grc',
   templateUrl: './edit-grc.component.html',
-  styleUrls: ['./edit-grc.component.scss'],
+  styleUrl: './edit-grc.component.scss',
   standalone: true,
   imports: [TranslateModule, ReactiveFormsModule, FormControlValidationDirective, ValidationErrorsComponent, RouterLink]
 })

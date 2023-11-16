@@ -27,7 +27,7 @@ function atLeastOneSelection(control: AbstractControl): ValidationErrors | null 
 @Component({
   selector: 'rb-edit-user',
   templateUrl: './edit-user.component.html',
-  styleUrls: ['./edit-user.component.scss'],
+  styleUrl: './edit-user.component.scss',
   standalone: true,
   imports: [
     NgIf,

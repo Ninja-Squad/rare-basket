@@ -7,13 +7,13 @@ import { ConfirmationService } from '../../shared/confirmation.service';
 import { ToastService } from '../../shared/toast.service';
 import { RouterLink } from '@angular/router';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
-import { NgIf, NgFor } from '@angular/common';
+import { NgFor, NgIf } from '@angular/common';
 import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'rb-accession-holders',
   templateUrl: './accession-holders.component.html',
-  styleUrls: ['./accession-holders.component.scss'],
+  styleUrl: './accession-holders.component.scss',
   standalone: true,
   imports: [TranslateModule, NgIf, NgFor, FontAwesomeModule, RouterLink]
 })

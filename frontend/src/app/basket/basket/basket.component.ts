@@ -12,7 +12,7 @@ import { NgIf } from '@angular/common';
 @Component({
   selector: 'rb-basket',
   templateUrl: './basket.component.html',
-  styleUrls: ['./basket.component.scss'],
+  styleUrl: './basket.component.scss',
   standalone: true,
   imports: [NgIf, TranslateModule, EditBasketComponent, EditConfirmationComponent, ConfirmedComponent]
 })

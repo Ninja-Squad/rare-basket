@@ -7,13 +7,13 @@ import { faBuilding, faPlus, faTrash } from '@fortawesome/free-solid-svg-icons';
 import { ToastService } from '../../shared/toast.service';
 import { RouterLink } from '@angular/router';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
-import { NgIf, NgFor } from '@angular/common';
+import { NgFor, NgIf } from '@angular/common';
 import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'rb-grcs',
   templateUrl: './grcs.component.html',
-  styleUrls: ['./grcs.component.scss'],
+  styleUrl: './grcs.component.scss',
   standalone: true,
   imports: [TranslateModule, NgIf, NgFor, FontAwesomeModule, RouterLink]
 })

@@ -4,7 +4,7 @@ import { Chart, ChartConfiguration } from 'chart.js';
 @Component({
   selector: 'rb-chart',
   templateUrl: './chart.component.html',
-  styleUrls: ['./chart.component.scss'],
+  styleUrl: './chart.component.scss',
   standalone: true
 })
 export class ChartComponent implements AfterViewInit, OnChanges, OnDestroy {

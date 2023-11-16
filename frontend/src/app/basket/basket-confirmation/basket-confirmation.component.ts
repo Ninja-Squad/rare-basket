@@ -16,7 +16,7 @@ import { NgIf } from '@angular/common';
 @Component({
   selector: 'rb-basket-confirmation',
   templateUrl: './basket-confirmation.component.html',
-  styleUrls: ['./basket-confirmation.component.scss'],
+  styleUrl: './basket-confirmation.component.scss',
   standalone: true,
   imports: [NgIf, FontAwesomeModule, TranslateModule, RouterLink]
 })
