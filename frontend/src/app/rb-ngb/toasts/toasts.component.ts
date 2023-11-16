@@ -8,7 +8,7 @@ import { NgFor } from '@angular/common';
 @Component({
   selector: 'rb-toasts',
   templateUrl: './toasts.component.html',
-  styleUrls: ['./toasts.component.scss'],
+  styleUrl: './toasts.component.scss',
   standalone: true,
   imports: [NgFor, NgbToast, FontAwesomeModule]
 })

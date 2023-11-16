@@ -1,5 +1,5 @@
 import { Component, Inject, LOCALE_ID } from '@angular/core';
-import { NonNullableFormBuilder, Validators, ReactiveFormsModule } from '@angular/forms';
+import { NonNullableFormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { formatDate, NgIf } from '@angular/common';
 import { OrderService } from '../order.service';
 import { DownloadService } from '../../shared/download.service';
@@ -16,7 +16,7 @@ import { TranslateModule } from '@ngx-translate/core';
 @Component({
   selector: 'rb-export-orders',
   templateUrl: './export-orders.component.html',
-  styleUrls: ['./export-orders.component.scss'],
+  styleUrl: './export-orders.component.scss',
   standalone: true,
   imports: [
     TranslateModule,

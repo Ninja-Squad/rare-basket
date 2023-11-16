@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { AccessionHolder, AccessionHolderCommand, Grc } from '../../shared/user.model';
-import { NonNullableFormBuilder, Validators, ReactiveFormsModule } from '@angular/forms';
+import { NonNullableFormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { AccessionHolderService } from '../../shared/accession-holder.service';
 import { GrcService } from '../../shared/grc.service';
@@ -14,7 +14,7 @@ import { TranslateModule } from '@ngx-translate/core';
 @Component({
   selector: 'rb-edit-accession-holder',
   templateUrl: './edit-accession-holder.component.html',
-  styleUrls: ['./edit-accession-holder.component.scss'],
+  styleUrl: './edit-accession-holder.component.scss',
   standalone: true,
   imports: [TranslateModule, ReactiveFormsModule, FormControlValidationDirective, ValidationErrorsComponent, NgFor, RouterLink]
 })

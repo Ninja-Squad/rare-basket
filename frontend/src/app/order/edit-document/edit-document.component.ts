@@ -1,5 +1,5 @@
 import { Component, ElementRef, EventEmitter, Input, OnChanges, Output, SimpleChanges, ViewChild } from '@angular/core';
-import { NonNullableFormBuilder, Validators, ReactiveFormsModule } from '@angular/forms';
+import { NonNullableFormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import {
   ALL_DOCUMENT_TYPES,
   DetailedOrder,
@@ -14,7 +14,7 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { NgbProgressbar } from '@ng-bootstrap/ng-bootstrap';
 import { FormControlValidationDirective } from '../../shared/form-control-validation.directive';
 import { ValidationErrorsComponent } from 'ngx-valdemort';
-import { NgFor, NgIf, DecimalPipe } from '@angular/common';
+import { DecimalPipe, NgFor, NgIf } from '@angular/common';
 import { TranslateModule } from '@ngx-translate/core';
 
 const validExtensions = ['.pdf', '.txt', '.eml', '.pst', '.ost'];
@@ -23,7 +23,7 @@ const maxFileSize = 10 * 1024 * 1024; // 10 MB
 @Component({
   selector: 'rb-edit-document',
   templateUrl: './edit-document.component.html',
-  styleUrls: ['./edit-document.component.scss'],
+  styleUrl: './edit-document.component.scss',
   standalone: true,
   imports: [
     ReactiveFormsModule,

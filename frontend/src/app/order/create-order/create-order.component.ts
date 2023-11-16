@@ -21,7 +21,7 @@ import { Observable } from 'rxjs';
 @Component({
   selector: 'rb-create-order',
   templateUrl: './create-order.component.html',
-  styleUrls: ['./create-order.component.scss'],
+  styleUrl: './create-order.component.scss',
   standalone: true,
   imports: [
     TranslateModule,

@@ -3,14 +3,14 @@ import { NonNullableFormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { CsvResult, OrderCsvParserService } from '../order-csv-parser.service';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { AccessionComponent } from '../../shared/accession/accession.component';
-import { NgIf, NgFor, DecimalPipe } from '@angular/common';
+import { DecimalPipe, NgFor, NgIf } from '@angular/common';
 import { FormControlValidationDirective } from '../../shared/form-control-validation.directive';
 import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'rb-csv-modal',
   templateUrl: './csv-modal.component.html',
-  styleUrls: ['./csv-modal.component.scss'],
+  styleUrl: './csv-modal.component.scss',
   standalone: true,
   imports: [TranslateModule, ReactiveFormsModule, FormControlValidationDirective, NgIf, NgFor, AccessionComponent, DecimalPipe]
 })

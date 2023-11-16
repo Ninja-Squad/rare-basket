@@ -8,7 +8,7 @@ import { TranslateModule } from '@ngx-translate/core';
 @Component({
   selector: 'rb-finalization-warnings-modal',
   templateUrl: './finalization-warnings-modal.component.html',
-  styleUrls: ['./finalization-warnings-modal.component.scss'],
+  styleUrl: './finalization-warnings-modal.component.scss',
   standalone: true,
   imports: [TranslateModule, FontAwesomeModule, NgFor]
 })

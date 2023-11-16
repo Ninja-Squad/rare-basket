@@ -3,16 +3,16 @@ import { OrderService } from '../order.service';
 import { CustomerTypeStatistics, OrderStatistics, OrderStatusStatistics } from '../order.model';
 import { ArcElement, Chart, ChartConfiguration, DoughnutController, Legend, Tooltip } from 'chart.js';
 import { COLORS } from '../../chart/colors';
-import { TranslateService, TranslateModule } from '@ngx-translate/core';
-import { formatDate, formatNumber, formatPercent, NgIf, NgFor, DecimalPipe, PercentPipe } from '@angular/common';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { DecimalPipe, formatDate, formatNumber, formatPercent, NgFor, NgIf, PercentPipe } from '@angular/common';
 import {
   AbstractControl,
   FormControl,
   FormGroup,
   NonNullableFormBuilder,
+  ReactiveFormsModule,
   ValidationErrors,
-  Validators,
-  ReactiveFormsModule
+  Validators
 } from '@angular/forms';
 import { ActivatedRoute, Params, Router } from '@angular/router';
 import { validDateRange } from '../../shared/validators';
@@ -24,7 +24,7 @@ import { concat, of } from 'rxjs';
 import { OrderStatusEnumPipe } from '../order-status-enum.pipe';
 import { CustomerTypeEnumPipe } from '../../shared/customer-type-enum.pipe';
 import { ChartComponent } from '../../chart/chart/chart.component';
-import { ValidationErrorsComponent, ValidationErrorDirective } from 'ngx-valdemort';
+import { ValidationErrorDirective, ValidationErrorsComponent } from 'ngx-valdemort';
 import { FormControlValidationDirective } from '../../shared/form-control-validation.directive';
 import { NgbInputDatepicker } from '@ng-bootstrap/ng-bootstrap';
 import { DatepickerContainerComponent } from '../../rb-ngb/datepicker-container.component';
@@ -37,7 +37,7 @@ function atLeastOneSelection(control: AbstractControl): ValidationErrors | null 
 @Component({
   selector: 'rb-statistics',
   templateUrl: './statistics.component.html',
-  styleUrls: ['./statistics.component.scss'],
+  styleUrl: './statistics.component.scss',
   standalone: true,
   imports: [
     NgIf,

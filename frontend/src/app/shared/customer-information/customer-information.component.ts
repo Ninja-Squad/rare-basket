@@ -19,7 +19,7 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 @Component({
   selector: 'rb-customer-information',
   templateUrl: './customer-information.component.html',
-  styleUrls: ['./customer-information.component.scss'],
+  styleUrl: './customer-information.component.scss',
   standalone: true,
   imports: [FontAwesomeModule, TranslateModule, NgIf, CustomerTypeEnumPipe, LanguageEnumPipe]
 })

@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { Basket } from '../basket.model';
-import { NonNullableFormBuilder, Validators, ReactiveFormsModule } from '@angular/forms';
+import { NonNullableFormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { faCheckCircle, faInfoCircle } from '@fortawesome/free-solid-svg-icons';
 import { BasketContentComponent } from '../basket-content/basket-content.component';
 import { FormControlValidationDirective } from '../../shared/form-control-validation.directive';
@@ -14,7 +14,7 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 @Component({
   selector: 'rb-edit-confirmation',
   templateUrl: './edit-confirmation.component.html',
-  styleUrls: ['./edit-confirmation.component.scss'],
+  styleUrl: './edit-confirmation.component.scss',
   standalone: true,
   imports: [FontAwesomeModule, TranslateModule, ReactiveFormsModule, FormControlValidationDirective, BasketContentComponent]
 })
