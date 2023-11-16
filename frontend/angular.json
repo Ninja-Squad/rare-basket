@@ -88,14 +88,14 @@
           },
           "configurations": {
             "production": {
-              "browserTarget": "rare-basket-frontend:build:production"
+              "buildTarget": "rare-basket-frontend:build:production"
             },
             "development": {
-              "browserTarget": "rare-basket-frontend:build:development"
+              "buildTarget": "rare-basket-frontend:build:development"
             },
             "e2e": {
-              "browserTarget": "rare-basket-frontend:build:e2e",
-              "port": 4202
+              "port": 4202,
+              "buildTarget": "rare-basket-frontend:build:e2e"
             }
           },
           "defaultConfiguration": "development"
@@ -103,7 +103,7 @@
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "rare-basket-frontend:build"
+            "buildTarget": "rare-basket-frontend:build"
           }
         },
         "test": {
