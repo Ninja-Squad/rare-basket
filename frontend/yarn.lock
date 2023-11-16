@@ -1667,10 +1667,10 @@
   dependencies:
     call-bind "^1.0.2"
 
-"@ng-bootstrap/ng-bootstrap@16.0.0-rc.1":
-  version "16.0.0-rc.1"
-  resolved "https://registry.yarnpkg.com/@ng-bootstrap/ng-bootstrap/-/ng-bootstrap-16.0.0-rc.1.tgz#803cbeb1391c1f823d761aefe596aa6205f323dc"
-  integrity sha512-1PfAYvViMnjcnVzjXijZa7YUG2Op5abhqqJhBfWzJ64dOknXtB35pXRHYnE1CesjVpztix1i2Rm1roVnVLMZxg==
+"@ng-bootstrap/ng-bootstrap@16.0.0-rc.2":
+  version "16.0.0-rc.2"
+  resolved "https://registry.yarnpkg.com/@ng-bootstrap/ng-bootstrap/-/ng-bootstrap-16.0.0-rc.2.tgz#42f6164572eae23f3d735d28b307b45736b2e023"
+  integrity sha512-XQUOr6OfAYA9FK1e9tsKJiuKYGkNeO3vCkbCryWDWZzWaehvOWLcB214RUVBeoxynd4c/n2PmQRGnKcJLTAeSA==
   dependencies:
     tslib "^2.3.0"
 
