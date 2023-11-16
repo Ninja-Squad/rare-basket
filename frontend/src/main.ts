@@ -2,7 +2,7 @@ import { importProvidersFrom } from '@angular/core';
 import { AppComponent } from './app/app.component';
 import { provideI18n } from './app/i18n/i18n';
 import { APP_ROUTES } from './app/app.routes';
-import { provideRouter } from '@angular/router';
+import { provideRouter, withViewTransitions } from '@angular/router';
 import { bootstrapApplication } from '@angular/platform-browser';
 import { AuthenticationConfigService, authFactory, CustomSecurityStorage } from './app/shared/authentication-config.service';
 import { AbstractSecurityStorage, AuthModule, StsConfigLoader } from 'angular-auth-oidc-client';
@@ -23,7 +23,7 @@ bootstrapApplication(AppComponent, {
       })
     ),
     { provide: AbstractSecurityStorage, useClass: CustomSecurityStorage },
-    provideRouter(APP_ROUTES),
+    provideRouter(APP_ROUTES, withViewTransitions({ skipInitialTransition: true })),
     provideHttpClient(withInterceptors([authenticationInterceptor, errorInterceptor]), withNoXsrfProtection()),
     provideI18n(),
     provideNgbDatepickerServices()
