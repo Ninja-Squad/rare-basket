@@ -10,6 +10,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import fr.inra.urgi.rarebasket.MoreAnswers;
@@ -72,7 +73,7 @@ class GrcControllerTest {
         User user = new User(42L);
         user.setName("JB");
         user.addPermission(new UserPermission(Permission.ORDER_MANAGEMENT));
-        user.setAccessionHolder(new AccessionHolder(54L));
+        user.setAccessionHolders(Set.of(new AccessionHolder(54L)));
         when(mockCurrentUser.getId()).thenReturn(Optional.of(user.getId()));
     }
 

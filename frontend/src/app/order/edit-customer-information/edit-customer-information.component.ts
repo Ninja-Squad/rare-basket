@@ -27,11 +27,8 @@ import { TranslateModule } from '@ngx-translate/core';
   ]
 })
 export class EditCustomerInformationComponent implements OnInit {
-  @Input()
+  @Input({ required: true })
   customerInformation: CustomerInformationCommand;
-
-  @Input()
-  smallButtons = false;
 
   @Output()
   readonly saved = new EventEmitter<CustomerInformationCommand>();
@@ -55,37 +52,36 @@ export class EditCustomerInformationComponent implements OnInit {
   customerTypes = ALL_CUSTOMER_TYPES;
   languages = ALL_LANGUAGES;
 
-  constructor(private fb: NonNullableFormBuilder) {}
-
-  ngOnInit(): void {
+  constructor(private fb: NonNullableFormBuilder) {
     // if we use the delivery address as the billing address
     // then disable the billing address field
     this.useDeliveryAddressControl.valueChanges.subscribe(useDeliveryAddress => {
-      const billingAddressControl = this.form.get('customer.billingAddress');
+      const billingAddressControl = this.form.controls.customer.controls.billingAddress;
       if (useDeliveryAddress) {
         billingAddressControl.disable();
       } else {
         billingAddressControl.enable();
       }
     });
-    if (this.customerInformation) {
-      const customer = this.customerInformation.customer;
-      const customerCommand: CustomerCommand = {
-        name: customer.name,
-        organization: customer.organization,
-        email: customer.email,
-        deliveryAddress: customer.deliveryAddress,
-        billingAddress: customer.billingAddress,
-        type: customer.type,
-        language: customer.language
-      };
-      const formValue: CustomerInformationCommand = {
-        customer: customerCommand,
-        rationale: this.customerInformation.rationale
-      };
-      this.form.setValue(formValue);
-      this.useDeliveryAddressControl.setValue(customer.billingAddress && customer.billingAddress === customer.deliveryAddress);
-    }
+  }
+
+  ngOnInit(): void {
+    const customer = this.customerInformation.customer;
+    const customerCommand: CustomerCommand = {
+      name: customer.name,
+      organization: customer.organization,
+      email: customer.email,
+      deliveryAddress: customer.deliveryAddress,
+      billingAddress: customer.billingAddress,
+      type: customer.type,
+      language: customer.language
+    };
+    const formValue: CustomerInformationCommand = {
+      customer: customerCommand,
+      rationale: this.customerInformation.rationale
+    };
+    this.form.setValue(formValue);
+    this.useDeliveryAddressControl.setValue(customer.billingAddress && customer.billingAddress === customer.deliveryAddress);
   }
 
   save() {

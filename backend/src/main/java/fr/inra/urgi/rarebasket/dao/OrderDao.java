@@ -23,22 +23,22 @@ public interface OrderDao extends JpaRepository<Order, Long>, CustomOrderDao {
         value = "select distinct o from Order o" +
             " left join fetch o.basket b" +
             " left join fetch o.items" +
-            " where o.accessionHolder.id = ?1" +
+            " where o.accessionHolder.id in ?1" +
             " order by b.confirmationInstant desc",
-        countQuery = "select count(o.id) from Order o where o.accessionHolder.id = ?1")
-    Page<Order> pageByAccessionHolder(Long accessionHolderid, Pageable page);
+        countQuery = "select count(o.id) from Order o where o.accessionHolder.id in ?1")
+    Page<Order> pageByAccessionHolders(Set<Long> accessionHolderIds, Pageable page);
 
     @Query(
         value = "select o from Order o" +
             " left join fetch o.basket b" +
             " left join fetch o.items" +
-            " where o.accessionHolder.id = ?1" +
+            " where o.accessionHolder.id in ?1" +
             " and o.status in ?2" +
             " order by b.confirmationInstant desc",
         countQuery = "select count(o.id) from Order o" +
-            " where o.accessionHolder.id = ?1" +
+            " where o.accessionHolder.id in ?1" +
             " and o.status in ?2")
-    Page<Order> pageByAccessionHolderAndStatuses(Long accessionHolderId, Set<OrderStatus> statuses, Pageable page);
+    Page<Order> pageByAccessionHoldersAndStatuses(Set<Long> accessionHolderIds, Set<OrderStatus> statuses, Pageable page);
 
     /**
      * Generates the rows of the order CSV report for the global perimeter.

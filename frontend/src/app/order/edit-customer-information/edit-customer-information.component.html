@@ -58,16 +58,10 @@
     <textarea formControlName="rationale" id="rationale" class="form-control"></textarea>
   </div>
   <div class="text-end">
-    <button
-      class="btn btn-primary me-2"
-      [class.btn-sm]="smallButtons"
-      translate="order.edit-customer-information.save"
-      id="save-button"
-    ></button>
+    <button class="btn btn-primary btn-sm me-2" translate="order.edit-customer-information.save" id="save-button"></button>
     <button
       type="button"
-      class="btn btn-danger"
-      [class.btn-sm]="smallButtons"
+      class="btn btn-danger btn-sm"
       (click)="cancel()"
       translate="order.edit-customer-information.cancel"
       id="cancel-button"

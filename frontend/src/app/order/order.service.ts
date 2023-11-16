@@ -1,12 +1,13 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpEvent, HttpResponse } from '@angular/common/http';
 import {
+  CustomerInformationCommand,
   DetailedOrder,
   Document,
   DocumentCommand,
   Order,
   OrderCommand,
-  CustomerInformationCommand,
+  OrderCreationCommand,
   OrderStatistics,
   OrderStatus
 } from './order.model';
@@ -23,14 +24,20 @@ export class OrderService {
     return this.http.get<DetailedOrder>(`api/orders/${orderId}`);
   }
 
-  listInProgress(page: number): Observable<Page<Order>> {
-    const statuses: Array<OrderStatus> = ['DRAFT'];
-    return this.http.get<Page<Order>>('api/orders', { params: { status: statuses, page: `${page}` } });
+  listInProgress(page: number, accessionHolderId: number | null): Observable<Page<Order>> {
+    return this.listOrders(page, accessionHolderId, ['DRAFT']);
   }
 
-  listDone(page: number): Observable<Page<Order>> {
-    const statuses: Array<OrderStatus> = ['FINALIZED', 'CANCELLED'];
-    return this.http.get<Page<Order>>('api/orders', { params: { status: statuses, page: `${page}` } });
+  listDone(page: number, accessionHolderId: number | null): Observable<Page<Order>> {
+    return this.listOrders(page, accessionHolderId, ['FINALIZED', 'CANCELLED']);
+  }
+
+  private listOrders(page: number, accessionHolderId: number | null, statuses: Array<OrderStatus>) {
+    const params: { [key: string]: string | number | Array<string> } = { status: statuses, page };
+    if (accessionHolderId != null) {
+      params.accessionHolderId = accessionHolderId;
+    }
+    return this.http.get<Page<Order>>('api/orders', { params });
   }
 
   update(orderId: number, command: OrderCommand): Observable<void> {
@@ -84,7 +91,7 @@ export class OrderService {
     return this.http.put<void>(`api/orders/${orderId}/customer-information`, command);
   }
 
-  createOrder(command: CustomerInformationCommand): Observable<DetailedOrder> {
+  createOrder(command: OrderCreationCommand): Observable<DetailedOrder> {
     return this.http.post<DetailedOrder>('api/orders', command);
   }
 }

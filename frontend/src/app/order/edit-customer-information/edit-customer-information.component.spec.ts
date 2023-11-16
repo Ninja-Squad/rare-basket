@@ -10,12 +10,7 @@ import { provideI18nTesting } from '../../i18n/mock-18n.spec';
 
 @Component({
   template: `
-    <rb-edit-customer-information
-      [customerInformation]="customerInformation"
-      [smallButtons]="smallButtons"
-      (saved)="command = $event"
-      (cancelled)="cancelled = true"
-    >
+    <rb-edit-customer-information [customerInformation]="customerInformation" (saved)="command = $event" (cancelled)="cancelled = true">
     </rb-edit-customer-information>
   `,
   standalone: true,
@@ -36,7 +31,6 @@ class TestComponent {
   };
   command: CustomerInformationCommand = null;
   cancelled = false;
-  smallButtons = true;
 }
 
 class TestComponentTester extends ComponentTester<TestComponent> {
@@ -198,23 +192,5 @@ describe('EditCustomerComponent', () => {
 
     tester.cancelButton.click();
     expect(tester.componentInstance.cancelled).toBe(true);
-  });
-
-  it('should support creation and display an empty form', () => {
-    tester.componentInstance.customerInformation = null;
-    tester.componentInstance.smallButtons = false;
-    tester.detectChanges();
-
-    expect(tester.name).toHaveValue('');
-    expect(tester.organization).toHaveValue('');
-    expect(tester.email).toHaveValue('');
-    expect(tester.deliveryAddress).toHaveValue('');
-    expect(tester.billingAddress).toHaveValue('');
-    expect(tester.useDeliveryAddress).not.toBeChecked();
-    expect(tester.type).toHaveSelectedLabel('');
-    expect(tester.language).toHaveSelectedLabel('');
-    expect(tester.rationale).toHaveValue('');
-    expect(tester.saveButton).not.toHaveClass('btn-sm');
-    expect(tester.cancelButton).not.toHaveClass('btn-sm');
   });
 });

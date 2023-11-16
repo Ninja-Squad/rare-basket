@@ -1,22 +1,23 @@
 package fr.inra.urgi.rarebasket.web.order;
 
 import java.util.Objects;
-import jakarta.validation.Valid;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import fr.inra.urgi.rarebasket.web.basket.CustomerCommandDTO;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
 
 /**
- * Command sent by a user to edit the customer information of an order (and thus also
- * of the other orders of the same basket), and also to create a new order from scratch.
+ * Command sent by a user to create a new order from scratch.
  * @author JB Nizet
  */
-public final class CustomerInformationCommandDTO {
+public final class OrderCreationCommandDTO {
 
     /**
-     * When used to create a new order, this is the ID of the accession holder for which the order must be created.
-     * The accession holder must be one of the accession holders of the current user.
+     * The ID of the accession holder for which the order must be created.
+     * It must be one of the accession holders of the current user.
      */
+    @NotNull
     private final Long accessionHolderId;
 
     @Valid
@@ -24,9 +25,9 @@ public final class CustomerInformationCommandDTO {
 
     private final String rationale;
 
-    public CustomerInformationCommandDTO(@JsonProperty("accessionHolderId") Long accessionHolderId,
-                                         @JsonProperty("customer") CustomerCommandDTO customer,
-                                         @JsonProperty("rationale") String rationale) {
+    public OrderCreationCommandDTO(@JsonProperty("accessionHolderId") Long accessionHolderId,
+                                   @JsonProperty("customer") CustomerCommandDTO customer,
+                                   @JsonProperty("rationale") String rationale) {
         this.accessionHolderId = accessionHolderId;
         this.customer = customer;
         this.rationale = rationale;
@@ -49,10 +50,10 @@ public final class CustomerInformationCommandDTO {
         if (this == o) {
             return true;
         }
-        if (!(o instanceof CustomerInformationCommandDTO)) {
+        if (!(o instanceof OrderCreationCommandDTO)) {
             return false;
         }
-        CustomerInformationCommandDTO that = (CustomerInformationCommandDTO) o;
+        OrderCreationCommandDTO that = (OrderCreationCommandDTO) o;
         return Objects.equals(accessionHolderId, that.accessionHolderId) &&
             Objects.equals(customer, that.customer) &&
             Objects.equals(rationale, that.rationale);

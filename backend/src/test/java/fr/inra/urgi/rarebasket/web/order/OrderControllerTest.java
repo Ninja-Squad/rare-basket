@@ -106,6 +106,7 @@ class OrderControllerTest {
     private Order order;
     private Document document;
     private final Long accessionHolderId = 65L;
+    private final Long otherAccessionHolderId = 66L;
 
     @BeforeEach
     void prepare() {
@@ -118,6 +119,7 @@ class OrderControllerTest {
         basket.setConfirmationInstant(Instant.parse("2020-04-02T10:43:00Z"));
 
         AccessionHolder accessionHolder = new AccessionHolder(accessionHolderId);
+        accessionHolder.setName("The flower holder");
         order = new Order(42L);
         order.setBasket(basket);
         order.setStatus(OrderStatus.DRAFT);
@@ -132,7 +134,7 @@ class OrderControllerTest {
         document.setDescription("desc");
         order.addDocument(document);
 
-        when(mockCurrentUser.getAccessionHolderId()).thenReturn(Optional.of(accessionHolderId));
+        when(mockCurrentUser.getAccessionHolderIds()).thenReturn(Set.of(accessionHolderId, otherAccessionHolderId));
         when(mockCurrentUser.getVisualizationPerimeter()).thenReturn(VisualizationPerimeter.constrained(Set.of(1L, 2L)));
         when(mockOrderDao.findById(order.getId())).thenReturn(Optional.of(order));
 
@@ -142,7 +144,7 @@ class OrderControllerTest {
     @Test
     void shouldList() throws Exception {
         Pageable pageable = PageRequest.of(0, OrderController.PAGE_SIZE);
-        when(mockOrderDao.pageByAccessionHolder(accessionHolderId, pageable)).thenReturn(
+        when(mockOrderDao.pageByAccessionHolders(Set.of(accessionHolderId, otherAccessionHolderId), pageable)).thenReturn(
             new PageImpl<>(List.of(order), pageable, 1)
         );
 
@@ -179,6 +181,7 @@ class OrderControllerTest {
                .andExpect(jsonPath("$.content[0].basket.confirmationInstant").value(order.getBasket()
                                                                                          .getConfirmationInstant()
                                                                                          .toString()))
+               .andExpect(jsonPath("$.content[0].accessionHolder.name").value("The flower holder"))
                .andExpect(jsonPath("$.content[0].items.length()").value(2))
                .andExpect(jsonPath("$.content[0].items[0].id").value(421L))
                .andExpect(jsonPath("$.content[0].items[0].accession.name").value("rosa"))
@@ -194,9 +197,9 @@ class OrderControllerTest {
     @Test
     void shouldListByStatus() throws Exception {
         Pageable pageable = PageRequest.of(1, OrderController.PAGE_SIZE);
-        when(mockOrderDao.pageByAccessionHolderAndStatuses(accessionHolderId,
-                                                           EnumSet.of(OrderStatus.CANCELLED, OrderStatus.FINALIZED),
-                                                           pageable)).thenReturn(
+        when(mockOrderDao.pageByAccessionHoldersAndStatuses(Set.of(accessionHolderId, otherAccessionHolderId),
+                                                            EnumSet.of(OrderStatus.CANCELLED, OrderStatus.FINALIZED),
+                                                            pageable)).thenReturn(
             new PageImpl<>(List.of(order), pageable, OrderController.PAGE_SIZE + 1)
         );
 
@@ -210,6 +213,24 @@ class OrderControllerTest {
                .andExpect(jsonPath("$.totalPages").value(2))
                .andExpect(jsonPath("$.content.length()").value(1))
                .andExpect(jsonPath("$.content[0].id").value(order.getId()));
+
+        verify(mockCurrentUser).checkPermission(Permission.ORDER_MANAGEMENT);
+    }
+
+    @Test
+    void shouldListForSpecificAccessionHolder() throws Exception {
+        Pageable pageable = PageRequest.of(0, OrderController.PAGE_SIZE);
+        when(mockOrderDao.pageByAccessionHolders(Set.of(accessionHolderId), pageable)).thenReturn(
+            new PageImpl<>(List.of(order), pageable, 1)
+        );
+
+        mockMvc.perform(get("/api/orders").param("accessionHolderId", accessionHolderId.toString()))
+               .andExpect(status().isOk())
+               .andExpect(jsonPath("$.totalElements").value(1))
+               .andExpect(jsonPath("$.number").value(0))
+               .andExpect(jsonPath("$.size").value(OrderController.PAGE_SIZE))
+               .andExpect(jsonPath("$.totalPages").value(1))
+               .andExpect(jsonPath("$.content.length()").value(1));
 
         verify(mockCurrentUser).checkPermission(Permission.ORDER_MANAGEMENT);
     }
@@ -585,6 +606,7 @@ class OrderControllerTest {
     @Test
     void shouldUpdateCustomerInformation() throws Exception {
         CustomerInformationCommandDTO command = new CustomerInformationCommandDTO(
+            null,
             new CustomerCommandDTO(
                 "Doe",
                 "Wheat SA",
@@ -618,6 +640,7 @@ class OrderControllerTest {
     void shouldThrowWhenUpdatingCustomerInformationOfNonDraftOrder() throws Exception {
         order.setStatus(OrderStatus.FINALIZED);
         CustomerInformationCommandDTO command = new CustomerInformationCommandDTO(
+            null,
             new CustomerCommandDTO(
                 "Doe",
                 "Wheat SA",
@@ -638,6 +661,7 @@ class OrderControllerTest {
     @Test
     void shouldThrowWhenUpdatingInvalidCustomerInformation() throws Exception {
         CustomerInformationCommandDTO command = new CustomerInformationCommandDTO(
+            null,
             new CustomerCommandDTO(
                 "", // empty name
                 "Wheat SA",
@@ -657,7 +681,8 @@ class OrderControllerTest {
 
     @Test
     void shouldCreateOrder() throws Exception {
-        CustomerInformationCommandDTO command = new CustomerInformationCommandDTO(
+        OrderCreationCommandDTO command = new OrderCreationCommandDTO(
+            accessionHolderId,
             new CustomerCommandDTO(
                 "John Doe",
                 "Wheat SA",
@@ -704,7 +729,8 @@ class OrderControllerTest {
 
     @Test
     void shouldThrowWhenCreatingOrderWithInvalidCustomerInformation() throws Exception {
-        CustomerInformationCommandDTO command = new CustomerInformationCommandDTO(
+        OrderCreationCommandDTO command = new OrderCreationCommandDTO(
+            accessionHolderId,
             new CustomerCommandDTO(
                 "John Doe",
                 "Wheat SA",
@@ -716,7 +742,26 @@ class OrderControllerTest {
             "the rationale"
         );
 
-        when(mockOrderDao.save(any())).thenAnswer(MoreAnswers.<Order>firstArgWith(order -> order.setId(42L)));
+        mockMvc.perform(post("/api/orders")
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(objectMapper.writeValueAsBytes(command)))
+               .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void shouldThrowWhenCreatingOrderWithBadAccessionHolder() throws Exception {
+        OrderCreationCommandDTO command = new OrderCreationCommandDTO(
+            456789L,
+            new CustomerCommandDTO(
+                "John Doe",
+                "Wheat SA",
+                "john@mail.com",
+                "1, Main Street",
+                "1 - billing service, Main Street",
+                CustomerType.FARMER,
+                SupportedLanguage.ENGLISH),
+            "the rationale"
+        );
 
         mockMvc.perform(post("/api/orders")
                             .contentType(MediaType.APPLICATION_JSON)

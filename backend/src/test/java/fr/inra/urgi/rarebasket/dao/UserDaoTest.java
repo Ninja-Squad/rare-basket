@@ -40,8 +40,14 @@ class UserDaoTest extends BaseDaoTest {
 
         Operation users =
             insertInto("app_user")
-                .columns("id", "name", "accession_holder_id", "global_visualization")
-                .values(1L, "JB", 1L, true)
+                .columns("id", "name", "global_visualization")
+                .values(1L, "JB", true)
+                .build();
+
+        Operation userAccessionHolders =
+            insertInto("user_accession_holder")
+                .columns("user_id", "accession_holder_id")
+                .values(1L, 1L)
                 .build();
 
         Operation userPermissions =
@@ -50,7 +56,7 @@ class UserDaoTest extends BaseDaoTest {
                 .values(1L, 1L, Permission.ORDER_MANAGEMENT)
                 .build();
 
-        executeIfNecessary(Operations.sequenceOf(grcs, accessionHolders, users, userPermissions));
+        executeIfNecessary(Operations.sequenceOf(grcs, accessionHolders, users, userPermissions, userAccessionHolders));
     }
 
     @Test

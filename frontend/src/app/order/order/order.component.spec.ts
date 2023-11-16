@@ -143,6 +143,10 @@ describe('OrderComponent', () => {
         reference: 'ABCDEFGH',
         confirmationInstant: '2020-04-02T11:00:00Z'
       },
+      accessionHolder: {
+        id: 42,
+        name: 'the flower holder'
+      },
       items: [
         {
           id: 1,
@@ -194,10 +198,11 @@ describe('OrderComponent', () => {
     expect(tester.title).toContainText('Commande n° ABCDEFGH');
   });
 
-  it('should display customer information', () => {
+  it('should display order and customer information', () => {
     orderService.get.and.returnValue(of(order));
     tester.detectChanges();
 
+    expect(tester.testElement).toContainText('pour the flower holder');
     expect(tester.testElement).toContainText('John');
     expect(tester.testElement).toContainText('Wheat SA');
     expect(tester.testElement).toContainText('john@mail.com');

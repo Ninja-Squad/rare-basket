@@ -33,7 +33,7 @@ export interface User {
   id: number;
   name: string;
   permissions: Array<Permission>;
-  accessionHolder: AccessionHolder | null;
+  accessionHolders: Array<AccessionHolder>;
   globalVisualization: boolean;
   visualizationGrcs: Array<Grc>;
 }
@@ -41,7 +41,7 @@ export interface User {
 export interface UserCommand {
   name: string;
   permissions: Array<Permission>;
-  accessionHolderId: number | null;
+  accessionHolderIds: Array<number>;
   globalVisualization: boolean;
   visualizationGrcIds: Array<number>;
 }

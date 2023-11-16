@@ -102,17 +102,20 @@ public class UserController {
     }
 
     private void copyCommandToUser(UserCommandDTO command, User user) {
-        if (command.getPermissions().contains(Permission.ORDER_MANAGEMENT) && command.getAccessionHolderId() == null) {
+        if (command.getPermissions().contains(Permission.ORDER_MANAGEMENT) && command.getAccessionHolderIds().isEmpty()) {
             throw new BadRequestException("An accession holder is mandatory for permission " + Permission.ORDER_MANAGEMENT);
         }
-        AccessionHolder accessionHolder =
-            command.getAccessionHolderId() == null
-                ? null
-                : accessionHolderDao.findById(command.getAccessionHolderId()).orElseThrow(
-                () -> new BadRequestException("No accession holder with ID " + command.getAccessionHolderId())
-            );
+        Set<AccessionHolder> accessionHolders =
+            command.getAccessionHolderIds()
+                   .stream()
+                   .map(
+                       accessionHolderId -> accessionHolderDao.findById(accessionHolderId).orElseThrow(
+                           () -> new BadRequestException("No accession holder with ID " + accessionHolderId)
+                       )
+                   )
+                   .collect(Collectors.toSet());
 
-        user.setAccessionHolder(accessionHolder);
+        user.setAccessionHolders(accessionHolders);
         user.setName(command.getName());
         user.setPermissions(command.getPermissions().stream().map(UserPermission::new).collect(Collectors.toSet()));
         user.setGlobalVisualization(false);

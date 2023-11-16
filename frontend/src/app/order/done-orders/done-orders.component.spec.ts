@@ -1,18 +1,25 @@
-import { TestBed } from '@angular/core/testing';
+import { ComponentFixture, fakeAsync, TestBed, tick } from '@angular/core/testing';
 
-import { ActivatedRouteStub, ComponentTester, createMock, stubRoute } from 'ngx-speculoos';
+import { ComponentTester, createMock } from 'ngx-speculoos';
 import { OrdersComponent } from '../orders/orders.component';
-import { ActivatedRoute } from '@angular/router';
+import { provideRouter, Router } from '@angular/router';
 import { EMPTY, of } from 'rxjs';
 import { OrderService } from '../order.service';
 import { Order } from '../order.model';
 import { Page } from '../../shared/page.model';
 import { DoneOrdersComponent } from './done-orders.component';
 import { provideI18nTesting } from '../../i18n/mock-18n.spec';
+import { AuthenticationService } from '../../shared/authentication.service';
+import { User } from '../../shared/user.model';
+import { RouterTestingHarness } from '@angular/router/testing';
 
-class DoneOrdersComponentTester extends ComponentTester<DoneOrdersComponent> {
-  constructor() {
-    super(DoneOrdersComponent);
+class DoneOrdersComponentTester extends ComponentTester<unknown> {
+  constructor(fixture: ComponentFixture<unknown>) {
+    super(fixture);
+  }
+
+  get accessionHolder() {
+    return this.select('#accession-holder');
   }
 
   get ordersComponent(): OrdersComponent | null {
@@ -23,54 +30,125 @@ class DoneOrdersComponentTester extends ComponentTester<DoneOrdersComponent> {
 describe('DoneOrdersComponent', () => {
   let tester: DoneOrdersComponentTester;
   let orderService: jasmine.SpyObj<OrderService>;
-  let route: ActivatedRouteStub;
+  let authenticationService: jasmine.SpyObj<AuthenticationService>;
+  let harness: RouterTestingHarness;
+  let router: Router;
 
-  beforeEach(() => {
-    route = stubRoute();
+  beforeEach(async () => {
     orderService = createMock(OrderService);
+    authenticationService = createMock(AuthenticationService);
+    authenticationService.getCurrentUser.and.returnValue(
+      of({
+        accessionHolders: [
+          {
+            id: 42,
+            name: 'AH1'
+          },
+          {
+            id: 43,
+            name: 'AH2'
+          }
+        ]
+      } as User)
+    );
 
     TestBed.configureTestingModule({
-      providers: [provideI18nTesting(), { provide: ActivatedRoute, useValue: route }, { provide: OrderService, useValue: orderService }]
+      providers: [
+        provideI18nTesting(),
+        { provide: OrderService, useValue: orderService },
+        { provide: AuthenticationService, useValue: authenticationService },
+        provideRouter([{ path: 'orders/done', component: DoneOrdersComponent }])
+      ]
     });
 
-    tester = new DoneOrdersComponentTester();
+    router = TestBed.inject(Router);
   });
 
-  it('should not display anything until orders are present', () => {
+  it('should not display anything until orders are present', async () => {
     orderService.listDone.and.returnValue(EMPTY);
+    harness = await RouterTestingHarness.create('/orders/done');
+    tester = new DoneOrdersComponentTester(harness.fixture);
 
     tester.detectChanges();
 
     expect(tester.ordersComponent).toBeNull();
-    expect(orderService.listDone).toHaveBeenCalledWith(0);
+    expect(orderService.listDone).toHaveBeenCalledWith(0, null);
   });
 
-  it('should display requested page', () => {
+  it('should not display accession holder if only one accessible', async () => {
+    authenticationService.getCurrentUser.and.returnValue(
+      of({
+        accessionHolders: [
+          {
+            id: 42,
+            name: 'AH1'
+          }
+        ]
+      } as User)
+    );
+    const page0 = {
+      number: 0,
+      content: [],
+      totalElements: 1,
+      size: 20,
+      totalPages: 1
+    } as Page<Order>;
+    orderService.listDone.and.returnValue(of(page0));
+    harness = await RouterTestingHarness.create('/orders/done');
+    tester = new DoneOrdersComponentTester(harness.fixture);
+
+    tester.detectChanges();
+
+    expect(tester.accessionHolder).toBeNull();
+    expect(orderService.listDone).toHaveBeenCalledWith(0, null);
+  });
+
+  it('should display requested page and accession holder', fakeAsync(async () => {
     const page1 = {
       number: 1,
       content: [],
-      totalElements: 0,
+      totalElements: 2,
       size: 20,
       totalPages: 1
     } as Page<Order>;
     const page0 = {
       number: 0,
       content: [],
-      totalElements: 0,
+      totalElements: 1,
+      size: 20,
+      totalPages: 1
+    } as Page<Order>;
+    const page0ForAccessionHolder42 = {
+      number: 0,
+      content: [],
+      totalElements: 1,
       size: 20,
       totalPages: 1
     } as Page<Order>;
 
-    orderService.listDone.and.returnValues(of(page1), of(page0));
+    orderService.listDone.withArgs(0, null).and.returnValue(of(page0));
+    orderService.listDone.withArgs(1, null).and.returnValue(of(page1));
+    orderService.listDone.withArgs(0, 42).and.returnValue(of(page0ForAccessionHolder42));
 
-    route.setQueryParam('page', '1');
+    harness = await RouterTestingHarness.create('/orders/done?page=1');
+    tester = new DoneOrdersComponentTester(harness.fixture);
     tester.detectChanges();
 
     expect(tester.ordersComponent).not.toBeNull();
     expect(tester.ordersComponent.orders).toBe(page1);
+    expect(tester.accessionHolder.optionLabels).toEqual([`tous les gestionnaires d'accessions`, 'AH1', 'AH2']);
+    expect(tester.accessionHolder).toHaveSelectedLabel(`tous les gestionnaires d'accessions`);
 
-    route.setQueryParam('page', '0');
+    tester.accessionHolder.selectLabel('AH1');
+    tick();
     tester.detectChanges();
+    expect(router.url).toBe('/orders/done?page=0&h=42');
+    expect(tester.ordersComponent.orders).toBe(page0ForAccessionHolder42);
+
+    tester.accessionHolder.selectLabel(`tous les gestionnaires d'accessions`);
+    tick();
+    tester.detectChanges();
+    expect(router.url).toBe('/orders/done?page=0');
     expect(tester.ordersComponent.orders).toBe(page0);
-  });
+  }));
 });

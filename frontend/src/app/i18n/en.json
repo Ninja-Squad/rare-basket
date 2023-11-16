@@ -177,16 +177,19 @@
     "orders": {
       "zero-accession": "0 accession",
       "one-accession": "1 accession",
-      "n-accessions": "{{ n }} accessions"
+      "n-accessions": "{{ n }} accessions",
+      "for-accession-holder": "for {{ name }}"
     },
     "in-progress-orders": {
+      "accession-holder": "for",
+      "all-accession-holders": "all the accession holders",
       "count": "{{ count }} order(s) in progress",
       "no-order": "No in progress order. Good job!",
       "create": "Create an order"
     },
     "order": {
       "title": "Order {{ reference }}",
-      "creation-date": "Order created on {{ date }}",
+      "creation-date-and-accession-holder": "Order created on {{ date }} for {{ accessionHolder }}",
       "customer-information": "Customer information",
       "ordered-accessions": "Ordered accessions",
       "accession-heading": "Accession",
@@ -305,6 +308,25 @@
     },
     "create-order": {
       "title": "Create a new order",
+      "accession-holder": "The order is for the accession holder",
+      "accession-holder-error-label": "The accession holder",
+      "name": "Customer name",
+      "name-error-label": "The name",
+      "organization": "Customer company or organization (if any)",
+      "email": "Customer email",
+      "email-error-label": "The email",
+      "delivery-address": "Delivery address of the customer",
+      "delivery-address-error-label": "The delivery address",
+      "billing-address": "Billing address of the customer",
+      "billing-address-error-label": "The billing address",
+      "use-delivery-address": "Use the delivery address as the billing address",
+      "customer-type": "Customer category",
+      "customer-type-error-label": "The category",
+      "language": "Preferred language of the customer",
+      "language-error-label": "The language",
+      "rationale": "Description of the order",
+      "save": "Save",
+      "cancel": "Cancel",
       "created": "The order has been created. Please fill in the requested accessions now."
     },
     "csv-modal": {
@@ -347,8 +369,8 @@
       "name-error-label": "The name",
       "name-help": "The name entered here <strong>must</strong> be the <em>username</em> of a user created in the <a target='_blank' href='{{ keycloakUrl }}'>rare-basket Keycloak realm</a>",
       "permissions": "Permissions",
-      "accession-holder": "Accession holder",
-      "accession-holder-error-label": "The accession holder",
+      "accession-holders": "Accession holders",
+      "accession-holder-required": "At least one accession holder must be selected",
       "some-grcs": "For some GRCs only",
       "all-grcs": "For all GRCs",
       "visualization-grcs": "Visualizable GRCs",

@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 import java.util.Optional;
+import java.util.Set;
 
 import com.sun.security.auth.UserPrincipal;
 import fr.inra.urgi.rarebasket.dao.UserDao;
@@ -32,7 +33,7 @@ class CurrentUserTest {
         user = new User(42L);
         user.setName("JB");
         user.addPermission(new UserPermission(Permission.ORDER_MANAGEMENT));
-        user.setAccessionHolder(new AccessionHolder(54L));
+        user.setAccessionHolders(Set.of(new AccessionHolder(54L)));
         when(mockUserDao.findByName(user.getName())).thenReturn(Optional.of(user));
     }
 
@@ -41,7 +42,7 @@ class CurrentUserTest {
         CurrentUser currentUser = new CurrentUser(new MockHttpServletRequest(), mockUserDao);
 
         assertThat(currentUser.getId()).isEmpty();
-        assertThat(currentUser.getAccessionHolderId()).isEmpty();
+        assertThat(currentUser.getAccessionHolderIds()).isEmpty();
         assertThat(currentUser.hasPermission(Permission.ORDER_MANAGEMENT)).isFalse();
         assertThatExceptionOfType(ForbiddenException.class).isThrownBy(
             () -> currentUser.checkPermission(Permission.ORDER_MANAGEMENT)
@@ -56,7 +57,7 @@ class CurrentUserTest {
         CurrentUser currentUser = new CurrentUser(request, mockUserDao);
 
         assertThat(currentUser.getId()).isEmpty();
-        assertThat(currentUser.getAccessionHolderId()).isEmpty();
+        assertThat(currentUser.getAccessionHolderIds()).isEmpty();
         assertThat(currentUser.hasPermission(Permission.ORDER_MANAGEMENT)).isFalse();
         assertThatExceptionOfType(ForbiddenException.class).isThrownBy(
             () -> currentUser.checkPermission(Permission.ORDER_MANAGEMENT)
@@ -74,7 +75,7 @@ class CurrentUserTest {
         CurrentUser currentUser = new CurrentUser(request, mockUserDao);
 
         assertThat(currentUser.getId()).contains(user.getId());
-        assertThat(currentUser.getAccessionHolderId()).contains(user.getAccessionHolder().getId());
+        assertThat(currentUser.getAccessionHolderIds()).contains(54L);
         assertThat(currentUser.hasPermission(Permission.ORDER_MANAGEMENT)).isTrue();
         assertThatCode(
             () -> currentUser.checkPermission(Permission.ORDER_MANAGEMENT)

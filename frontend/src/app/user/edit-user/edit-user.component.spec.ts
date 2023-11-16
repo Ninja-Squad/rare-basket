@@ -37,8 +37,8 @@ class EditUserComponentTester extends ComponentTester<EditUserComponent> {
     return this.input('#administration');
   }
 
-  get accessionHolder() {
-    return this.select('#accession-holder');
+  get accessionHolders() {
+    return this.elements('.accession-holders input') as Array<TestInput>;
   }
 
   get noGlobalVisualization() {
@@ -55,17 +55,6 @@ class EditUserComponentTester extends ComponentTester<EditUserComponent> {
 
   get errors() {
     return this.elements('.invalid-feedback div');
-  }
-
-  get grcOptionGroups() {
-    return this.accessionHolder.elements('optgroup');
-  }
-
-  accessionHolderOptions(grcName: string) {
-    return this.accessionHolder
-      .elements('optgroup')
-      .find(group => group.attr('label') === grcName)
-      .elements('option');
   }
 
   get saveButton() {
@@ -165,21 +154,14 @@ describe('EditUserComponent', () => {
       expect(tester.orderVisualization).not.toBeChecked();
       expect(tester.administration).not.toBeChecked();
 
-      expect(tester.accessionHolder).toBeNull();
+      expect(tester.accessionHolders.length).toBe(0);
       expect(tester.noGlobalVisualization).toBeNull();
       expect(tester.globalVisualization).toBeNull();
       expect(tester.visualizationGrcs.length).toBe(0);
 
       tester.orderManagement.check();
 
-      expect(tester.accessionHolder).not.toBeNull();
-
-      expect(tester.grcOptionGroups.length).toBe(2);
-      expect(tester.grcOptionGroups[0].attr('label')).toBe('GRC1');
-      expect(tester.grcOptionGroups[1].attr('label')).toBe('GRC2');
-      expect(tester.accessionHolderOptions('GRC1').length).toBe(2);
-      expect(tester.accessionHolderOptions('GRC2').length).toBe(1);
-      expect(tester.accessionHolder.optionLabels).toEqual(['', 'Contact11', 'Contact12', 'Contact21']);
+      expect(tester.accessionHolders.length).toBe(3);
 
       tester.orderVisualization.check();
 
@@ -207,7 +189,7 @@ describe('EditUserComponent', () => {
       expect(tester.componentInstance.form.valid).toBe(false);
 
       expect(tester.errors.length).toBe(1);
-      expect(tester.errors[0]).toContainText(`Le gestionnaire d'accessions est obligatoire`);
+      expect(tester.errors[0]).toContainText(`Au moins un gestionnaire d'accessions doit être sélectionné`);
 
       tester.orderManagement.uncheck();
       expect(tester.componentInstance.form.valid).toBe(true);
@@ -234,8 +216,7 @@ describe('EditUserComponent', () => {
     it('should create user', () => {
       tester.name.fillWith('Test');
       tester.orderManagement.check();
-      tester.accessionHolder.selectLabel('Contact12');
-      expect(tester.accessionHolder).toHaveSelectedLabel('GRC1 - Contact12');
+      tester.accessionHolders[1].check();
 
       tester.orderVisualization.check();
       tester.visualizationGrcs[1].check();
@@ -246,7 +227,7 @@ describe('EditUserComponent', () => {
       const expectedCommand: UserCommand = {
         name: 'Test',
         permissions: ['ORDER_MANAGEMENT', 'ORDER_VISUALIZATION'],
-        accessionHolderId: 12,
+        accessionHolderIds: [12],
         globalVisualization: false,
         visualizationGrcIds: [2]
       };
@@ -268,9 +249,7 @@ describe('EditUserComponent', () => {
           id: 42,
           name: 'Test',
           permissions: ['ORDER_MANAGEMENT', 'ORDER_VISUALIZATION'],
-          accessionHolder: {
-            id: 12
-          },
+          accessionHolders: [{ id: 12 }],
           globalVisualization: false,
           visualizationGrcs: [
             {
@@ -290,7 +269,9 @@ describe('EditUserComponent', () => {
     it('should display a filled form', () => {
       expect(tester.name).toHaveValue('Test');
       expect(tester.orderManagement).toBeChecked();
-      expect(tester.accessionHolder).toHaveSelectedLabel('GRC1 - Contact12');
+      expect(tester.accessionHolders[0]).not.toBeChecked();
+      expect(tester.accessionHolders[1]).toBeChecked();
+      expect(tester.accessionHolders[2]).not.toBeChecked();
       expect(tester.orderVisualization).toBeChecked();
       expect(tester.noGlobalVisualization).toBeChecked();
       expect(tester.globalVisualization).not.toBeChecked();
@@ -311,7 +292,7 @@ describe('EditUserComponent', () => {
       const expectedCommand: UserCommand = {
         name: 'Test2',
         permissions: ['ADMINISTRATION'],
-        accessionHolderId: null,
+        accessionHolderIds: [],
         globalVisualization: false,
         visualizationGrcIds: []
       };

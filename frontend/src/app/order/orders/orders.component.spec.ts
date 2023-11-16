@@ -32,6 +32,10 @@ class TestComponent {
             name: 'John Doe'
           }
         },
+        accessionHolder: {
+          id: 42,
+          name: 'the flower holder'
+        },
         items: [{}, {}]
       },
       {
@@ -45,6 +49,10 @@ class TestComponent {
             name: 'Jane Doe',
             organization: 'Farm Inc.'
           }
+        },
+        accessionHolder: {
+          id: 43,
+          name: 'the mushroom holder'
         },
         items: [{}]
       }
@@ -86,6 +94,7 @@ describe('OrdersComponent', () => {
   it('should have rows of data', () => {
     expect(tester.rows.length).toBe(2);
     expect(tester.rows[0]).toContainText('ABCDEFGH');
+    expect(tester.rows[0]).toContainText('pour the flower holder');
     expect(tester.rows[0]).toContainText('John Doe');
     expect(tester.rows[0]).toContainText('Citoyen');
     expect(tester.rows[0]).toContainText('2 avr. 2020');

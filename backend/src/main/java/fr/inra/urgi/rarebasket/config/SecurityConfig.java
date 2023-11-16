@@ -38,9 +38,5 @@ public class SecurityConfig implements WebMvcConfigurer {
         );
         return http.build();
     }
-
-    public static void configureHttp(HttpSecurity http) throws Exception {
-
-    }
 }
 

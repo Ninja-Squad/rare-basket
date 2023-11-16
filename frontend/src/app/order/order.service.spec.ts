@@ -34,17 +34,27 @@ describe('OrderService', () => {
   it('should list in progress orders', () => {
     let actualOrders: Page<Order> = null;
 
-    service.listInProgress(0).subscribe(orders => (actualOrders = orders));
+    service.listInProgress(0, null).subscribe(orders => (actualOrders = orders));
 
     const expectedOrders = { totalElements: 0 } as Page<Order>;
     http.expectOne({ method: 'GET', url: 'api/orders?status=DRAFT&page=0' }).flush(expectedOrders);
     expect(actualOrders).toBe(expectedOrders);
   });
 
+  it('should list in progress orders for specfic accession holder', () => {
+    let actualOrders: Page<Order> = null;
+
+    service.listInProgress(0, 42).subscribe(orders => (actualOrders = orders));
+
+    const expectedOrders = { totalElements: 0 } as Page<Order>;
+    http.expectOne({ method: 'GET', url: 'api/orders?status=DRAFT&page=0&accessionHolderId=42' }).flush(expectedOrders);
+    expect(actualOrders).toBe(expectedOrders);
+  });
+
   it('should list done orders', () => {
     let actualOrders: Page<Order> = null;
 
-    service.listDone(0).subscribe(orders => (actualOrders = orders));
+    service.listDone(0, null).subscribe(orders => (actualOrders = orders));
 
     const expectedOrders = { totalElements: 0 } as Page<Order>;
     http.expectOne({ method: 'GET', url: 'api/orders?status=FINALIZED&status=CANCELLED&page=0' }).flush(expectedOrders);

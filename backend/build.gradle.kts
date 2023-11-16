@@ -74,13 +74,13 @@ tasks {
 
 dependencyManagement {
     imports {
-        mavenBom("org.keycloak.bom:keycloak-adapter-bom:22.0.3")
+        mavenBom("org.keycloak.bom:keycloak-adapter-bom:22.0.5")
         mavenBom("org.springframework.cloud:spring-cloud-dependencies:2022.0.4")
     }
 }
 
 dependencies {
-    val itextVersion = "8.0.1"
+    val itextVersion = "8.0.2"
 
     implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
