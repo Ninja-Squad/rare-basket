@@ -53,7 +53,7 @@ tasks {
         inputs.dir("src")
         inputs.file(".eslintrc.json")
         inputs.file(".prettierrc")
-        outputs.file("$buildDir/eslint-result.txt")
+        outputs.file(layout.buildDirectory.file("eslint-result.txt"))
     }
 
     val lint by registering {
