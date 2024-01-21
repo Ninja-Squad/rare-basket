@@ -17,6 +17,7 @@
     "noUnusedParameters": false,
     "noImplicitReturns": true,
     "noFallthroughCasesInSwitch": true,
+    "skipLibCheck": true,
     "importHelpers": true,
     "target": "ES2022",
     "lib": [
