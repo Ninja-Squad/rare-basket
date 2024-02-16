@@ -1,7 +1,7 @@
-import { ComponentFixture, fakeAsync, TestBed, tick } from '@angular/core/testing';
+import { TestBed } from '@angular/core/testing';
 
 import { InProgressOrdersComponent } from './in-progress-orders.component';
-import { ComponentTester, createMock } from 'ngx-speculoos';
+import { createMock, RoutingTester } from 'ngx-speculoos';
 import { OrdersComponent } from '../orders/orders.component';
 import { provideRouter, Router } from '@angular/router';
 import { EMPTY, of } from 'rxjs';
@@ -13,9 +13,9 @@ import { AuthenticationService } from '../../shared/authentication.service';
 import { User } from '../../shared/user.model';
 import { RouterTestingHarness } from '@angular/router/testing';
 
-class InProgressOrdersComponentTester extends ComponentTester<unknown> {
-  constructor(fixture: ComponentFixture<unknown>) {
-    super(fixture);
+class InProgressOrdersComponentTester extends RoutingTester {
+  constructor(harness: RouterTestingHarness) {
+    super(harness);
   }
 
   get accessionHolder() {
@@ -35,7 +35,6 @@ describe('InProgressOrdersComponent', () => {
   let tester: InProgressOrdersComponentTester;
   let orderService: jasmine.SpyObj<OrderService>;
   let authenticationService: jasmine.SpyObj<AuthenticationService>;
-  let harness: RouterTestingHarness;
   let router: Router;
 
   beforeEach(async () => {
@@ -70,8 +69,7 @@ describe('InProgressOrdersComponent', () => {
 
   it('should not display anything until orders are present', async () => {
     orderService.listInProgress.and.returnValue(EMPTY);
-    harness = await RouterTestingHarness.create('/orders/in-progress');
-    tester = new InProgressOrdersComponentTester(harness.fixture);
+    tester = new InProgressOrdersComponentTester(await RouterTestingHarness.create('/orders/in-progress'));
 
     tester.detectChanges();
 
@@ -99,8 +97,7 @@ describe('InProgressOrdersComponent', () => {
       totalPages: 1
     } as Page<Order>;
     orderService.listInProgress.and.returnValue(of(page0));
-    harness = await RouterTestingHarness.create('/orders/in-progress');
-    tester = new InProgressOrdersComponentTester(harness.fixture);
+    tester = new InProgressOrdersComponentTester(await RouterTestingHarness.create('/orders/in-progress'));
 
     tester.detectChanges();
 
@@ -108,7 +105,7 @@ describe('InProgressOrdersComponent', () => {
     expect(orderService.listInProgress).toHaveBeenCalledWith(0, null);
   });
 
-  it('should display requested page and accession holder', fakeAsync(async () => {
+  it('should display requested page and accession holder', async () => {
     const page1 = {
       number: 1,
       content: [],
@@ -135,8 +132,7 @@ describe('InProgressOrdersComponent', () => {
     orderService.listInProgress.withArgs(1, null).and.returnValue(of(page1));
     orderService.listInProgress.withArgs(0, 42).and.returnValue(of(page0ForAccessionHolder42));
 
-    harness = await RouterTestingHarness.create('/orders/in-progress?page=1');
-    tester = new InProgressOrdersComponentTester(harness.fixture);
+    tester = new InProgressOrdersComponentTester(await RouterTestingHarness.create('/orders/in-progress?page=1'));
     tester.detectChanges();
 
     expect(tester.noOrderMessage).toBeNull();
@@ -146,17 +142,19 @@ describe('InProgressOrdersComponent', () => {
     expect(tester.accessionHolder).toHaveSelectedLabel(`tous les gestionnaires d'accessions`);
 
     tester.accessionHolder.selectLabel('AH1');
-    tick();
+    await tester.stable();
     tester.detectChanges();
+
     expect(router.url).toBe('/orders/in-progress?page=0&h=42');
     expect(tester.ordersComponent.orders).toBe(page0ForAccessionHolder42);
 
     tester.accessionHolder.selectLabel(`tous les gestionnaires d'accessions`);
-    tick();
+    await tester.stable();
     tester.detectChanges();
+
     expect(router.url).toBe('/orders/in-progress?page=0');
     expect(tester.ordersComponent.orders).toBe(page0);
-  }));
+  });
 
   it('should display a no order message if there is no order', async () => {
     const page0 = {
@@ -169,8 +167,7 @@ describe('InProgressOrdersComponent', () => {
 
     orderService.listInProgress.and.returnValue(of(page0));
 
-    harness = await RouterTestingHarness.create('/orders/in-progress');
-    tester = new InProgressOrdersComponentTester(harness.fixture);
+    tester = new InProgressOrdersComponentTester(await RouterTestingHarness.create('/orders/in-progress'));
     tester.detectChanges();
 
     expect(tester.noOrderMessage).not.toBeNull();
