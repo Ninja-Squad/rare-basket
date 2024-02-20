@@ -6,7 +6,7 @@ buildscript {
     }
 
     dependencies {
-        classpath("org.postgresql:postgresql:42.7.1")
+        classpath("org.postgresql:postgresql:42.7.2")
     }
 }
 
