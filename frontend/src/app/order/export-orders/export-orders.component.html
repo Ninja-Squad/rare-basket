@@ -13,7 +13,9 @@
 
     <div class="col-12 mt-2 mt-sm-0">
       <button type="submit" [disabled]="exporting" class="btn btn-primary" id="export-button">
-        <fa-icon *ngIf="exporting" [icon]="exportingIcon" [spin]="true" class="me-1" id="export-spinner"></fa-icon>
+        @if (exporting) {
+          <fa-icon [icon]="exportingIcon" [spin]="true" class="me-1" id="export-spinner"></fa-icon>
+        }
         <span translate="order.export-orders.export"></span>
       </button>
     </div>

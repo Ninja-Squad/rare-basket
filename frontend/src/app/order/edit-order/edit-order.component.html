@@ -1,67 +1,69 @@
 <form [formGroup]="form" (ngSubmit)="save()">
   <div formArrayName="items" class="scrolling-accessions mb-2">
-    <div *ngFor="let itemGroup of itemGroups.controls; index as i" [formGroupName]="i" class="my-2 edit-order-item">
-      <div class="d-flex">
-        <div class="flex-grow-1 me-2">
-          <div class="row g-1">
-            <div class="col-lg-3">
-              <label class="visually-hidden" [for]="'name-' + i" translate="order.edit-order.name"></label>
-              <input
-                #name
-                formControlName="name"
-                class="form-control form-control-sm"
-                [id]="'name-' + i"
-                [placeholder]="'order.edit-order.name' | translate"
-              />
-              <val-errors controlName="name" [label]="'order.edit-order.name-error-label' | translate"></val-errors>
-            </div>
-            <div class="col-lg-4">
-              <label class="visually-hidden" [for]="'identifier-' + i" translate="order.edit-order.name"></label>
-              <input
-                formControlName="identifier"
-                class="form-control form-control-sm"
-                [id]="'identifier-' + i"
-                [placeholder]="'order.edit-order.identifier' | translate"
-              />
-              <val-errors controlName="identifier" [label]="'order.edit-order.identifier-error-label' | translate"></val-errors>
-            </div>
-            <div class="col-lg-2">
-              <label class="visually-hidden" [for]="'quantity-' + i" translate="order.edit-order.quantity"></label>
-              <input
-                formControlName="quantity"
-                type="number"
-                class="form-control form-control-sm"
-                [id]="'quantity-' + i"
-                [placeholder]="'order.edit-order.quantity' | translate"
-                min="1"
-              />
-              <val-errors controlName="quantity" [label]="'order.edit-order.quantity-error-label' | translate"></val-errors>
-            </div>
-            <div class="col-lg-3">
-              <label class="visually-hidden" [for]="'unit-' + i" translate="order.edit-order.unit"></label>
-              <input
-                formControlName="unit"
-                class="form-control form-control-sm"
-                [id]="'unit-' + i"
-                [placeholder]="'order.edit-order.unit' | translate"
-              />
+    @for (itemGroup of itemGroups.controls; track itemGroup) {
+      <div [formGroupName]="$index" class="my-2 edit-order-item">
+        <div class="d-flex">
+          <div class="flex-grow-1 me-2">
+            <div class="row g-1">
+              <div class="col-lg-3">
+                <label class="visually-hidden" [for]="'name-' + $index" translate="order.edit-order.name"></label>
+                <input
+                  #name
+                  formControlName="name"
+                  class="form-control form-control-sm"
+                  [id]="'name-' + $index"
+                  [placeholder]="'order.edit-order.name' | translate"
+                />
+                <val-errors controlName="name" [label]="'order.edit-order.name-error-label' | translate"></val-errors>
+              </div>
+              <div class="col-lg-4">
+                <label class="visually-hidden" [for]="'identifier-' + $index" translate="order.edit-order.name"></label>
+                <input
+                  formControlName="identifier"
+                  class="form-control form-control-sm"
+                  [id]="'identifier-' + $index"
+                  [placeholder]="'order.edit-order.identifier' | translate"
+                />
+                <val-errors controlName="identifier" [label]="'order.edit-order.identifier-error-label' | translate"></val-errors>
+              </div>
+              <div class="col-lg-2">
+                <label class="visually-hidden" [for]="'quantity-' + $index" translate="order.edit-order.quantity"></label>
+                <input
+                  formControlName="quantity"
+                  type="number"
+                  class="form-control form-control-sm"
+                  [id]="'quantity-' + $index"
+                  [placeholder]="'order.edit-order.quantity' | translate"
+                  min="1"
+                />
+                <val-errors controlName="quantity" [label]="'order.edit-order.quantity-error-label' | translate"></val-errors>
+              </div>
+              <div class="col-lg-3">
+                <label class="visually-hidden" [for]="'unit-' + $index" translate="order.edit-order.unit"></label>
+                <input
+                  formControlName="unit"
+                  class="form-control form-control-sm"
+                  [id]="'unit-' + $index"
+                  [placeholder]="'order.edit-order.unit' | translate"
+                />
+              </div>
             </div>
           </div>
+          <div>
+            <button
+              (click)="delete($index)"
+              type="button"
+              class="ms-auto btn btn-sm btn-outline-danger delete-order-item"
+              [disabled]="itemGroups.length === 1"
+            >
+              <fa-icon [icon]="deleteIcon"></fa-icon>
+              <span class="visually-hidden" translate="order.edit-order.delete-accession"></span>
+            </button>
+          </div>
         </div>
-        <div>
-          <button
-            (click)="delete(i)"
-            type="button"
-            class="ms-auto btn btn-sm btn-outline-danger delete-order-item"
-            [disabled]="itemGroups.length === 1"
-          >
-            <fa-icon [icon]="deleteIcon"></fa-icon>
-            <span class="visually-hidden" translate="order.edit-order.delete-accession"></span>
-          </button>
-        </div>
+        <hr class="d-lg-none my-1" />
       </div>
-      <hr class="d-lg-none my-1" />
-    </div>
+    }
   </div>
   <div class="d-flex">
     <div>

@@ -1,22 +1,25 @@
 <h1 class="visually-hidden" translate="home.title"></h1>
 <div class="d-flex align-items-center justify-content-around bg">
-  <div class="card" *ngIf="user !== undefined">
-    <div class="card-body">
-      <h2 *ngIf="user" translate="home.welcome" [translateParams]="user"></h2>
-      <p translate="home.message"></p>
-      <button *ngIf="user === null" class="btn btn-secondary" (click)="login()" id="login-button">
-        <fa-icon [icon]="loginIcon" class="me-1"></fa-icon>
-        <span translate="home.login"></span>
-      </button>
-      <a
-        *ngIf="hasPermission('ORDER_MANAGEMENT') || hasPermission('ORDER_VISUALIZATION')"
-        routerLink="/orders"
-        class="btn btn-secondary"
-        id="orders-link"
-      >
-        <fa-icon [icon]="ordersIcon" class="me-1"></fa-icon>
-        <span translate="home.orders"></span>
-      </a>
+  @if (user !== undefined) {
+    <div class="card">
+      <div class="card-body">
+        @if (user) {
+          <h2 translate="home.welcome" [translateParams]="user"></h2>
+        }
+        <p translate="home.message"></p>
+        @if (!user) {
+          <button class="btn btn-secondary" (click)="login()" id="login-button">
+            <fa-icon [icon]="loginIcon" class="me-1"></fa-icon>
+            <span translate="home.login"></span>
+          </button>
+        }
+        @if (hasPermission('ORDER_MANAGEMENT') || hasPermission('ORDER_VISUALIZATION')) {
+          <a routerLink="/orders" class="btn btn-secondary" id="orders-link">
+            <fa-icon [icon]="ordersIcon" class="me-1"></fa-icon>
+            <span translate="home.orders"></span>
+          </a>
+        }
+      </div>
     </div>
-  </div>
+  }
 </div>

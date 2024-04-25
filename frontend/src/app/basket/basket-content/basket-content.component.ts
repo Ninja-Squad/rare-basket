@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, Input, OnChanges } from '@angular/core';
 import { Basket } from '../basket.model';
 import { AccessionComponent } from '../../shared/accession/accession.component';
-import { DecimalPipe, NgFor, NgIf } from '@angular/common';
+import { DecimalPipe } from '@angular/common';
 import { CustomerInformationComponent } from '../../shared/customer-information/customer-information.component';
 import { TranslateModule } from '@ngx-translate/core';
 
@@ -14,7 +14,7 @@ import { TranslateModule } from '@ngx-translate/core';
   styleUrl: './basket-content.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
-  imports: [TranslateModule, CustomerInformationComponent, NgFor, NgIf, AccessionComponent, DecimalPipe]
+  imports: [TranslateModule, CustomerInformationComponent, AccessionComponent, DecimalPipe]
 })
 export class BasketContentComponent implements OnChanges {
   @Input() basket: Basket;

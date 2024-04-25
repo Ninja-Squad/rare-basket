@@ -4,7 +4,7 @@ import { NonNullableFormBuilder, ReactiveFormsModule, Validators } from '@angula
 import { CustomerInformationCommand } from '../order.model';
 import { LanguageEnumPipe } from '../../shared/language-enum.pipe';
 import { CustomerTypeEnumPipe } from '../../shared/customer-type-enum.pipe';
-import { NgFor } from '@angular/common';
+
 import { NgbCollapse } from '@ng-bootstrap/ng-bootstrap';
 import { ValidationErrorsComponent } from 'ngx-valdemort';
 import { FormControlValidationDirective } from '../../shared/form-control-validation.directive';
@@ -21,7 +21,6 @@ import { TranslateModule } from '@ngx-translate/core';
     FormControlValidationDirective,
     ValidationErrorsComponent,
     NgbCollapse,
-    NgFor,
     CustomerTypeEnumPipe,
     LanguageEnumPipe
   ]

@@ -11,14 +11,13 @@ import { merge, Subject } from 'rxjs';
 import { ToastService } from '../../shared/toast.service';
 import { PaginationComponent } from '../../rb-ngb/pagination/pagination.component';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
-import { NgFor, NgIf } from '@angular/common';
 
 @Component({
   selector: 'rb-users',
   templateUrl: './users.component.html',
   styleUrl: './users.component.scss',
   standalone: true,
-  imports: [TranslateModule, NgIf, NgFor, FontAwesomeModule, RouterLink, PaginationComponent]
+  imports: [TranslateModule, FontAwesomeModule, RouterLink, PaginationComponent]
 })
 export class UsersComponent implements OnInit {
   users: Page<User>;

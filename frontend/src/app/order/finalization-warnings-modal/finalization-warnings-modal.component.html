@@ -9,7 +9,9 @@
     <div class="m-2 flex-grow-1">
       <p translate="order.finalization-warnings-modal.message"></p>
       <ul>
-        <li *ngFor="let message of messages">{{ message }}</li>
+        @for (message of messages; track $index) {
+          <li>{{ message }}</li>
+        }
       </ul>
       <p translate="order.finalization-warnings-modal.confirm"></p>
     </div>

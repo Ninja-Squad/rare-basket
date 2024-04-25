@@ -4,7 +4,7 @@ import { Permission, User } from '../shared/user.model';
 import { AuthenticationService } from '../shared/authentication.service';
 import { RouterLink } from '@angular/router';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
-import { NgIf } from '@angular/common';
+
 import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
@@ -12,7 +12,7 @@ import { TranslateModule } from '@ngx-translate/core';
   templateUrl: './home.component.html',
   styleUrl: './home.component.scss',
   standalone: true,
-  imports: [TranslateModule, NgIf, FontAwesomeModule, RouterLink]
+  imports: [TranslateModule, FontAwesomeModule, RouterLink]
 })
 export class HomeComponent implements OnInit {
   user: User;

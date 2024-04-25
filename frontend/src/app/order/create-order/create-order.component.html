@@ -1,73 +1,81 @@
 <h1 translate="order.create-order.title"></h1>
 
-<div class="content mb-2" *ngIf="accessionHolders$ | async as accessionHolders">
-  <form [formGroup]="form" (ngSubmit)="save()">
-    <div *ngIf="accessionHolders.length > 1" class="mb-3">
-      <label class="form-label" for="accession-holder" translate="order.create-order.accession-holder"></label>
-      <select formControlName="accessionHolder" id="accession-holder" class="form-select">
-        <option [ngValue]="null"></option>
-        <option *ngFor="let accessionHolder of accessionHolders" [ngValue]="accessionHolder">
-          {{ accessionHolder.grc.name }} &ndash; {{ accessionHolder.name }}
-        </option>
-      </select>
-      <val-errors controlName="accessionHolder" [label]="'order.create-order.accession-holder-error-label' | translate"></val-errors>
-    </div>
+@if (accessionHolders$ | async; as accessionHolders) {
+  <div class="content mb-2">
+    <form [formGroup]="form" (ngSubmit)="save()">
+      @if (accessionHolders.length > 1) {
+        <div class="mb-3">
+          <label class="form-label" for="accession-holder" translate="order.create-order.accession-holder"></label>
+          <select formControlName="accessionHolder" id="accession-holder" class="form-select">
+            <option [ngValue]="null"></option>
+            @for (accessionHolder of accessionHolders; track accessionHolder.id) {
+              <option [ngValue]="accessionHolder">{{ accessionHolder.grc.name }} &ndash; {{ accessionHolder.name }}</option>
+            }
+          </select>
+          <val-errors controlName="accessionHolder" [label]="'order.create-order.accession-holder-error-label' | translate"></val-errors>
+        </div>
+      }
 
-    <div formGroupName="customer">
-      <div class="mb-3">
-        <label class="form-label" for="name" translate="order.edit-customer-information.name"></label>
-        <input formControlName="name" id="name" class="form-control" />
-        <val-errors controlName="name" [label]="'order.create-order.name-error-label' | translate"></val-errors>
-      </div>
-      <div class="mb-3">
-        <label class="form-label" for="organization" translate="order.create-order.organization"></label>
-        <input formControlName="organization" id="organization" class="form-control" />
-      </div>
-      <div class="mb-3">
-        <label class="form-label" for="email" translate="order.create-order.email"></label>
-        <input type="email" formControlName="email" id="email" class="form-control" />
-        <val-errors controlName="email" [label]="'order.create-order.email-error-label' | translate"></val-errors>
-      </div>
-      <div class="mb-3">
-        <label class="form-label" for="delivery-address" translate="order.create-order.delivery-address"></label>
-        <textarea formControlName="deliveryAddress" id="delivery-address" class="form-control"></textarea>
-        <val-errors controlName="deliveryAddress" [label]="'order.create-order.delivery-address-error-label' | translate"></val-errors>
-      </div>
-      <div class="mb-3">
-        <label class="form-label" for="billing-address" translate="order.create-order.billing-address"></label>
-        <div class="form-check form-switch" [class.mb-2]="!useDeliveryAddressControl.value">
-          <input [formControl]="useDeliveryAddressControl" type="checkbox" class="form-check-input" id="use-delivery-address" />
-          <label class="form-check-label" for="use-delivery-address" translate="order.create-order.use-delivery-address"></label>
+      <div formGroupName="customer">
+        <div class="mb-3">
+          <label class="form-label" for="name" translate="order.edit-customer-information.name"></label>
+          <input formControlName="name" id="name" class="form-control" />
+          <val-errors controlName="name" [label]="'order.create-order.name-error-label' | translate"></val-errors>
         </div>
-        <div [ngbCollapse]="useDeliveryAddressControl.value">
-          <textarea formControlName="billingAddress" id="billing-address" class="form-control"></textarea>
+        <div class="mb-3">
+          <label class="form-label" for="organization" translate="order.create-order.organization"></label>
+          <input formControlName="organization" id="organization" class="form-control" />
         </div>
-        <val-errors controlName="billingAddress" [label]="'order.create-order.billing-address-error-label' | translate"></val-errors>
+        <div class="mb-3">
+          <label class="form-label" for="email" translate="order.create-order.email"></label>
+          <input type="email" formControlName="email" id="email" class="form-control" />
+          <val-errors controlName="email" [label]="'order.create-order.email-error-label' | translate"></val-errors>
+        </div>
+        <div class="mb-3">
+          <label class="form-label" for="delivery-address" translate="order.create-order.delivery-address"></label>
+          <textarea formControlName="deliveryAddress" id="delivery-address" class="form-control"></textarea>
+          <val-errors controlName="deliveryAddress" [label]="'order.create-order.delivery-address-error-label' | translate"></val-errors>
+        </div>
+        <div class="mb-3">
+          <label class="form-label" for="billing-address" translate="order.create-order.billing-address"></label>
+          <div class="form-check form-switch" [class.mb-2]="!useDeliveryAddressControl.value">
+            <input [formControl]="useDeliveryAddressControl" type="checkbox" class="form-check-input" id="use-delivery-address" />
+            <label class="form-check-label" for="use-delivery-address" translate="order.create-order.use-delivery-address"></label>
+          </div>
+          <div [ngbCollapse]="useDeliveryAddressControl.value">
+            <textarea formControlName="billingAddress" id="billing-address" class="form-control"></textarea>
+          </div>
+          <val-errors controlName="billingAddress" [label]="'order.create-order.billing-address-error-label' | translate"></val-errors>
+        </div>
+        <div class="mb-3">
+          <label class="form-label" for="type" translate="order.create-order.customer-type"></label>
+          <select formControlName="type" id="type" class="form-select">
+            <option [ngValue]="null"></option>
+            @for (customerType of customerTypes; track customerType) {
+              <option [value]="customerType">{{ customerType | customerTypeEnum }}</option>
+            }
+          </select>
+          <val-errors controlName="type" [label]="'order.create-order.customer-type-error-label' | translate"></val-errors>
+        </div>
+        <div class="mb-3">
+          <label class="form-label" for="language" translate="order.create-order.language"></label>
+          <select formControlName="language" id="language" class="form-select">
+            <option [ngValue]="null"></option>
+            @for (language of languages; track language) {
+              <option [value]="language">{{ language | languageEnum }}</option>
+            }
+          </select>
+          <val-errors controlName="language" [label]="'order.create-order.language-error-label' | translate"></val-errors>
+        </div>
       </div>
       <div class="mb-3">
-        <label class="form-label" for="type" translate="order.create-order.customer-type"></label>
-        <select formControlName="type" id="type" class="form-select">
-          <option [ngValue]="null"></option>
-          <option *ngFor="let customerType of customerTypes" [value]="customerType">{{ customerType | customerTypeEnum }}</option>
-        </select>
-        <val-errors controlName="type" [label]="'order.create-order.customer-type-error-label' | translate"></val-errors>
+        <label class="form-label" for="rationale" translate="order.create-order.rationale"></label>
+        <textarea formControlName="rationale" id="rationale" class="form-control"></textarea>
       </div>
-      <div class="mb-3">
-        <label class="form-label" for="language" translate="order.create-order.language"></label>
-        <select formControlName="language" id="language" class="form-select">
-          <option [ngValue]="null"></option>
-          <option *ngFor="let language of languages" [value]="language">{{ language | languageEnum }}</option>
-        </select>
-        <val-errors controlName="language" [label]="'order.create-order.language-error-label' | translate"></val-errors>
+      <div class="text-end">
+        <button class="btn btn-primary me-2" translate="order.create-order.save" id="save-button"></button>
+        <button type="button" class="btn btn-danger" (click)="cancel()" translate="order.create-order.cancel" id="cancel-button"></button>
       </div>
-    </div>
-    <div class="mb-3">
-      <label class="form-label" for="rationale" translate="order.create-order.rationale"></label>
-      <textarea formControlName="rationale" id="rationale" class="form-control"></textarea>
-    </div>
-    <div class="text-end">
-      <button class="btn btn-primary me-2" translate="order.create-order.save" id="save-button"></button>
-      <button type="button" class="btn btn-danger" (click)="cancel()" translate="order.create-order.cancel" id="cancel-button"></button>
-    </div>
-  </form>
-</div>
+    </form>
+  </div>
+}

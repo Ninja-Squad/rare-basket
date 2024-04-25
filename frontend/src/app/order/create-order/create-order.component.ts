@@ -12,7 +12,7 @@ import { FormControlValidationDirective } from '../../shared/form-control-valida
 import { LanguageEnumPipe } from '../../shared/language-enum.pipe';
 import { ValidationErrorsComponent } from 'ngx-valdemort';
 import { NgbCollapse } from '@ng-bootstrap/ng-bootstrap';
-import { AsyncPipe, NgFor, NgIf } from '@angular/common';
+import { AsyncPipe } from '@angular/common';
 import { AuthenticationService } from '../../shared/authentication.service';
 import { first, map, tap } from 'rxjs/operators';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
@@ -29,10 +29,8 @@ import { Observable } from 'rxjs';
     CustomerTypeEnumPipe,
     FormControlValidationDirective,
     LanguageEnumPipe,
-    NgFor,
     ValidationErrorsComponent,
     NgbCollapse,
-    NgIf,
     AsyncPipe
   ]
 })

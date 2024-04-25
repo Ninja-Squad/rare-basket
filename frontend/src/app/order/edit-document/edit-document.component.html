@@ -5,7 +5,9 @@
         <label class="form-label" translate="order.edit-document.type" for="document-type"></label>
         <select formControlName="type" class="form-select form-select-sm" id="document-type">
           <option [ngValue]="null"></option>
-          <option *ngFor="let documentType of documentTypes" [value]="documentType">{{ documentType | documentTypeEnum }}</option>
+          @for (documentType of documentTypes; track documentType) {
+            <option [value]="documentType">{{ documentType | documentTypeEnum }}</option>
+          }
         </select>
         <val-errors controlName="type" [label]="'order.edit-document.type-error-label' | translate"></val-errors>
       </div>
@@ -39,21 +41,14 @@
           (dragover)="$event.preventDefault()"
         />
         <div class="invalid-feedback" [class.d-none]="!formDirective.submitted">
-          <div
-            *ngIf="!selectedFile"
-            translate="common.errors.required"
-            [translateParams]="{ label: 'order.edit-document.file-error-label' | translate }"
-          ></div>
-          <div
-            *ngIf="!selectedFileValid()"
-            translate="order.edit-document.invalid-file"
-            [translateParams]="{ acceptedExtensions: acceptedExtensions }"
-          ></div>
-          <div
-            *ngIf="selectedFileValid() && !selectedFileSizeValid()"
-            translate="order.edit-document.invalid-file-size"
-            [translateParams]="{ max: maxFileSizeInMB | number }"
-          ></div>
+          @if (!selectedFile) {
+            <div translate="common.errors.required" [translateParams]="{ label: 'order.edit-document.file-error-label' | translate }"></div>
+          }
+          @if (!selectedFileValid()) {
+            <div translate="order.edit-document.invalid-file" [translateParams]="{ acceptedExtensions: acceptedExtensions }"></div>
+          } @else if (!selectedFileSizeValid()) {
+            <div translate="order.edit-document.invalid-file-size" [translateParams]="{ max: maxFileSizeInMB | number }"></div>
+          }
         </div>
       </div>
     </div>
@@ -68,15 +63,16 @@
     </div>
 
     <div class="mt-2">
-      <ngb-progressbar
-        *ngIf="uploadProgress !== null"
-        [max]="1"
-        [value]="uploadProgress"
-        [animated]="uploadProgress === 1"
-        [striped]="uploadProgress === 1"
-        type="success"
-        [showValue]="false"
-      ></ngb-progressbar>
+      @if (uploadProgress !== null) {
+        <ngb-progressbar
+          [max]="1"
+          [value]="uploadProgress"
+          [animated]="uploadProgress === 1"
+          [striped]="uploadProgress === 1"
+          type="success"
+          [showValue]="false"
+        ></ngb-progressbar>
+      }
     </div>
   </div>
 

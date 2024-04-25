@@ -6,25 +6,33 @@
   <div class="col-sm">
     <h2 translate="basket.basket-content.ordered-accessions"></h2>
 
-    <div *ngFor="let accessionHolderBasket of basket.accessionHolderBaskets">
-      <h3>{{ accessionHolderBasket.grcName }} - {{ accessionHolderBasket.accessionHolderName }}</h3>
+    @for (accessionHolderBasket of basket.accessionHolderBaskets; track accessionHolderBasket) {
+      <div>
+        <h3>{{ accessionHolderBasket.grcName }} - {{ accessionHolderBasket.accessionHolderName }}</h3>
 
-      <div class="scrolling-accessions mb-2">
-        <table class="table table-sm mb-0">
-          <thead class="table-light">
-            <tr>
-              <th translate="basket.basket-content.accession-heading"></th>
-              <th *ngIf="quantityDisplayed" translate="basket.basket-content.quantity-heading" style="width: 25%"></th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr *ngFor="let item of accessionHolderBasket.items" class="basket-item">
-              <td><rb-accession [accession]="item.accession"></rb-accession></td>
-              <td *ngIf="quantityDisplayed">{{ item.quantity | number }} {{ item.unit }}</td>
-            </tr>
-          </tbody>
-        </table>
+        <div class="scrolling-accessions mb-2">
+          <table class="table table-sm mb-0">
+            <thead class="table-light">
+              <tr>
+                <th translate="basket.basket-content.accession-heading"></th>
+                @if (quantityDisplayed) {
+                  <th translate="basket.basket-content.quantity-heading" style="width: 25%"></th>
+                }
+              </tr>
+            </thead>
+            <tbody>
+              @for (item of accessionHolderBasket.items; track item.id) {
+                <tr class="basket-item">
+                  <td><rb-accession [accession]="item.accession"></rb-accession></td>
+                  @if (quantityDisplayed) {
+                    <td>{{ item.quantity | number }} {{ item.unit }}</td>
+                  }
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
       </div>
-    </div>
+    }
   </div>
 </div>

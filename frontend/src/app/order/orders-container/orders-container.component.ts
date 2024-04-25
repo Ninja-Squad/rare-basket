@@ -4,7 +4,7 @@ import { Permission } from '../../shared/user.model';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
-import { AsyncPipe, NgIf } from '@angular/common';
+import { AsyncPipe } from '@angular/common';
 import { RouterNavDirective, RouterNavLinkDirective, RouterNavPanelDirective } from '../../rb-ngb/router-nav.directive';
 import { TranslateModule } from '@ngx-translate/core';
 
@@ -16,7 +16,6 @@ import { TranslateModule } from '@ngx-translate/core';
   imports: [
     TranslateModule,
     RouterNavDirective,
-    NgIf,
     RouterLink,
     RouterLinkActive,
     RouterNavLinkDirective,

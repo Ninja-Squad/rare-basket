@@ -6,7 +6,7 @@ import { CustomerTypeEnumPipe } from '../../shared/customer-type-enum.pipe';
 import { PaginationComponent } from '../../rb-ngb/pagination/pagination.component';
 import { TranslateModule } from '@ngx-translate/core';
 import { RouterLink } from '@angular/router';
-import { DatePipe, DecimalPipe, NgFor, NgIf, NgPlural, NgPluralCase } from '@angular/common';
+import { DatePipe, DecimalPipe, NgPlural, NgPluralCase } from '@angular/common';
 
 @Component({
   selector: 'rb-orders',
@@ -15,12 +15,10 @@ import { DatePipe, DecimalPipe, NgFor, NgIf, NgPlural, NgPluralCase } from '@ang
   changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
   imports: [
-    NgFor,
     RouterLink,
     NgPlural,
     NgPluralCase,
     TranslateModule,
-    NgIf,
     PaginationComponent,
     DecimalPipe,
     DatePipe,

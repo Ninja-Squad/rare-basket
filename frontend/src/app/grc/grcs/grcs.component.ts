@@ -7,7 +7,7 @@ import { faBuilding, faPlus, faTrash } from '@fortawesome/free-solid-svg-icons';
 import { ToastService } from '../../shared/toast.service';
 import { RouterLink } from '@angular/router';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
-import { NgFor, NgIf } from '@angular/common';
+
 import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
@@ -15,7 +15,7 @@ import { TranslateModule } from '@ngx-translate/core';
   templateUrl: './grcs.component.html',
   styleUrl: './grcs.component.scss',
   standalone: true,
-  imports: [TranslateModule, NgIf, NgFor, FontAwesomeModule, RouterLink]
+  imports: [TranslateModule, FontAwesomeModule, RouterLink]
 })
 export class GrcsComponent implements OnInit {
   grcs: Array<Grc>;

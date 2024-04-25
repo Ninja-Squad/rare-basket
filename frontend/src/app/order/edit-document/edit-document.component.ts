@@ -14,7 +14,7 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { NgbProgressbar } from '@ng-bootstrap/ng-bootstrap';
 import { FormControlValidationDirective } from '../../shared/form-control-validation.directive';
 import { ValidationErrorsComponent } from 'ngx-valdemort';
-import { DecimalPipe, NgFor, NgIf } from '@angular/common';
+import { DecimalPipe } from '@angular/common';
 import { TranslateModule } from '@ngx-translate/core';
 
 const validExtensions = ['.pdf', '.txt', '.eml', '.pst', '.ost'];
@@ -28,10 +28,8 @@ const maxFileSize = 10 * 1024 * 1024; // 10 MB
   imports: [
     ReactiveFormsModule,
     TranslateModule,
-    NgFor,
     ValidationErrorsComponent,
     FormControlValidationDirective,
-    NgIf,
     NgbProgressbar,
     FontAwesomeModule,
     DecimalPipe,

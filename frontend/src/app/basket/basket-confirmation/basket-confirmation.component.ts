@@ -4,7 +4,6 @@ import { BasketService } from '../basket.service';
 import { faExclamationCircle } from '@fortawesome/free-solid-svg-icons';
 import { TranslateModule } from '@ngx-translate/core';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
-import { NgIf } from '@angular/common';
 
 /**
  * Component that is used only when the customer clicks on the confirmation link in the
@@ -18,7 +17,7 @@ import { NgIf } from '@angular/common';
   templateUrl: './basket-confirmation.component.html',
   styleUrl: './basket-confirmation.component.scss',
   standalone: true,
-  imports: [NgIf, FontAwesomeModule, TranslateModule, RouterLink]
+  imports: [FontAwesomeModule, TranslateModule, RouterLink]
 })
 export class BasketConfirmationComponent implements OnInit {
   basketReference: string;

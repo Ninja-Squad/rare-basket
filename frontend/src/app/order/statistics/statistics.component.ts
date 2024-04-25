@@ -4,7 +4,7 @@ import { CustomerTypeStatistics, OrderStatistics, OrderStatusStatistics } from '
 import { ArcElement, Chart, ChartConfiguration, DoughnutController, Legend, Tooltip } from 'chart.js';
 import { COLORS } from '../../chart/colors';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
-import { DecimalPipe, formatDate, formatNumber, formatPercent, NgFor, NgIf, PercentPipe } from '@angular/common';
+import { DecimalPipe, formatDate, formatNumber, formatPercent, PercentPipe } from '@angular/common';
 import {
   AbstractControl,
   FormControl,
@@ -40,14 +40,12 @@ function atLeastOneSelection(control: AbstractControl): ValidationErrors | null 
   styleUrl: './statistics.component.scss',
   standalone: true,
   imports: [
-    NgIf,
     ReactiveFormsModule,
     TranslateModule,
     DatepickerContainerComponent,
     NgbInputDatepicker,
     FormControlValidationDirective,
     ValidationErrorsComponent,
-    NgFor,
     ValidationErrorDirective,
     ChartComponent,
     DecimalPipe,

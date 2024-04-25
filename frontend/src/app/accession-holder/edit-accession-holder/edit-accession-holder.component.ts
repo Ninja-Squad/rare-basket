@@ -6,7 +6,7 @@ import { AccessionHolderService } from '../../shared/accession-holder.service';
 import { GrcService } from '../../shared/grc.service';
 import { Observable } from 'rxjs';
 import { ToastService } from '../../shared/toast.service';
-import { NgFor } from '@angular/common';
+
 import { ValidationErrorsComponent } from 'ngx-valdemort';
 import { FormControlValidationDirective } from '../../shared/form-control-validation.directive';
 import { TranslateModule } from '@ngx-translate/core';
@@ -16,7 +16,7 @@ import { TranslateModule } from '@ngx-translate/core';
   templateUrl: './edit-accession-holder.component.html',
   styleUrl: './edit-accession-holder.component.scss',
   standalone: true,
-  imports: [TranslateModule, ReactiveFormsModule, FormControlValidationDirective, ValidationErrorsComponent, NgFor, RouterLink]
+  imports: [TranslateModule, ReactiveFormsModule, FormControlValidationDirective, ValidationErrorsComponent, RouterLink]
 })
 export class EditAccessionHolderComponent implements OnInit {
   mode: 'create' | 'update' = 'create';

@@ -7,7 +7,7 @@ import { ConfirmationService } from '../../shared/confirmation.service';
 import { ToastService } from '../../shared/toast.service';
 import { RouterLink } from '@angular/router';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
-import { NgFor, NgIf } from '@angular/common';
+
 import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
@@ -15,7 +15,7 @@ import { TranslateModule } from '@ngx-translate/core';
   templateUrl: './accession-holders.component.html',
   styleUrl: './accession-holders.component.scss',
   standalone: true,
-  imports: [TranslateModule, NgIf, NgFor, FontAwesomeModule, RouterLink]
+  imports: [TranslateModule, FontAwesomeModule, RouterLink]
 })
 export class AccessionHoldersComponent implements OnInit {
   accessionHolders: Array<AccessionHolder>;

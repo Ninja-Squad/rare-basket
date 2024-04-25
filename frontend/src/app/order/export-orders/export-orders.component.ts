@@ -1,6 +1,6 @@
 import { Component, Inject, LOCALE_ID } from '@angular/core';
 import { NonNullableFormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { formatDate, NgIf } from '@angular/common';
+import { formatDate } from '@angular/common';
 import { OrderService } from '../order.service';
 import { DownloadService } from '../../shared/download.service';
 import { finalize } from 'rxjs/operators';
@@ -24,7 +24,6 @@ import { TranslateModule } from '@ngx-translate/core';
     DatepickerContainerComponent,
     NgbInputDatepicker,
     FormControlValidationDirective,
-    NgIf,
     FontAwesomeModule,
     ValidationErrorsComponent
   ]

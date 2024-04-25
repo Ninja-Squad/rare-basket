@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { OrdersComponent } from '../orders/orders.component';
-import { AsyncPipe, NgForOf, NgIf } from '@angular/common';
+import { AsyncPipe } from '@angular/common';
 import { Observable } from 'rxjs';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { OrderListService, OrderListViewModel } from '../order-list.service';
@@ -12,7 +12,7 @@ import { TranslateModule } from '@ngx-translate/core';
   templateUrl: './done-orders.component.html',
   styleUrl: './done-orders.component.scss',
   standalone: true,
-  imports: [NgIf, OrdersComponent, NgForOf, ReactiveFormsModule, TranslateModule, AsyncPipe]
+  imports: [OrdersComponent, ReactiveFormsModule, TranslateModule, AsyncPipe]
 })
 export class DoneOrdersComponent {
   vm$: Observable<OrderListViewModel>;

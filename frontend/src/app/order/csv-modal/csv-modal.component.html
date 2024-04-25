@@ -9,23 +9,27 @@
     </div>
   </form>
 
-  <div *ngIf="result.errors.length" class="alert alert-danger scrolling">
-    <h4 class="visually-hidden" translate="order.csv-modal.csv-errors"></h4>
-    <table class="table table-sm mb-0 csv-errors">
-      <thead>
-        <tr>
-          <th scope="col" translate="order.csv-modal.error-line-heading"></th>
-          <th scope="col" translate="order.csv-modal.error-message-heading"></th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr *ngFor="let error of result.errors" class="csv-error">
-          <th scope="row">{{ error.row + 1 | number }}</th>
-          <td>{{ error.key | translate }}</td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
+  @if (result.errors.length) {
+    <div class="alert alert-danger scrolling">
+      <h4 class="visually-hidden" translate="order.csv-modal.csv-errors"></h4>
+      <table class="table table-sm mb-0 csv-errors">
+        <thead>
+          <tr>
+            <th scope="col" translate="order.csv-modal.error-line-heading"></th>
+            <th scope="col" translate="order.csv-modal.error-message-heading"></th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (error of result.errors; track error) {
+            <tr class="csv-error">
+              <th scope="row">{{ error.row + 1 | number }}</th>
+              <td>{{ error.key | translate }}</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
 
   <div class="scrolling mb-2">
     <h4 class="visually-hidden" translate="order.csv-modal.preview"></h4>
@@ -37,10 +41,12 @@
         </tr>
       </thead>
       <tbody>
-        <tr *ngFor="let item of result.items" class="order-item">
-          <td><rb-accession [accession]="item.accession"></rb-accession></td>
-          <td>{{ item.quantity | number }} {{ item.unit }}</td>
-        </tr>
+        @for (item of result.items; track item) {
+          <tr class="order-item">
+            <td><rb-accession [accession]="item.accession"></rb-accession></td>
+            <td>{{ item.quantity | number }} {{ item.unit }}</td>
+          </tr>
+        }
       </tbody>
     </table>
   </div>

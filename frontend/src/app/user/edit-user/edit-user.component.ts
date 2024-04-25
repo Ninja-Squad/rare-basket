@@ -12,7 +12,6 @@ import { PermissionEnumPipe } from '../permission-enum.pipe';
 import { ValidationErrorDirective, ValidationErrorsComponent } from 'ngx-valdemort';
 import { FormControlValidationDirective } from '../../shared/form-control-validation.directive';
 import { TranslateModule } from '@ngx-translate/core';
-import { NgFor, NgIf } from '@angular/common';
 
 interface GrcOptionGroup {
   name: string;
@@ -30,12 +29,10 @@ function atLeastOneSelection(control: AbstractControl): ValidationErrors | null 
   styleUrl: './edit-user.component.scss',
   standalone: true,
   imports: [
-    NgIf,
     TranslateModule,
     ReactiveFormsModule,
     FormControlValidationDirective,
     ValidationErrorsComponent,
-    NgFor,
     ValidationErrorDirective,
     RouterLink,
     PermissionEnumPipe

@@ -1,29 +1,35 @@
-<ng-container *ngIf="vm$ | async as vm">
-  <div *ngIf="vm.user.accessionHolders.length > 1" class="row gx-2 gy-1 mb-3">
-    <label class="col-sm-auto col-form-label" for="accession-holder" translate="order.in-progress-orders.accession-holder"></label>
-    <div class="col-sm-auto">
-      <select [formControl]="accessionHolderIdCtrl" class="form-select" id="accession-holder">
-        <option [ngValue]="null" translate="order.in-progress-orders.all-accession-holders"></option>
-        <option *ngFor="let ah of vm.user.accessionHolders" [ngValue]="ah.id">{{ ah.name }}</option>
-      </select>
+@if (vm$ | async; as vm) {
+  @if (vm.user.accessionHolders.length > 1) {
+    <div class="row gx-2 gy-1 mb-3">
+      <label class="col-sm-auto col-form-label" for="accession-holder" translate="order.in-progress-orders.accession-holder"></label>
+      <div class="col-sm-auto">
+        <select [formControl]="accessionHolderIdCtrl" class="form-select" id="accession-holder">
+          <option [ngValue]="null" translate="order.in-progress-orders.all-accession-holders"></option>
+          @for (ah of vm.user.accessionHolders; track ah.id) {
+            <option [ngValue]="ah.id">{{ ah.name }}</option>
+          }
+        </select>
+      </div>
     </div>
-  </div>
-  <div *ngIf="vm.orders.totalElements > 0">
-    <div
-      class="small text-body-secondary mb-2"
-      translate="order.in-progress-orders.count"
-      [translateParams]="{ count: vm.orders.totalElements | number }"
-    ></div>
+  }
+  @if (vm.orders.totalElements > 0) {
+    <div>
+      <div
+        class="small text-body-secondary mb-2"
+        translate="order.in-progress-orders.count"
+        [translateParams]="{ count: vm.orders.totalElements | number }"
+      ></div>
 
-    <rb-orders [orders]="vm.orders"></rb-orders>
-  </div>
-
-  <div *ngIf="vm.orders.totalElements === 0" class="text-center mb-4" id="no-order-message">
-    <div class="bumped">
-      <fa-icon class="text-success" [icon]="noOrderIcon" size="6x"></fa-icon>
+      <rb-orders [orders]="vm.orders"></rb-orders>
     </div>
-    <div class="text-body-secondary mt-2" translate="order.in-progress-orders.no-order"></div>
-  </div>
+  } @else {
+    <div class="text-center mb-4" id="no-order-message">
+      <div class="bumped">
+        <fa-icon class="text-success" [icon]="noOrderIcon" size="6x"></fa-icon>
+      </div>
+      <div class="text-body-secondary mt-2" translate="order.in-progress-orders.no-order"></div>
+    </div>
+  }
 
   <div class="text-end">
     <a class="btn btn-outline-secondary" routerLink="/orders/new">
@@ -31,4 +37,4 @@
       <span translate="order.in-progress-orders.create"></span>
     </a>
   </div>
-</ng-container>
+}

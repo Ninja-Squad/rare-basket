@@ -3,7 +3,6 @@ import { Component } from '@angular/core';
 import { ComponentTester } from 'ngx-speculoos';
 import { provideRouter, Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { RouterNavDirective, RouterNavLinkDirective, RouterNavPanelDirective } from './router-nav.directive';
-import { NgIf } from '@angular/common';
 
 @Component({
   template: '',
@@ -14,9 +13,11 @@ class PlaceholderComponent {}
 @Component({
   template: `
     <ul class="nav-tabs" rbRouterNav #nav="rbRouterNav">
-      <li *ngIf="true" class="nav-item">
-        <a routerLink="/foo" routerLinkActive="active" rbRouterNavLink>Foo</a>
-      </li>
+      @if (true) {
+        <li class="nav-item">
+          <a routerLink="/foo" routerLinkActive="active" rbRouterNavLink>Foo</a>
+        </li>
+      }
       <li class="nav-item">
         <a routerLink="/bar" routerLinkActive="active" rbRouterNavLink="bar">Bar</a>
       </li>
@@ -27,7 +28,7 @@ class PlaceholderComponent {}
     </div>
   `,
   standalone: true,
-  imports: [NgIf, RouterLink, RouterLinkActive, RouterOutlet, RouterNavDirective, RouterNavPanelDirective, RouterNavLinkDirective]
+  imports: [RouterLink, RouterLinkActive, RouterOutlet, RouterNavDirective, RouterNavPanelDirective, RouterNavLinkDirective]
 })
 class TestComponent {}
 

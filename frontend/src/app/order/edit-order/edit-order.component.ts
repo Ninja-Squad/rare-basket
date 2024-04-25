@@ -8,7 +8,6 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { ValidationErrorsComponent } from 'ngx-valdemort';
 import { FormControlValidationDirective } from '../../shared/form-control-validation.directive';
 import { TranslateModule } from '@ngx-translate/core';
-import { NgFor } from '@angular/common';
 
 interface ItemFormValue {
   name: string;
@@ -22,7 +21,7 @@ interface ItemFormValue {
   templateUrl: './edit-order.component.html',
   styleUrl: './edit-order.component.scss',
   standalone: true,
-  imports: [ReactiveFormsModule, NgFor, TranslateModule, FormControlValidationDirective, ValidationErrorsComponent, FontAwesomeModule]
+  imports: [ReactiveFormsModule, TranslateModule, FormControlValidationDirective, ValidationErrorsComponent, FontAwesomeModule]
 })
 export class EditOrderComponent implements OnInit, AfterViewInit {
   @Input()

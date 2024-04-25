@@ -3,7 +3,7 @@ import { NonNullableFormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { CsvResult, OrderCsvParserService } from '../order-csv-parser.service';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { AccessionComponent } from '../../shared/accession/accession.component';
-import { DecimalPipe, NgFor, NgIf } from '@angular/common';
+import { DecimalPipe } from '@angular/common';
 import { FormControlValidationDirective } from '../../shared/form-control-validation.directive';
 import { TranslateModule } from '@ngx-translate/core';
 
@@ -12,7 +12,7 @@ import { TranslateModule } from '@ngx-translate/core';
   templateUrl: './csv-modal.component.html',
   styleUrl: './csv-modal.component.scss',
   standalone: true,
-  imports: [TranslateModule, ReactiveFormsModule, FormControlValidationDirective, NgIf, NgFor, AccessionComponent, DecimalPipe]
+  imports: [TranslateModule, ReactiveFormsModule, FormControlValidationDirective, AccessionComponent, DecimalPipe]
 })
 export class CsvModalComponent {
   form = this.fb.group({

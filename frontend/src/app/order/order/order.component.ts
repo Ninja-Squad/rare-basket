@@ -32,7 +32,7 @@ import { AccessionComponent } from '../../shared/accession/accession.component';
 import { EditCustomerInformationComponent } from '../edit-customer-information/edit-customer-information.component';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { CustomerInformationComponent } from '../../shared/customer-information/customer-information.component';
-import { DatePipe, DecimalPipe, NgFor, NgIf } from '@angular/common';
+import { DatePipe, DecimalPipe } from '@angular/common';
 
 /**
  * Component displaying the details of an order to a GRC user
@@ -43,12 +43,10 @@ import { DatePipe, DecimalPipe, NgFor, NgIf } from '@angular/common';
   styleUrl: './order.component.scss',
   standalone: true,
   imports: [
-    NgIf,
     TranslateModule,
     CustomerInformationComponent,
     FontAwesomeModule,
     EditCustomerInformationComponent,
-    NgFor,
     AccessionComponent,
     EditOrderComponent,
     EditDocumentComponent,

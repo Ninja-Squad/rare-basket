@@ -14,7 +14,7 @@ import { Permission, User } from '../shared/user.model';
 import { TranslateModule } from '@ngx-translate/core';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { RouterLink } from '@angular/router';
-import { NgIf } from '@angular/common';
+
 import { NgbDropdown, NgbDropdownItem, NgbDropdownMenu, NgbDropdownToggle } from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
@@ -22,11 +22,11 @@ import { NgbDropdown, NgbDropdownItem, NgbDropdownMenu, NgbDropdownToggle } from
   templateUrl: './navbar.component.html',
   styleUrl: './navbar.component.scss',
   standalone: true,
-  imports: [NgIf, RouterLink, FontAwesomeModule, TranslateModule, NgbDropdown, NgbDropdownToggle, NgbDropdownMenu, NgbDropdownItem]
+  imports: [RouterLink, FontAwesomeModule, TranslateModule, NgbDropdown, NgbDropdownToggle, NgbDropdownMenu, NgbDropdownItem]
 })
 export class NavbarComponent implements OnInit {
   collapsed = true;
-  user: User;
+  user: User | null | undefined = undefined;
 
   ordersIcon = faShoppingBag;
   administrationIcon = faShieldAlt;

@@ -1,35 +1,39 @@
 <h1 translate="user.users.title"></h1>
 
-<div *ngIf="users">
-  <div class="content mt-2">
-    <div *ngFor="let user of users.content">
-      <div class="d-flex">
-        <div><fa-icon [icon]="userIcon" class="me-2"></fa-icon></div>
-        <div class="flex-grow-1 row user me-2">
-          <div class="col-md-3">
-            <a [routerLink]="['/users', user.id, 'edit']">{{ user.name }}</a>
+@if (users) {
+  <div>
+    <div class="content mt-2">
+      @for (user of users.content; track user.id) {
+        <div>
+          <div class="d-flex">
+            <div><fa-icon [icon]="userIcon" class="me-2"></fa-icon></div>
+            <div class="flex-grow-1 row user me-2">
+              <div class="col-md-3">
+                <a [routerLink]="['/users', user.id, 'edit']">{{ user.name }}</a>
+              </div>
+              <div class="col-md-9">
+                {{ permissions(user) }}
+              </div>
+            </div>
+            <div class="text-end">
+              <button (click)="deleteUser(user)" type="button" class="btn btn-outline-danger btn-sm delete-user-button">
+                <fa-icon [icon]="deleteUserIcon"></fa-icon>
+                <span class="visually-hidden" translate="user.users.delete"></span>
+              </button>
+            </div>
           </div>
-          <div class="col-md-9">
-            {{ permissions(user) }}
-          </div>
+          <hr class="my-2" />
         </div>
-        <div class="text-end">
-          <button (click)="deleteUser(user)" type="button" class="btn btn-outline-danger btn-sm delete-user-button">
-            <fa-icon [icon]="deleteUserIcon"></fa-icon>
-            <span class="visually-hidden" translate="user.users.delete"></span>
-          </button>
-        </div>
-      </div>
-      <hr class="my-2" />
+      }
+
+      <rb-pagination class="d-flex justify-content-center mt-4" [page]="users" [navigate]="true"></rb-pagination>
     </div>
 
-    <rb-pagination class="d-flex justify-content-center mt-4" [page]="users" [navigate]="true"></rb-pagination>
+    <div class="text-end mt-2">
+      <a class="btn btn-outline-secondary" id="create-user" routerLink="/users/new">
+        <fa-icon [icon]="createUserIcon" class="me-1"></fa-icon>
+        <span translate="user.users.create"></span>
+      </a>
+    </div>
   </div>
-
-  <div class="text-end mt-2">
-    <a class="btn btn-outline-secondary" id="create-user" routerLink="/users/new">
-      <fa-icon [icon]="createUserIcon" class="me-1"></fa-icon>
-      <span translate="user.users.create"></span>
-    </a>
-  </div>
-</div>
+}

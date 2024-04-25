@@ -12,7 +12,7 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import { LanguageEnumPipe } from '../language-enum.pipe';
 import { CustomerTypeEnumPipe } from '../customer-type-enum.pipe';
-import { NgIf } from '@angular/common';
+
 import { TranslateModule } from '@ngx-translate/core';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 
@@ -21,7 +21,7 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
   templateUrl: './customer-information.component.html',
   styleUrl: './customer-information.component.scss',
   standalone: true,
-  imports: [FontAwesomeModule, TranslateModule, NgIf, CustomerTypeEnumPipe, LanguageEnumPipe]
+  imports: [FontAwesomeModule, TranslateModule, CustomerTypeEnumPipe, LanguageEnumPipe]
 })
 export class CustomerInformationComponent {
   @Input()

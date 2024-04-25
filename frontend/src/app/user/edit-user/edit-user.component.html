@@ -1,96 +1,119 @@
-<div *ngIf="mode">
-  <h1 [translate]="'user.edit.title.' + mode" [translateParams]="{ user: editedUser }"></h1>
+@if (mode) {
+  <div>
+    <h1 [translate]="'user.edit.title.' + mode" [translateParams]="{ user: editedUser }"></h1>
 
-  <div class="content mt-2">
-    <form [formGroup]="form" (ngSubmit)="save()">
-      <div class="mb-3">
-        <label class="form-label" for="name" translate="user.edit.name"></label>
-        <input class="form-control" formControlName="name" id="name" />
-        <val-errors controlName="name" [label]="'user.edit.name-error-label' | translate"></val-errors>
-        <small class="form-text text-body-secondary" [innerHTML]="'user.edit.name-help' | translate: { keycloakUrl: keycloakUrl }"></small>
-      </div>
-
-      <h2 class="fs-6" translate="user.edit.permissions"></h2>
-      <div class="mb-2">
-        <div class="form-check form-switch">
-          <input type="checkbox" formControlName="orderManagement" class="form-check-input" id="order-management" />
-          <label class="form-check-label" for="order-management">{{ 'ORDER_MANAGEMENT' | permissionEnum }}</label>
+    <div class="content mt-2">
+      <form [formGroup]="form" (ngSubmit)="save()">
+        <div class="mb-3">
+          <label class="form-label" for="name" translate="user.edit.name"></label>
+          <input class="form-control" formControlName="name" id="name" />
+          <val-errors controlName="name" [label]="'user.edit.name-error-label' | translate"></val-errors>
+          <small
+            class="form-text text-body-secondary"
+            [innerHTML]="'user.edit.name-help' | translate: { keycloakUrl: keycloakUrl }"
+          ></small>
         </div>
 
-        <div class="mt-1 mb-3 ms-4" *ngIf="form.value.orderManagement">
-          <h3 class="fs-6" translate="user.edit.accession-holders"></h3>
-          <div formGroupName="accessionHolders" class="border rounded py-1 px-2 accession-holders">
-            <div *ngFor="let group of grcOptionGroups">
-              <h4 class="fs-6">{{ group.name }}</h4>
-              <div class="ms-3">
-                <div class="form-check" *ngFor="let accessionHolder of group.accessionHolders">
-                  <input
-                    [formControlName]="accessionHolder.id.toString()"
-                    class="form-check-input"
-                    type="checkbox"
-                    [id]="'accession-holder-' + accessionHolder.id"
-                  />
-                  <label class="form-check-label" [for]="'accession-holder-' + accessionHolder.id">
-                    {{ accessionHolder.name }}
-                  </label>
+        <h2 class="fs-6" translate="user.edit.permissions"></h2>
+        <div class="mb-2">
+          <div class="form-check form-switch">
+            <input type="checkbox" formControlName="orderManagement" class="form-check-input" id="order-management" />
+            <label class="form-check-label" for="order-management">{{ 'ORDER_MANAGEMENT' | permissionEnum }}</label>
+          </div>
+
+          @if (form.value.orderManagement) {
+            <div class="mt-1 mb-3 ms-4">
+              <h3 class="fs-6" translate="user.edit.accession-holders"></h3>
+              <div formGroupName="accessionHolders" class="border rounded py-1 px-2 accession-holders">
+                @for (group of grcOptionGroups; track group) {
+                  <div>
+                    <h4 class="fs-6">{{ group.name }}</h4>
+                    <div class="ms-3">
+                      @for (accessionHolder of group.accessionHolders; track accessionHolder) {
+                        <div class="form-check">
+                          <input
+                            [formControlName]="accessionHolder.id.toString()"
+                            class="form-check-input"
+                            type="checkbox"
+                            [id]="'accession-holder-' + accessionHolder.id"
+                          />
+                          <label class="form-check-label" [for]="'accession-holder-' + accessionHolder.id">
+                            {{ accessionHolder.name }}
+                          </label>
+                        </div>
+                      }
+                    </div>
+                  </div>
+                }
+              </div>
+              <val-errors controlName="accessionHolders">
+                <ng-template valError="required"><span translate="user.edit.accession-holder-required"></span></ng-template>
+              </val-errors>
+            </div>
+          }
+        </div>
+
+        <div class="mb-2">
+          <div class="form-check form-switch">
+            <input type="checkbox" formControlName="orderVisualization" class="form-check-input" id="order-visualization" />
+            <label class="form-check-label" for="order-visualization">{{ 'ORDER_VISUALIZATION' | permissionEnum }}</label>
+          </div>
+          @if (form.value.orderVisualization) {
+            <div class="ms-4">
+              <div class="form-check form-check-inline">
+                <input
+                  formControlName="globalVisualization"
+                  class="form-check-input"
+                  type="radio"
+                  id="no-global-visualization"
+                  [value]="false"
+                />
+                <label class="form-check-label" for="no-global-visualization" translate="user.edit.some-grcs"></label>
+              </div>
+              <div class="form-check form-check-inline">
+                <input
+                  formControlName="globalVisualization"
+                  class="form-check-input"
+                  type="radio"
+                  id="global-visualization"
+                  [value]="true"
+                />
+                <label class="form-check-label" for="global-visualization" translate="user.edit.all-grcs"></label>
+              </div>
+              @if (!form.value.globalVisualization) {
+                <div class="mt-1 mb-3">
+                  <h2 class="fs-6" translate="user.edit.visualization-grcs"></h2>
+                  <div formGroupName="visualizationGrcs" class="border rounded py-1 px-2 grcs">
+                    @for (grc of grcs; track grc) {
+                      <div class="form-check">
+                        <input [formControlName]="grc.id.toString()" class="form-check-input" type="checkbox" [id]="'grc-' + grc.id" />
+                        <label class="form-check-label" [for]="'grc-' + grc.id">
+                          {{ grc.name }}
+                        </label>
+                      </div>
+                    }
+                  </div>
+                  <val-errors controlName="visualizationGrcs">
+                    <ng-template valError="required"><span translate="user.edit.grc-required"></span></ng-template>
+                  </val-errors>
                 </div>
-              </div>
+              }
             </div>
-          </div>
-          <val-errors controlName="accessionHolders">
-            <ng-template valError="required"><span translate="user.edit.accession-holder-required"></span></ng-template>
-          </val-errors>
+          }
         </div>
-      </div>
 
-      <div class="mb-2">
-        <div class="form-check form-switch">
-          <input type="checkbox" formControlName="orderVisualization" class="form-check-input" id="order-visualization" />
-          <label class="form-check-label" for="order-visualization">{{ 'ORDER_VISUALIZATION' | permissionEnum }}</label>
-        </div>
-        <div *ngIf="form.value.orderVisualization" class="ms-4">
-          <div class="form-check form-check-inline">
-            <input
-              formControlName="globalVisualization"
-              class="form-check-input"
-              type="radio"
-              id="no-global-visualization"
-              [value]="false"
-            />
-            <label class="form-check-label" for="no-global-visualization" translate="user.edit.some-grcs"></label>
-          </div>
-          <div class="form-check form-check-inline">
-            <input formControlName="globalVisualization" class="form-check-input" type="radio" id="global-visualization" [value]="true" />
-            <label class="form-check-label" for="global-visualization" translate="user.edit.all-grcs"></label>
-          </div>
-          <div class="mt-1 mb-3" *ngIf="!form.value.globalVisualization">
-            <h2 class="fs-6" translate="user.edit.visualization-grcs"></h2>
-            <div formGroupName="visualizationGrcs" class="border rounded py-1 px-2 grcs">
-              <div class="form-check" *ngFor="let grc of grcs">
-                <input [formControlName]="grc.id.toString()" class="form-check-input" type="checkbox" [id]="'grc-' + grc.id" />
-                <label class="form-check-label" [for]="'grc-' + grc.id">
-                  {{ grc.name }}
-                </label>
-              </div>
-            </div>
-            <val-errors controlName="visualizationGrcs">
-              <ng-template valError="required"><span translate="user.edit.grc-required"></span></ng-template>
-            </val-errors>
+        <div class="mb-2">
+          <div class="form-check form-switch">
+            <input type="checkbox" formControlName="administration" class="form-check-input" id="administration" />
+            <label class="form-check-label" for="administration">{{ 'ADMINISTRATION' | permissionEnum }}</label>
           </div>
         </div>
-      </div>
 
-      <div class="mb-2">
-        <div class="form-check form-switch">
-          <input type="checkbox" formControlName="administration" class="form-check-input" id="administration" />
-          <label class="form-check-label" for="administration">{{ 'ADMINISTRATION' | permissionEnum }}</label>
+        <div>
+          <button class="btn btn-primary me-2" translate="user.edit.save" id="save-button"></button>
+          <a routerLink="/users" class="btn btn-danger" translate="user.edit.cancel"></a>
         </div>
-      </div>
-
-      <div>
-        <button class="btn btn-primary me-2" translate="user.edit.save" id="save-button"></button>
-        <a routerLink="/users" class="btn btn-danger" translate="user.edit.cancel"></a>
-      </div>
-    </form>
+      </form>
+    </div>
   </div>
-</div>
+}

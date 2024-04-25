@@ -2,18 +2,24 @@
 
 <div class="content mt-2">
   <ul class="nav-tabs mb-4" rbRouterNav #nav="rbRouterNav">
-    <li *ngIf="hasPermission('ORDER_MANAGEMENT') | async" class="nav-item">
-      <a routerLink="in-progress" routerLinkActive="active" rbRouterNavLink translate="order.orders-container.in-progress"></a>
-    </li>
-    <li *ngIf="hasPermission('ORDER_MANAGEMENT') | async" class="nav-item">
-      <a routerLink="done" routerLinkActive="active" rbRouterNavLink translate="order.orders-container.done"></a>
-    </li>
-    <li *ngIf="hasPermission('ORDER_VISUALIZATION') | async" class="nav-item">
-      <a routerLink="stats" routerLinkActive="active" rbRouterNavLink translate="order.orders-container.statistics"></a>
-    </li>
-    <li *ngIf="hasPermission('ORDER_VISUALIZATION') | async" class="nav-item">
-      <a routerLink="export" routerLinkActive="active" rbRouterNavLink translate="order.orders-container.export"></a>
-    </li>
+    @if (hasPermission('ORDER_MANAGEMENT') | async) {
+      <li class="nav-item">
+        <a routerLink="in-progress" routerLinkActive="active" rbRouterNavLink translate="order.orders-container.in-progress"></a>
+      </li>
+
+      <li class="nav-item">
+        <a routerLink="done" routerLinkActive="active" rbRouterNavLink translate="order.orders-container.done"></a>
+      </li>
+    }
+    @if (hasPermission('ORDER_VISUALIZATION') | async) {
+      <li class="nav-item">
+        <a routerLink="stats" routerLinkActive="active" rbRouterNavLink translate="order.orders-container.statistics"></a>
+      </li>
+
+      <li class="nav-item">
+        <a routerLink="export" routerLinkActive="active" rbRouterNavLink translate="order.orders-container.export"></a>
+      </li>
+    }
   </ul>
 
   <div [rbRouterNavPanel]="nav">

@@ -1,188 +1,215 @@
-<div *ngIf="user">
-  <form [formGroup]="form" (ngSubmit)="refresh()">
-    <div class="mb-3">
-      <div class="row row-cols-sm-auto gy-0 gx-2 align-items-center">
-        <label class="col-12 col-form-label" for="from" translate="order.statistics.from"></label>
-        <rb-datepicker-container class="col-12 me-sm-2 w-auto">
-          <input id="from" class="form-control datepicker" formControlName="from" ngbDatepicker />
-        </rb-datepicker-container>
+@if (user) {
+  <div>
+    <form [formGroup]="form" (ngSubmit)="refresh()">
+      <div class="mb-3">
+        <div class="row row-cols-sm-auto gy-0 gx-2 align-items-center">
+          <label class="col-12 col-form-label" for="from" translate="order.statistics.from"></label>
+          <rb-datepicker-container class="col-12 me-sm-2 w-auto">
+            <input id="from" class="form-control datepicker" formControlName="from" ngbDatepicker />
+          </rb-datepicker-container>
 
-        <label class="col-12 col-form-label" for="to" translate="order.statistics.to"></label>
-        <rb-datepicker-container class="col-12 w-auto">
-          <input id="to" class="form-control datepicker" formControlName="to" ngbDatepicker />
-        </rb-datepicker-container>
-      </div>
-      <val-errors [control]="form" [label]="'order.statistics.date-range-error-label' | translate"></val-errors>
-    </div>
-
-    <div *ngIf="!perimeterEdited" class="mb-2">
-      <span *ngIf="form.value.global" translate="order.statistics.global-perimeter" id="perimeter"></span>
-      <span
-        *ngIf="!form.value.global"
-        translate="order.statistics.constrained-perimeter"
-        [translateParams]="{ grcs: constrainedPerimeterGrcs }"
-        id="perimeter"
-      ></span>
-      <a
-        href="#"
-        role="button"
-        *ngIf="perimeterModifiable"
-        class="small ms-2"
-        translate="order.statistics.edit-perimeter"
-        (click)="perimeterEdited = true; $event.preventDefault()"
-        id="edit-perimeter"
-      ></a>
-    </div>
-
-    <div *ngIf="perimeterEdited" class="mb-2">
-      <div *ngIf="user.globalVisualization">
-        <div class="form-check form-check-inline">
-          <input formControlName="global" class="form-check-input" type="radio" id="no-global-visualization" [value]="false" />
-          <label class="form-check-label" for="no-global-visualization" translate="order.statistics.some-grcs"></label>
+          <label class="col-12 col-form-label" for="to" translate="order.statistics.to"></label>
+          <rb-datepicker-container class="col-12 w-auto">
+            <input id="to" class="form-control datepicker" formControlName="to" ngbDatepicker />
+          </rb-datepicker-container>
         </div>
-        <div class="form-check form-check-inline">
-          <input formControlName="global" class="form-check-input" type="radio" id="global-visualization" [value]="true" />
-          <label class="form-check-label" for="global-visualization" translate="order.statistics.all-grcs"></label>
-        </div>
+        <val-errors [control]="form" [label]="'order.statistics.date-range-error-label' | translate"></val-errors>
       </div>
-      <div *ngIf="!this.form.value.global">
-        <div formArrayName="grcs" class="border rounded py-1 px-2 grcs">
-          <div class="form-check" *ngFor="let grcGroup of grcsFormArray.controls; index as i" [formGroupName]="i">
-            <input formControlName="selected" class="form-check-input" type="checkbox" [id]="'grc-' + grcGroup.value.grc.id" />
-            <label class="form-check-label" [for]="'grc-' + grcGroup.value.grc.id">
-              {{ grcGroup.value.grc.name }}
-            </label>
+
+      @if (perimeterEdited) {
+        <div class="mb-2">
+          @if (user.globalVisualization) {
+            <div>
+              <div class="form-check form-check-inline">
+                <input formControlName="global" class="form-check-input" type="radio" id="no-global-visualization" [value]="false" />
+                <label class="form-check-label" for="no-global-visualization" translate="order.statistics.some-grcs"></label>
+              </div>
+              <div class="form-check form-check-inline">
+                <input formControlName="global" class="form-check-input" type="radio" id="global-visualization" [value]="true" />
+                <label class="form-check-label" for="global-visualization" translate="order.statistics.all-grcs"></label>
+              </div>
+            </div>
+          }
+          @if (!this.form.value.global) {
+            <div>
+              <div formArrayName="grcs" class="border rounded py-1 px-2 grcs">
+                @for (grcGroup of grcsFormArray.controls; track grcGroup) {
+                  <div class="form-check" [formGroupName]="$index">
+                    <input formControlName="selected" class="form-check-input" type="checkbox" [id]="'grc-' + grcGroup.value.grc.id" />
+                    <label class="form-check-label" [for]="'grc-' + grcGroup.value.grc.id">
+                      {{ grcGroup.value.grc.name }}
+                    </label>
+                  </div>
+                }
+              </div>
+              <val-errors controlName="grcs">
+                <ng-template valError="required"><span translate="order.statistics.grc-required"></span></ng-template>
+              </val-errors>
+            </div>
+          }
+        </div>
+      } @else {
+        <div class="mb-2">
+          @if (form.value.global) {
+            <span translate="order.statistics.global-perimeter" id="perimeter"></span>
+          } @else {
+            <span
+              translate="order.statistics.constrained-perimeter"
+              [translateParams]="{ grcs: constrainedPerimeterGrcs }"
+              id="perimeter"
+            ></span>
+          }
+          @if (perimeterModifiable) {
+            <a
+              href="#"
+              role="button"
+              class="small ms-2"
+              translate="order.statistics.edit-perimeter"
+              (click)="perimeterEdited = true; $event.preventDefault()"
+              id="edit-perimeter"
+            ></a>
+          }
+        </div>
+      }
+
+      <div>
+        <button type="submit" class="btn btn-primary mb-2" id="refresh-button" translate="order.statistics.refresh"></button>
+      </div>
+    </form>
+
+    @if (stats) {
+      <div>
+        <h2 translate="order.statistics.key-numbers"></h2>
+        <div class="row g-2 align-items-stretch" id="numbers">
+          <div class="mb-2 col-md-4 col-lg d-flex">
+            <div class="border rounded bg-light text-center p-2 flex-grow-1">
+              <div class="key-number" [class.refreshed]="refreshed">{{ stats.createdOrderCount | number }}</div>
+              &ngsp;
+              <div [translate]="stats.createdOrderCount <= 1 ? 'order.statistics.created-order' : 'order.statistics.created-orders'"></div>
+            </div>
+          </div>
+          <div class="mb-2 col-md-4 col-lg d-flex">
+            <div class="border rounded bg-light text-center p-2 flex-grow-1">
+              <div class="key-number" [class.refreshed]="refreshed">{{ stats.finalizedOrderCount | number }}</div>
+              &ngsp;
+              <div
+                [translate]="stats.finalizedOrderCount <= 1 ? 'order.statistics.finalized-order' : 'order.statistics.finalized-orders'"
+              ></div>
+            </div>
+          </div>
+          <div class="mb-2 col-md-4 col-lg d-flex">
+            <div class="border rounded bg-light text-center p-2 flex-grow-1">
+              <div class="key-number" [class.refreshed]="refreshed">{{ stats.cancelledOrderCount | number }}</div>
+              &ngsp;
+              <div
+                [translate]="stats.cancelledOrderCount <= 1 ? 'order.statistics.cancelled-order' : 'order.statistics.cancelled-orders'"
+              ></div>
+            </div>
+          </div>
+          <div class="mb-2 col-md-6 col-lg d-flex">
+            <div class="border rounded bg-light text-center p-2 flex-grow-1">
+              <div class="key-number" [class.refreshed]="refreshed">{{ stats.distinctFinalizedOrderCustomerCount | number }}</div>
+              &ngsp;
+              <div
+                [translate]="
+                  stats.distinctFinalizedOrderCustomerCount <= 1
+                    ? 'order.statistics.distinct-customer'
+                    : 'order.statistics.distinct-customers'
+                "
+              ></div>
+            </div>
+          </div>
+          <div class="mb-2 col-md-6 col-lg d-flex">
+            <div class="border rounded bg-light text-center p-2 flex-grow-1">
+              <div class="key-number" [class.refreshed]="refreshed">{{ stats.averageFinalizationDurationInDays | number: '.0-1' }}</div>
+              &ngsp;
+              <div
+                [translate]="
+                  stats.averageFinalizationDurationInDays <= 1 ? 'order.statistics.day-to-finalize' : 'order.statistics.days-to-finalize'
+                "
+              ></div>
+            </div>
           </div>
         </div>
-        <val-errors controlName="grcs">
-          <ng-template valError="required"><span translate="order.statistics.grc-required"></span></ng-template>
-        </val-errors>
-      </div>
-    </div>
 
-    <div>
-      <button type="submit" class="btn btn-primary mb-2" id="refresh-button" translate="order.statistics.refresh"></button>
-    </div>
-  </form>
+        <h2 translate="order.statistics.customer-types-title"></h2>
 
-  <div *ngIf="stats">
-    <h2 translate="order.statistics.key-numbers"></h2>
-    <div class="row g-2 align-items-stretch" id="numbers">
-      <div class="mb-2 col-md-4 col-lg d-flex">
-        <div class="border rounded bg-light text-center p-2 flex-grow-1">
-          <div class="key-number" [class.refreshed]="refreshed">{{ stats.createdOrderCount | number }}</div>
-          &ngsp;
-          <div [translate]="stats.createdOrderCount <= 1 ? 'order.statistics.created-order' : 'order.statistics.created-orders'"></div>
-        </div>
-      </div>
-      <div class="mb-2 col-md-4 col-lg d-flex">
-        <div class="border rounded bg-light text-center p-2 flex-grow-1">
-          <div class="key-number" [class.refreshed]="refreshed">{{ stats.finalizedOrderCount | number }}</div>
-          &ngsp;
-          <div
-            [translate]="stats.finalizedOrderCount <= 1 ? 'order.statistics.finalized-order' : 'order.statistics.finalized-orders'"
-          ></div>
-        </div>
-      </div>
-      <div class="mb-2 col-md-4 col-lg d-flex">
-        <div class="border rounded bg-light text-center p-2 flex-grow-1">
-          <div class="key-number" [class.refreshed]="refreshed">{{ stats.cancelledOrderCount | number }}</div>
-          &ngsp;
-          <div
-            [translate]="stats.cancelledOrderCount <= 1 ? 'order.statistics.cancelled-order' : 'order.statistics.cancelled-orders'"
-          ></div>
-        </div>
-      </div>
-      <div class="mb-2 col-md-6 col-lg d-flex">
-        <div class="border rounded bg-light text-center p-2 flex-grow-1">
-          <div class="key-number" [class.refreshed]="refreshed">{{ stats.distinctFinalizedOrderCustomerCount | number }}</div>
-          &ngsp;
-          <div
-            [translate]="
-              stats.distinctFinalizedOrderCustomerCount <= 1 ? 'order.statistics.distinct-customer' : 'order.statistics.distinct-customers'
-            "
-          ></div>
-        </div>
-      </div>
-      <div class="mb-2 col-md-6 col-lg d-flex">
-        <div class="border rounded bg-light text-center p-2 flex-grow-1">
-          <div class="key-number" [class.refreshed]="refreshed">{{ stats.averageFinalizationDurationInDays | number: '.0-1' }}</div>
-          &ngsp;
-          <div
-            [translate]="
-              stats.averageFinalizationDurationInDays <= 1 ? 'order.statistics.day-to-finalize' : 'order.statistics.days-to-finalize'
-            "
-          ></div>
-        </div>
-      </div>
-    </div>
+        @if (stats.finalizedOrderCount) {
+          <div class="row align-items-center">
+            <div class="col-md mb-2 mb-md-2">
+              <rb-chart [configuration]="customerTypeDoughnut" id="customer-types-chart"></rb-chart>
+            </div>
+            <div class="col-md">
+              <table class="table table-sm">
+                <thead class="table-light">
+                  <tr>
+                    <th translate="order.statistics.customer-type"></th>
+                    <th translate="order.statistics.order-count"></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  @for (stat of stats.customerTypeStatistics; track stat) {
+                    <tr class="customer-type-stat">
+                      <td>
+                        <span [style.backgroundColor]="colors[$index]" class="color-square"></span>
+                        {{ stat.customerType | customerTypeEnum }}
+                      </td>
+                      <td>{{ stat.finalizedOrderCount | number }} ({{ finalizedOrderCountRatio(stat) | percent }})</td>
+                    </tr>
+                  }
+                </tbody>
+                <tfoot>
+                  <tr>
+                    <td><strong translate="order.statistics.total"></strong></td>
+                    <td>{{ stats.finalizedOrderCount | number }}</td>
+                  </tr>
+                </tfoot>
+              </table>
+            </div>
+          </div>
+        } @else {
+          <div class="text-body-secondary" translate="order.statistics.no-finalized-order"></div>
+        }
 
-    <h2 translate="order.statistics.customer-types-title"></h2>
+        <h2 translate="order.statistics.order-status-title"></h2>
 
-    <div class="text-body-secondary" *ngIf="!stats.finalizedOrderCount" translate="order.statistics.no-finalized-order"></div>
-    <div class="row align-items-center" *ngIf="stats.finalizedOrderCount">
-      <div class="col-md mb-2 mb-md-2">
-        <rb-chart [configuration]="customerTypeDoughnut" id="customer-types-chart"></rb-chart>
+        @if (stats.createdOrderCount) {
+          <div class="row align-items-center">
+            <div class="col-md mb-2 mb-md-2">
+              <rb-chart [configuration]="orderStatusDoughnut" id="order-status-chart"></rb-chart>
+            </div>
+            <div class="col-md">
+              <table class="table table-sm">
+                <thead class="table-light">
+                  <tr>
+                    <th translate="order.statistics.order-status"></th>
+                    <th translate="order.statistics.order-count"></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  @for (stat of stats.orderStatusStatistics; track stat) {
+                    <tr class="order-status-stat">
+                      <td>
+                        <span [style.backgroundColor]="colors[$index]" class="color-square"></span>
+                        {{ stat.orderStatus | orderStatusEnum }}
+                      </td>
+                      <td>{{ stat.createdOrderCount | number }} ({{ createdOrderCountRatio(stat) | percent }})</td>
+                    </tr>
+                  }
+                </tbody>
+                <tfoot>
+                  <tr>
+                    <td><strong translate="order.statistics.total"></strong></td>
+                    <td>{{ stats.createdOrderCount | number }}</td>
+                  </tr>
+                </tfoot>
+              </table>
+            </div>
+          </div>
+        } @else {
+          <div class="text-body-secondary" translate="order.statistics.no-created-order"></div>
+        }
       </div>
-      <div class="col-md">
-        <table class="table table-sm">
-          <thead class="table-light">
-            <tr>
-              <th translate="order.statistics.customer-type"></th>
-              <th translate="order.statistics.order-count"></th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr *ngFor="let stat of stats.customerTypeStatistics; index as index" class="customer-type-stat">
-              <td>
-                <span [style.backgroundColor]="colors[index]" class="color-square"></span>
-                {{ stat.customerType | customerTypeEnum }}
-              </td>
-              <td>{{ stat.finalizedOrderCount | number }} ({{ finalizedOrderCountRatio(stat) | percent }})</td>
-            </tr>
-          </tbody>
-          <tfoot>
-            <tr>
-              <td><strong translate="order.statistics.total"></strong></td>
-              <td>{{ stats.finalizedOrderCount | number }}</td>
-            </tr>
-          </tfoot>
-        </table>
-      </div>
-    </div>
-
-    <h2 translate="order.statistics.order-status-title"></h2>
-
-    <div class="text-body-secondary" *ngIf="!stats.createdOrderCount" translate="order.statistics.no-created-order"></div>
-    <div class="row align-items-center" *ngIf="stats.createdOrderCount">
-      <div class="col-md mb-2 mb-md-2">
-        <rb-chart [configuration]="orderStatusDoughnut" id="order-status-chart"></rb-chart>
-      </div>
-      <div class="col-md">
-        <table class="table table-sm">
-          <thead class="table-light">
-            <tr>
-              <th translate="order.statistics.order-status"></th>
-              <th translate="order.statistics.order-count"></th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr *ngFor="let stat of stats.orderStatusStatistics; index as index" class="order-status-stat">
-              <td>
-                <span [style.backgroundColor]="colors[index]" class="color-square"></span>
-                {{ stat.orderStatus | orderStatusEnum }}
-              </td>
-              <td>{{ stat.createdOrderCount | number }} ({{ createdOrderCountRatio(stat) | percent }})</td>
-            </tr>
-          </tbody>
-          <tfoot>
-            <tr>
-              <td><strong translate="order.statistics.total"></strong></td>
-              <td>{{ stats.createdOrderCount | number }}</td>
-            </tr>
-          </tfoot>
-        </table>
-      </div>
-    </div>
+    }
   </div>
-</div>
+}

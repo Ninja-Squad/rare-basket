@@ -8,7 +8,7 @@ import { timer } from 'rxjs';
 import { CustomerTypeEnumPipe } from '../../shared/customer-type-enum.pipe';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { AccessionComponent } from '../../shared/accession/accession.component';
-import { DecimalPipe, NgFor, NgIf } from '@angular/common';
+import { DecimalPipe } from '@angular/common';
 import { NgbCollapse } from '@ng-bootstrap/ng-bootstrap';
 import { ValidationErrorDirective, ValidationErrorsComponent } from 'ngx-valdemort';
 import { FormControlValidationDirective } from '../../shared/form-control-validation.directive';
@@ -25,8 +25,6 @@ import { TranslateModule } from '@ngx-translate/core';
     FormControlValidationDirective,
     ValidationErrorsComponent,
     NgbCollapse,
-    NgFor,
-    NgIf,
     AccessionComponent,
     FontAwesomeModule,
     ValidationErrorDirective,

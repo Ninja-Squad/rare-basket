@@ -40,7 +40,9 @@
       <label class="form-label" for="type" translate="order.edit-customer-information.customer-type"></label>
       <select formControlName="type" id="type" class="form-select">
         <option [ngValue]="null"></option>
-        <option *ngFor="let customerType of customerTypes" [value]="customerType">{{ customerType | customerTypeEnum }}</option>
+        @for (customerType of customerTypes; track customerType) {
+          <option [value]="customerType">{{ customerType | customerTypeEnum }}</option>
+        }
       </select>
       <val-errors controlName="type" [label]="'order.edit-customer-information.customer-type-error-label' | translate"></val-errors>
     </div>
@@ -48,7 +50,9 @@
       <label class="form-label" for="language" translate="order.edit-customer-information.language"></label>
       <select formControlName="language" id="language" class="form-select">
         <option [ngValue]="null"></option>
-        <option *ngFor="let language of languages" [value]="language">{{ language | languageEnum }}</option>
+        @for (language of languages; track language) {
+          <option [value]="language">{{ language | languageEnum }}</option>
+        }
       </select>
       <val-errors controlName="language" [label]="'order.edit-customer-information.language-error-label' | translate"></val-errors>
     </div>

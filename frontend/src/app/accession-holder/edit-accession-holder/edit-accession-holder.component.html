@@ -25,7 +25,9 @@
       <label class="form-label" for="grc" translate="accession-holder.edit.grc"></label>
       <select class="form-select" formControlName="grcId" id="grc">
         <option [ngValue]="null"></option>
-        <option *ngFor="let grc of grcs" [ngValue]="grc.id">{{ grc.name }}</option>
+        @for (grc of grcs; track grc.id) {
+          <option [ngValue]="grc.id">{{ grc.name }}</option>
+        }
       </select>
       <val-errors controlName="grcId" [label]="'accession-holder.edit.grc-error-label' | translate"></val-errors>
     </div>

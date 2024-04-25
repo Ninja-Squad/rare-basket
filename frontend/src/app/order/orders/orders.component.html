@@ -1,39 +1,43 @@
-<div *ngFor="let order of orders.content">
-  <div class="row">
-    <div class="col-6 col-md-2">
-      <a [routerLink]="['/orders', order.id]">{{ order.basket.reference }}</a>
-      <div
-        class="text-body-secondary small"
-        translate="order.orders.for-accession-holder"
-        [translateParams]="{ name: order.accessionHolder.name }"
-      ></div>
-    </div>
-    <div class="col-6 col-md-2 order-md-3">
-      <ng-container [ngPlural]="order.items.length">
-        <ng-template ngPluralCase="=0">
-          <span translate="order.orders.zero-accession"></span>
-        </ng-template>
-        <ng-template ngPluralCase="=1">
-          <span translate="order.orders.one-accession"></span>
-        </ng-template>
-        <ng-template ngPluralCase="other">
-          <span translate="order.orders.n-accessions" [translateParams]="{ n: order.items.length | number }"></span>
-        </ng-template>
-      </ng-container>
-    </div>
-    <div class="col-6 col-md order-md-1">
-      <div>
-        {{ order.basket.customer.name }}
-        <span *ngIf="order.basket.customer.organization" class="text-body-secondary small">({{ order.basket.customer.organization }})</span>
+@for (order of orders.content; track order.id) {
+  <div>
+    <div class="row">
+      <div class="col-6 col-md-2">
+        <a [routerLink]="['/orders', order.id]">{{ order.basket.reference }}</a>
+        <div
+          class="text-body-secondary small"
+          translate="order.orders.for-accession-holder"
+          [translateParams]="{ name: order.accessionHolder.name }"
+        ></div>
       </div>
-      <div class="text-body-secondary small">{{ order.basket.customer.type | customerTypeEnum }}</div>
+      <div class="col-6 col-md-2 order-md-3">
+        <ng-container [ngPlural]="order.items.length">
+          <ng-template ngPluralCase="=0">
+            <span translate="order.orders.zero-accession"></span>
+          </ng-template>
+          <ng-template ngPluralCase="=1">
+            <span translate="order.orders.one-accession"></span>
+          </ng-template>
+          <ng-template ngPluralCase="other">
+            <span translate="order.orders.n-accessions" [translateParams]="{ n: order.items.length | number }"></span>
+          </ng-template>
+        </ng-container>
+      </div>
+      <div class="col-6 col-md order-md-1">
+        <div>
+          {{ order.basket.customer.name }}
+          @if (order.basket.customer.organization) {
+            <span class="text-body-secondary small">({{ order.basket.customer.organization }})</span>
+          }
+        </div>
+        <div class="text-body-secondary small">{{ order.basket.customer.type | customerTypeEnum }}</div>
+      </div>
+      <div class="col-6 col-md-2 order-md-4">
+        <span class="badge bg-secondary">{{ order.status | orderStatusEnum }}</span>
+      </div>
+      <div class="col-6 col-md-2 order-md-2">{{ order.basket.confirmationInstant | date }}</div>
     </div>
-    <div class="col-6 col-md-2 order-md-4">
-      <span class="badge bg-secondary">{{ order.status | orderStatusEnum }}</span>
-    </div>
-    <div class="col-6 col-md-2 order-md-2">{{ order.basket.confirmationInstant | date }}</div>
+    <hr class="my-2" />
   </div>
-  <hr class="my-2" />
-</div>
+}
 
 <rb-pagination class="d-flex justify-content-center mt-4" [page]="orders" [navigate]="true"></rb-pagination>

@@ -1,11 +1,16 @@
-<div *ngIf="basket">
-  <h1 translate="basket.basket.title" [translateParams]="{ reference: basket.reference }"></h1>
-  <rb-edit-basket *ngIf="basket.status === 'DRAFT'" [basket]="basket" (basketSaved)="save($event)"></rb-edit-basket>
-  <rb-edit-confirmation
-    *ngIf="basket.status === 'SAVED'"
-    [basket]="basket"
-    (basketConfirmed)="confirm($event)"
-    (refreshRequested)="refresh()"
-  ></rb-edit-confirmation>
-  <rb-confirmed *ngIf="basket.status === 'CONFIRMED'" [basket]="basket"></rb-confirmed>
-</div>
+@if (basket) {
+  <div>
+    <h1 translate="basket.basket.title" [translateParams]="{ reference: basket.reference }"></h1>
+    @switch (basket.status) {
+      @case ('DRAFT') {
+        <rb-edit-basket [basket]="basket" (basketSaved)="save($event)"></rb-edit-basket>
+      }
+      @case ('SAVED') {
+        <rb-edit-confirmation [basket]="basket" (basketConfirmed)="confirm($event)" (refreshRequested)="refresh()"></rb-edit-confirmation>
+      }
+      @case ('CONFIRMED') {
+        <rb-confirmed [basket]="basket"></rb-confirmed>
+      }
+    }
+  </div>
+}

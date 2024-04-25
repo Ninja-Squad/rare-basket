@@ -1,213 +1,247 @@
-<div *ngIf="order">
-  <h1 class="d-flex align-items-center">
-    <div
-      class="flex-grow-1"
-      translate="order.order.title"
-      [translateParams]="{ reference: order.basket.reference }"
-      [class.cancelled]="order.status === 'CANCELLED'"
-    ></div>
-    <div>
-      <span class="badge bg-secondary ms-2" [class.status-changed]="statusChanged">{{ order.status | orderStatusEnum }}</span>
-    </div>
-  </h1>
-
-  <div class="content mb-2">
-    <p
-      class="text-body-secondary"
-      translate="order.order.creation-date-and-accession-holder"
-      [translateParams]="{ date: order.basket.confirmationInstant | date: 'longDate', accessionHolder: order.accessionHolder.name }"
-    ></p>
-    <div class="row">
-      <div class="col-md-5">
-        <h2 translate="order.order.customer-information"></h2>
-        <div *ngIf="!editingCustomer">
-          <rb-customer-information
-            [customer]="order.basket.customer"
-            [rationale]="order.basket.rationale"
-            [withLanguage]="true"
-          ></rb-customer-information>
-
-          <div *ngIf="order.status === 'DRAFT'" class="text-end">
-            <button
-              type="button"
-              class="btn btn-sm btn-outline-primary"
-              id="edit-customer-button"
-              [disabled]="operationInProgress"
-              (click)="editCustomer()"
-            >
-              <fa-icon [icon]="editIcon" class="me-1"></fa-icon>
-              <span translate="order.order.edit"></span>
-            </button>
-          </div>
-        </div>
-        <rb-edit-customer-information
-          *ngIf="editingCustomer"
-          [customerInformation]="order.basket"
-          (saved)="customerSaved($event)"
-          (cancelled)="editingCustomer = false"
-        ></rb-edit-customer-information>
+@if (order) {
+  <div>
+    <h1 class="d-flex align-items-center">
+      <div
+        class="flex-grow-1"
+        translate="order.order.title"
+        [translateParams]="{ reference: order.basket.reference }"
+        [class.cancelled]="order.status === 'CANCELLED'"
+      ></div>
+      <div>
+        <span class="badge bg-secondary ms-2" [class.status-changed]="statusChanged">{{ order.status | orderStatusEnum }}</span>
       </div>
-      <div class="col-md-7">
-        <h2 translate="order.order.ordered-accessions"></h2>
-        <div *ngIf="!editing">
-          <div class="scrolling-accessions mb-2">
-            <table class="table table-sm mb-0">
-              <thead class="table-light">
-                <tr>
-                  <th translate="order.order.accession-heading"></th>
-                  <th translate="order.order.quantity-heading"></th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr *ngFor="let item of order.items" class="order-item">
-                  <td><rb-accession [accession]="item.accession"></rb-accession></td>
-                  <td>{{ item.quantity | number }} {{ item.unit }}</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-          <div *ngIf="order.status === 'DRAFT'" class="text-end">
-            <button
-              type="button"
-              class="btn btn-sm btn-outline-primary"
-              id="edit-order-button"
-              [disabled]="operationInProgress"
-              (click)="edit()"
-            >
-              <fa-icon [icon]="editIcon" class="me-1"></fa-icon>
-              <span translate="order.order.edit"></span>
-            </button>
-          </div>
-        </div>
-        <rb-edit-order *ngIf="editing" [order]="order" (saved)="saved($event)" (cancelled)="editing = false"></rb-edit-order>
-      </div>
-    </div>
+    </h1>
 
-    <hr />
-
-    <h2 translate="order.order.documents"></h2>
-
-    <div *ngIf="order.documents.length === 0" class="text-body-secondary my-2" translate="order.order.no-document"></div>
-
-    <div *ngFor="let document of order.documents" class="my-2 document">
-      <div class="d-flex">
-        <div class="me-2">
-          <fa-icon *ngIf="document.onDeliveryForm" [icon]="documentOnDeliveryFormIcon"></fa-icon>
-          <fa-icon *ngIf="!document.onDeliveryForm" [icon]="documentNotOnDeliveryFormIcon"></fa-icon>
-        </div>
-        <div class="flex-grow-1 row">
-          <div class="col-md-7 col-lg-8">
-            <div class="file-name">
-              <button class="btn btn-link p-0 download-button" (click)="download(document, $event)" [disabled]="isDownloading(document)">
-                {{ document.originalFileName }}
-                <fa-icon *ngIf="isDownloading(document)" [icon]="downloadingIcon" [spin]="true" class="ms-1 download-spinner"></fa-icon>
-              </button>
-            </div>
-            <small class="text-body-secondary">
-              <span>{{ document.creationInstant | date: 'medium' }}</span>
-              &ngsp;&mdash;&ngsp;
-              <span *ngIf="document.onDeliveryForm" translate="order.order.document-on-delivery-form"></span>
-              <span *ngIf="!document.onDeliveryForm" translate="order.order.document-not-on-delivery-form"></span>
-            </small>
-          </div>
-          <div class="col-md-5 col-lg-4">
+    <div class="content mb-2">
+      <p
+        class="text-body-secondary"
+        translate="order.order.creation-date-and-accession-holder"
+        [translateParams]="{ date: order.basket.confirmationInstant | date: 'longDate', accessionHolder: order.accessionHolder.name }"
+      ></p>
+      <div class="row">
+        <div class="col-md-5">
+          <h2 translate="order.order.customer-information"></h2>
+          @if (editingCustomer) {
+            <rb-edit-customer-information
+              [customerInformation]="order.basket"
+              (saved)="customerSaved($event)"
+              (cancelled)="editingCustomer = false"
+            ></rb-edit-customer-information>
+          } @else {
             <div>
-              <span class="badge bg-secondary document-type">{{ document.type | documentTypeEnum }}</span>
+              <rb-customer-information
+                [customer]="order.basket.customer"
+                [rationale]="order.basket.rationale"
+                [withLanguage]="true"
+              ></rb-customer-information>
+
+              @if (order.status === 'DRAFT') {
+                <div class="text-end">
+                  <button
+                    type="button"
+                    class="btn btn-sm btn-outline-primary"
+                    id="edit-customer-button"
+                    [disabled]="operationInProgress"
+                    (click)="editCustomer()"
+                  >
+                    <fa-icon [icon]="editIcon" class="me-1"></fa-icon>
+                    <span translate="order.order.edit"></span>
+                  </button>
+                </div>
+              }
             </div>
-            <small class="text-body-secondary">{{ document.description }}</small>
-          </div>
+          }
         </div>
-        <div *ngIf="order.status === 'DRAFT'" class="ms-2">
-          <button
-            type="button"
-            class="btn btn-sm btn-outline-danger delete-document-button"
-            [disabled]="operationInProgress"
-            (click)="deleteDocument(document)"
-          >
-            <fa-icon [icon]="deleteDocumentIcon"></fa-icon>
-            <span class="visually-hidden" translate="order.order.delete-document"></span>
-          </button>
+        <div class="col-md-7">
+          <h2 translate="order.order.ordered-accessions"></h2>
+          @if (editing) {
+            <rb-edit-order [order]="order" (saved)="saved($event)" (cancelled)="editing = false"></rb-edit-order>
+          } @else {
+            <div>
+              <div class="scrolling-accessions mb-2">
+                <table class="table table-sm mb-0">
+                  <thead class="table-light">
+                    <tr>
+                      <th translate="order.order.accession-heading"></th>
+                      <th translate="order.order.quantity-heading"></th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    @for (item of order.items; track item.id) {
+                      <tr class="order-item">
+                        <td><rb-accession [accession]="item.accession"></rb-accession></td>
+                        <td>{{ item.quantity | number }} {{ item.unit }}</td>
+                      </tr>
+                    }
+                  </tbody>
+                </table>
+              </div>
+              @if (order.status === 'DRAFT') {
+                <div class="text-end">
+                  <button
+                    type="button"
+                    class="btn btn-sm btn-outline-primary"
+                    id="edit-order-button"
+                    [disabled]="operationInProgress"
+                    (click)="edit()"
+                  >
+                    <fa-icon [icon]="editIcon" class="me-1"></fa-icon>
+                    <span translate="order.order.edit"></span>
+                  </button>
+                </div>
+              }
+            </div>
+          }
         </div>
       </div>
-    </div>
 
-    <div>
-      <button
-        *ngIf="order.status === 'DRAFT' && !addingDocument"
-        (click)="addingDocument = true"
-        type="button"
-        class="btn btn-sm btn-outline-primary"
-        [disabled]="operationInProgress"
-        id="add-document-button"
-      >
-        <fa-icon [icon]="addDocumentIcon" class="me-1"></fa-icon>
-        <span translate="order.order.add-document"></span>
-      </button>
-    </div>
-
-    <div *ngIf="addingDocument" class="border rounded p-3">
-      <h3 translate="order.order.add-document-title"></h3>
-      <rb-edit-document
-        (saved)="createDocument($event)"
-        (cancelled)="addingDocument = false"
-        [order]="order"
-        [uploadProgress]="uploadProgress"
-      ></rb-edit-document>
-    </div>
-
-    <div *ngIf="order.status !== 'CANCELLED'">
       <hr />
 
-      <button
-        *ngIf="order.status === 'DRAFT'"
-        (click)="finalizeOrder()"
-        [disabled]="operationInProgress"
-        type="button"
-        class="btn btn-primary btn-sm-block my-1 me-md-2"
-        id="finalize-order-button"
-      >
-        <fa-icon [icon]="finalizeOrderIcon" class="me-1"></fa-icon>
-        <span translate="order.order.finalize"></span>
-      </button>
+      <h2 translate="order.order.documents"></h2>
 
-      <button
-        *ngIf="order.status === 'DRAFT'"
-        (click)="cancelOrder()"
-        [disabled]="operationInProgress"
-        type="button"
-        class="btn btn-danger btn-sm-block"
-        id="cancel-order-button"
-      >
-        <fa-icon [icon]="cancelOrderIcon" class="me-1"></fa-icon>
-        <span translate="order.order.cancel"></span>
-      </button>
+      @for (document of order.documents; track document.id) {
+        <div class="my-2 document">
+          <div class="d-flex">
+            <div class="me-2">
+              @if (document.onDeliveryForm) {
+                <fa-icon [icon]="documentOnDeliveryFormIcon"></fa-icon>
+              } @else {
+                <fa-icon [icon]="documentNotOnDeliveryFormIcon"></fa-icon>
+              }
+            </div>
+            <div class="flex-grow-1 row">
+              <div class="col-md-7 col-lg-8">
+                <div class="file-name">
+                  <button
+                    class="btn btn-link p-0 download-button"
+                    (click)="download(document, $event)"
+                    [disabled]="isDownloading(document)"
+                  >
+                    {{ document.originalFileName }}
+                    @if (isDownloading(document)) {
+                      <fa-icon [icon]="downloadingIcon" [spin]="true" class="ms-1 download-spinner"></fa-icon>
+                    }
+                  </button>
+                </div>
+                <small class="text-body-secondary">
+                  <span>{{ document.creationInstant | date: 'medium' }}</span>
+                  &ngsp;&mdash;&ngsp;
+                  @if (document.onDeliveryForm) {
+                    <span translate="order.order.document-on-delivery-form"></span>
+                  } @else {
+                    <span translate="order.order.document-not-on-delivery-form"></span>
+                  }
+                </small>
+              </div>
+              <div class="col-md-5 col-lg-4">
+                <div>
+                  <span class="badge bg-secondary document-type">{{ document.type | documentTypeEnum }}</span>
+                </div>
+                <small class="text-body-secondary">{{ document.description }}</small>
+              </div>
+            </div>
+            @if (order.status === 'DRAFT') {
+              <div class="ms-2">
+                <button
+                  type="button"
+                  class="btn btn-sm btn-outline-danger delete-document-button"
+                  [disabled]="operationInProgress"
+                  (click)="deleteDocument(document)"
+                >
+                  <fa-icon [icon]="deleteDocumentIcon"></fa-icon>
+                  <span class="visually-hidden" translate="order.order.delete-document"></span>
+                </button>
+              </div>
+            }
+          </div>
+        </div>
+      } @empty {
+        <div class="text-body-secondary my-2" translate="order.order.no-document"></div>
+      }
 
-      <button
-        *ngIf="order.status === 'FINALIZED'"
-        class="btn btn-primary btn-sm-block my-1 me-md-2"
-        [disabled]="downloadingDeliveryForm"
-        (click)="downloadDeliveryForm()"
-        id="delivery-form-button"
-      >
-        <fa-icon [icon]="deliveryFormIcon" class="me-1"></fa-icon>
-        <span translate="order.order.delivery-form"></span>
-      </button>
+      <div>
+        @if (order.status === 'DRAFT' && !addingDocument) {
+          <button
+            (click)="addingDocument = true"
+            type="button"
+            class="btn btn-sm btn-outline-primary"
+            [disabled]="operationInProgress"
+            id="add-document-button"
+          >
+            <fa-icon [icon]="addDocumentIcon" class="me-1"></fa-icon>
+            <span translate="order.order.add-document"></span>
+          </button>
+        }
+      </div>
 
-      <button
-        *ngIf="order.status === 'FINALIZED' && hasOnDeliveryFormDocument()"
-        class="btn btn-primary btn-sm-block"
-        (click)="downloadCompleteDeliveryForm()"
-        [disabled]="downloadingDeliveryForm"
-        id="complete-delivery-form-button"
-      >
-        <fa-icon [icon]="completeDeliveryFormIcon" class="me-1"></fa-icon>
-        <span translate="order.order.complete-delivery-form"></span>
-      </button>
+      @if (addingDocument) {
+        <div class="border rounded p-3">
+          <h3 translate="order.order.add-document-title"></h3>
+          <rb-edit-document
+            (saved)="createDocument($event)"
+            (cancelled)="addingDocument = false"
+            [order]="order"
+            [uploadProgress]="uploadProgress"
+          ></rb-edit-document>
+        </div>
+      }
+
+      @if (order.status !== 'CANCELLED') {
+        <div>
+          <hr />
+
+          @if (order.status === 'DRAFT') {
+            <button
+              (click)="finalizeOrder()"
+              [disabled]="operationInProgress"
+              type="button"
+              class="btn btn-primary btn-sm-block my-1 me-md-2"
+              id="finalize-order-button"
+            >
+              <fa-icon [icon]="finalizeOrderIcon" class="me-1"></fa-icon>
+              <span translate="order.order.finalize"></span>
+            </button>
+
+            <button
+              (click)="cancelOrder()"
+              [disabled]="operationInProgress"
+              type="button"
+              class="btn btn-danger btn-sm-block"
+              id="cancel-order-button"
+            >
+              <fa-icon [icon]="cancelOrderIcon" class="me-1"></fa-icon>
+              <span translate="order.order.cancel"></span>
+            </button>
+          } @else if (order.status === 'FINALIZED') {
+            <button
+              class="btn btn-primary btn-sm-block my-1 me-md-2"
+              [disabled]="downloadingDeliveryForm"
+              (click)="downloadDeliveryForm()"
+              id="delivery-form-button"
+            >
+              <fa-icon [icon]="deliveryFormIcon" class="me-1"></fa-icon>
+              <span translate="order.order.delivery-form"></span>
+            </button>
+
+            @if (hasOnDeliveryFormDocument()) {
+              <button
+                class="btn btn-primary btn-sm-block"
+                (click)="downloadCompleteDeliveryForm()"
+                [disabled]="downloadingDeliveryForm"
+                id="complete-delivery-form-button"
+              >
+                <fa-icon [icon]="completeDeliveryFormIcon" class="me-1"></fa-icon>
+                <span translate="order.order.complete-delivery-form"></span>
+              </button>
+            }
+          }
+        </div>
+      }
     </div>
-  </div>
 
-  <a routerLink="/orders" class="btn btn-outline-secondary">
-    <fa-icon [icon]="allOrdersIcon" class="me-1"></fa-icon>
-    <span translate="order.order.all-orders"></span>
-  </a>
-</div>
+    <a routerLink="/orders" class="btn btn-outline-secondary">
+      <fa-icon [icon]="allOrdersIcon" class="me-1"></fa-icon>
+      <span translate="order.order.all-orders"></span>
+    </a>
+  </div>
+}
