@@ -48,7 +48,7 @@ describe('NavbarComponent', () => {
   let userSubject: Subject<User>;
 
   beforeEach(() => {
-    userSubject = new Subject<User>();
+    userSubject = new Subject<User | null>();
     authenticationService = createMock(AuthenticationService);
     authenticationService.getCurrentUser.and.returnValue(userSubject);
 

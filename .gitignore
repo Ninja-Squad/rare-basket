@@ -35,3 +35,6 @@ secrets
 Thumbs.db
 
 examples
+
+.nx
+.sdkmanrc

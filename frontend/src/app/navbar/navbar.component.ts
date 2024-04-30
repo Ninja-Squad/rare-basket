@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
 import { AuthenticationService } from '../shared/authentication.service';
 import {
   faBuilding,
@@ -15,18 +15,33 @@ import { TranslateModule } from '@ngx-translate/core';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { RouterLink } from '@angular/router';
 
-import { NgbDropdown, NgbDropdownItem, NgbDropdownMenu, NgbDropdownToggle } from '@ng-bootstrap/ng-bootstrap';
+import { NgbCollapse, NgbDropdown, NgbDropdownItem, NgbDropdownMenu, NgbDropdownToggle } from '@ng-bootstrap/ng-bootstrap';
+import { map, Observable, startWith } from 'rxjs';
+import { AsyncPipe } from '@angular/common';
+
+type ViewModel = { status: 'unknown' | 'absent' } | { status: 'present'; user: User };
 
 @Component({
   selector: 'rb-navbar',
   templateUrl: './navbar.component.html',
   styleUrl: './navbar.component.scss',
   standalone: true,
-  imports: [RouterLink, FontAwesomeModule, TranslateModule, NgbDropdown, NgbDropdownToggle, NgbDropdownMenu, NgbDropdownItem]
+  imports: [
+    RouterLink,
+    FontAwesomeModule,
+    TranslateModule,
+    NgbDropdown,
+    NgbDropdownToggle,
+    NgbDropdownMenu,
+    NgbDropdownItem,
+    AsyncPipe,
+    NgbCollapse
+  ],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class NavbarComponent implements OnInit {
-  collapsed = true;
-  user: User | null | undefined = undefined;
+export class NavbarComponent {
+  collapsed = signal(true);
+  vm$: Observable<ViewModel>;
 
   ordersIcon = faShoppingBag;
   administrationIcon = faShieldAlt;
@@ -37,12 +52,11 @@ export class NavbarComponent implements OnInit {
   loginIcon = faSignInAlt;
   logoutIcon = faPowerOff;
 
-  constructor(private authenticationService: AuthenticationService) {}
-
-  ngOnInit() {
-    this.authenticationService.getCurrentUser().subscribe(user => {
-      this.user = user;
-    });
+  constructor(private authenticationService: AuthenticationService) {
+    this.vm$ = this.authenticationService.getCurrentUser().pipe(
+      map((user): ViewModel => (user ? { status: 'present', user } : { status: 'absent' })),
+      startWith({ status: 'unknown' as const })
+    );
   }
 
   login() {
@@ -53,7 +67,7 @@ export class NavbarComponent implements OnInit {
     this.authenticationService.logout();
   }
 
-  hasPermission(permission: Permission): boolean {
-    return this.user && this.user.permissions.includes(permission);
+  hasPermission(vm: ViewModel, permission: Permission): boolean {
+    return vm.status === 'present' && vm.user.permissions.includes(permission);
   }
 }
