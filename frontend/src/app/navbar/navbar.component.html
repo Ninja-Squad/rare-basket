@@ -1,74 +1,79 @@
-<nav class="navbar navbar-expand-md bg-dark py-0" data-bs-theme="dark">
-  <div class="container-fluid">
-    <span class="navbar-brand">
-      <img src="assets/logo.png" alt="" />
-    </span>
-    <button
-      class="navbar-toggler"
-      type="button"
-      [attr.aria-expanded]="!collapsed"
-      [attr.aria-label]="'navbar.toggle' | translate"
-      (click)="collapsed = !collapsed"
-    >
-      <span class="navbar-toggler-icon"></span>
-    </button>
-    <div class="collapse navbar-collapse" [class.show]="!collapsed">
-      <ul class="navbar-nav me-auto">
-        @if (hasPermission('ORDER_MANAGEMENT') || hasPermission('ORDER_VISUALIZATION')) {
-          <li class="nav-item" id="navbar-orders">
-            <a class="nav-link" routerLink="/orders" (click)="collapsed = true">
-              <fa-icon [icon]="ordersIcon" class="me-1"></fa-icon>
-              <span translate="navbar.orders"></span>
-            </a>
-          </li>
-        }
-
-        @if (hasPermission('ADMINISTRATION')) {
-          <li class="nav-item" ngbDropdown>
-            <a class="nav-link" ngbDropdownToggle id="navbar-administration-dropdown" role="button" tabindex="0">
-              <fa-icon [icon]="administrationIcon" class="me-1"></fa-icon>
-              <span translate="navbar.administration"></span>
-            </a>
-            <div ngbDropdownMenu aria-labelledby="navbar-administration-dropdown" class="dropdown-menu">
-              <a ngbDropdownItem routerLink="/grcs" (click)="collapsed = true" id="navbar-grcs">
-                <fa-icon [icon]="grcIcon" class="me-1"></fa-icon>
-                <span translate="navbar.grcs"></span>
+@if (vm$ | async; as vm) {
+  <nav class="navbar navbar-expand-md bg-dark py-0" data-bs-theme="dark">
+    <div class="container-fluid">
+      <span class="navbar-brand">
+        <img src="assets/logo.png" alt="" />
+      </span>
+      <button
+        class="navbar-toggler"
+        type="button"
+        [attr.aria-expanded]="!collapsed"
+        [attr.aria-label]="'navbar.toggle' | translate"
+        (click)="collapsed.set(!collapsed())"
+      >
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" [ngbCollapse]="collapsed()">
+        <ul class="navbar-nav me-auto">
+          @if (hasPermission(vm, 'ORDER_MANAGEMENT') || hasPermission(vm, 'ORDER_VISUALIZATION')) {
+            <li class="nav-item" id="navbar-orders">
+              <a class="nav-link" routerLink="/orders" (click)="collapsed.set(true)">
+                <fa-icon [icon]="ordersIcon" class="me-1"></fa-icon>
+                <span translate="navbar.orders"></span>
               </a>
-              <a ngbDropdownItem routerLink="/accession-holders" (click)="collapsed = true" id="navbar-accession-holders">
-                <fa-icon [icon]="accessionHolderIcon" class="me-1"></fa-icon>
-                <span translate="navbar.accession-holders"></span>
-              </a>
-              <a ngbDropdownItem routerLink="/users" (click)="collapsed = true" id="navbar-users">
-                <fa-icon [icon]="usersIcon" class="me-1"></fa-icon>
-                <span translate="navbar.users"></span>
-              </a>
-            </div>
-          </li>
-        }
-      </ul>
-      <ul class="navbar-nav align-items-baseline">
-        @if (user) {
-          <li class="nav-item" class="me-2" id="navbar-user">
-            <span class="navbar-text">
-              <fa-icon [icon]="userIcon" class="me-1"></fa-icon>
-              {{ user.name }}
-            </span>
-          </li>
-        }
-        <li>
-          @if (user) {
-            <a class="nav-link" role="button" (click)="logout(); collapsed = true" id="navbar-logout" tabindex="0">
-              <fa-icon [icon]="logoutIcon" class="me-1"></fa-icon>
-              <span translate="navbar.logout"></span>
-            </a>
-          } @else if (user === null) {
-            <a class="nav-link" role="button" (click)="login(); collapsed = true" id="navbar-login" tabindex="0">
-              <fa-icon [icon]="loginIcon" class="me-1"></fa-icon>
-              <span translate="navbar.login"></span>
-            </a>
+            </li>
           }
-        </li>
-      </ul>
+
+          @if (hasPermission(vm, 'ADMINISTRATION')) {
+            <li class="nav-item" ngbDropdown>
+              <a class="nav-link" ngbDropdownToggle id="navbar-administration-dropdown" role="button" tabindex="0">
+                <fa-icon [icon]="administrationIcon" class="me-1"></fa-icon>
+                <span translate="navbar.administration"></span>
+              </a>
+              <div ngbDropdownMenu aria-labelledby="navbar-administration-dropdown" class="dropdown-menu">
+                <a ngbDropdownItem routerLink="/grcs" (click)="collapsed.set(true)" id="navbar-grcs">
+                  <fa-icon [icon]="grcIcon" class="me-1"></fa-icon>
+                  <span translate="navbar.grcs"></span>
+                </a>
+                <a ngbDropdownItem routerLink="/accession-holders" (click)="collapsed.set(true)" id="navbar-accession-holders">
+                  <fa-icon [icon]="accessionHolderIcon" class="me-1"></fa-icon>
+                  <span translate="navbar.accession-holders"></span>
+                </a>
+                <a ngbDropdownItem routerLink="/users" (click)="collapsed.set(true)" id="navbar-users">
+                  <fa-icon [icon]="usersIcon" class="me-1"></fa-icon>
+                  <span translate="navbar.users"></span>
+                </a>
+              </div>
+            </li>
+          }
+        </ul>
+        <ul class="navbar-nav align-items-baseline">
+          @if (vm.status === 'present') {
+            <li class="nav-item" class="me-2" id="navbar-user">
+              <span class="navbar-text">
+                <fa-icon [icon]="userIcon" class="me-1"></fa-icon>
+                {{ vm.user.name }}
+              </span>
+            </li>
+          }
+          <li>
+            @switch (vm.status) {
+              @case ('present') {
+                <a class="nav-link" role="button" (click)="logout(); collapsed.set(true)" id="navbar-logout" tabindex="0">
+                  <fa-icon [icon]="logoutIcon" class="me-1"></fa-icon>
+                  <span translate="navbar.logout"></span>
+                </a>
+              }
+              @case ('absent') {
+                <a class="nav-link" role="button" (click)="login(); collapsed.set(true)" id="navbar-login" tabindex="0">
+                  <fa-icon [icon]="loginIcon" class="me-1"></fa-icon>
+                  <span translate="navbar.login"></span>
+                </a>
+              }
+            }
+          </li>
+        </ul>
+      </div>
     </div>
-  </div>
-</nav>
+  </nav>
+}
