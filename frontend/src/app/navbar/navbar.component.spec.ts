@@ -66,7 +66,7 @@ describe('NavbarComponent', () => {
     expect(tester.users).toBeNull();
     expect(tester.accessionHolders).toBeNull();
     expect(tester.logout).toBeNull();
-    expect(tester.login).toBeNull();
+    expect(tester.login).not.toBeNull();
 
     userSubject.next({ name: 'JB', permissions: ['ORDER_MANAGEMENT'] } as User);
     tester.detectChanges();

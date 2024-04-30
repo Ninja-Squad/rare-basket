@@ -1,7 +1,7 @@
 <nav class="navbar navbar-expand-md bg-dark py-0" data-bs-theme="dark">
   <div class="container-fluid">
     <span class="navbar-brand">
-      <img src="assets/logo.png" alt="" />
+      <img src="assets/logo.png" alt="Logo" />
     </span>
     <button
       class="navbar-toggler"
@@ -48,7 +48,7 @@
       </ul>
       <ul class="navbar-nav align-items-baseline">
         @if (user) {
-          <li class="nav-item" class="me-2" id="navbar-user">
+          <li class="nav-item me-2" id="navbar-user">
             <span class="navbar-text">
               <fa-icon [icon]="userIcon" class="me-1"></fa-icon>
               {{ user.name }}
@@ -61,7 +61,7 @@
               <fa-icon [icon]="logoutIcon" class="me-1"></fa-icon>
               <span translate="navbar.logout"></span>
             </a>
-          } @else if (user === null) {
+          } @else {
             <a class="nav-link" role="button" (click)="login(); collapsed = true" id="navbar-login" tabindex="0">
               <fa-icon [icon]="loginIcon" class="me-1"></fa-icon>
               <span translate="navbar.login"></span>

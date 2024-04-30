@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { AuthenticationService } from '../shared/authentication.service';
 import {
   faBuilding,
@@ -24,9 +24,9 @@ import { NgbDropdown, NgbDropdownItem, NgbDropdownMenu, NgbDropdownToggle } from
   standalone: true,
   imports: [RouterLink, FontAwesomeModule, TranslateModule, NgbDropdown, NgbDropdownToggle, NgbDropdownMenu, NgbDropdownItem]
 })
-export class NavbarComponent implements OnInit {
+export class NavbarComponent {
   collapsed = true;
-  user: User | null | undefined = undefined;
+  user: User | null = null;
 
   ordersIcon = faShoppingBag;
   administrationIcon = faShieldAlt;
@@ -37,12 +37,8 @@ export class NavbarComponent implements OnInit {
   loginIcon = faSignInAlt;
   logoutIcon = faPowerOff;
 
-  constructor(private authenticationService: AuthenticationService) {}
-
-  ngOnInit() {
-    this.authenticationService.getCurrentUser().subscribe(user => {
-      this.user = user;
-    });
+  constructor(private authenticationService: AuthenticationService) {
+    this.authenticationService.getCurrentUser().subscribe(user => (this.user = user));
   }
 
   login() {
