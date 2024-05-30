@@ -5544,10 +5544,10 @@ neo-async@^2.6.2:
   resolved "https://registry.yarnpkg.com/neo-async/-/neo-async-2.6.2.tgz#b4aafb93e3aeb2d8174ca53cf163ab7d7308305f"
   integrity sha512-Yd3UES5mWCSqR+qNT93S3UoYUkqAZ9lLg8a7g9rimsWmYGK8cVToA4/sF3RrshdyV3sAGMXVUmpMYOw+dLpOuw==
 
-ngx-speculoos@11.1.0:
-  version "11.1.0"
-  resolved "https://registry.yarnpkg.com/ngx-speculoos/-/ngx-speculoos-11.1.0.tgz#fe3c3c48f7c1fb23f642dbb0c05cc16641b7dd79"
-  integrity sha512-dmerZRNGCLOKrofqR+waMEs8gR+FEC6Zl0wd0FcOjsO5Yh27302Krat/fjSw5ZKVDsVuVYAhJnzV+0Dvmmpvlw==
+ngx-speculoos@12.0.1:
+  version "12.0.1"
+  resolved "https://registry.yarnpkg.com/ngx-speculoos/-/ngx-speculoos-12.0.1.tgz#7c811ca5fd6ef0b6376bfa79315c2851ac89c1e9"
+  integrity sha512-psduILTE15VXRVuBOQz9bjsSdXr0H3z4WOuZshn73C+lqOrJjKu9zfJDXIRj3LuVABfPJmILDJobuxycYyYVQw==
   dependencies:
     tslib "2.6.2"
 
