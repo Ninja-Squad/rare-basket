@@ -119,7 +119,7 @@
                   >
                     {{ document.originalFileName }}
                     @if (isDownloading(document)) {
-                      <fa-icon [icon]="downloadingIcon" [spin]="true" class="ms-1 download-spinner"></fa-icon>
+                      <fa-icon [icon]="downloadingIcon" [animation]="'spin'" class="ms-1 download-spinner"></fa-icon>
                     }
                   </button>
                 </div>
