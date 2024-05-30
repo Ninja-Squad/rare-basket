@@ -23,7 +23,7 @@ export class Modal<T> {
   }
 
   get result() {
-    return from(this.ngbModalRef.result).pipe(catchError(err => (this.errorOnClose ? throwError(err || 'not confirmed') : EMPTY)));
+    return from(this.ngbModalRef.result).pipe(catchError(err => (this.errorOnClose ? throwError(() => err || 'not confirmed') : EMPTY)));
   }
 }
 

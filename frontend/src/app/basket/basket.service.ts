@@ -29,7 +29,7 @@ export class BasketService {
         if (error.status === 400 && error.error?.functionalError === 'BASKET_ALREADY_CONFIRMED') {
           return of(undefined);
         }
-        return throwError(error);
+        return throwError(() => error);
       })
     );
   }

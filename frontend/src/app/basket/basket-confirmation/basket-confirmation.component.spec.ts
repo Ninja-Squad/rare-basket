@@ -52,7 +52,7 @@ describe('BasketConfirmationComponent', () => {
   });
 
   it('should confirm and display an alert is unsuccessful', () => {
-    basketService.confirm.and.returnValue(throwError(undefined));
+    basketService.confirm.and.returnValue(throwError(() => undefined));
     const router = TestBed.inject(Router);
     spyOn(router, 'navigate');
     tester.detectChanges();

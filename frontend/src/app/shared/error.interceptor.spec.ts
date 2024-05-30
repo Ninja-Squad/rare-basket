@@ -69,7 +69,7 @@ describe('errorInterceptor', () => {
       }
     });
 
-    http.expectOne('api/foo').error(new ErrorEvent('error'));
+    http.expectOne('api/foo').error(new ProgressEvent('error'));
 
     expect(toastService.error).toHaveBeenCalledWith('common.error-interceptor.client-error');
   });
