@@ -7,7 +7,7 @@
     "declaration": false,
     "experimentalDecorators": true,
     "module": "esnext",
-    "moduleResolution": "node",
+    "moduleResolution": "bundler",
     "noImplicitAny": true,
     "strictNullChecks": false,
     "strictFunctionTypes": true,
