@@ -285,9 +285,11 @@ describe('OrderComponent', () => {
   it('should finalize order after confirmation if no warning', () => {
     order.items.forEach(item => (item.unit = 'bags'));
     order.documents.push({
+      id: 54,
       type: 'MTA'
     } as Document);
     order.documents.push({
+      id: 55,
       type: 'SANITARY_PASSPORT'
     } as Document);
 
