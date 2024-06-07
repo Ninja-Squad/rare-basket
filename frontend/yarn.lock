@@ -2837,10 +2837,10 @@ ajv@^8.0.0, ajv@^8.9.0:
     require-from-string "^2.0.2"
     uri-js "^4.4.1"
 
-angular-auth-oidc-client@17.1.0:
-  version "17.1.0"
-  resolved "https://registry.yarnpkg.com/angular-auth-oidc-client/-/angular-auth-oidc-client-17.1.0.tgz#db701d39b74cfcc810685954b466f5b2d21ccacb"
-  integrity sha512-OxpRhvsggaZxHFkAbwA0zZyL/q3WeJUNlcpFpjrO2xix/lq5i0uCVhZndfRO0ebdq/omUo/4+WioLCt91WL0Yw==
+angular-auth-oidc-client@18.0.0:
+  version "18.0.0"
+  resolved "https://registry.yarnpkg.com/angular-auth-oidc-client/-/angular-auth-oidc-client-18.0.0.tgz#3fe76406f1fe43990e4813efe8ca96abb3de5560"
+  integrity sha512-z+rQ2wINJQpgrZEJ9tibeowtCkmcBjmHWxfszYICLBT8Hh5jDp51a/IZlv+UXGLewdXo05SbiXcWCkzETcnSog==
   dependencies:
     rfc4648 "^1.5.0"
     tslib "^2.3.0"
