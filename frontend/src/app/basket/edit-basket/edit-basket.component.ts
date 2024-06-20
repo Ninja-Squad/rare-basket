@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Inject, Input, LOCALE_ID, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, inject, Input, LOCALE_ID, OnInit, Output } from '@angular/core';
 import { ALL_CUSTOMER_TYPES, Basket, BasketCommand, BasketItemCommand, CustomerType, Language } from '../basket.model';
 import { NonNullableFormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { faCheck, faTrash } from '@fortawesome/free-solid-svg-icons';
@@ -39,6 +39,9 @@ export class EditBasketComponent implements OnInit {
 
   gdprDetailsUrl = environment.gdprDetailsUrl;
   customerTypes = ALL_CUSTOMER_TYPES;
+
+  private fb = inject(NonNullableFormBuilder);
+  private language: Language = inject(LOCALE_ID) as Language;
   form = this.fb.group({
     customer: this.fb.group({
       name: [null as string, Validators.required],
@@ -61,11 +64,7 @@ export class EditBasketComponent implements OnInit {
   deleteItemDisabled = false;
   saveForbidden = false;
 
-  constructor(
-    private fb: NonNullableFormBuilder,
-    private confirmationService: ConfirmationService,
-    @Inject(LOCALE_ID) private language: Language
-  ) {}
+  constructor(private confirmationService: ConfirmationService) {}
 
   ngOnInit(): void {
     const customer = this.basket.customer;

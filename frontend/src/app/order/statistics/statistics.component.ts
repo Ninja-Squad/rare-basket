@@ -1,4 +1,4 @@
-import { Component, Inject, LOCALE_ID, OnInit } from '@angular/core';
+import { Component, inject, LOCALE_ID, OnInit } from '@angular/core';
 import { OrderService } from '../order.service';
 import { CustomerTypeStatistics, OrderStatistics, OrderStatusStatistics } from '../order.model';
 import { ArcElement, Chart, ChartConfiguration, DoughnutController, Legend, Tooltip } from 'chart.js';
@@ -55,6 +55,7 @@ function atLeastOneSelection(control: AbstractControl): ValidationErrors | null 
   ]
 })
 export class StatisticsComponent implements OnInit {
+  private fb = inject(NonNullableFormBuilder);
   grcsFormArray = this.fb.array<FormGroup<{ grc: FormControl<Grc>; selected: FormControl<boolean> }>>([], atLeastOneSelection);
   form = this.fb.group(
     {
@@ -75,15 +76,15 @@ export class StatisticsComponent implements OnInit {
   refreshed = false;
   private choosableGrcs: Array<Grc>;
 
+  private locale = inject(LOCALE_ID);
+
   constructor(
-    private fb: NonNullableFormBuilder,
     private router: Router,
     private route: ActivatedRoute,
     private orderService: OrderService,
     private translateService: TranslateService,
     private authenticationService: AuthenticationService,
-    private grcService: GrcService,
-    @Inject(LOCALE_ID) private locale: string
+    private grcService: GrcService
   ) {}
 
   ngOnInit() {

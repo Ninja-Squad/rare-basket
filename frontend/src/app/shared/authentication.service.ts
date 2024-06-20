@@ -1,4 +1,4 @@
-import { Inject, Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { OidcSecurityService } from 'angular-auth-oidc-client';
 import { Observable, of, ReplaySubject } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
@@ -17,10 +17,11 @@ export class AuthenticationService {
   // and the user is loaded before asking to login
   private currentUser = new ReplaySubject<User | null>(1);
 
+  private window = inject(WINDOW);
+
   constructor(
     private oidcSecurityService: OidcSecurityService,
     private router: Router,
-    @Inject(WINDOW) private window: Window,
     private http: HttpClient
   ) {}
 

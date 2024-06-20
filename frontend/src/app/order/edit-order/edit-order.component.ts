@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, ElementRef, EventEmitter, Input, OnInit, Output, QueryList, ViewChildren } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, EventEmitter, inject, Input, OnInit, Output, QueryList, ViewChildren } from '@angular/core';
 import { Order, OrderCommand, OrderItemCommand } from '../order.model';
 import { FormControl, FormGroup, NonNullableFormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { faFileCsv, faPlus, faTrash } from '@fortawesome/free-solid-svg-icons';
@@ -36,6 +36,7 @@ export class EditOrderComponent implements OnInit, AfterViewInit {
   @ViewChildren('name')
   nameInputs: QueryList<ElementRef<HTMLInputElement>>;
 
+  private fb = inject(NonNullableFormBuilder);
   itemGroups = this.fb.array<
     FormGroup<{
       name: FormControl<string>;
@@ -53,10 +54,7 @@ export class EditOrderComponent implements OnInit, AfterViewInit {
   addItemIcon = faPlus;
   csvIcon = faFileCsv;
 
-  constructor(
-    private fb: NonNullableFormBuilder,
-    private modalService: ModalService
-  ) {}
+  constructor(private modalService: ModalService) {}
 
   ngOnInit() {
     this.order.items.forEach(orderItem =>

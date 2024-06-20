@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { AccessionHolder, Grc, Permission, User, UserCommand } from '../../shared/user.model';
 import { AbstractControl, FormControl, NonNullableFormBuilder, ReactiveFormsModule, ValidationErrors, Validators } from '@angular/forms';
@@ -41,6 +41,7 @@ function atLeastOneSelection(control: AbstractControl): ValidationErrors | null 
 export class EditUserComponent implements OnInit {
   mode: 'create' | 'update' | null = null;
   editedUser: User;
+  private fb = inject(NonNullableFormBuilder);
   form = this.fb.group({
     name: ['', Validators.required],
     orderManagement: false,
@@ -57,7 +58,6 @@ export class EditUserComponent implements OnInit {
 
   constructor(
     private route: ActivatedRoute,
-    private fb: NonNullableFormBuilder,
     private userService: UserService,
     private accessionHolderService: AccessionHolderService,
     private grcService: GrcService,
