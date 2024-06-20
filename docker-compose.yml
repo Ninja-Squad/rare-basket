@@ -21,7 +21,7 @@ services:
       - 8025:8025
 
   keycloak:
-    image: quay.io/keycloak/keycloak:25.0.0
+    image: quay.io/keycloak/keycloak:25.0.1
     container_name: rare-basket-keycloak
     volumes:
       - ./keycloak:/opt/keycloak/data/import
