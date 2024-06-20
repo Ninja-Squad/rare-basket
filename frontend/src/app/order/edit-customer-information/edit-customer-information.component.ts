@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output, inject } from '@angular/core';
 import { ALL_CUSTOMER_TYPES, ALL_LANGUAGES, CustomerCommand, CustomerType } from '../../basket/basket.model';
 import { NonNullableFormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CustomerInformationCommand } from '../order.model';
@@ -35,6 +35,7 @@ export class EditCustomerInformationComponent implements OnInit {
   @Output()
   readonly cancelled = new EventEmitter<void>();
 
+  private fb = inject(NonNullableFormBuilder);
   form = this.fb.group({
     customer: this.fb.group({
       name: [null as string, Validators.required],
@@ -51,7 +52,7 @@ export class EditCustomerInformationComponent implements OnInit {
   customerTypes = ALL_CUSTOMER_TYPES;
   languages = ALL_LANGUAGES;
 
-  constructor(private fb: NonNullableFormBuilder) {
+  constructor() {
     // if we use the delivery address as the billing address
     // then disable the billing address field
     this.useDeliveryAddressControl.valueChanges.subscribe(useDeliveryAddress => {

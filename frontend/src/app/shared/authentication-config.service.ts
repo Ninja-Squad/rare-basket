@@ -1,4 +1,4 @@
-import { Inject, Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import {
   AbstractSecurityStorage,
   AuthWellKnownEndpoints,
@@ -51,10 +51,8 @@ export class CustomSecurityStorage extends AbstractSecurityStorage {
   providedIn: 'root'
 })
 export class AuthenticationConfigService {
-  constructor(
-    @Inject(WINDOW) private window: Window,
-    private locationStrategy: LocationStrategy
-  ) {}
+  private window = inject(WINDOW);
+  private locationStrategy = inject(LocationStrategy);
 
   getConfig(): OpenIdConfiguration {
     // create the configuration

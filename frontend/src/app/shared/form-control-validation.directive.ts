@@ -1,5 +1,5 @@
 /* eslint-disable @angular-eslint/directive-selector */
-import { Directive, HostBinding, Optional } from '@angular/core';
+import { Directive, inject } from '@angular/core';
 import { NgControl } from '@angular/forms';
 import { ValdemortConfig } from 'ngx-valdemort';
 
@@ -11,15 +11,16 @@ import { ValdemortConfig } from 'ngx-valdemort';
  */
 @Directive({
   selector: '.form-control,.form-select',
-  standalone: true
+  standalone: true,
+  host: {
+    '[class.is-invalid]': 'isInvalid'
+  }
 })
 export class FormControlValidationDirective {
-  constructor(
-    @Optional() private ngControl: NgControl,
-    private config: ValdemortConfig
-  ) {}
+  private ngControl = inject(NgControl, { optional: true });
+  private config = inject(ValdemortConfig);
 
-  @HostBinding('class.is-invalid') get isInvalid() {
+  get isInvalid() {
     return (
       this.ngControl &&
       this.ngControl.invalid &&

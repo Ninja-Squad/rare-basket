@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { OrderCreationCommand } from '../order.model';
 import { OrderService } from '../order.service';
 import { Router } from '@angular/router';
@@ -35,6 +35,7 @@ import { Observable } from 'rxjs';
   ]
 })
 export class CreateOrderComponent {
+  private fb = inject(NonNullableFormBuilder);
   form = this.fb.group({
     accessionHolder: [null as AccessionHolder | null, Validators.required],
     customer: this.fb.group({
@@ -55,7 +56,6 @@ export class CreateOrderComponent {
 
   constructor(
     authenticationService: AuthenticationService,
-    private fb: NonNullableFormBuilder,
     private orderService: OrderService,
     private router: Router,
     private toastService: ToastService

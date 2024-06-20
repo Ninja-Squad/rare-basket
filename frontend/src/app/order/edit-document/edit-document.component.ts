@@ -1,4 +1,4 @@
-import { Component, ElementRef, EventEmitter, Input, OnChanges, Output, SimpleChanges, ViewChild } from '@angular/core';
+import { Component, ElementRef, EventEmitter, inject, Input, OnChanges, Output, SimpleChanges, ViewChild } from '@angular/core';
 import { NonNullableFormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import {
   ALL_DOCUMENT_TYPES,
@@ -37,7 +37,7 @@ const maxFileSize = 10 * 1024 * 1024; // 10 MB
   ]
 })
 export class EditDocumentComponent implements OnChanges {
-  form = this.fb.group({
+  form = inject(NonNullableFormBuilder).group({
     type: [null as DocumentType, Validators.required],
     description: '',
     onDeliveryForm: false
@@ -62,7 +62,7 @@ export class EditDocumentComponent implements OnChanges {
   documentTypes: Array<DocumentType>;
   saveIcon = faFileUpload;
 
-  constructor(private fb: NonNullableFormBuilder) {
+  constructor() {
     const descriptionControl = this.form.get('description');
     const onDeliveryFormControl = this.form.get('onDeliveryForm');
     this.form.get('type').valueChanges.subscribe((newType: DocumentType) => {

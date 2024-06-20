@@ -1,4 +1,4 @@
-import { Component, Inject, LOCALE_ID } from '@angular/core';
+import { Component, inject, LOCALE_ID } from '@angular/core';
 import { NonNullableFormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { formatDate } from '@angular/common';
 import { OrderService } from '../order.service';
@@ -29,7 +29,7 @@ import { TranslateModule } from '@ngx-translate/core';
   ]
 })
 export class ExportOrdersComponent {
-  form = this.fb.group(
+  form = inject(NonNullableFormBuilder).group(
     {
       from: [null as string, Validators.required],
       to: [null as string, Validators.required]
@@ -40,8 +40,6 @@ export class ExportOrdersComponent {
   exportingIcon = faSpinner;
 
   constructor(
-    private fb: NonNullableFormBuilder,
-    @Inject(LOCALE_ID) locale: string,
     private orderService: OrderService,
     private downloadService: DownloadService
   ) {
@@ -50,6 +48,7 @@ export class ExportOrdersComponent {
     startOfYear.setDate(1);
     startOfYear.setMonth(0);
 
+    const locale = inject(LOCALE_ID);
     this.form.setValue({
       from: formatDate(startOfYear, 'yyyy-MM-dd', locale),
       to: formatDate(now, 'yyyy-MM-dd', locale)

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { AccessionHolder, AccessionHolderCommand, Grc } from '../../shared/user.model';
 import { NonNullableFormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
@@ -21,7 +21,7 @@ import { TranslateModule } from '@ngx-translate/core';
 export class EditAccessionHolderComponent implements OnInit {
   mode: 'create' | 'update' = 'create';
   editedAccessionHolder: AccessionHolder;
-  form = this.fb.group({
+  form = inject(NonNullableFormBuilder).group({
     name: ['', Validators.required],
     email: ['', [Validators.required, Validators.email]],
     phone: ['', Validators.required],
@@ -31,7 +31,6 @@ export class EditAccessionHolderComponent implements OnInit {
 
   constructor(
     private route: ActivatedRoute,
-    private fb: NonNullableFormBuilder,
     private accessionHolderService: AccessionHolderService,
     private grcService: GrcService,
     private router: Router,

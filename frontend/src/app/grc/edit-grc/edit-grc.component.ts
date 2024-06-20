@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { Grc, GrcCommand } from '../../shared/user.model';
 import { NonNullableFormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
@@ -19,7 +19,7 @@ import { TranslateModule } from '@ngx-translate/core';
 export class EditGrcComponent implements OnInit {
   mode: 'create' | 'update' = 'create';
   editedGrc: Grc;
-  form = this.fb.group({
+  form = inject(NonNullableFormBuilder).group({
     name: ['', Validators.required],
     institution: ['', Validators.required],
     address: ['', Validators.required]
@@ -27,7 +27,6 @@ export class EditGrcComponent implements OnInit {
 
   constructor(
     private route: ActivatedRoute,
-    private fb: NonNullableFormBuilder,
     private grcService: GrcService,
     private router: Router,
     private toastService: ToastService

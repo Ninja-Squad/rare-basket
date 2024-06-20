@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { NonNullableFormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { CsvResult, OrderCsvParserService } from '../order-csv-parser.service';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
@@ -15,7 +15,7 @@ import { TranslateModule } from '@ngx-translate/core';
   imports: [TranslateModule, ReactiveFormsModule, FormControlValidationDirective, AccessionComponent, DecimalPipe]
 })
 export class CsvModalComponent {
-  form = this.fb.group({
+  form = inject(NonNullableFormBuilder).group({
     csv: ''
   });
   result: CsvResult = {
@@ -24,7 +24,6 @@ export class CsvModalComponent {
   };
 
   constructor(
-    private fb: NonNullableFormBuilder,
     private modal: NgbActiveModal,
     private csvParser: OrderCsvParserService
   ) {

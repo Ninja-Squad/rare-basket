@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, inject, Input, Output } from '@angular/core';
 import { Basket } from '../basket.model';
 import { NonNullableFormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { faCheckCircle, faInfoCircle } from '@fortawesome/free-solid-svg-icons';
@@ -24,13 +24,11 @@ export class EditConfirmationComponent {
   @Output() readonly basketConfirmed = new EventEmitter<string>();
   @Output() readonly refreshRequested = new EventEmitter<void>();
 
-  form = this.fb.group({
+  form = inject(NonNullableFormBuilder).group({
     confirmationCode: ['', Validators.required]
   });
   infoIcon = faInfoCircle;
   confirmIcon = faCheckCircle;
-
-  constructor(private fb: NonNullableFormBuilder) {}
 
   confirm() {
     if (this.form.invalid) {
