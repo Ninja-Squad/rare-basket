@@ -9,6 +9,5 @@ import { Accession } from '../../basket/basket.model';
   standalone: true
 })
 export class AccessionComponent {
-  @Input()
-  accession: Accession;
+  @Input({ required: true }) accession!: Accession;
 }

@@ -19,7 +19,7 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
   imports: [FontAwesomeModule, TranslateModule, ReactiveFormsModule, FormControlValidationDirective, BasketContentComponent]
 })
 export class EditConfirmationComponent {
-  @Input() basket: Basket;
+  @Input({ required: true }) basket!: Basket;
 
   @Output() readonly basketConfirmed = new EventEmitter<string>();
   @Output() readonly refreshRequested = new EventEmitter<void>();
@@ -35,7 +35,7 @@ export class EditConfirmationComponent {
       return;
     }
 
-    this.basketConfirmed.emit(this.form.value.confirmationCode.trim());
+    this.basketConfirmed.emit(this.form.controls.confirmationCode.value.trim());
   }
 
   refresh() {

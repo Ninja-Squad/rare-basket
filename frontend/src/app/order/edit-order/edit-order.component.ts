@@ -24,17 +24,13 @@ interface ItemFormValue {
   imports: [ReactiveFormsModule, TranslateModule, FormControlValidationDirective, ValidationErrorsComponent, FontAwesomeModule]
 })
 export class EditOrderComponent implements OnInit, AfterViewInit {
-  @Input()
-  order: Order;
+  @Input({ required: true }) order!: Order;
 
-  @Output()
-  readonly saved = new EventEmitter<OrderCommand>();
+  @Output() readonly saved = new EventEmitter<OrderCommand>();
 
-  @Output()
-  readonly cancelled = new EventEmitter<void>();
+  @Output() readonly cancelled = new EventEmitter<void>();
 
-  @ViewChildren('name')
-  nameInputs: QueryList<ElementRef<HTMLInputElement>>;
+  @ViewChildren('name') nameInputs!: QueryList<ElementRef<HTMLInputElement>>;
 
   private fb = inject(NonNullableFormBuilder);
   itemGroups = this.fb.array<
@@ -79,7 +75,7 @@ export class EditOrderComponent implements OnInit, AfterViewInit {
     }
 
     const command: OrderCommand = {
-      items: this.form.value.items.map(item => ({
+      items: this.form.getRawValue().items.map(item => ({
         accession: {
           name: item.name,
           identifier: item.identifier

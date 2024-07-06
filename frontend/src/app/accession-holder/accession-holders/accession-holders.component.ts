@@ -18,7 +18,7 @@ import { TranslateModule } from '@ngx-translate/core';
   imports: [TranslateModule, FontAwesomeModule, RouterLink]
 })
 export class AccessionHoldersComponent implements OnInit {
-  accessionHolders: Array<AccessionHolder>;
+  accessionHolders: Array<AccessionHolder> | null = null;
 
   accessionHolderIcon = faStoreAlt;
   createAccessionHolderIcon = faPlus;

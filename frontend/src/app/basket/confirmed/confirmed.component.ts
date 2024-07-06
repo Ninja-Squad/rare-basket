@@ -16,7 +16,7 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
   imports: [FontAwesomeModule, TranslateModule, BasketContentComponent]
 })
 export class ConfirmedComponent {
-  @Input() basket: Basket;
+  @Input({ required: true }) basket!: Basket;
 
   confirmedIcon = faCheckCircle;
 }

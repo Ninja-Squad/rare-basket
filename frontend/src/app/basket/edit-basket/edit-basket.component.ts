@@ -33,7 +33,7 @@ import { TranslateModule } from '@ngx-translate/core';
   ]
 })
 export class EditBasketComponent implements OnInit {
-  @Input() basket: Basket;
+  @Input({ required: true }) basket!: Basket;
 
   @Output() readonly basketSaved = new EventEmitter<BasketCommand>();
 
@@ -44,15 +44,15 @@ export class EditBasketComponent implements OnInit {
   private language: Language = inject(LOCALE_ID) as Language;
   form = this.fb.group({
     customer: this.fb.group({
-      name: [null as string, Validators.required],
-      organization: [null as string],
-      email: [null as string, [Validators.required, Validators.email]],
-      deliveryAddress: [null as string, Validators.required],
-      billingAddress: [null as string, Validators.required],
-      type: [null as CustomerType, Validators.required],
+      name: [null as string | null, Validators.required],
+      organization: [null as string | null],
+      email: [null as string | null, [Validators.required, Validators.email]],
+      deliveryAddress: [null as string | null, Validators.required],
+      billingAddress: [null as string | null, Validators.required],
+      type: [null as CustomerType | null, Validators.required],
       language: this.language
     }),
-    rationale: null as string,
+    rationale: null as string | null,
     gdprAgreement: [false, Validators.requiredTrue]
   });
   useDeliveryAddressControl = this.fb.control(false);
@@ -82,9 +82,9 @@ export class EditBasketComponent implements OnInit {
       rationale: this.basket.rationale ?? null,
       gdprAgreement: false
     });
-    this.useDeliveryAddressControl.setValue(customer?.deliveryAddress && customer?.deliveryAddress === customer?.billingAddress);
+    this.useDeliveryAddressControl.setValue(!!customer?.deliveryAddress && customer?.deliveryAddress === customer?.billingAddress);
     this.useDeliveryAddressControl.valueChanges.subscribe(useDeliveryAddress => {
-      const billingAddressControl = this.form.get('customer.billingAddress');
+      const billingAddressControl = this.form.controls.customer.controls.billingAddress;
       if (useDeliveryAddress) {
         billingAddressControl.disable();
       } else {
@@ -126,17 +126,17 @@ export class EditBasketComponent implements OnInit {
       });
     });
 
-    const value = this.form.value;
+    const value = this.form.getRawValue();
     // use the delivery address for the billing address if necessary
     const customer = value.customer;
     customer.billingAddress = this.useDeliveryAddressControl.value ? customer.deliveryAddress : customer.billingAddress;
     const command: BasketCommand = {
       customer: {
-        name: customer.name,
-        type: customer.type,
-        email: customer.email,
-        billingAddress: customer.billingAddress,
-        deliveryAddress: customer.deliveryAddress,
+        name: customer.name!,
+        type: customer.type!,
+        email: customer.email!,
+        billingAddress: customer.billingAddress!,
+        deliveryAddress: customer.deliveryAddress!,
         language: customer.language,
         organization: customer.organization
       },

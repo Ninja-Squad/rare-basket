@@ -20,7 +20,7 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
   imports: [FontAwesomeModule, TranslateModule, RouterLink]
 })
 export class BasketConfirmationComponent implements OnInit {
-  basketReference: string;
+  basketReference: string | null = null;
   errorIcon = faExclamationCircle;
   confirmationFailed = false;
 
@@ -31,8 +31,8 @@ export class BasketConfirmationComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.basketReference = this.route.snapshot.paramMap.get('reference');
-    const confirmationCode = this.route.snapshot.queryParamMap.get('code');
+    this.basketReference = this.route.snapshot.paramMap.get('reference')!;
+    const confirmationCode = this.route.snapshot.queryParamMap.get('code')!;
     this.basketService.confirm(this.basketReference, confirmationCode).subscribe({
       next: () => this.router.navigate(['/baskets', this.basketReference]),
       error: () => (this.confirmationFailed = true)

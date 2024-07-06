@@ -25,9 +25,9 @@ export class CsvModalComponent {
 
   constructor(
     private modal: NgbActiveModal,
-    private csvParser: OrderCsvParserService
+    csvParser: OrderCsvParserService
   ) {
-    this.form.get('csv').valueChanges.subscribe(csv => (this.result = this.csvParser.parse(csv)));
+    this.form.controls.csv.valueChanges.subscribe(csv => (this.result = csvParser.parse(csv)));
   }
 
   close() {

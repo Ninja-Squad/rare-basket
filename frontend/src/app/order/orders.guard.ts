@@ -9,7 +9,7 @@ export function ordersGuard(): Observable<UrlTree> {
   const router = inject(Router);
   return authenticationService.getCurrentUser().pipe(
     map(user => {
-      if (user.permissions.includes('ORDER_MANAGEMENT')) {
+      if (user && user.permissions.includes('ORDER_MANAGEMENT')) {
         return router.parseUrl('/orders/in-progress');
       } else {
         return router.parseUrl('/orders/stats');

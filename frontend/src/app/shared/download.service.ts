@@ -38,13 +38,13 @@ export class DownloadService {
     const headerName = 'Content-Disposition';
     let name = defaultFileName;
     if (response.headers.has(headerName)) {
-      const headerValue = response.headers.get(headerName);
-      const extraction = /.*filename="(.*)".*/g.exec(headerValue);
+      const headerValue = response.headers.get(headerName)!;
+      const extraction = /.*filename="(.*)".*/g.exec(headerValue)!;
       if (extraction.length === 2) {
         name = extraction[1];
       }
     }
 
-    return { blob: response.body, name };
+    return { blob: response.body!, name };
   }
 }

@@ -1,7 +1,9 @@
 <div class="row">
   <div class="col-sm">
     <h2 translate="basket.basket-content.information"></h2>
-    <rb-customer-information [customer]="basket.customer" [rationale]="basket.rationale"></rb-customer-information>
+    @if (basket.customer) {
+      <rb-customer-information [customer]="basket.customer" [rationale]="basket.rationale"></rb-customer-information>
+    }
   </div>
   <div class="col-sm">
     <h2 translate="basket.basket-content.ordered-accessions"></h2>

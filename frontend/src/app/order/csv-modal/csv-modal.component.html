@@ -22,7 +22,11 @@
         <tbody>
           @for (error of result.errors; track error) {
             <tr class="csv-error">
-              <th scope="row">{{ error.row + 1 | number }}</th>
+              @if (error.row !== undefined) {
+                <th scope="row">{{ error.row + 1 | number }}</th>
+              } @else {
+                <th scope="row"></th>
+              }
               <td>{{ error.key | translate }}</td>
             </tr>
           }

@@ -1,11 +1,11 @@
 @if (vm$ | async; as vm) {
-  @if (vm.user.accessionHolders.length > 1) {
+  @if (vm.user?.accessionHolders?.length! > 1) {
     <div class="row gx-2 gy-1 mb-3">
       <label class="col-sm-auto col-form-label" for="accession-holder" translate="order.in-progress-orders.accession-holder"></label>
       <div class="col-sm-auto">
         <select [formControl]="accessionHolderIdCtrl" class="form-select" id="accession-holder">
           <option [ngValue]="null" translate="order.in-progress-orders.all-accession-holders"></option>
-          @for (ah of vm.user.accessionHolders; track ah.id) {
+          @for (ah of vm.user!.accessionHolders; track ah.id) {
             <option [ngValue]="ah.id">{{ ah.name }}</option>
           }
         </select>

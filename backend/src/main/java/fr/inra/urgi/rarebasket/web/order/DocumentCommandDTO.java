@@ -1,11 +1,11 @@
 package fr.inra.urgi.rarebasket.web.order;
 
-import java.util.Objects;
-import jakarta.validation.constraints.NotNull;
-
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import fr.inra.urgi.rarebasket.domain.DocumentType;
+import jakarta.validation.constraints.NotNull;
+
+import java.util.Objects;
 
 /**
  * JSON command sent as a multipart part along with the file, and containing the metadata of the document
@@ -15,7 +15,7 @@ public final class DocumentCommandDTO {
     @NotNull
     private final DocumentType type;
     private final String description;
-    private boolean onDeliveryForm;
+    private final boolean onDeliveryForm;
 
     @JsonCreator
     public DocumentCommandDTO(@JsonProperty("type") DocumentType type,

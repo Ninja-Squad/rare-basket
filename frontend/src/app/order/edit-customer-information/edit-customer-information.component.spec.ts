@@ -29,7 +29,7 @@ class TestComponent {
     },
     rationale: 'The rationale'
   };
-  command: CustomerInformationCommand = null;
+  command: CustomerInformationCommand | null = null;
   cancelled = false;
 }
 

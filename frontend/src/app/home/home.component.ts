@@ -15,7 +15,7 @@ import { TranslateModule } from '@ngx-translate/core';
   imports: [TranslateModule, FontAwesomeModule, RouterLink]
 })
 export class HomeComponent implements OnInit {
-  user: User;
+  user: User | null | undefined = undefined;
 
   loginIcon = faSignInAlt;
   ordersIcon = faShoppingBag;
@@ -33,6 +33,6 @@ export class HomeComponent implements OnInit {
   }
 
   hasPermission(permission: Permission): boolean {
-    return this.user && this.user.permissions.includes(permission);
+    return !!this.user && this.user.permissions.includes(permission);
   }
 }

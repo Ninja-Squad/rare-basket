@@ -39,15 +39,15 @@ export class CreateOrderComponent {
   form = this.fb.group({
     accessionHolder: [null as AccessionHolder | null, Validators.required],
     customer: this.fb.group({
-      name: [null as string, Validators.required],
-      organization: null as string,
-      email: [null as string, [Validators.required, Validators.email]],
-      deliveryAddress: [null as string, Validators.required],
-      billingAddress: [null as string, Validators.required],
-      type: [null as CustomerType, Validators.required],
-      language: [null as string, Validators.required]
+      name: [null as string | null, Validators.required],
+      organization: null as string | null,
+      email: [null as string | null, [Validators.required, Validators.email]],
+      deliveryAddress: [null as string | null, Validators.required],
+      billingAddress: [null as string | null, Validators.required],
+      type: [null as CustomerType | null, Validators.required],
+      language: [null as string | null, Validators.required]
     }),
-    rationale: null as string
+    rationale: null as string | null
   });
   useDeliveryAddressControl = this.fb.control(false);
   customerTypes = ALL_CUSTOMER_TYPES;
@@ -73,7 +73,7 @@ export class CreateOrderComponent {
 
     this.accessionHolders$ = authenticationService.getCurrentUser().pipe(
       first(),
-      map(u => u.accessionHolders),
+      map(u => u?.accessionHolders ?? []),
       tap(accessionHolders => {
         if (accessionHolders.length === 1) {
           this.form.controls.accessionHolder.setValue(accessionHolders[0]);
@@ -87,9 +87,9 @@ export class CreateOrderComponent {
     if (!this.form.valid) {
       return;
     }
-    const formValue = this.form.value;
+    const formValue = this.form.getRawValue();
     const command: OrderCreationCommand = {
-      accessionHolderId: formValue.accessionHolder.id,
+      accessionHolderId: formValue.accessionHolder!.id,
       customer: formValue.customer as CustomerCommand,
       rationale: formValue.rationale
     };

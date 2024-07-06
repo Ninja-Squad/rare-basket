@@ -38,40 +38,35 @@ const maxFileSize = 10 * 1024 * 1024; // 10 MB
 })
 export class EditDocumentComponent implements OnChanges {
   form = inject(NonNullableFormBuilder).group({
-    type: [null as DocumentType, Validators.required],
+    type: [null as DocumentType | null, Validators.required],
     description: '',
     onDeliveryForm: false
   });
 
-  @ViewChild('fileInput')
-  fileInput: ElementRef<HTMLInputElement>;
+  @ViewChild('fileInput') fileInput!: ElementRef<HTMLInputElement>;
 
-  @Input()
-  order: DetailedOrder;
+  @Input({ required: true }) order!: DetailedOrder;
 
-  @Input()
-  uploadProgress: number;
+  @Input({ required: true }) uploadProgress: number | null = null;
 
-  @Output()
-  readonly cancelled = new EventEmitter<void>();
+  @Output() readonly cancelled = new EventEmitter<void>();
 
-  @Output()
-  readonly saved = new EventEmitter<DocumentCommand>();
+  @Output() readonly saved = new EventEmitter<DocumentCommand>();
 
   highlightFileInput = false;
-  documentTypes: Array<DocumentType>;
+  documentTypes: Array<DocumentType> | null = null;
   saveIcon = faFileUpload;
 
   constructor() {
-    const descriptionControl = this.form.get('description');
-    const onDeliveryFormControl = this.form.get('onDeliveryForm');
-    this.form.get('type').valueChanges.subscribe((newType: DocumentType) => {
+    const descriptionControl = this.form.controls.description;
+    const onDeliveryFormControl = this.form.controls.onDeliveryForm;
+    this.form.controls.type.valueChanges.subscribe((newType: DocumentType | null) => {
       descriptionControl.setValidators(newType === 'OTHER' ? Validators.required : []);
       descriptionControl.updateValueAndValidity();
 
       // only change the on delivery form value if the user hasn't played with the control yet
       if (!onDeliveryFormControl.dirty) {
-        onDeliveryFormControl.setValue(ON_DELIVERY_FORM_BY_DEFAULT_DOCUMENT_TYPES.includes(newType));
+        onDeliveryFormControl.setValue(ON_DELIVERY_FORM_BY_DEFAULT_DOCUMENT_TYPES.includes(newType!));
       }
     });
   }
@@ -97,7 +92,7 @@ export class EditDocumentComponent implements OnChanges {
     if (this.uploadProgress) {
       return;
     }
-    this.fileInput.nativeElement.files = event.dataTransfer.files;
+    this.fileInput.nativeElement.files = event.dataTransfer!.files;
   }
 
   fileChanged() {
@@ -115,11 +110,11 @@ export class EditDocumentComponent implements OnChanges {
 
     const document = this.form.value;
     const command: DocumentCommand = {
-      file: this.selectedFile,
+      file: this.selectedFile!,
       document: {
-        type: document.type,
-        description: document.description,
-        onDeliveryForm: document.onDeliveryForm
+        type: document.type!,
+        description: document.description!,
+        onDeliveryForm: document.onDeliveryForm!
       }
     };
     this.saved.emit(command);

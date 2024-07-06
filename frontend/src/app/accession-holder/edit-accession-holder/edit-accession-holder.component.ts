@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { AccessionHolder, AccessionHolderCommand, Grc } from '../../shared/user.model';
 import { NonNullableFormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
@@ -20,14 +20,14 @@ import { TranslateModule } from '@ngx-translate/core';
 })
 export class EditAccessionHolderComponent implements OnInit {
   mode: 'create' | 'update' = 'create';
-  editedAccessionHolder: AccessionHolder;
+  editedAccessionHolder: AccessionHolder | null = null;
   form = inject(NonNullableFormBuilder).group({
     name: ['', Validators.required],
     email: ['', [Validators.required, Validators.email]],
     phone: ['', Validators.required],
-    grcId: [null as number, Validators.required]
+    grcId: [null as number | null, Validators.required]
   });
-  grcs: Array<Grc>;
+  grcs: Array<Grc> | null = null;
 
   constructor(
     private route: ActivatedRoute,
@@ -59,17 +59,17 @@ export class EditAccessionHolderComponent implements OnInit {
       return;
     }
 
-    const formValue = this.form.value;
+    const formValue = this.form.getRawValue();
     const command: AccessionHolderCommand = {
       name: formValue.name,
       email: formValue.email,
       phone: formValue.phone,
-      grcId: formValue.grcId
+      grcId: formValue.grcId!
     };
 
     let obs: Observable<AccessionHolder | void>;
     if (this.mode === 'update') {
-      obs = this.accessionHolderService.update(this.editedAccessionHolder.id, command);
+      obs = this.accessionHolderService.update(this.editedAccessionHolder!.id, command);
     } else {
       obs = this.accessionHolderService.create(command);
     }

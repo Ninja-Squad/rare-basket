@@ -25,8 +25,7 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
   imports: [FontAwesomeModule, TranslateModule]
 })
 export class DatepickerContainerComponent {
-  @ContentChild(NgbInputDatepicker)
-  datePicker: NgbInputDatepicker;
+  @ContentChild(NgbInputDatepicker) datePicker!: NgbInputDatepicker;
   dateIcon = faCalendarAlt;
 
   toggle() {

@@ -24,14 +24,11 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
   imports: [FontAwesomeModule, TranslateModule, CustomerTypeEnumPipe, LanguageEnumPipe]
 })
 export class CustomerInformationComponent {
-  @Input()
-  customer: Customer;
+  @Input({ required: true }) customer!: Customer;
 
-  @Input()
-  rationale: string;
+  @Input({ required: true }) rationale: string | null = null;
 
-  @Input()
-  withLanguage = false;
+  @Input() withLanguage = false;
 
   nameIcon = faUser;
   organizationIcon = faSitemap;

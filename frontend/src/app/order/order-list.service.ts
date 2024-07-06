@@ -10,7 +10,7 @@ import { Injectable } from '@angular/core';
 import { OrderService } from './order.service';
 
 export interface OrderListViewModel {
-  user: User;
+  user: User | null;
   orders: Page<Order>;
 }
 
@@ -81,16 +81,16 @@ export class OrderListService {
     );
   }
 
-  private populateAccessionHolder(accessionHolderIdCtrl: FormControl<number | null>, params: ParamMap, user: User): void {
+  private populateAccessionHolder(accessionHolderIdCtrl: FormControl<number | null>, params: ParamMap, user: User | null): void {
     const accessionHolderId = this.findAcceptableAccessionHolderId(params, user);
     if (accessionHolderIdCtrl.value !== accessionHolderId) {
       accessionHolderIdCtrl.setValue(accessionHolderId);
     }
   }
 
-  private findAcceptableAccessionHolderId(params: ParamMap, user: User): number | null {
+  private findAcceptableAccessionHolderId(params: ParamMap, user: User | null): number | null {
     const accessionHolderIdAsString = params.get('h');
-    if (accessionHolderIdAsString) {
+    if (accessionHolderIdAsString && user) {
       const requestedAccessionHolderId = parseInt(accessionHolderIdAsString);
       const accessionHolder = user.accessionHolders.find(ah => ah.id === requestedAccessionHolderId);
       return accessionHolder?.id ?? null;

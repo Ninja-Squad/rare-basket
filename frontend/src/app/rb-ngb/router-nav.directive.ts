@@ -41,8 +41,7 @@ export class RouterNavLinkDirective {
   /**
    * The ID of the link. If not specified, it's auto-generated
    */
-  @Input('rbRouterNavLink')
-  itemId: string;
+  @Input('rbRouterNavLink') itemId: string | null = null;
 
   private domId = 'router-nav-link-' + counter++;
 
@@ -73,7 +72,7 @@ export class RouterNavPanelDirective {
   /**
    * The reference to the router nav directive.
    */
-  @Input('rbRouterNavPanel') nav: RouterNavDirective;
+  @Input({ alias: 'rbRouterNavPanel', required: true }) nav!: RouterNavDirective;
 }
 
 @Directive({
@@ -87,8 +86,7 @@ export class RouterNavPanelDirective {
   standalone: true
 })
 export class RouterNavDirective {
-  @ContentChildren(RouterNavLinkDirective, { descendants: true })
-  navItems: QueryList<RouterNavLinkDirective>;
+  @ContentChildren(RouterNavLinkDirective, { descendants: true }) navItems!: QueryList<RouterNavLinkDirective>;
 
   get selectedId() {
     return this.navItems?.find(item => item.nav === this && item.selected)?.id;

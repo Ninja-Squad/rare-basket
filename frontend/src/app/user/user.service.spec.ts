@@ -21,27 +21,27 @@ describe('UserService', () => {
   afterEach(() => http.verify());
 
   it('should list users', () => {
-    let actual: Page<User> = null;
+    let actual: Page<User> | null = null;
 
     service.list(0).subscribe(users => (actual = users));
 
     const expected = { totalElements: 0 } as Page<User>;
     http.expectOne({ method: 'GET', url: 'api/users?page=0' }).flush(expected);
-    expect(actual).toBe(expected);
+    expect(actual!).toBe(expected);
   });
 
   it('should get', () => {
-    let actual: User = null;
+    let actual: User | null = null;
 
     service.get(42).subscribe(user => (actual = user));
 
     const expected = { id: 42 } as User;
     http.expectOne({ method: 'GET', url: 'api/users/42' }).flush(expected);
-    expect(actual).toBe(expected);
+    expect(actual!).toBe(expected);
   });
 
   it('should create', () => {
-    let actual: User = null;
+    let actual: User | null = null;
 
     const command = { name: 'foo' } as UserCommand;
     service.create(command).subscribe(user => (actual = user));
@@ -50,7 +50,7 @@ describe('UserService', () => {
     const testRequest = http.expectOne({ method: 'POST', url: 'api/users' });
     expect(testRequest.request.body).toBe(command);
     testRequest.flush(expected);
-    expect(actual).toBe(expected);
+    expect(actual!).toBe(expected);
   });
 
   it('should update', () => {

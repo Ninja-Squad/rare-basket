@@ -11,7 +11,7 @@ import { TranslateService } from '@ngx-translate/core';
  * the observable just doesn't emit anything and completes.
  */
 export interface ConfirmationOptions {
-  messageKey?: string;
+  messageKey: string;
   titleKey?: string;
   errorOnClose?: boolean;
 }

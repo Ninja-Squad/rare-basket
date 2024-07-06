@@ -11,7 +11,7 @@ import { NgbPagination } from '@ng-bootstrap/ng-bootstrap';
   imports: [NgbPagination]
 })
 export class PaginationComponent {
-  @Input() page: Page<any>;
+  @Input({ required: true }) page!: Page<unknown>;
   @Output() readonly pageChanged = new EventEmitter<number>();
 
   @Input() navigate = false;

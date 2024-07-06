@@ -13,7 +13,7 @@ import { TranslateModule } from '@ngx-translate/core';
   imports: [TranslateModule, FontAwesomeModule]
 })
 export class FinalizationWarningsModalComponent {
-  messages: Array<string>;
+  messages: Array<string> = [];
   warningIcon = faExclamationTriangle;
 
   constructor(public activeModal: NgbActiveModal) {}

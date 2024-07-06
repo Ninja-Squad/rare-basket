@@ -58,7 +58,7 @@ import { DatePipe, DecimalPipe } from '@angular/common';
   ]
 })
 export class OrderComponent implements OnInit {
-  order: DetailedOrder;
+  order: DetailedOrder | null = null;
 
   editIcon = faEdit;
   finalizeOrderIcon = faCheckSquare;
@@ -92,7 +92,7 @@ export class OrderComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    const orderId = +this.route.snapshot.paramMap.get('orderId');
+    const orderId = +this.route.snapshot.paramMap.get('orderId')!;
     this.orderService.get(orderId).subscribe(order => {
       this.order = order;
       if (this.order.items.length === 0) {
@@ -112,8 +112,8 @@ export class OrderComponent implements OnInit {
 
   saved(command: OrderCommand) {
     this.orderService
-      .update(this.order.id, command)
-      .pipe(switchMap(() => this.orderService.get(this.order.id)))
+      .update(this.order!.id, command)
+      .pipe(switchMap(() => this.orderService.get(this.order!.id)))
       .subscribe(order => {
         this.editing = false;
         this.order = order;
@@ -122,8 +122,8 @@ export class OrderComponent implements OnInit {
 
   customerSaved(command: CustomerInformationCommand) {
     this.orderService
-      .updateCustomerInformation(this.order.id, command)
-      .pipe(switchMap(() => this.orderService.get(this.order.id)))
+      .updateCustomerInformation(this.order!.id, command)
+      .pipe(switchMap(() => this.orderService.get(this.order!.id)))
       .subscribe(order => {
         this.editingCustomer = false;
         this.order = order;
@@ -137,9 +137,9 @@ export class OrderComponent implements OnInit {
       })
       .pipe(
         tap(() => (this.statusChanged = false)),
-        switchMap(() => this.orderService.cancel(this.order.id)),
+        switchMap(() => this.orderService.cancel(this.order!.id)),
         tap(() => this.toastService.success('order.order.cancelled')),
-        switchMap(() => this.orderService.get(this.order.id))
+        switchMap(() => this.orderService.get(this.order!.id))
       )
       .subscribe(order => {
         this.order = order;
@@ -149,17 +149,17 @@ export class OrderComponent implements OnInit {
 
   createDocument(command: DocumentCommand) {
     this.orderService
-      .addDocument(this.order.id, command)
+      .addDocument(this.order!.id, command)
       .pipe(
         finalize(() => (this.uploadProgress = null)),
         tap(progressEvent => {
           if (progressEvent.type === HttpEventType.UploadProgress) {
-            this.uploadProgress = progressEvent.loaded / progressEvent.total;
+            this.uploadProgress = progressEvent.loaded / progressEvent.total!;
           }
         }),
         filter(progressEvent => progressEvent.type === HttpEventType.Response),
         finalize(() => (this.addingDocument = false)),
-        switchMap(() => this.orderService.get(this.order.id))
+        switchMap(() => this.orderService.get(this.order!.id))
       )
       .subscribe(order => (this.order = order));
   }
@@ -170,8 +170,8 @@ export class OrderComponent implements OnInit {
         messageKey: 'order.order.delete-document-confirmation'
       })
       .pipe(
-        switchMap(() => this.orderService.deleteDocument(this.order.id, document.id)),
-        switchMap(() => this.orderService.get(this.order.id))
+        switchMap(() => this.orderService.deleteDocument(this.order!.id, document.id)),
+        switchMap(() => this.orderService.get(this.order!.id))
       )
       .subscribe(order => (this.order = order));
   }
@@ -185,7 +185,7 @@ export class OrderComponent implements OnInit {
     event.preventDefault();
     this.downloadingDocumentIds.add(document.id);
     this.orderService
-      .downloadDocument(this.order.id, document.id)
+      .downloadDocument(this.order!.id, document.id)
       .pipe(finalize(() => this.downloadingDocumentIds.delete(document.id)))
       .subscribe(response => this.downloadService.download(response, document.originalFileName));
   }
@@ -198,16 +198,16 @@ export class OrderComponent implements OnInit {
     let result$: Observable<void>;
 
     const warnings: Array<string> = [];
-    if (!this.order.documents.some(doc => doc.type === 'MTA' || doc.type === 'SMTA')) {
+    if (!this.order!.documents.some(doc => doc.type === 'MTA' || doc.type === 'SMTA')) {
       warnings.push(this.translateService.instant('order.order.missing-mta-warning'));
     }
-    if (!this.order.documents.some(doc => doc.type === 'SANITARY_PASSPORT')) {
+    if (!this.order!.documents.some(doc => doc.type === 'SANITARY_PASSPORT')) {
       warnings.push(this.translateService.instant('order.order.missing-sanitary-passport-warning'));
     }
-    if (this.order.items.some(item => item.quantity === null)) {
+    if (this.order!.items.some(item => item.quantity === null)) {
       warnings.push(this.translateService.instant('order.order.missing-quantity-warning'));
     }
-    if (this.order.items.some(item => item.unit === null)) {
+    if (this.order!.items.some(item => item.unit === null)) {
       warnings.push(this.translateService.instant('order.order.missing-unit-warning'));
     }
 
@@ -224,9 +224,9 @@ export class OrderComponent implements OnInit {
     result$
       .pipe(
         tap(() => (this.statusChanged = false)),
-        switchMap(() => this.orderService.finalize(this.order.id)),
+        switchMap(() => this.orderService.finalize(this.order!.id)),
         tap(() => this.toastService.success('order.order.finalized')),
-        switchMap(() => this.orderService.get(this.order.id))
+        switchMap(() => this.orderService.get(this.order!.id))
       )
       .subscribe(order => {
         this.order = order;
@@ -236,12 +236,12 @@ export class OrderComponent implements OnInit {
 
   downloadDeliveryForm(options = { withDocuments: false }) {
     this.orderService
-      .downloadDeliveryForm(this.order.id, options)
-      .subscribe(response => this.downloadService.download(response, `bon-de-livraison-${this.order.id}.pdf`));
+      .downloadDeliveryForm(this.order!.id, options)
+      .subscribe(response => this.downloadService.download(response, `bon-de-livraison-${this.order!.id}.pdf`));
   }
 
   hasOnDeliveryFormDocument() {
-    return this.order.documents.some(document => document.onDeliveryForm);
+    return this.order!.documents.some(document => document.onDeliveryForm);
   }
 
   downloadCompleteDeliveryForm() {

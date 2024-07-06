@@ -27,6 +27,5 @@ import { DatePipe, DecimalPipe, NgPlural, NgPluralCase } from '@angular/common';
   ]
 })
 export class OrdersComponent {
-  @Input()
-  orders: Page<Order>;
+  @Input({ required: true }) orders!: Page<Order>;
 }

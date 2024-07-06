@@ -24,24 +24,24 @@ export class BasketComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    this.basketService.get(this.route.snapshot.paramMap.get('reference')).subscribe(basket => (this.basket = basket));
+    this.basketService.get(this.route.snapshot.paramMap.get('reference')!).subscribe(basket => (this.basket = basket));
   }
 
   save(command: BasketCommand) {
     this.basketService
-      .save(this.basket.reference, command)
-      .pipe(switchMap(() => this.basketService.get(this.basket.reference)))
+      .save(this.basket!.reference, command)
+      .pipe(switchMap(() => this.basketService.get(this.basket!.reference)))
       .subscribe(basket => (this.basket = basket));
   }
 
   confirm(confirmationCode: string) {
     this.basketService
-      .confirm(this.basket.reference, confirmationCode)
-      .pipe(switchMap(() => this.basketService.get(this.basket.reference)))
+      .confirm(this.basket!.reference, confirmationCode)
+      .pipe(switchMap(() => this.basketService.get(this.basket!.reference)))
       .subscribe(basket => (this.basket = basket));
   }
 
   refresh() {
-    this.basketService.get(this.basket.reference).subscribe(basket => (this.basket = basket));
+    this.basketService.get(this.basket!.reference).subscribe(basket => (this.basket = basket));
   }
 }

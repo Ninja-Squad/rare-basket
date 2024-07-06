@@ -9,11 +9,11 @@ import { dateToIso, isoToDate } from './utils';
   providedIn: 'root'
 })
 export class DateStringAdapterService extends NgbDateAdapter<string> {
-  fromModel(value: string): NgbDateStruct {
+  fromModel(value: string): NgbDateStruct | null {
     return isoToDate(value);
   }
 
-  toModel(date: NgbDateStruct): string {
+  toModel(date: NgbDateStruct): string | null {
     return dateToIso(date);
   }
 }

@@ -18,7 +18,7 @@ import { TranslateModule } from '@ngx-translate/core';
   imports: [TranslateModule, FontAwesomeModule, RouterLink]
 })
 export class GrcsComponent implements OnInit {
-  grcs: Array<Grc>;
+  grcs: Array<Grc> | null = null;
 
   grcIcon = faBuilding;
   createGrcIcon = faPlus;

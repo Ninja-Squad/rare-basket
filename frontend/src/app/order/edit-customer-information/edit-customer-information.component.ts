@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output, inject } from '@angular/core';
+import { Component, EventEmitter, inject, Input, OnInit, Output } from '@angular/core';
 import { ALL_CUSTOMER_TYPES, ALL_LANGUAGES, CustomerCommand, CustomerType } from '../../basket/basket.model';
 import { NonNullableFormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CustomerInformationCommand } from '../order.model';
@@ -26,27 +26,24 @@ import { TranslateModule } from '@ngx-translate/core';
   ]
 })
 export class EditCustomerInformationComponent implements OnInit {
-  @Input({ required: true })
-  customerInformation: CustomerInformationCommand;
+  @Input({ required: true }) customerInformation!: CustomerInformationCommand;
 
-  @Output()
-  readonly saved = new EventEmitter<CustomerInformationCommand>();
+  @Output() readonly saved = new EventEmitter<CustomerInformationCommand>();
 
-  @Output()
-  readonly cancelled = new EventEmitter<void>();
+  @Output() readonly cancelled = new EventEmitter<void>();
 
   private fb = inject(NonNullableFormBuilder);
   form = this.fb.group({
     customer: this.fb.group({
-      name: [null as string, Validators.required],
-      organization: null as string,
-      email: [null as string, [Validators.required, Validators.email]],
-      deliveryAddress: [null as string, Validators.required],
-      billingAddress: [null as string, Validators.required],
-      type: [null as CustomerType, Validators.required],
-      language: [null as string, Validators.required]
+      name: [null as string | null, Validators.required],
+      organization: null as string | null,
+      email: [null as string | null, [Validators.required, Validators.email]],
+      deliveryAddress: [null as string | null, Validators.required],
+      billingAddress: [null as string | null, Validators.required],
+      type: [null as CustomerType | null, Validators.required],
+      language: [null as string | null, Validators.required]
     }),
-    rationale: null as string
+    rationale: null as string | null
   });
   useDeliveryAddressControl = this.fb.control(false);
   customerTypes = ALL_CUSTOMER_TYPES;
@@ -81,7 +78,7 @@ export class EditCustomerInformationComponent implements OnInit {
       rationale: this.customerInformation.rationale
     };
     this.form.setValue(formValue);
-    this.useDeliveryAddressControl.setValue(customer.billingAddress && customer.billingAddress === customer.deliveryAddress);
+    this.useDeliveryAddressControl.setValue(!!customer.billingAddress && customer.billingAddress === customer.deliveryAddress);
   }
 
   save() {

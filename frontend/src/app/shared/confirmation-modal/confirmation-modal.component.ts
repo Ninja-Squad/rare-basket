@@ -10,8 +10,8 @@ import { TranslateModule } from '@ngx-translate/core';
   imports: [TranslateModule]
 })
 export class ConfirmationModalComponent {
-  @Input() message: string;
-  @Input() title: string;
+  @Input({ required: true }) message!: string;
+  @Input({ required: true }) title!: string;
 
   constructor(public activeModal: NgbActiveModal) {}
 }

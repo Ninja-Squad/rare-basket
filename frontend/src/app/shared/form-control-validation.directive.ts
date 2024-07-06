@@ -24,7 +24,7 @@ export class FormControlValidationDirective {
     return (
       this.ngControl &&
       this.ngControl.invalid &&
-      this.config.shouldDisplayErrors(this.ngControl.control, (this.ngControl as any).formDirective)
+      this.config.shouldDisplayErrors(this.ngControl.control!, (this.ngControl as any).formDirective)
     );
   }
 }

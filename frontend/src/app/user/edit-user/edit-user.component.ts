@@ -40,7 +40,7 @@ function atLeastOneSelection(control: AbstractControl): ValidationErrors | null 
 })
 export class EditUserComponent implements OnInit {
   mode: 'create' | 'update' | null = null;
-  editedUser: User;
+  editedUser: User | null = null;
   private fb = inject(NonNullableFormBuilder);
   form = this.fb.group({
     name: ['', Validators.required],
@@ -52,7 +52,7 @@ export class EditUserComponent implements OnInit {
     administration: false
   });
 
-  grcOptionGroups: Array<GrcOptionGroup>;
+  grcOptionGroups: Array<GrcOptionGroup> | null = null;
   grcs: Array<Grc> = [];
   keycloakUrl = `${environment.keycloakUrl}${environment.usersRealmPath}`;
 
@@ -73,7 +73,7 @@ export class EditUserComponent implements OnInit {
     });
 
     this.form.controls.orderVisualization.valueChanges.subscribe(orderVisualizationSelected => {
-      const globalVisualizationControl = this.form.get('globalVisualization');
+      const globalVisualizationControl = this.form.controls.globalVisualization;
       if (orderVisualizationSelected) {
         globalVisualizationControl.enable();
         if (!this.form.value.globalVisualization) {
@@ -87,7 +87,7 @@ export class EditUserComponent implements OnInit {
       }
     });
 
-    this.form.get('globalVisualization').valueChanges.subscribe(globalVisualizationSelected => {
+    this.form.controls.globalVisualization.valueChanges.subscribe(globalVisualizationSelected => {
       if (this.form.value.orderVisualization && !globalVisualizationSelected) {
         this.form.controls.visualizationGrcs.enable();
       } else {
@@ -165,20 +165,20 @@ export class EditUserComponent implements OnInit {
     }
     const globalVisualization = formValue.orderVisualization && formValue.globalVisualization;
     const visualizationGrcIds =
-      formValue.orderVisualization && !formValue.globalVisualization ? this.extractSelectedIds(formValue.visualizationGrcs) : [];
-    const accessionHolderIds = formValue.orderManagement ? this.extractSelectedIds(formValue.accessionHolders) : [];
+      formValue.orderVisualization && !formValue.globalVisualization ? this.extractSelectedIds(formValue.visualizationGrcs!) : [];
+    const accessionHolderIds = formValue.orderManagement ? this.extractSelectedIds(formValue.accessionHolders!) : [];
 
     const command: UserCommand = {
-      name: formValue.name,
+      name: formValue.name!,
       permissions,
       accessionHolderIds,
-      globalVisualization,
+      globalVisualization: globalVisualization!,
       visualizationGrcIds
     };
 
     let obs: Observable<User | void>;
     if (this.mode === 'update') {
-      obs = this.userService.update(this.editedUser.id, command);
+      obs = this.userService.update(this.editedUser!.id, command);
     } else {
       obs = this.userService.create(command);
     }
@@ -205,7 +205,7 @@ export class EditUserComponent implements OnInit {
     return Array.from(map.values());
   }
 
-  private extractSelectedIds(recordValue: Record<string, boolean>): Array<number> {
+  private extractSelectedIds(recordValue: Partial<Record<string, boolean>>): Array<number> {
     return (
       Object.entries(recordValue)
         // eslint-disable-next-line @typescript-eslint/no-unused-vars

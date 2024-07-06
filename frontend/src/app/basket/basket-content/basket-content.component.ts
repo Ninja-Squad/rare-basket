@@ -17,7 +17,7 @@ import { TranslateModule } from '@ngx-translate/core';
   imports: [TranslateModule, CustomerInformationComponent, AccessionComponent, DecimalPipe]
 })
 export class BasketContentComponent implements OnChanges {
-  @Input() basket: Basket;
+  @Input({ required: true }) basket!: Basket;
 
   quantityDisplayed = false;
 

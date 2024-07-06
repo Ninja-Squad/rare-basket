@@ -12,7 +12,7 @@ export type OrderStatus = 'DRAFT' | 'FINALIZED' | 'CANCELLED';
 interface BasketInformation {
   reference: string;
   customer: Customer;
-  rationale: string;
+  rationale: string | null;
   confirmationInstant: string;
 }
 
@@ -62,7 +62,7 @@ export interface OrderItemCommand {
 export interface DocumentCommand {
   document: {
     type: DocumentType;
-    description: string;
+    description: string | null;
     onDeliveryForm: boolean;
   };
   file: File;

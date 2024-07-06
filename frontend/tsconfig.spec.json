@@ -1,6 +1,8 @@
 {
   "extends": "./tsconfig.json",
   "compilerOptions": {
+    "strictNullChecks": false,
+    "strictPropertyInitialization": false,
     "esModuleInterop": true,   // needed for provideI18nTesting, to be able to import json
     "resolveJsonModule": true, // needed for provideI18nTesting, to be able to import json
     "outDir": "./out-tsc/spec",

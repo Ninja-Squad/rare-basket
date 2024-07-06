@@ -70,7 +70,7 @@ export class OrderCsvParserService {
 
     if (errors.length === 0) {
       return {
-        item: { accession, quantity, unit },
+        item: { accession: accession!, quantity, unit },
         errors
       };
     } else {
@@ -95,6 +95,6 @@ export interface CsvResult {
 }
 
 interface CsvError {
-  row: number;
+  row?: number;
   key: string;
 }

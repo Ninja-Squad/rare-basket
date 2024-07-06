@@ -99,7 +99,7 @@ describe('UsersComponent', () => {
     expect(tester.users[0]).toContainText('Administration');
     expect(tester.users[1]).toContainText('John');
     expect(tester.users[1]).toContainText('Administration, Gestion des commandes');
-    expect(tester.paginationComponent.navigate).toBe(true);
+    expect(tester.paginationComponent!.navigate).toBe(true);
     expect(tester.createLink).not.toBeNull();
   });
 

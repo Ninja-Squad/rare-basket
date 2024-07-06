@@ -20,7 +20,7 @@ export function padNumber(value: number) {
  * Takes an NgbDateStruct and transforms it to an ISO date string (yyyy-MM-dd). If the given date is falsy,
  * returns null.
  */
-export function dateToIso(date: NgbDateStruct): string {
+export function dateToIso(date: NgbDateStruct): string | null {
   return date ? `${date.year}-${padNumber(date.month)}-${padNumber(date.day)}` : null;
 }
 
@@ -28,7 +28,7 @@ export function dateToIso(date: NgbDateStruct): string {
  * Takes an ISO date string (yyyy-MM-dd) and transforms it into an NgbDateStruct. If the given value is falsy,
  * returns null.
  */
-export function isoToDate(value: string): NgbDateStruct {
+export function isoToDate(value: string): NgbDateStruct | null {
   if (value) {
     const dateParts = value.trim().split('-');
     return {

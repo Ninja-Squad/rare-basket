@@ -20,7 +20,7 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
   imports: [TranslateModule, FontAwesomeModule, RouterLink, PaginationComponent]
 })
 export class UsersComponent implements OnInit {
-  users: Page<User>;
+  users: Page<User> | null = null;
 
   userIcon = faUser;
   createUserIcon = faPlus;
@@ -57,6 +57,6 @@ export class UsersComponent implements OnInit {
         switchMap(() => this.userService.delete(user.id)),
         tap(() => this.toastService.success('user.users.deleted', { name: user.name }))
       )
-      .subscribe(() => this.reloadPage$.next(this.users.number));
+      .subscribe(() => this.reloadPage$.next(this.users!.number));
   }
 }

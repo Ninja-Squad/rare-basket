@@ -28,6 +28,6 @@ export class OrdersContainerComponent {
   constructor(private authenticationService: AuthenticationService) {}
 
   hasPermission(permission: Permission): Observable<boolean> {
-    return this.authenticationService.getCurrentUser().pipe(map(user => user && user.permissions.includes(permission)));
+    return this.authenticationService.getCurrentUser().pipe(map(user => !!user && user.permissions.includes(permission)));
   }
 }

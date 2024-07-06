@@ -59,22 +59,22 @@ export class StatisticsComponent implements OnInit {
   grcsFormArray = this.fb.array<FormGroup<{ grc: FormControl<Grc>; selected: FormControl<boolean> }>>([], atLeastOneSelection);
   form = this.fb.group(
     {
-      from: [null as string, Validators.required],
-      to: [null as string, Validators.required],
-      global: null as boolean,
+      from: [null as string | null, Validators.required],
+      to: [null as string | null, Validators.required],
+      global: null as boolean | null,
       grcs: this.grcsFormArray
     },
     { validators: validDateRange }
   );
 
-  stats: OrderStatistics;
-  customerTypeDoughnut: ChartConfiguration<'doughnut'>;
-  orderStatusDoughnut: ChartConfiguration<'doughnut'>;
+  stats: OrderStatistics | null = null;
+  customerTypeDoughnut: ChartConfiguration<'doughnut'> | null = null;
+  orderStatusDoughnut: ChartConfiguration<'doughnut'> | null = null;
   colors = COLORS;
-  user: User;
+  user: User | null = null;
   perimeterEdited = false;
   refreshed = false;
-  private choosableGrcs: Array<Grc>;
+  private choosableGrcs: Array<Grc> = [];
 
   private locale = inject(LOCALE_ID);
 
@@ -93,7 +93,7 @@ export class StatisticsComponent implements OnInit {
       .pipe(
         first(),
         switchMap(user => {
-          const grcs$ = user.globalVisualization ? this.grcService.list() : of(user.visualizationGrcs);
+          const grcs$ = user!.globalVisualization ? this.grcService.list() : of(user!.visualizationGrcs);
           return grcs$.pipe(map(grcs => ({ grcs, user })));
         })
       )
@@ -114,7 +114,7 @@ export class StatisticsComponent implements OnInit {
     this.refreshed = false;
     this.perimeterEdited = false;
     const formValue = this.form.value;
-    const grcIds = formValue.global ? [] : formValue.grcs.filter(({ selected }) => selected).map(({ grc }) => grc.id);
+    const grcIds = formValue.global ? [] : formValue.grcs!.filter(({ selected }) => selected).map(({ grc }) => grc!.id);
 
     const queryParams: Params = {
       from: formValue.from,
@@ -129,7 +129,7 @@ export class StatisticsComponent implements OnInit {
       replaceUrl: true
     });
 
-    this.orderService.getStatistics(formValue.from, formValue.to, grcIds).subscribe(stats => {
+    this.orderService.getStatistics(formValue.from!, formValue.to!, grcIds).subscribe(stats => {
       this.stats = stats;
       this.stats.customerTypeStatistics.sort((s1, s2) => s2.finalizedOrderCount - s1.finalizedOrderCount);
       this.createCharts();
@@ -138,18 +138,18 @@ export class StatisticsComponent implements OnInit {
   }
 
   createdOrderCountRatio(stat: OrderStatusStatistics) {
-    return stat.createdOrderCount / this.stats.createdOrderCount;
+    return stat.createdOrderCount / this.stats!.createdOrderCount;
   }
 
   finalizedOrderCountRatio(stat: CustomerTypeStatistics) {
-    return stat.finalizedOrderCount / this.stats.finalizedOrderCount;
+    return stat.finalizedOrderCount / this.stats!.finalizedOrderCount;
   }
 
   get constrainedPerimeterGrcs(): string {
     const formValue = this.form.value;
-    return formValue.grcs
-      .filter(({ selected }) => selected)
-      .map(({ grc }) => grc.name)
+    return formValue
+      .grcs!.filter(({ selected }) => selected)
+      .map(({ grc }) => grc!.name)
       .join(', ');
   }
 
@@ -169,7 +169,7 @@ export class StatisticsComponent implements OnInit {
     const data: Array<number> = [];
     const backgroundColor: Array<string> = [];
 
-    this.stats.customerTypeStatistics.forEach((value, index) => {
+    this.stats!.customerTypeStatistics.forEach((value, index) => {
       shortLabels.push(this.translateService.instant(`enums.short-customer-type.${value.customerType}`));
       data.push(value.finalizedOrderCount);
       backgroundColor.push(COLORS[index % COLORS.length]);
@@ -185,7 +185,7 @@ export class StatisticsComponent implements OnInit {
             callbacks: {
               label: tooltipItem => {
                 const label = tooltipItem.label;
-                const stat = this.stats.customerTypeStatistics[tooltipItem.dataIndex];
+                const stat = this.stats!.customerTypeStatistics[tooltipItem.dataIndex];
                 const count = formatNumber(stat.finalizedOrderCount, this.locale);
                 const percentage = formatPercent(this.finalizedOrderCountRatio(stat), this.locale, '.0-0');
                 return `${label}: ${count} (${percentage})`;
@@ -208,7 +208,7 @@ export class StatisticsComponent implements OnInit {
     const data: Array<number> = [];
     const backgroundColor: Array<string> = [];
 
-    this.stats.orderStatusStatistics.forEach((value, index) => {
+    this.stats!.orderStatusStatistics.forEach((value, index) => {
       labels.push(this.translateService.instant(`enums.order-status.${value.orderStatus}`));
       data.push(value.createdOrderCount);
       backgroundColor.push(COLORS[index % COLORS.length]);
@@ -224,7 +224,7 @@ export class StatisticsComponent implements OnInit {
             callbacks: {
               label: tooltipItem => {
                 const label = tooltipItem.label;
-                const stat = this.stats.orderStatusStatistics[tooltipItem.dataIndex];
+                const stat = this.stats!.orderStatusStatistics[tooltipItem.dataIndex];
                 const orderCount = formatNumber(stat.createdOrderCount, this.locale);
                 const percentage = formatPercent(this.createdOrderCountRatio(stat), this.locale, '.0-0');
                 return `${label}: ${orderCount} (${percentage})`;
@@ -257,10 +257,10 @@ export class StatisticsComponent implements OnInit {
     this.form.patchValue({
       from: formatDate(startOfYear, 'yyyy-MM-dd', this.locale),
       to: formatDate(now, 'yyyy-MM-dd', this.locale),
-      global: this.user.globalVisualization
+      global: this.user!.globalVisualization
     });
 
-    const globalControl = this.form.get('global');
+    const globalControl = this.form.controls.global;
     concat(of(globalControl.value), globalControl.valueChanges).subscribe(global => {
       if (global) {
         this.grcsFormArray.disable();
@@ -278,13 +278,15 @@ export class StatisticsComponent implements OnInit {
       grcs?: Array<{ grc: Grc; selected: boolean }>;
     } = {};
     const paramMap = this.route.snapshot.queryParamMap;
-    if (paramMap.get('from')) {
-      newValue.from = paramMap.get('from');
+    const from = paramMap.get('from');
+    if (from) {
+      newValue.from = from;
     }
-    if (paramMap.get('to')) {
-      newValue.to = paramMap.get('to');
+    const to = paramMap.get('to');
+    if (to) {
+      newValue.to = to;
     }
-    if (this.user.globalVisualization) {
+    if (this.user!.globalVisualization) {
       const grcIds = paramMap.getAll('grcs');
       if (grcIds.length > 0) {
         newValue.global = false;

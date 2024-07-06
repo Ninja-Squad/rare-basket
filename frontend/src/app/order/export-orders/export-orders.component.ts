@@ -31,8 +31,8 @@ import { TranslateModule } from '@ngx-translate/core';
 export class ExportOrdersComponent {
   form = inject(NonNullableFormBuilder).group(
     {
-      from: [null as string, Validators.required],
-      to: [null as string, Validators.required]
+      from: [null as string | null, Validators.required],
+      to: [null as string | null, Validators.required]
     },
     { validators: validDateRange }
   );
@@ -62,7 +62,7 @@ export class ExportOrdersComponent {
 
     this.exporting = true;
     this.orderService
-      .exportReport(this.form.value.from, this.form.value.to)
+      .exportReport(this.form.value.from!, this.form.value.to!)
       .pipe(finalize(() => (this.exporting = false)))
       .subscribe(response => this.downloadService.download(response, 'orders.csv'));
   }

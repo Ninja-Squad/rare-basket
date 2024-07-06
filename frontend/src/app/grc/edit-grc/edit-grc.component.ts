@@ -18,7 +18,7 @@ import { TranslateModule } from '@ngx-translate/core';
 })
 export class EditGrcComponent implements OnInit {
   mode: 'create' | 'update' = 'create';
-  editedGrc: Grc;
+  editedGrc: Grc | null = null;
   form = inject(NonNullableFormBuilder).group({
     name: ['', Validators.required],
     institution: ['', Validators.required],
@@ -52,7 +52,7 @@ export class EditGrcComponent implements OnInit {
       return;
     }
 
-    const formValue = this.form.value;
+    const formValue = this.form.getRawValue();
     const command: GrcCommand = {
       name: formValue.name,
       institution: formValue.institution,
@@ -61,7 +61,7 @@ export class EditGrcComponent implements OnInit {
 
     let obs: Observable<Grc | void>;
     if (this.mode === 'update') {
-      obs = this.grcService.update(this.editedGrc.id, command);
+      obs = this.grcService.update(this.editedGrc!.id, command);
     } else {
       obs = this.grcService.create(command);
     }

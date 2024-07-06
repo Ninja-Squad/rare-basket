@@ -7,7 +7,7 @@ export class BaseEnumPipe<E> implements PipeTransform {
     private enumName: string
   ) {}
 
-  transform(value: E) {
+  transform(value: E | null) {
     return value ? this.translateService.instant(`enums.${this.enumName}.${value}`) : '';
   }
 }

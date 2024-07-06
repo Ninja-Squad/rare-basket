@@ -17,13 +17,13 @@ export interface Accession {
 }
 
 export interface Customer {
-  name: string | null;
+  name: string;
   organization: string | null;
-  email: string | null;
-  deliveryAddress: string | null;
-  billingAddress: string | null;
-  type: CustomerType | null;
-  language: Language | null;
+  email: string;
+  deliveryAddress: string;
+  billingAddress: string;
+  type: CustomerType;
+  language: Language;
 }
 
 interface BasketItem {
@@ -72,6 +72,6 @@ export interface BasketItemCommand {
 export interface BasketCommand {
   items: Array<BasketItemCommand>;
   customer: CustomerCommand;
-  rationale: string;
+  rationale: string | null;
   complete: boolean;
 }

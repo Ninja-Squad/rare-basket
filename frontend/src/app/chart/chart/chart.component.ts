@@ -8,10 +8,10 @@ import { Chart, ChartConfiguration } from 'chart.js';
   standalone: true
 })
 export class ChartComponent implements AfterViewInit, OnChanges, OnDestroy {
-  @Input() configuration: ChartConfiguration<any>;
-  @ViewChild('canvas') canvas: ElementRef<HTMLCanvasElement>;
+  @Input({ required: true }) configuration!: ChartConfiguration<'doughnut', number[]>;
+  @ViewChild('canvas') canvas!: ElementRef<HTMLCanvasElement>;
 
-  private chart: Chart;
+  private chart: Chart<'doughnut'> | null = null;
 
   constructor(private zone: NgZone) {}
 
