@@ -9,13 +9,13 @@
         <p translate="home.message"></p>
         @if (!user) {
           <button class="btn btn-secondary" (click)="login()" id="login-button">
-            <fa-icon [icon]="loginIcon" class="me-1"></fa-icon>
+            <fa-icon [icon]="loginIcon" class="me-1" />
             <span translate="home.login"></span>
           </button>
         }
         @if (hasPermission('ORDER_MANAGEMENT') || hasPermission('ORDER_VISUALIZATION')) {
           <a routerLink="/orders" class="btn btn-secondary" id="orders-link">
-            <fa-icon [icon]="ordersIcon" class="me-1"></fa-icon>
+            <fa-icon [icon]="ordersIcon" class="me-1" />
             <span translate="home.orders"></span>
           </a>
         }

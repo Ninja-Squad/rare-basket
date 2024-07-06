@@ -47,7 +47,7 @@
       <tbody>
         @for (item of result.items; track item) {
           <tr class="order-item">
-            <td><rb-accession [accession]="item.accession"></rb-accession></td>
+            <td><rb-accession [accession]="item.accession" /></td>
             <td>{{ item.quantity | number }} {{ item.unit }}</td>
           </tr>
         }

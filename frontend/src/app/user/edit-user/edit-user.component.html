@@ -7,7 +7,7 @@
         <div class="mb-3">
           <label class="form-label" for="name" translate="user.edit.name"></label>
           <input class="form-control" formControlName="name" id="name" />
-          <val-errors controlName="name" [label]="'user.edit.name-error-label' | translate"></val-errors>
+          <val-errors controlName="name" [label]="'user.edit.name-error-label' | translate" />
           <small
             class="form-text text-body-secondary"
             [innerHTML]="'user.edit.name-help' | translate: { keycloakUrl: keycloakUrl }"

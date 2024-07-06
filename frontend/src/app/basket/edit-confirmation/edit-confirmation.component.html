@@ -1,7 +1,7 @@
 <div class="alert alert-info" role="alert">
   <div class="d-flex">
     <div class="me-4">
-      <fa-icon [icon]="infoIcon"></fa-icon>
+      <fa-icon [icon]="infoIcon" />
     </div>
     <div class="flex-grow-1">
       <p translate="basket.edit-confirmation.success"></p>
@@ -42,7 +42,7 @@
       </div>
       <div class="col-12 col-sm-auto">
         <button class="btn btn-primary btn-lg d-block d-sm-inline w-100 me-sm-auto" [disabled]="form.invalid" id="confirm-button">
-          <fa-icon [icon]="confirmIcon" class="me-1"></fa-icon>
+          <fa-icon [icon]="confirmIcon" class="me-1" />
           <span translate="basket.edit-confirmation.confirm"></span>
         </button>
       </div>
@@ -51,5 +51,5 @@
 
   <hr />
 
-  <rb-basket-content [basket]="basket" class="mt-5"></rb-basket-content>
+  <rb-basket-content [basket]="basket" class="mt-5" />
 </div>

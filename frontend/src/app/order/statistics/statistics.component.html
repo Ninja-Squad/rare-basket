@@ -13,7 +13,7 @@
             <input id="to" class="form-control datepicker" formControlName="to" ngbDatepicker />
           </rb-datepicker-container>
         </div>
-        <val-errors [control]="form" [label]="'order.statistics.date-range-error-label' | translate"></val-errors>
+        <val-errors [control]="form" [label]="'order.statistics.date-range-error-label' | translate" />
       </div>
 
       @if (perimeterEdited) {
@@ -137,7 +137,7 @@
         @if (stats.finalizedOrderCount) {
           <div class="row align-items-center">
             <div class="col-md mb-2 mb-md-2">
-              <rb-chart [configuration]="customerTypeDoughnut!" id="customer-types-chart"></rb-chart>
+              <rb-chart [configuration]="customerTypeDoughnut!" id="customer-types-chart" />
             </div>
             <div class="col-md">
               <table class="table table-sm">
@@ -176,7 +176,7 @@
         @if (stats.createdOrderCount) {
           <div class="row align-items-center">
             <div class="col-md mb-2 mb-md-2">
-              <rb-chart [configuration]="orderStatusDoughnut!" id="order-status-chart"></rb-chart>
+              <rb-chart [configuration]="orderStatusDoughnut!" id="order-status-chart" />
             </div>
             <div class="col-md">
               <table class="table table-sm">

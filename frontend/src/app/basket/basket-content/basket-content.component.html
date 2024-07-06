@@ -2,7 +2,7 @@
   <div class="col-sm">
     <h2 translate="basket.basket-content.information"></h2>
     @if (basket.customer) {
-      <rb-customer-information [customer]="basket.customer" [rationale]="basket.rationale"></rb-customer-information>
+      <rb-customer-information [customer]="basket.customer" [rationale]="basket.rationale" />
     }
   </div>
   <div class="col-sm">
@@ -25,7 +25,7 @@
             <tbody>
               @for (item of accessionHolderBasket.items; track item.id) {
                 <tr class="basket-item">
-                  <td><rb-accession [accession]="item.accession"></rb-accession></td>
+                  <td><rb-accession [accession]="item.accession" /></td>
                   @if (quantityDisplayed) {
                     <td>{{ item.quantity | number }} {{ item.unit }}</td>
                   }

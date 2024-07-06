@@ -9,7 +9,7 @@
           <div class="mb-3">
             <label class="form-label" for="name" translate="basket.edit-basket.name"></label>
             <input formControlName="name" id="name" class="form-control" />
-            <val-errors controlName="name" [label]="'basket.edit-basket.name-error-label' | translate"></val-errors>
+            <val-errors controlName="name" [label]="'basket.edit-basket.name-error-label' | translate" />
           </div>
           <div class="mb-3">
             <label class="form-label" for="organization" translate="basket.edit-basket.organization"></label>
@@ -18,12 +18,12 @@
           <div class="mb-3">
             <label class="form-label" for="email" translate="basket.edit-basket.email"></label>
             <input type="email" formControlName="email" id="email" class="form-control" />
-            <val-errors controlName="email" [label]="'basket.edit-basket.email-error-label' | translate"></val-errors>
+            <val-errors controlName="email" [label]="'basket.edit-basket.email-error-label' | translate" />
           </div>
           <div class="mb-3">
             <label class="form-label" for="delivery-address" translate="basket.edit-basket.delivery-address"></label>
             <textarea formControlName="deliveryAddress" id="delivery-address" class="form-control"></textarea>
-            <val-errors controlName="deliveryAddress" [label]="'basket.edit-basket.delivery-address-error-label' | translate"></val-errors>
+            <val-errors controlName="deliveryAddress" [label]="'basket.edit-basket.delivery-address-error-label' | translate" />
           </div>
           <div class="mb-3">
             <label class="form-label" for="billing-address" translate="basket.edit-basket.billing-address"></label>
@@ -34,7 +34,7 @@
             <div [ngbCollapse]="useDeliveryAddressControl.value">
               <textarea formControlName="billingAddress" id="billing-address" class="form-control"></textarea>
             </div>
-            <val-errors controlName="billingAddress" [label]="'basket.edit-basket.billing-address-error-label' | translate"></val-errors>
+            <val-errors controlName="billingAddress" [label]="'basket.edit-basket.billing-address-error-label' | translate" />
           </div>
           <div class="mb-3">
             <label class="form-label" for="type" translate="basket.edit-basket.customer-type"></label>
@@ -44,7 +44,7 @@
                 <option [value]="customerType">{{ customerType | customerTypeEnum }}</option>
               }
             </select>
-            <val-errors controlName="type" [label]="'basket.edit-basket.customer-type-error-label' | translate"></val-errors>
+            <val-errors controlName="type" [label]="'basket.edit-basket.customer-type-error-label' | translate" />
           </div>
         </div>
         <div class="mb-3">
@@ -84,7 +84,7 @@
               <tbody>
                 @for (item of accessionHolderBasket.items; track item.id; let itemIndex = $index) {
                   <tr class="accession">
-                    <td><rb-accession [accession]="item.accession"></rb-accession></td>
+                    <td><rb-accession [accession]="item.accession" /></td>
                     @if (quantityDisplayed) {
                       <td>{{ item.quantity | number }} {{ item.unit }}</td>
                     }
@@ -95,7 +95,7 @@
                         class="btn btn-outline-danger py-0 delete-btn"
                         (click)="deleteItemAt(accessionHolderBasketIndex, itemIndex)"
                       >
-                        <fa-icon [icon]="deleteIcon"></fa-icon>
+                        <fa-icon [icon]="deleteIcon" />
                         <span
                           class="visually-hidden"
                           translate="basket.edit-basket.delete-accession"
@@ -133,7 +133,7 @@
 
       <div class="text-center mt-4">
         <button class="btn btn-primary" id="save" [class.save-forbidden]="saveForbidden">
-          <fa-icon [icon]="saveIcon" class="me-1"></fa-icon>
+          <fa-icon [icon]="saveIcon" class="me-1" />
           <span translate="basket.edit-basket.save"></span>
         </button>
       </div>

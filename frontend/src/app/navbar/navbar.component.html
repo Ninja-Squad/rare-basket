@@ -18,7 +18,7 @@
           @if (hasPermission(vm, 'ORDER_MANAGEMENT') || hasPermission(vm, 'ORDER_VISUALIZATION')) {
             <li class="nav-item" id="navbar-orders">
               <a class="nav-link" routerLink="/orders" (click)="collapsed.set(true)">
-                <fa-icon [icon]="ordersIcon" class="me-1"></fa-icon>
+                <fa-icon [icon]="ordersIcon" class="me-1" />
                 <span translate="navbar.orders"></span>
               </a>
             </li>
@@ -27,20 +27,20 @@
           @if (hasPermission(vm, 'ADMINISTRATION')) {
             <li class="nav-item" ngbDropdown>
               <a class="nav-link" ngbDropdownToggle id="navbar-administration-dropdown" role="button" tabindex="0">
-                <fa-icon [icon]="administrationIcon" class="me-1"></fa-icon>
+                <fa-icon [icon]="administrationIcon" class="me-1" />
                 <span translate="navbar.administration"></span>
               </a>
               <div ngbDropdownMenu aria-labelledby="navbar-administration-dropdown" class="dropdown-menu">
                 <a ngbDropdownItem routerLink="/grcs" (click)="collapsed.set(true)" id="navbar-grcs">
-                  <fa-icon [icon]="grcIcon" class="me-1"></fa-icon>
+                  <fa-icon [icon]="grcIcon" class="me-1" />
                   <span translate="navbar.grcs"></span>
                 </a>
                 <a ngbDropdownItem routerLink="/accession-holders" (click)="collapsed.set(true)" id="navbar-accession-holders">
-                  <fa-icon [icon]="accessionHolderIcon" class="me-1"></fa-icon>
+                  <fa-icon [icon]="accessionHolderIcon" class="me-1" />
                   <span translate="navbar.accession-holders"></span>
                 </a>
                 <a ngbDropdownItem routerLink="/users" (click)="collapsed.set(true)" id="navbar-users">
-                  <fa-icon [icon]="usersIcon" class="me-1"></fa-icon>
+                  <fa-icon [icon]="usersIcon" class="me-1" />
                   <span translate="navbar.users"></span>
                 </a>
               </div>
@@ -51,7 +51,7 @@
           @if (vm.status === 'present') {
             <li class="nav-item" class="me-2" id="navbar-user">
               <span class="navbar-text">
-                <fa-icon [icon]="userIcon" class="me-1"></fa-icon>
+                <fa-icon [icon]="userIcon" class="me-1" />
                 {{ vm.user.name }}
               </span>
             </li>
@@ -60,13 +60,13 @@
             @switch (vm.status) {
               @case ('present') {
                 <a class="nav-link" role="button" (click)="logout(); collapsed.set(true)" id="navbar-logout" tabindex="0">
-                  <fa-icon [icon]="logoutIcon" class="me-1"></fa-icon>
+                  <fa-icon [icon]="logoutIcon" class="me-1" />
                   <span translate="navbar.logout"></span>
                 </a>
               }
               @case ('absent') {
                 <a class="nav-link" role="button" (click)="login(); collapsed.set(true)" id="navbar-login" tabindex="0">
-                  <fa-icon [icon]="loginIcon" class="me-1"></fa-icon>
+                  <fa-icon [icon]="loginIcon" class="me-1" />
                   <span translate="navbar.login"></span>
                 </a>
               }

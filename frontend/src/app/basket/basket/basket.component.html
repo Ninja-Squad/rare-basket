@@ -3,13 +3,13 @@
     <h1 translate="basket.basket.title" [translateParams]="{ reference: basket.reference }"></h1>
     @switch (basket.status) {
       @case ('DRAFT') {
-        <rb-edit-basket [basket]="basket" (basketSaved)="save($event)"></rb-edit-basket>
+        <rb-edit-basket [basket]="basket" (basketSaved)="save($event)" />
       }
       @case ('SAVED') {
-        <rb-edit-confirmation [basket]="basket" (basketConfirmed)="confirm($event)" (refreshRequested)="refresh()"></rb-edit-confirmation>
+        <rb-edit-confirmation [basket]="basket" (basketConfirmed)="confirm($event)" (refreshRequested)="refresh()" />
       }
       @case ('CONFIRMED') {
-        <rb-confirmed [basket]="basket"></rb-confirmed>
+        <rb-confirmed [basket]="basket" />
       }
     }
   </div>

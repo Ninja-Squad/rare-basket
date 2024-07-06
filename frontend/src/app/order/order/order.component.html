@@ -26,14 +26,10 @@
               [customerInformation]="order.basket"
               (saved)="customerSaved($event)"
               (cancelled)="editingCustomer = false"
-            ></rb-edit-customer-information>
+            />
           } @else {
             <div>
-              <rb-customer-information
-                [customer]="order.basket.customer"
-                [rationale]="order.basket.rationale"
-                [withLanguage]="true"
-              ></rb-customer-information>
+              <rb-customer-information [customer]="order.basket.customer" [rationale]="order.basket.rationale" [withLanguage]="true" />
 
               @if (order.status === 'DRAFT') {
                 <div class="text-end">
@@ -44,7 +40,7 @@
                     [disabled]="operationInProgress"
                     (click)="editCustomer()"
                   >
-                    <fa-icon [icon]="editIcon" class="me-1"></fa-icon>
+                    <fa-icon [icon]="editIcon" class="me-1" />
                     <span translate="order.order.edit"></span>
                   </button>
                 </div>
@@ -55,7 +51,7 @@
         <div class="col-md-7">
           <h2 translate="order.order.ordered-accessions"></h2>
           @if (editing) {
-            <rb-edit-order [order]="order" (saved)="saved($event)" (cancelled)="editing = false"></rb-edit-order>
+            <rb-edit-order [order]="order" (saved)="saved($event)" (cancelled)="editing = false" />
           } @else {
             <div>
               <div class="scrolling-accessions mb-2">
@@ -69,7 +65,7 @@
                   <tbody>
                     @for (item of order.items; track item.id) {
                       <tr class="order-item">
-                        <td><rb-accession [accession]="item.accession"></rb-accession></td>
+                        <td><rb-accession [accession]="item.accession" /></td>
                         <td>{{ item.quantity | number }} {{ item.unit }}</td>
                       </tr>
                     }
@@ -85,7 +81,7 @@
                     [disabled]="operationInProgress"
                     (click)="edit()"
                   >
-                    <fa-icon [icon]="editIcon" class="me-1"></fa-icon>
+                    <fa-icon [icon]="editIcon" class="me-1" />
                     <span translate="order.order.edit"></span>
                   </button>
                 </div>
@@ -104,9 +100,9 @@
           <div class="d-flex">
             <div class="me-2">
               @if (document.onDeliveryForm) {
-                <fa-icon [icon]="documentOnDeliveryFormIcon"></fa-icon>
+                <fa-icon [icon]="documentOnDeliveryFormIcon" />
               } @else {
-                <fa-icon [icon]="documentNotOnDeliveryFormIcon"></fa-icon>
+                <fa-icon [icon]="documentNotOnDeliveryFormIcon" />
               }
             </div>
             <div class="flex-grow-1 row">
@@ -119,7 +115,7 @@
                   >
                     {{ document.originalFileName }}
                     @if (isDownloading(document)) {
-                      <fa-icon [icon]="downloadingIcon" [animation]="'spin'" class="ms-1 download-spinner"></fa-icon>
+                      <fa-icon [icon]="downloadingIcon" [animation]="'spin'" class="ms-1 download-spinner" />
                     }
                   </button>
                 </div>
@@ -148,7 +144,7 @@
                   [disabled]="operationInProgress"
                   (click)="deleteDocument(document)"
                 >
-                  <fa-icon [icon]="deleteDocumentIcon"></fa-icon>
+                  <fa-icon [icon]="deleteDocumentIcon" />
                   <span class="visually-hidden" translate="order.order.delete-document"></span>
                 </button>
               </div>
@@ -168,7 +164,7 @@
             [disabled]="operationInProgress"
             id="add-document-button"
           >
-            <fa-icon [icon]="addDocumentIcon" class="me-1"></fa-icon>
+            <fa-icon [icon]="addDocumentIcon" class="me-1" />
             <span translate="order.order.add-document"></span>
           </button>
         }
@@ -182,7 +178,7 @@
             (cancelled)="addingDocument = false"
             [order]="order"
             [uploadProgress]="uploadProgress"
-          ></rb-edit-document>
+          />
         </div>
       }
 
@@ -198,7 +194,7 @@
               class="btn btn-primary btn-sm-block my-1 me-md-2"
               id="finalize-order-button"
             >
-              <fa-icon [icon]="finalizeOrderIcon" class="me-1"></fa-icon>
+              <fa-icon [icon]="finalizeOrderIcon" class="me-1" />
               <span translate="order.order.finalize"></span>
             </button>
 
@@ -209,7 +205,7 @@
               class="btn btn-danger btn-sm-block"
               id="cancel-order-button"
             >
-              <fa-icon [icon]="cancelOrderIcon" class="me-1"></fa-icon>
+              <fa-icon [icon]="cancelOrderIcon" class="me-1" />
               <span translate="order.order.cancel"></span>
             </button>
           } @else if (order.status === 'FINALIZED') {
@@ -219,7 +215,7 @@
               (click)="downloadDeliveryForm()"
               id="delivery-form-button"
             >
-              <fa-icon [icon]="deliveryFormIcon" class="me-1"></fa-icon>
+              <fa-icon [icon]="deliveryFormIcon" class="me-1" />
               <span translate="order.order.delivery-form"></span>
             </button>
 
@@ -230,7 +226,7 @@
                 [disabled]="downloadingDeliveryForm"
                 id="complete-delivery-form-button"
               >
-                <fa-icon [icon]="completeDeliveryFormIcon" class="me-1"></fa-icon>
+                <fa-icon [icon]="completeDeliveryFormIcon" class="me-1" />
                 <span translate="order.order.complete-delivery-form"></span>
               </button>
             }
@@ -240,7 +236,7 @@
     </div>
 
     <a routerLink="/orders" class="btn btn-outline-secondary">
-      <fa-icon [icon]="allOrdersIcon" class="me-1"></fa-icon>
+      <fa-icon [icon]="allOrdersIcon" class="me-1" />
       <span translate="order.order.all-orders"></span>
     </a>
   </div>

@@ -3,7 +3,7 @@
     <div class="mb-3">
       <label class="form-label" for="name" translate="order.edit-customer-information.name"></label>
       <input formControlName="name" id="name" class="form-control" />
-      <val-errors controlName="name" [label]="'order.edit-customer-information.name-error-label' | translate"></val-errors>
+      <val-errors controlName="name" [label]="'order.edit-customer-information.name-error-label' | translate" />
     </div>
     <div class="mb-3">
       <label class="form-label" for="organization" translate="order.edit-customer-information.organization"></label>
@@ -12,15 +12,12 @@
     <div class="mb-3">
       <label class="form-label" for="email" translate="order.edit-customer-information.email"></label>
       <input type="email" formControlName="email" id="email" class="form-control" />
-      <val-errors controlName="email" [label]="'order.edit-customer-information.email-error-label' | translate"></val-errors>
+      <val-errors controlName="email" [label]="'order.edit-customer-information.email-error-label' | translate" />
     </div>
     <div class="mb-3">
       <label class="form-label" for="delivery-address" translate="order.edit-customer-information.delivery-address"></label>
       <textarea formControlName="deliveryAddress" id="delivery-address" class="form-control"></textarea>
-      <val-errors
-        controlName="deliveryAddress"
-        [label]="'order.edit-customer-information.delivery-address-error-label' | translate"
-      ></val-errors>
+      <val-errors controlName="deliveryAddress" [label]="'order.edit-customer-information.delivery-address-error-label' | translate" />
     </div>
     <div class="mb-3">
       <label class="form-label" for="billing-address" translate="order.edit-customer-information.billing-address"></label>
@@ -31,10 +28,7 @@
       <div [ngbCollapse]="useDeliveryAddressControl.value">
         <textarea formControlName="billingAddress" id="billing-address" class="form-control"></textarea>
       </div>
-      <val-errors
-        controlName="billingAddress"
-        [label]="'order.edit-customer-information.billing-address-error-label' | translate"
-      ></val-errors>
+      <val-errors controlName="billingAddress" [label]="'order.edit-customer-information.billing-address-error-label' | translate" />
     </div>
     <div class="mb-3">
       <label class="form-label" for="type" translate="order.edit-customer-information.customer-type"></label>
@@ -44,7 +38,7 @@
           <option [value]="customerType">{{ customerType | customerTypeEnum }}</option>
         }
       </select>
-      <val-errors controlName="type" [label]="'order.edit-customer-information.customer-type-error-label' | translate"></val-errors>
+      <val-errors controlName="type" [label]="'order.edit-customer-information.customer-type-error-label' | translate" />
     </div>
     <div class="mb-3">
       <label class="form-label" for="language" translate="order.edit-customer-information.language"></label>
@@ -54,7 +48,7 @@
           <option [value]="language">{{ language | languageEnum }}</option>
         }
       </select>
-      <val-errors controlName="language" [label]="'order.edit-customer-information.language-error-label' | translate"></val-errors>
+      <val-errors controlName="language" [label]="'order.edit-customer-information.language-error-label' | translate" />
     </div>
   </div>
   <div class="mb-3">

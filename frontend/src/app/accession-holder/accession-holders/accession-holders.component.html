@@ -6,7 +6,7 @@
       @for (accessionHolder of accessionHolders; track accessionHolder.id) {
         <div>
           <div class="d-flex">
-            <div><fa-icon [icon]="accessionHolderIcon" class="me-2"></fa-icon></div>
+            <div><fa-icon [icon]="accessionHolderIcon" class="me-2" /></div>
             <div class="flex-grow-1 row accession-holder">
               <div class="col-6 col-md-4">
                 <a [routerLink]="['/accession-holders', accessionHolder.id, 'edit']">{{ accessionHolder.name }}</a>
@@ -20,7 +20,7 @@
                 type="button"
                 class="btn btn-outline-danger btn-sm delete-accession-holder-button"
               >
-                <fa-icon [icon]="deleteAccessionHolderIcon"></fa-icon>
+                <fa-icon [icon]="deleteAccessionHolderIcon" />
                 <span class="visually-hidden" translate="accession-holder.accession-holders.delete"></span>
               </button>
             </div>
@@ -32,7 +32,7 @@
 
     <div class="text-end mt-2">
       <a class="btn btn-outline-secondary" id="create-accession-holder" routerLink="/accession-holders/new">
-        <fa-icon [icon]="createAccessionHolderIcon" class="me-1"></fa-icon>
+        <fa-icon [icon]="createAccessionHolderIcon" class="me-1" />
         <span translate="accession-holder.accession-holders.create"></span>
       </a>
     </div>

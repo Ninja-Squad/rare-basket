@@ -6,19 +6,19 @@
       <label class="form-label" for="name" translate="accession-holder.edit.name"></label>
       <input class="form-control" formControlName="name" id="name" />
       <small id="name-hint" class="form-text text-body-secondary" translate="accession-holder.edit.name-hint"></small>
-      <val-errors controlName="name" [label]="'accession-holder.edit.name-error-label' | translate"></val-errors>
+      <val-errors controlName="name" [label]="'accession-holder.edit.name-error-label' | translate" />
     </div>
 
     <div class="mb-3">
       <label class="form-label" for="email" translate="accession-holder.edit.email"></label>
       <input class="form-control" formControlName="email" id="email" type="email" />
-      <val-errors controlName="email" [label]="'accession-holder.edit.email-error-label' | translate"></val-errors>
+      <val-errors controlName="email" [label]="'accession-holder.edit.email-error-label' | translate" />
     </div>
 
     <div class="mb-3">
       <label class="form-label" for="phone" translate="accession-holder.edit.phone"></label>
       <input class="form-control" formControlName="phone" id="phone" type="tel" />
-      <val-errors controlName="phone" [label]="'accession-holder.edit.phone-error-label' | translate"></val-errors>
+      <val-errors controlName="phone" [label]="'accession-holder.edit.phone-error-label' | translate" />
     </div>
 
     <div class="mb-3">
@@ -29,7 +29,7 @@
           <option [ngValue]="grc.id">{{ grc.name }}</option>
         }
       </select>
-      <val-errors controlName="grcId" [label]="'accession-holder.edit.grc-error-label' | translate"></val-errors>
+      <val-errors controlName="grcId" [label]="'accession-holder.edit.grc-error-label' | translate" />
     </div>
 
     <div>

@@ -3,7 +3,7 @@
     <ngb-toast [class]="toast.type" [autohide]="true" [delay]="5000" (hidden)="remove(toast)">
       <div class="d-flex">
         <div class="me-2">
-          <fa-icon [icon]="icon(toast)"></fa-icon>
+          <fa-icon [icon]="icon(toast)" />
         </div>
         <div class="flex-grow-1">{{ toast.message }}</div>
       </div>

@@ -20,12 +20,12 @@
         [translateParams]="{ count: vm.orders.totalElements | number }"
       ></div>
 
-      <rb-orders [orders]="vm.orders"></rb-orders>
+      <rb-orders [orders]="vm.orders" />
     </div>
   } @else {
     <div class="text-center mb-4" id="no-order-message">
       <div class="bumped">
-        <fa-icon class="text-success" [icon]="noOrderIcon" size="6x"></fa-icon>
+        <fa-icon class="text-success" [icon]="noOrderIcon" size="6x" />
       </div>
       <div class="text-body-secondary mt-2" translate="order.in-progress-orders.no-order"></div>
     </div>
@@ -33,7 +33,7 @@
 
   <div class="text-end">
     <a class="btn btn-outline-secondary" routerLink="/orders/new">
-      <fa-icon [icon]="createOrderIcon" class="me-1"></fa-icon>
+      <fa-icon [icon]="createOrderIcon" class="me-1" />
       <span translate="order.in-progress-orders.create"></span>
     </a>
   </div>

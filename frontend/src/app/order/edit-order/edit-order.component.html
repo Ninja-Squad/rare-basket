@@ -14,7 +14,7 @@
                   [id]="'name-' + $index"
                   [placeholder]="'order.edit-order.name' | translate"
                 />
-                <val-errors controlName="name" [label]="'order.edit-order.name-error-label' | translate"></val-errors>
+                <val-errors controlName="name" [label]="'order.edit-order.name-error-label' | translate" />
               </div>
               <div class="col-lg-4">
                 <label class="visually-hidden" [for]="'identifier-' + $index" translate="order.edit-order.name"></label>
@@ -24,7 +24,7 @@
                   [id]="'identifier-' + $index"
                   [placeholder]="'order.edit-order.identifier' | translate"
                 />
-                <val-errors controlName="identifier" [label]="'order.edit-order.identifier-error-label' | translate"></val-errors>
+                <val-errors controlName="identifier" [label]="'order.edit-order.identifier-error-label' | translate" />
               </div>
               <div class="col-lg-2">
                 <label class="visually-hidden" [for]="'quantity-' + $index" translate="order.edit-order.quantity"></label>
@@ -36,7 +36,7 @@
                   [placeholder]="'order.edit-order.quantity' | translate"
                   min="1"
                 />
-                <val-errors controlName="quantity" [label]="'order.edit-order.quantity-error-label' | translate"></val-errors>
+                <val-errors controlName="quantity" [label]="'order.edit-order.quantity-error-label' | translate" />
               </div>
               <div class="col-lg-3">
                 <label class="visually-hidden" [for]="'unit-' + $index" translate="order.edit-order.unit"></label>
@@ -56,7 +56,7 @@
               class="ms-auto btn btn-sm btn-outline-danger delete-order-item"
               [disabled]="itemGroups.length === 1"
             >
-              <fa-icon [icon]="deleteIcon"></fa-icon>
+              <fa-icon [icon]="deleteIcon" />
               <span class="visually-hidden" translate="order.edit-order.delete-accession"></span>
             </button>
           </div>
@@ -68,11 +68,11 @@
   <div class="d-flex">
     <div>
       <button (click)="addItem()" type="button" class="btn btn-sm btn-outline-secondary me-2" id="add-item-button">
-        <fa-icon [icon]="addItemIcon"></fa-icon>
+        <fa-icon [icon]="addItemIcon" />
         <span class="visually-hidden" translate="order.edit-order.add-accession"></span>
       </button>
       <button (click)="openCsvModal()" type="button" class="btn btn-sm btn-outline-secondary" id="csv-button">
-        <fa-icon [icon]="csvIcon"></fa-icon>
+        <fa-icon [icon]="csvIcon" />
         <span class="visually-hidden" translate="order.edit-order.csv"></span>
       </button>
     </div>

@@ -9,14 +9,14 @@
             <option [value]="documentType">{{ documentType | documentTypeEnum }}</option>
           }
         </select>
-        <val-errors controlName="type" [label]="'order.edit-document.type-error-label' | translate"></val-errors>
+        <val-errors controlName="type" [label]="'order.edit-document.type-error-label' | translate" />
       </div>
     </div>
     <div class="col-md-6">
       <div class="mb-3">
         <label class="form-label" translate="order.edit-document.description" for="document-description"></label>
         <input formControlName="description" class="form-control form-control-sm" id="document-description" />
-        <val-errors controlName="description" [label]="'order.edit-document.description-error-label' | translate"></val-errors>
+        <val-errors controlName="description" [label]="'order.edit-document.description-error-label' | translate" />
       </div>
     </div>
   </div>
@@ -71,14 +71,14 @@
           [striped]="uploadProgress === 1"
           type="success"
           [showValue]="false"
-        ></ngb-progressbar>
+        />
       }
     </div>
   </div>
 
   <div class="mt-2 text-end">
     <button class="btn btn-sm btn-primary me-2" [disabled]="uploadProgress !== null" id="document-save-button">
-      <fa-icon [icon]="saveIcon" class="me-1"></fa-icon>
+      <fa-icon [icon]="saveIcon" class="me-1" />
       <span translate="order.edit-document.save"></span>
     </button>
     <button
