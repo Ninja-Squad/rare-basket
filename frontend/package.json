@@ -10,7 +10,8 @@
     "lint": "mkdir -p build && ng lint > build/eslint-result.txt",
     "format": "prettier --write \"{src,e2e}/**/*.+(ts|js|json|html|scss)\"",
     "e2e": "yarn playwright test",
-    "postinstall": "npx playwright install"
+    "postinstall": "npx playwright install",
+    "knip": "npx knip --fix-type exports,types --exclude dependencies,unlisted,files,binaries --tags=knipignore"
   },
   "private": true,
   "dependencies": {

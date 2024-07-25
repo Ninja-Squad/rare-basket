@@ -69,5 +69,4 @@ const config: PlaywrightTestConfig = {
   }
 };
 
-// ts-prune-ignore-next
 export default config;
