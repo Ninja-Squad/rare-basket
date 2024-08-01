@@ -26,8 +26,8 @@ export interface AccessionHolderCommand {
   grcId: number;
 }
 
-const ALL_PERMISSIONS = ['ORDER_MANAGEMENT', 'ORDER_VISUALIZATION', 'ADMINISTRATION'] as const;
-export type Permission = (typeof ALL_PERMISSIONS)[number];
+type ALL_PERMISSIONS = ['ORDER_MANAGEMENT', 'ORDER_VISUALIZATION', 'ADMINISTRATION'];
+export type Permission = ALL_PERMISSIONS[number];
 
 export interface User {
   id: number;
