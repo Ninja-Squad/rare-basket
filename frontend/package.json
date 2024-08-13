@@ -44,7 +44,7 @@
     "@playwright/test": "1.46.0",
     "@types/jasmine": "5.1.4",
     "@types/papaparse": "5.3.14",
-    "angular-eslint": "18.2.0",
+    "angular-eslint": "18.3.0",
     "eslint": "8.57.0",
     "eslint-config-prettier": "9.1.0",
     "eslint-plugin-deprecation": "3.0.0",
