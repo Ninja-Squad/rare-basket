@@ -15,9 +15,17 @@
   "prConcurrentLimit": 1,
   // auto-merge if build is OK
   "automerge": true,
+  "packageRules": [
+    // allow only patch updates for TS packages
+    {
+      "packageNames": ["typescript"],
+      "updateTypes": ["minor", "major"],
+      "enabled": false
+    }
+  ],
   "ignoreDeps": [
     // do  not bump cimg/openjdk or circleci/openjdk on CIs as we'll manually handle the JDK bumps
     "cimg/openjdk",
-    "circleci/openjdk",
+    "circleci/openjdk"
   ]
 }
