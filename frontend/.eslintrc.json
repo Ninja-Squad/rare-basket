@@ -15,11 +15,11 @@
         "eslint:recommended",
         "plugin:@typescript-eslint/recommended",
         "plugin:@angular-eslint/recommended",
-        "plugin:prettier/recommended",
-        "plugin:deprecation/recommended"
+        "plugin:prettier/recommended"
       ],
       "rules": {
         "@typescript-eslint/explicit-module-boundary-types": "off",
+        "@typescript-eslint/no-deprecated": "error",
         "@typescript-eslint/no-explicit-any": "off",
         "no-restricted-syntax": [
           "error",
