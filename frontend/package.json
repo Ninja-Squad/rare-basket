@@ -47,7 +47,6 @@
     "angular-eslint": "18.3.1",
     "eslint": "8.57.1",
     "eslint-config-prettier": "9.1.0",
-    "eslint-plugin-deprecation": "3.0.0",
     "eslint-plugin-prettier": "5.2.1",
     "jasmine-core": "5.3.0",
     "jasmine-spec-reporter": "7.0.0",
