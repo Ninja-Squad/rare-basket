@@ -24,7 +24,7 @@ class PlaceholderComponent {}
     </ul>
 
     <div [rbRouterNavPanel]="nav">
-      <router-outlet></router-outlet>
+      <router-outlet />
     </div>
   `,
   standalone: true,

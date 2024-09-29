@@ -5,7 +5,7 @@ import { TestBed } from '@angular/core/testing';
 import { ComponentTester } from 'ngx-speculoos';
 
 @Component({
-  template: '<rb-chart [configuration]="configuration"></rb-chart>',
+  template: '<rb-chart [configuration]="configuration" />',
   standalone: true,
   imports: [ChartComponent]
 })

@@ -11,8 +11,7 @@ import { provideI18nTesting } from '../../i18n/mock-18n.spec';
 import { provideRouter } from '@angular/router';
 
 @Component({
-  template:
-    '<rb-edit-document [order]="order" [uploadProgress]="progress" (saved)="saved = $event" (cancelled)="cancelled = true"></rb-edit-document>',
+  template: '<rb-edit-document [order]="order" [uploadProgress]="progress" (saved)="saved = $event" (cancelled)="cancelled = true" />',
   standalone: true,
   imports: [EditDocumentComponent]
 })
