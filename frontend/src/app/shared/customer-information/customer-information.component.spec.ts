@@ -6,8 +6,7 @@ import { CustomerInformationComponent } from './customer-information.component';
 import { provideI18nTesting } from '../../i18n/mock-18n.spec';
 
 @Component({
-  template:
-    '<rb-customer-information [customer]="customer" [rationale]="rationale" [withLanguage]="withLanguage"></rb-customer-information>',
+  template: '<rb-customer-information [customer]="customer" [rationale]="rationale" [withLanguage]="withLanguage" />',
   standalone: true,
   imports: [CustomerInformationComponent]
 })

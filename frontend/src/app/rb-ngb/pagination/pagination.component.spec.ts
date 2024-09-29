@@ -8,7 +8,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Page } from '../../shared/page.model';
 
 @Component({
-  template: `<rb-pagination [page]="page" (pageChanged)="pageChanged($event)" [navigate]="navigate"></rb-pagination>`,
+  template: `<rb-pagination [page]="page" (pageChanged)="pageChanged($event)" [navigate]="navigate" />`,
   standalone: true,
   imports: [PaginationComponent]
 })

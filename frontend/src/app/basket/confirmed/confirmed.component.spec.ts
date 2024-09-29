@@ -7,7 +7,7 @@ import { Basket } from '../basket.model';
 import { provideI18nTesting } from '../../i18n/mock-18n.spec';
 
 @Component({
-  template: `<rb-confirmed [basket]="basket"></rb-confirmed>`,
+  template: `<rb-confirmed [basket]="basket" />`,
   standalone: true,
   imports: [ConfirmedComponent]
 })

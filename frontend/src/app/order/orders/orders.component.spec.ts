@@ -10,7 +10,7 @@ import { provideI18nTesting } from '../../i18n/mock-18n.spec';
 import { provideRouter } from '@angular/router';
 
 @Component({
-  template: `<rb-orders [orders]="orders"></rb-orders>`,
+  template: `<rb-orders [orders]="orders" />`,
   standalone: true,
   imports: [OrdersComponent]
 })

@@ -10,7 +10,7 @@ import { of } from 'rxjs';
 import { provideI18nTesting } from '../../i18n/mock-18n.spec';
 
 @Component({
-  template: '<rb-edit-basket [basket]="basket" (basketSaved)="savedCommand = $event"></rb-edit-basket>',
+  template: '<rb-edit-basket [basket]="basket" (basketSaved)="savedCommand = $event" />',
   standalone: true,
   imports: [EditBasketComponent]
 })
