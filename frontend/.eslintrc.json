@@ -19,9 +19,26 @@
         "plugin:prettier/recommended"
       ],
       "rules": {
+        "@angular-eslint/component-selector": [
+          "error",
+          {
+            "type": "element",
+            "prefix": "rb",
+            "style": "kebab-case"
+          }
+        ],
+        "@angular-eslint/directive-selector": [
+          "error",
+          {
+            "type": "attribute",
+            "prefix": "rb",
+            "style": "camelCase"
+          }
+        ],
         "@typescript-eslint/explicit-module-boundary-types": "off",
         "@typescript-eslint/no-deprecated": "error",
-        "@typescript-eslint/no-explicit-any": "off",
+        "@typescript-eslint/no-explicit-any":"off",
+        "eqeqeq": ["error", "always", { "null": "ignore" }],
         "no-restricted-syntax": [
           "error",
           {
