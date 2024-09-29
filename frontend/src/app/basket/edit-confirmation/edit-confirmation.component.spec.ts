@@ -8,11 +8,7 @@ import { provideI18nTesting } from '../../i18n/mock-18n.spec';
 
 @Component({
   template: `
-    <rb-edit-confirmation
-      [basket]="basket"
-      (basketConfirmed)="confirmationCode = $event"
-      (refreshRequested)="refreshRequested = true"
-    ></rb-edit-confirmation>
+    <rb-edit-confirmation [basket]="basket" (basketConfirmed)="confirmationCode = $event" (refreshRequested)="refreshRequested = true" />
   `,
   standalone: true,
   imports: [EditConfirmationComponent]
