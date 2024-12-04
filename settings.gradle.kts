@@ -1,8 +1,8 @@
 pluginManagement {
     plugins {
-        id("org.springframework.boot") version "3.3.5"
+        id("org.springframework.boot") version "3.4.0"
         id("io.spring.dependency-management") version "1.1.6"
-        id("org.flywaydb.flyway") version "10.21.0"
+        id("org.flywaydb.flyway") version "10.22.0"
         id("com.github.node-gradle.node") version "7.1.0"
     }
 }
