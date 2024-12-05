@@ -6,7 +6,6 @@ import { ComponentTester } from 'ngx-speculoos';
 
 @Component({
   template: '<rb-chart [configuration]="configuration" />',
-  standalone: true,
   imports: [ChartComponent]
 })
 class TestComponent {

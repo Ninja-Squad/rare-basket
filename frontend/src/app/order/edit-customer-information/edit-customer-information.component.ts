@@ -14,7 +14,6 @@ import { TranslateModule } from '@ngx-translate/core';
   selector: 'rb-edit-customer-information',
   templateUrl: './edit-customer-information.component.html',
   styleUrl: './edit-customer-information.component.scss',
-  standalone: true,
   imports: [
     ReactiveFormsModule,
     TranslateModule,

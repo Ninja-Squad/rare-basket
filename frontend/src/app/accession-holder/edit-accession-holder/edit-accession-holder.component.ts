@@ -15,7 +15,6 @@ import { TranslateModule } from '@ngx-translate/core';
   selector: 'rb-edit-accession-holder',
   templateUrl: './edit-accession-holder.component.html',
   styleUrl: './edit-accession-holder.component.scss',
-  standalone: true,
   imports: [TranslateModule, ReactiveFormsModule, FormControlValidationDirective, ValidationErrorsComponent, RouterLink]
 })
 export class EditAccessionHolderComponent implements OnInit {

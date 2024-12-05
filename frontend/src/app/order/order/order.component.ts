@@ -41,7 +41,6 @@ import { DatePipe, DecimalPipe } from '@angular/common';
   selector: 'rb-order',
   templateUrl: './order.component.html',
   styleUrl: './order.component.scss',
-  standalone: true,
   imports: [
     TranslateModule,
     CustomerInformationComponent,

@@ -10,7 +10,6 @@ import { TranslateModule } from '@ngx-translate/core';
   selector: 'rb-root',
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss',
-  standalone: true,
   imports: [TranslateModule, NavbarComponent, ValidationDefaultsComponent, RouterOutlet, ToastsComponent]
 })
 export class AppComponent {

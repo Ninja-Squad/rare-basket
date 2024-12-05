@@ -15,7 +15,6 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
   selector: 'rb-edit-confirmation',
   templateUrl: './edit-confirmation.component.html',
   styleUrl: './edit-confirmation.component.scss',
-  standalone: true,
   imports: [FontAwesomeModule, TranslateModule, ReactiveFormsModule, FormControlValidationDirective, BasketContentComponent]
 })
 export class EditConfirmationComponent {

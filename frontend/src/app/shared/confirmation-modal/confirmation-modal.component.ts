@@ -6,7 +6,6 @@ import { TranslateModule } from '@ngx-translate/core';
   selector: 'rb-confirmation-modal',
   templateUrl: './confirmation-modal.component.html',
   styleUrl: './confirmation-modal.component.scss',
-  standalone: true,
   imports: [TranslateModule]
 })
 export class ConfirmationModalComponent {

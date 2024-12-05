@@ -1,4 +1,4 @@
-import { ENVIRONMENT_INITIALIZER, importProvidersFrom, inject, LOCALE_ID } from '@angular/core';
+import { importProvidersFrom, inject, LOCALE_ID, provideEnvironmentInitializer } from '@angular/core';
 import { MissingTranslationHandler, MissingTranslationHandlerParams, TranslateModule, TranslateService } from '@ngx-translate/core';
 import FR_TRANSLATIONS from './fr.json';
 import localeFr from '@angular/common/locales/fr';
@@ -25,14 +25,10 @@ export const provideI18nTesting = () => {
       })
     ]),
     { provide: LOCALE_ID, useValue: 'fr' },
-    {
-      provide: ENVIRONMENT_INITIALIZER,
-      multi: true,
-      useValue: () => {
-        const translateService = inject(TranslateService);
-        translateService.setTranslation('fr', FR_TRANSLATIONS);
-        translateService.use('fr');
-      }
-    }
+    provideEnvironmentInitializer(() => {
+      const translateService = inject(TranslateService);
+      translateService.setTranslation('fr', FR_TRANSLATIONS);
+      translateService.use('fr');
+    })
   ];
 };

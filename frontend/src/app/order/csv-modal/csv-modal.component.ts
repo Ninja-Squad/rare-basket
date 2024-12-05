@@ -11,7 +11,6 @@ import { TranslateModule } from '@ngx-translate/core';
   selector: 'rb-csv-modal',
   templateUrl: './csv-modal.component.html',
   styleUrl: './csv-modal.component.scss',
-  standalone: true,
   imports: [TranslateModule, ReactiveFormsModule, FormControlValidationDirective, AccessionComponent, DecimalPipe]
 })
 export class CsvModalComponent {

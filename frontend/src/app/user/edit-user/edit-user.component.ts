@@ -27,7 +27,6 @@ function atLeastOneSelection(control: AbstractControl): ValidationErrors | null 
   selector: 'rb-edit-user',
   templateUrl: './edit-user.component.html',
   styleUrl: './edit-user.component.scss',
-  standalone: true,
   imports: [
     TranslateModule,
     ReactiveFormsModule,

@@ -12,7 +12,6 @@ import { provideI18nTesting } from '../../i18n/mock-18n.spec';
   template: `
     <rb-edit-customer-information [customerInformation]="customerInformation" (saved)="command = $event" (cancelled)="cancelled = true" />
   `,
-  standalone: true,
   imports: [EditCustomerInformationComponent]
 })
 class TestComponent {

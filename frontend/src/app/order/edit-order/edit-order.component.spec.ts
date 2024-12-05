@@ -11,7 +11,6 @@ import { provideI18nTesting } from '../../i18n/mock-18n.spec';
 
 @Component({
   template: '<rb-edit-order [order]="order" (cancelled)="cancelled = true" (saved)="saved = $event" />',
-  standalone: true,
   imports: [EditOrderComponent]
 })
 class TestComponent {

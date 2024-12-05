@@ -22,7 +22,6 @@ import { Observable } from 'rxjs';
   selector: 'rb-create-order',
   templateUrl: './create-order.component.html',
   styleUrl: './create-order.component.scss',
-  standalone: true,
   imports: [
     TranslateModule,
     ReactiveFormsModule,

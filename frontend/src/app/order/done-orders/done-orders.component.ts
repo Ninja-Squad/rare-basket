@@ -11,7 +11,6 @@ import { TranslateModule } from '@ngx-translate/core';
   selector: 'rb-done-orders',
   templateUrl: './done-orders.component.html',
   styleUrl: './done-orders.component.scss',
-  standalone: true,
   imports: [OrdersComponent, ReactiveFormsModule, TranslateModule, AsyncPipe]
 })
 export class DoneOrdersComponent {

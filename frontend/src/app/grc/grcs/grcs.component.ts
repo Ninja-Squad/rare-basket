@@ -14,7 +14,6 @@ import { TranslateModule } from '@ngx-translate/core';
   selector: 'rb-grcs',
   templateUrl: './grcs.component.html',
   styleUrl: './grcs.component.scss',
-  standalone: true,
   imports: [TranslateModule, FontAwesomeModule, RouterLink]
 })
 export class GrcsComponent implements OnInit {

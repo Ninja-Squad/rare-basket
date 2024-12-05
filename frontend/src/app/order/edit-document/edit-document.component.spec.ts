@@ -12,7 +12,6 @@ import { provideRouter } from '@angular/router';
 
 @Component({
   template: '<rb-edit-document [order]="order" [uploadProgress]="progress" (saved)="saved = $event" (cancelled)="cancelled = true" />',
-  standalone: true,
   imports: [EditDocumentComponent]
 })
 class TestComponent {

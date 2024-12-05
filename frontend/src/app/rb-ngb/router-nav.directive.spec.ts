@@ -27,7 +27,6 @@ class PlaceholderComponent {}
       <router-outlet />
     </div>
   `,
-  standalone: true,
   imports: [RouterLink, RouterLinkActive, RouterOutlet, RouterNavDirective, RouterNavPanelDirective, RouterNavLinkDirective]
 })
 class TestComponent {}

@@ -16,7 +16,6 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
   selector: 'rb-basket-confirmation',
   templateUrl: './basket-confirmation.component.html',
   styleUrl: './basket-confirmation.component.scss',
-  standalone: true,
   imports: [FontAwesomeModule, TranslateModule, RouterLink]
 })
 export class BasketConfirmationComponent implements OnInit {

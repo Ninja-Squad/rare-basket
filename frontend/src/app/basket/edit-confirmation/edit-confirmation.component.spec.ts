@@ -10,7 +10,6 @@ import { provideI18nTesting } from '../../i18n/mock-18n.spec';
   template: `
     <rb-edit-confirmation [basket]="basket" (basketConfirmed)="confirmationCode = $event" (refreshRequested)="refreshRequested = true" />
   `,
-  standalone: true,
   imports: [EditConfirmationComponent]
 })
 class TestComponent {

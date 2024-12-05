@@ -11,7 +11,6 @@ import { provideRouter } from '@angular/router';
 
 @Component({
   template: `<rb-orders [orders]="orders" />`,
-  standalone: true,
   imports: [OrdersComponent]
 })
 class TestComponent {

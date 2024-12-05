@@ -20,7 +20,6 @@ interface ItemFormValue {
   selector: 'rb-edit-order',
   templateUrl: './edit-order.component.html',
   styleUrl: './edit-order.component.scss',
-  standalone: true,
   imports: [ReactiveFormsModule, TranslateModule, FormControlValidationDirective, ValidationErrorsComponent, FontAwesomeModule]
 })
 export class EditOrderComponent implements OnInit, AfterViewInit {

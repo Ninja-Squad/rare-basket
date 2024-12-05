@@ -8,7 +8,6 @@ import { NgbToast } from '@ng-bootstrap/ng-bootstrap';
   selector: 'rb-toasts',
   templateUrl: './toasts.component.html',
   styleUrl: './toasts.component.scss',
-  standalone: true,
   imports: [NgbToast, FontAwesomeModule]
 })
 export class ToastsComponent implements OnInit {
