@@ -1,4 +1,4 @@
-import { Component, inject, LOCALE_ID, OnInit } from '@angular/core';
+import { Component, inject, LOCALE_ID } from '@angular/core';
 import { OrderService } from '../order.service';
 import { CustomerTypeStatistics, OrderStatistics, OrderStatusStatistics } from '../order.model';
 import { ArcElement, Chart, ChartConfiguration, DoughnutController, Legend, Tooltip } from 'chart.js';
@@ -53,7 +53,12 @@ function atLeastOneSelection(control: AbstractControl): ValidationErrors | null 
     OrderStatusEnumPipe
   ]
 })
-export class StatisticsComponent implements OnInit {
+export class StatisticsComponent {
+  private router = inject(Router);
+  private route = inject(ActivatedRoute);
+  private orderService = inject(OrderService);
+  private translateService = inject(TranslateService);
+
   private fb = inject(NonNullableFormBuilder);
   grcsFormArray = this.fb.array<FormGroup<{ grc: FormControl<Grc>; selected: FormControl<boolean> }>>([], atLeastOneSelection);
   form = this.fb.group(
@@ -77,22 +82,15 @@ export class StatisticsComponent implements OnInit {
 
   private locale = inject(LOCALE_ID);
 
-  constructor(
-    private router: Router,
-    private route: ActivatedRoute,
-    private orderService: OrderService,
-    private translateService: TranslateService,
-    private authenticationService: AuthenticationService,
-    private grcService: GrcService
-  ) {}
-
-  ngOnInit() {
-    this.authenticationService
+  constructor() {
+    const authenticationService = inject(AuthenticationService);
+    const grcService = inject(GrcService);
+    authenticationService
       .getCurrentUser()
       .pipe(
         first(),
         switchMap(user => {
-          const grcs$ = user!.globalVisualization ? this.grcService.list() : of(user!.visualizationGrcs);
+          const grcs$ = user!.globalVisualization ? grcService.list() : of(user!.visualizationGrcs);
           return grcs$.pipe(map(grcs => ({ grcs, user })));
         })
       )
@@ -122,9 +120,8 @@ export class StatisticsComponent implements OnInit {
     if (!formValue.global) {
       queryParams.grcs = grcIds;
     }
-    this.router.navigate(['.'], {
+    this.router.navigate([], {
       queryParams,
-      relativeTo: this.route,
       replaceUrl: true
     });
 

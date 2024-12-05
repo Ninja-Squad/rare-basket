@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, signal, inject } from '@angular/core';
 import { AuthenticationService } from '../shared/authentication.service';
 import {
   faBuilding,
@@ -39,6 +39,8 @@ type ViewModel = { status: 'unknown' | 'absent' } | { status: 'present'; user: U
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class NavbarComponent {
+  private authenticationService = inject(AuthenticationService);
+
   collapsed = signal(true);
   vm$: Observable<ViewModel>;
 
@@ -51,7 +53,7 @@ export class NavbarComponent {
   loginIcon = faSignInAlt;
   logoutIcon = faPowerOff;
 
-  constructor(private authenticationService: AuthenticationService) {
+  constructor() {
     this.vm$ = this.authenticationService.getCurrentUser().pipe(
       map((user): ViewModel => (user ? { status: 'present', user } : { status: 'absent' })),
       startWith({ status: 'unknown' as const })

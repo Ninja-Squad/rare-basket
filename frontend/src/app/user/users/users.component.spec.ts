@@ -58,12 +58,11 @@ describe('UsersComponent', () => {
         { provide: ToastService, useValue: toastService }
       ]
     });
-
-    tester = new UsersComponentTester();
   });
 
   it('should not display anything until users are available', () => {
     userService.list.and.returnValue(EMPTY);
+    tester = new UsersComponentTester();
     tester.detectChanges();
 
     expect(tester.users.length).toBe(0);
@@ -92,6 +91,7 @@ describe('UsersComponent', () => {
     };
 
     userService.list.and.returnValue(of(users));
+    tester = new UsersComponentTester();
     tester.detectChanges();
 
     expect(tester.users.length).toBe(2);
@@ -124,6 +124,7 @@ describe('UsersComponent', () => {
     };
 
     userService.list.and.returnValues(of(users), of({ ...users, totalElements: 21, content: [users.content[1]] }));
+    tester = new UsersComponentTester();
     tester.detectChanges();
 
     confirmationService.confirm.and.returnValue(of(undefined));

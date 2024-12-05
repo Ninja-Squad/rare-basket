@@ -133,14 +133,13 @@ describe('EditUserComponent', () => {
         }
       ] as Array<Grc>)
     );
-
-    tester = new EditUserComponentTester();
   }
 
   describe('in create mode', () => {
     beforeEach(() => {
       const route = stubRoute();
       prepare(route);
+      tester = new EditUserComponentTester();
       tester.detectChanges();
     });
 
@@ -243,7 +242,6 @@ describe('EditUserComponent', () => {
         params: { userId: '42' }
       });
       prepare(route);
-
       userService.get.and.returnValue(
         of({
           id: 42,
@@ -259,6 +257,7 @@ describe('EditUserComponent', () => {
         } as User)
       );
 
+      tester = new EditUserComponentTester();
       tester.detectChanges();
     });
 

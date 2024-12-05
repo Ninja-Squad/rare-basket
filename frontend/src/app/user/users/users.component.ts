@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { UserService } from '../user.service';
 import { User } from '../../shared/user.model';
 import { Page } from '../../shared/page.model';
@@ -18,7 +18,12 @@ import { FaIconComponent } from '@fortawesome/angular-fontawesome';
   styleUrl: './users.component.scss',
   imports: [TranslateModule, FaIconComponent, RouterLink, PaginationComponent]
 })
-export class UsersComponent implements OnInit {
+export class UsersComponent {
+  private userService = inject(UserService);
+  private translateService = inject(TranslateService);
+  private confirmationService = inject(ConfirmationService);
+  private toastService = inject(ToastService);
+
   users: Page<User> | null = null;
 
   userIcon = faUser;
@@ -27,16 +32,9 @@ export class UsersComponent implements OnInit {
 
   private reloadPage$ = new Subject<number>();
 
-  constructor(
-    private route: ActivatedRoute,
-    private userService: UserService,
-    private translateService: TranslateService,
-    private confirmationService: ConfirmationService,
-    private toastService: ToastService
-  ) {}
-
-  ngOnInit() {
-    const navigationPage$ = this.route.queryParamMap.pipe(map(params => +(params.get('page') || 0)));
+  constructor() {
+    const route = inject(ActivatedRoute);
+    const navigationPage$ = route.queryParamMap.pipe(map(params => +(params.get('page') || 0)));
     merge(navigationPage$, this.reloadPage$)
       .pipe(switchMap(page => this.userService.list(page)))
       .subscribe(users => (this.users = users));

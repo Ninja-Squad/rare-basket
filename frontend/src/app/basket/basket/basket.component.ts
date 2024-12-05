@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { BasketService } from '../basket.service';
 import { Basket, BasketCommand } from '../basket.model';
 import { ActivatedRoute } from '@angular/router';
@@ -14,15 +14,13 @@ import { TranslateModule } from '@ngx-translate/core';
   styleUrl: './basket.component.scss',
   imports: [TranslateModule, EditBasketComponent, EditConfirmationComponent, ConfirmedComponent]
 })
-export class BasketComponent implements OnInit {
+export class BasketComponent {
+  private route = inject(ActivatedRoute);
+  private basketService = inject(BasketService);
+
   basket: Basket | null = null;
 
-  constructor(
-    private route: ActivatedRoute,
-    private basketService: BasketService
-  ) {}
-
-  ngOnInit() {
+  constructor() {
     this.basketService.get(this.route.snapshot.paramMap.get('reference')!).subscribe(basket => (this.basket = basket));
   }
 

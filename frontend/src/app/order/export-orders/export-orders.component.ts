@@ -28,6 +28,9 @@ import { TranslateModule } from '@ngx-translate/core';
   ]
 })
 export class ExportOrdersComponent {
+  private orderService = inject(OrderService);
+  private downloadService = inject(DownloadService);
+
   form = inject(NonNullableFormBuilder).group(
     {
       from: [null as string | null, Validators.required],
@@ -38,10 +41,7 @@ export class ExportOrdersComponent {
   exporting = false;
   exportingIcon = faSpinner;
 
-  constructor(
-    private orderService: OrderService,
-    private downloadService: DownloadService
-  ) {
+  constructor() {
     const now = new Date();
     const startOfYear = new Date();
     startOfYear.setDate(1);

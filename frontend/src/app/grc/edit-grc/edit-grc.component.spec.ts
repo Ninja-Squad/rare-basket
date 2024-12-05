@@ -63,14 +63,13 @@ describe('EditGrcComponent', () => {
     spyOn(router, 'navigate');
 
     TestBed.createComponent(ValidationDefaultsComponent).detectChanges();
-
-    tester = new EditGrcComponentTester();
   }
 
   describe('in create mode', () => {
     beforeEach(() => {
       const route = stubRoute();
       prepare(route);
+      tester = new EditGrcComponentTester();
       tester.detectChanges();
     });
 
@@ -132,6 +131,7 @@ describe('EditGrcComponent', () => {
         } as Grc)
       );
 
+      tester = new EditGrcComponentTester();
       tester.detectChanges();
     });
 

@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, ElementRef, Input, NgZone, OnChanges, OnDestroy, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, Input, NgZone, OnChanges, OnDestroy, ViewChild, inject } from '@angular/core';
 import { Chart, ChartConfiguration } from 'chart.js';
 
 @Component({
@@ -8,12 +8,12 @@ import { Chart, ChartConfiguration } from 'chart.js';
   standalone: true
 })
 export class ChartComponent implements AfterViewInit, OnChanges, OnDestroy {
+  private zone = inject(NgZone);
+
   @Input({ required: true }) configuration!: ChartConfiguration<'doughnut', number[]>;
   @ViewChild('canvas') canvas!: ElementRef<HTMLCanvasElement>;
 
   private chart: Chart<'doughnut'> | null = null;
-
-  constructor(private zone: NgZone) {}
 
   ngOnChanges() {
     this.createChart();

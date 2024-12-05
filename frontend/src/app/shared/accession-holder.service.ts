@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { AccessionHolder, AccessionHolderCommand } from './user.model';
@@ -7,7 +7,7 @@ import { AccessionHolder, AccessionHolderCommand } from './user.model';
   providedIn: 'root'
 })
 export class AccessionHolderService {
-  constructor(private http: HttpClient) {}
+  private http = inject(HttpClient);
 
   /**
    * Lists the accession holders.

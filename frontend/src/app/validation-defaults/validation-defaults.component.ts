@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { DisplayMode, ValdemortConfig, DefaultValidationErrorsDirective, ValidationErrorDirective } from 'ngx-valdemort';
 import { DecimalPipe } from '@angular/common';
 import { TranslateModule } from '@ngx-translate/core';
@@ -9,7 +9,8 @@ import { TranslateModule } from '@ngx-translate/core';
   imports: [DefaultValidationErrorsDirective, ValidationErrorDirective, TranslateModule, DecimalPipe]
 })
 export class ValidationDefaultsComponent {
-  constructor(config: ValdemortConfig) {
+  constructor() {
+    const config = inject(ValdemortConfig);
     config.errorsClasses = 'invalid-feedback';
     config.displayMode = DisplayMode.ONE;
   }

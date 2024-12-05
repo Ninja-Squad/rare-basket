@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Observable, of, throwError } from 'rxjs';
 import { Basket, BasketCommand } from './basket.model';
@@ -8,7 +8,7 @@ import { catchError } from 'rxjs/operators';
   providedIn: 'root'
 })
 export class BasketService {
-  constructor(private http: HttpClient) {}
+  private http = inject(HttpClient);
 
   get(reference: string): Observable<Basket> {
     return this.http.get<Basket>(`api/baskets/${reference}`);

@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { OrdersComponent } from '../orders/orders.component';
 import { AsyncPipe } from '@angular/common';
@@ -18,7 +18,9 @@ export class DoneOrdersComponent {
 
   accessionHolderIdCtrl = new FormControl<number | null>(null);
 
-  constructor(route: ActivatedRoute, orderListService: OrderListService) {
+  constructor() {
+    const route = inject(ActivatedRoute);
+    const orderListService = inject(OrderListService);
     this.vm$ = orderListService.setupDone(route, this.accessionHolderIdCtrl);
   }
 }

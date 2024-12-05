@@ -1,11 +1,10 @@
-import { PipeTransform } from '@angular/core';
+import { inject, PipeTransform } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 
 export class BaseEnumPipe<E> implements PipeTransform {
-  constructor(
-    private translateService: TranslateService,
-    private enumName: string
-  ) {}
+  private translateService = inject(TranslateService);
+
+  constructor(private enumName: string) {}
 
   transform(value: E | null) {
     return value ? this.translateService.instant(`enums.${this.enumName}.${value}`) : '';

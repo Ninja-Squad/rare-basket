@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { Observable } from 'rxjs';
 import { faPlus, faThumbsUp } from '@fortawesome/free-solid-svg-icons';
@@ -23,7 +23,9 @@ export class InProgressOrdersComponent {
 
   accessionHolderIdCtrl = new FormControl<number | null>(null);
 
-  constructor(route: ActivatedRoute, orderListService: OrderListService) {
+  constructor() {
+    const route = inject(ActivatedRoute);
+    const orderListService = inject(OrderListService);
     this.vm$ = orderListService.setupInProgress(route, this.accessionHolderIdCtrl);
   }
 }

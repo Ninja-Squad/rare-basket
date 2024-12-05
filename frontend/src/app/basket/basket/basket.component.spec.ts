@@ -49,8 +49,6 @@ describe('BasketComponent', () => {
     TestBed.configureTestingModule({
       providers: [provideI18nTesting(), { provide: ActivatedRoute, useValue: route }, { provide: BasketService, useValue: basketService }]
     });
-
-    tester = new BasketComponentTester();
   });
 
   describe('with draft basket', () => {
@@ -74,6 +72,7 @@ describe('BasketComponent', () => {
       } as Basket;
 
       basketService.get.and.returnValues(of(basket), of(savedBasket));
+      tester = new BasketComponentTester();
       tester.detectChanges();
     });
 
@@ -130,6 +129,7 @@ describe('BasketComponent', () => {
 
       basketService.get.and.returnValues(of(basket), of(confirmedBasket));
 
+      tester = new BasketComponentTester();
       tester.detectChanges();
     });
 

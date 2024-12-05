@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpEvent, HttpResponse } from '@angular/common/http';
 import {
   CustomerInformationCommand,
@@ -18,7 +18,7 @@ import { Page } from '../shared/page.model';
   providedIn: 'root'
 })
 export class OrderService {
-  constructor(private http: HttpClient) {}
+  private http = inject(HttpClient);
 
   get(orderId: number): Observable<DetailedOrder> {
     return this.http.get<DetailedOrder>(`api/orders/${orderId}`);

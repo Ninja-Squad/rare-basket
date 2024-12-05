@@ -3,7 +3,7 @@ import { testEnumPipe } from '../shared/base-enum-pipe.spec';
 
 describe('PermissionEnumPipe', () => {
   it('should translate permissions', () => {
-    testEnumPipe(ts => new PermissionEnumPipe(ts), {
+    testEnumPipe(PermissionEnumPipe, {
       ORDER_MANAGEMENT: 'Gestion des commandes',
       ADMINISTRATION: 'Administration'
     });

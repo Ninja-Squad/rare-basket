@@ -34,6 +34,10 @@ import { Observable } from 'rxjs';
   ]
 })
 export class CreateOrderComponent {
+  private orderService = inject(OrderService);
+  private router = inject(Router);
+  private toastService = inject(ToastService);
+
   private fb = inject(NonNullableFormBuilder);
   form = this.fb.group({
     accessionHolder: [null as AccessionHolder | null, Validators.required],
@@ -53,12 +57,9 @@ export class CreateOrderComponent {
   languages = ALL_LANGUAGES;
   accessionHolders$: Observable<Array<AccessionHolder>>;
 
-  constructor(
-    authenticationService: AuthenticationService,
-    private orderService: OrderService,
-    private router: Router,
-    private toastService: ToastService
-  ) {
+  constructor() {
+    const authenticationService = inject(AuthenticationService);
+
     // if we use the delivery address as the billing address
     // then disable the billing address field
     this.useDeliveryAddressControl.valueChanges.subscribe(useDeliveryAddress => {
