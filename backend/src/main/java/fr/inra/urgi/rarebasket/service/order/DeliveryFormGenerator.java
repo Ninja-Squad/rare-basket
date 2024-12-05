@@ -95,7 +95,7 @@ public class DeliveryFormGenerator {
                                              order.getBasket().getCustomer().getLanguage().getLocale())
                 )
                     .setFontSize(14F)
-                    .setBold()
+                    .simulateBold()
                     .setMarginBottom(6F)
             )
             .add(
@@ -136,7 +136,7 @@ public class DeliveryFormGenerator {
                             "delivery-form.order-date",
                                   null,
                                   order.getBasket().getCustomer().getLanguage().getLocale())
-                        ).setBold()
+                        ).simulateBold()
                     )
                     .add(formatInstant(order.getBasket().getConfirmationInstant(), order))
             )
@@ -147,7 +147,7 @@ public class DeliveryFormGenerator {
                             "delivery-form.order-number",
                             null,
                             order.getBasket().getCustomer().getLanguage().getLocale())
-                    ).setBold())
+                    ).simulateBold())
                     .add(order.getBasket().getReference())
             )
             .add(
@@ -155,7 +155,7 @@ public class DeliveryFormGenerator {
                     .add(new Text(messageSource.getMessage(
                         "delivery-form.delivery-date",
                         null,
-                        order.getBasket().getCustomer().getLanguage().getLocale())).setBold())
+                        order.getBasket().getCustomer().getLanguage().getLocale())).simulateBold())
                     .add(formatInstant(Instant.now(), order))
             );
 
@@ -169,7 +169,7 @@ public class DeliveryFormGenerator {
                         order.getBasket().getCustomer().getLanguage().getLocale())
                 )
                     .setFontSize(14F)
-                    .setBold()
+                    .simulateBold()
                     .setMarginTop(6F)
                     .setMarginBottom(6F)
             )
@@ -199,7 +199,7 @@ public class DeliveryFormGenerator {
                     .add(new Text(messageSource.getMessage(
                         "delivery-form.documents",
                         null,
-                        order.getBasket().getCustomer().getLanguage().getLocale())).setBold())
+                        order.getBasket().getCustomer().getLanguage().getLocale())).simulateBold())
             );
 
             com.itextpdf.layout.element.List documentList = new com.itextpdf.layout.element.List().setFontSize(10F);
