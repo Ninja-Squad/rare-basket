@@ -6,7 +6,7 @@ import { switchMap, tap } from 'rxjs/operators';
 import { ConfirmationService } from '../../shared/confirmation.service';
 import { ToastService } from '../../shared/toast.service';
 import { RouterLink } from '@angular/router';
-import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { FaIconComponent } from '@fortawesome/angular-fontawesome';
 
 import { TranslateModule } from '@ngx-translate/core';
 
@@ -14,7 +14,7 @@ import { TranslateModule } from '@ngx-translate/core';
   selector: 'rb-accession-holders',
   templateUrl: './accession-holders.component.html',
   styleUrl: './accession-holders.component.scss',
-  imports: [TranslateModule, FontAwesomeModule, RouterLink]
+  imports: [TranslateModule, FaIconComponent, RouterLink]
 })
 export class AccessionHoldersComponent implements OnInit {
   accessionHolders: Array<AccessionHolder> | null = null;

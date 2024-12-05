@@ -14,13 +14,13 @@ import { LanguageEnumPipe } from '../language-enum.pipe';
 import { CustomerTypeEnumPipe } from '../customer-type-enum.pipe';
 
 import { TranslateModule } from '@ngx-translate/core';
-import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { FaIconComponent } from '@fortawesome/angular-fontawesome';
 
 @Component({
   selector: 'rb-customer-information',
   templateUrl: './customer-information.component.html',
   styleUrl: './customer-information.component.scss',
-  imports: [FontAwesomeModule, TranslateModule, CustomerTypeEnumPipe, LanguageEnumPipe]
+  imports: [FaIconComponent, TranslateModule, CustomerTypeEnumPipe, LanguageEnumPipe]
 })
 export class CustomerInformationComponent {
   @Input({ required: true }) customer!: Customer;

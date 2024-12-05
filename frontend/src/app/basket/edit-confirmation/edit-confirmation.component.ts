@@ -5,7 +5,7 @@ import { faCheckCircle, faInfoCircle } from '@fortawesome/free-solid-svg-icons';
 import { BasketContentComponent } from '../basket-content/basket-content.component';
 import { FormControlValidationDirective } from '../../shared/form-control-validation.directive';
 import { TranslateModule } from '@ngx-translate/core';
-import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { FaIconComponent } from '@fortawesome/angular-fontawesome';
 
 /**
  * Component displayed once the user has saved the basket, informing the customer about the
@@ -15,7 +15,7 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
   selector: 'rb-edit-confirmation',
   templateUrl: './edit-confirmation.component.html',
   styleUrl: './edit-confirmation.component.scss',
-  imports: [FontAwesomeModule, TranslateModule, ReactiveFormsModule, FormControlValidationDirective, BasketContentComponent]
+  imports: [FaIconComponent, TranslateModule, ReactiveFormsModule, FormControlValidationDirective, BasketContentComponent]
 })
 export class EditConfirmationComponent {
   @Input({ required: true }) basket!: Basket;

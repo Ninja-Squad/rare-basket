@@ -1,14 +1,14 @@
 import { Component, OnInit } from '@angular/core';
 import { Toast, ToastService } from '../../shared/toast.service';
 import { faCheckCircle, faExclamationCircle } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { FaIconComponent } from '@fortawesome/angular-fontawesome';
 import { NgbToast } from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
   selector: 'rb-toasts',
   templateUrl: './toasts.component.html',
   styleUrl: './toasts.component.scss',
-  imports: [NgbToast, FontAwesomeModule]
+  imports: [NgbToast, FaIconComponent]
 })
 export class ToastsComponent implements OnInit {
   toasts: Array<Toast> = [];

@@ -3,7 +3,7 @@ import { Basket } from '../basket.model';
 import { faCheckCircle } from '@fortawesome/free-solid-svg-icons';
 import { BasketContentComponent } from '../basket-content/basket-content.component';
 import { TranslateModule } from '@ngx-translate/core';
-import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { FaIconComponent } from '@fortawesome/angular-fontawesome';
 
 /**
  * Component displayed when the basket is confirmed
@@ -12,7 +12,7 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
   selector: 'rb-confirmed',
   templateUrl: './confirmed.component.html',
   styleUrl: './confirmed.component.scss',
-  imports: [FontAwesomeModule, TranslateModule, BasketContentComponent]
+  imports: [FaIconComponent, TranslateModule, BasketContentComponent]
 })
 export class ConfirmedComponent {
   @Input({ required: true }) basket!: Basket;
