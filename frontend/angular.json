@@ -34,6 +34,11 @@
             "styles": [
               "src/styles.scss"
             ],
+            "stylePreprocessorOptions": {
+              "sass": {
+                "silenceDeprecations": ["import", "color-functions", "global-builtin"]
+              }
+            },
             "scripts": [],
             "baseHref": "/rare-basket/",
             "allowedCommonJsDependencies": [
