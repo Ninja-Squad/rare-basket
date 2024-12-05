@@ -13,7 +13,6 @@ import { TranslateModule } from '@ngx-translate/core';
   templateUrl: './basket-content.component.html',
   styleUrl: './basket-content.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: true,
   imports: [TranslateModule, CustomerInformationComponent, AccessionComponent, DecimalPipe]
 })
 export class BasketContentComponent implements OnChanges {

@@ -13,7 +13,6 @@ import { DatePipe, DecimalPipe, NgPlural, NgPluralCase } from '@angular/common';
   templateUrl: './orders.component.html',
   styleUrl: './orders.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: true,
   imports: [
     RouterLink,
     NgPlural,

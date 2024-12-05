@@ -18,7 +18,6 @@ import { TranslateModule } from '@ngx-translate/core';
   selector: 'rb-edit-basket',
   templateUrl: './edit-basket.component.html',
   styleUrl: './edit-basket.component.scss',
-  standalone: true,
   imports: [
     TranslateModule,
     ReactiveFormsModule,

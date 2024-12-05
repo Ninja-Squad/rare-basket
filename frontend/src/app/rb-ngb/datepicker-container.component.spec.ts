@@ -13,7 +13,6 @@ import { provideNgbDatepickerServices } from './datepicker-providers';
       <input class="form-control" [formControl]="dateCtrl" ngbDatepicker />
     </rb-datepicker-container>
   `,
-  standalone: true,
   imports: [DatepickerContainerComponent, NgbInputDatepicker, ReactiveFormsModule]
 })
 class TestComponent {

@@ -20,7 +20,6 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
   selector: 'rb-customer-information',
   templateUrl: './customer-information.component.html',
   styleUrl: './customer-information.component.scss',
-  standalone: true,
   imports: [FontAwesomeModule, TranslateModule, CustomerTypeEnumPipe, LanguageEnumPipe]
 })
 export class CustomerInformationComponent {

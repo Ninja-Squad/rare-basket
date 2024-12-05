@@ -9,7 +9,6 @@ import { Page } from '../../shared/page.model';
 
 @Component({
   template: `<rb-pagination [page]="page" (pageChanged)="pageChanged($event)" [navigate]="navigate" />`,
-  standalone: true,
   imports: [PaginationComponent]
 })
 class TestComponent {

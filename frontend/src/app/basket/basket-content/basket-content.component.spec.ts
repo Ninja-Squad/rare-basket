@@ -8,7 +8,6 @@ import { provideI18nTesting } from '../../i18n/mock-18n.spec';
 
 @Component({
   template: '<rb-basket-content [basket]="basket" />',
-  standalone: true,
   imports: [BasketContentComponent]
 })
 class TestComponent {

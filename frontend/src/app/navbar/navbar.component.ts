@@ -25,7 +25,6 @@ type ViewModel = { status: 'unknown' | 'absent' } | { status: 'present'; user: U
   selector: 'rb-navbar',
   templateUrl: './navbar.component.html',
   styleUrl: './navbar.component.scss',
-  standalone: true,
   imports: [
     RouterLink,
     FontAwesomeModule,

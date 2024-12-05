@@ -24,7 +24,6 @@ const maxFileSize = 10 * 1024 * 1024; // 10 MB
   selector: 'rb-edit-document',
   templateUrl: './edit-document.component.html',
   styleUrl: './edit-document.component.scss',
-  standalone: true,
   imports: [
     ReactiveFormsModule,
     TranslateModule,

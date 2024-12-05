@@ -6,7 +6,6 @@ import { TranslateModule } from '@ngx-translate/core';
 @Component({
   selector: 'rb-validation-defaults',
   templateUrl: './validation-defaults.component.html',
-  standalone: true,
   imports: [DefaultValidationErrorsDirective, ValidationErrorDirective, TranslateModule, DecimalPipe]
 })
 export class ValidationDefaultsComponent {

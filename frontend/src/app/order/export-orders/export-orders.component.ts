@@ -17,7 +17,6 @@ import { TranslateModule } from '@ngx-translate/core';
   selector: 'rb-export-orders',
   templateUrl: './export-orders.component.html',
   styleUrl: './export-orders.component.scss',
-  standalone: true,
   imports: [
     TranslateModule,
     ReactiveFormsModule,

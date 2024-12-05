@@ -16,7 +16,6 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
   selector: 'rb-users',
   templateUrl: './users.component.html',
   styleUrl: './users.component.scss',
-  standalone: true,
   imports: [TranslateModule, FontAwesomeModule, RouterLink, PaginationComponent]
 })
 export class UsersComponent implements OnInit {

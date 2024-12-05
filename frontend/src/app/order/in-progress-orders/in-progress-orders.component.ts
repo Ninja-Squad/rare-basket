@@ -13,7 +13,6 @@ import { OrderListService, OrderListViewModel } from '../order-list.service';
   selector: 'rb-in-progress-orders',
   templateUrl: './in-progress-orders.component.html',
   styleUrl: './in-progress-orders.component.scss',
-  standalone: true,
   imports: [TranslateModule, OrdersComponent, FontAwesomeModule, RouterLink, DecimalPipe, AsyncPipe, ReactiveFormsModule]
 })
 export class InProgressOrdersComponent {

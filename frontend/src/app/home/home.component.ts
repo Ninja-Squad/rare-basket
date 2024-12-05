@@ -11,7 +11,6 @@ import { TranslateModule } from '@ngx-translate/core';
   selector: 'rb-home',
   templateUrl: './home.component.html',
   styleUrl: './home.component.scss',
-  standalone: true,
   imports: [TranslateModule, FontAwesomeModule, RouterLink]
 })
 export class HomeComponent implements OnInit {

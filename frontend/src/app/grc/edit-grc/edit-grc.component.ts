@@ -13,7 +13,6 @@ import { TranslateModule } from '@ngx-translate/core';
   selector: 'rb-edit-grc',
   templateUrl: './edit-grc.component.html',
   styleUrl: './edit-grc.component.scss',
-  standalone: true,
   imports: [TranslateModule, ReactiveFormsModule, FormControlValidationDirective, ValidationErrorsComponent, RouterLink]
 })
 export class EditGrcComponent implements OnInit {

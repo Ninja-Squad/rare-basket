@@ -38,7 +38,6 @@ function atLeastOneSelection(control: AbstractControl): ValidationErrors | null 
   selector: 'rb-statistics',
   templateUrl: './statistics.component.html',
   styleUrl: './statistics.component.scss',
-  standalone: true,
   imports: [
     ReactiveFormsModule,
     TranslateModule,

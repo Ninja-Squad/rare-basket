@@ -7,7 +7,6 @@ import { NgbPagination } from '@ng-bootstrap/ng-bootstrap';
   selector: 'rb-pagination',
   templateUrl: './pagination.component.html',
   styleUrl: './pagination.component.scss',
-  standalone: true,
   imports: [NgbPagination]
 })
 export class PaginationComponent {

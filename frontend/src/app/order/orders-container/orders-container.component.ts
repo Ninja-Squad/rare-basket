@@ -12,7 +12,6 @@ import { TranslateModule } from '@ngx-translate/core';
   selector: 'rb-orders-container',
   templateUrl: './orders-container.component.html',
   styleUrl: './orders-container.component.scss',
-  standalone: true,
   imports: [
     TranslateModule,
     RouterNavDirective,

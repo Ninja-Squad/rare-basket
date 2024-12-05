@@ -14,7 +14,6 @@ import { TranslateModule } from '@ngx-translate/core';
   selector: 'rb-accession-holders',
   templateUrl: './accession-holders.component.html',
   styleUrl: './accession-holders.component.scss',
-  standalone: true,
   imports: [TranslateModule, FontAwesomeModule, RouterLink]
 })
 export class AccessionHoldersComponent implements OnInit {

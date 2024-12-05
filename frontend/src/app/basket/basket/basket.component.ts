@@ -12,7 +12,6 @@ import { TranslateModule } from '@ngx-translate/core';
   selector: 'rb-basket',
   templateUrl: './basket.component.html',
   styleUrl: './basket.component.scss',
-  standalone: true,
   imports: [TranslateModule, EditBasketComponent, EditConfirmationComponent, ConfirmedComponent]
 })
 export class BasketComponent implements OnInit {

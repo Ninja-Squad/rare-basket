@@ -21,7 +21,6 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
   host: {
     class: 'input-group'
   },
-  standalone: true,
   imports: [FontAwesomeModule, TranslateModule]
 })
 export class DatepickerContainerComponent {
