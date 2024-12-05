@@ -84,14 +84,13 @@ describe('EditAccessionHolderComponent', () => {
         }
       ] as Array<Grc>)
     );
-
-    tester = new EditAccessionHolderComponentTester();
   }
 
   describe('in create mode', () => {
     beforeEach(() => {
       const route = stubRoute();
       prepare(route);
+      tester = new EditAccessionHolderComponentTester();
       tester.detectChanges();
     });
 
@@ -151,7 +150,6 @@ describe('EditAccessionHolderComponent', () => {
         params: { accessionHolderId: '41' }
       });
       prepare(route);
-
       accessionHolderService.get.and.returnValue(
         of({
           id: 41,
@@ -163,7 +161,7 @@ describe('EditAccessionHolderComponent', () => {
           }
         } as AccessionHolder)
       );
-
+      tester = new EditAccessionHolderComponentTester();
       tester.detectChanges();
     });
 

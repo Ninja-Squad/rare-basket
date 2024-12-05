@@ -161,12 +161,11 @@ describe('StatisticsComponent', () => {
     });
 
     TestBed.createComponent(ValidationDefaultsComponent).detectChanges();
-
-    tester = new StatisticsComponentTester();
   });
 
   describe('initialization, with global visualization user', () => {
     it('should initialize form when no query param', () => {
+      tester = new StatisticsComponentTester();
       tester.detectChanges();
 
       const currentYear = new Date().getFullYear();
@@ -197,6 +196,8 @@ describe('StatisticsComponent', () => {
         to: '2020-01-01',
         grcs: ['2', '3']
       });
+
+      tester = new StatisticsComponentTester();
       tester.detectChanges();
 
       expect(tester.from).toHaveValue(`01/01/2019`);
@@ -217,6 +218,7 @@ describe('StatisticsComponent', () => {
     });
 
     it('should display numbers, charts and tables', () => {
+      tester = new StatisticsComponentTester();
       tester.detectChanges();
 
       const currentYear = new Date().getFullYear();
@@ -224,9 +226,8 @@ describe('StatisticsComponent', () => {
       const from = `${currentYear}-01-01`;
       const to = formatDate(now, 'yyyy-MM-dd', 'en-us');
       expect(orderService.getStatistics).toHaveBeenCalledWith(from, to, []);
-      expect(router.navigate).toHaveBeenCalledWith(['.'], {
+      expect(router.navigate).toHaveBeenCalledWith([], {
         queryParams: { from, to },
-        relativeTo: TestBed.inject(ActivatedRoute),
         replaceUrl: true
       });
 
@@ -256,6 +257,7 @@ describe('StatisticsComponent', () => {
         grcs: ['2', '3']
       });
 
+      tester = new StatisticsComponentTester();
       tester.detectChanges();
 
       expect(tester.from).toHaveValue('01/01/2019');
@@ -271,6 +273,7 @@ describe('StatisticsComponent', () => {
     });
 
     it('should initialize form when no query param', () => {
+      tester = new StatisticsComponentTester();
       tester.detectChanges();
 
       const currentYear = new Date().getFullYear();
@@ -298,6 +301,7 @@ describe('StatisticsComponent', () => {
         grcs: ['2']
       });
 
+      tester = new StatisticsComponentTester();
       tester.detectChanges();
 
       expect(tester.from).toHaveValue(`01/01/2019`);
@@ -315,6 +319,7 @@ describe('StatisticsComponent', () => {
     });
 
     it('should get statistics', () => {
+      tester = new StatisticsComponentTester();
       tester.detectChanges();
 
       const currentYear = new Date().getFullYear();
@@ -322,9 +327,8 @@ describe('StatisticsComponent', () => {
       const from = `${currentYear}-01-01`;
       const to = formatDate(now, 'yyyy-MM-dd', 'en-us');
       expect(orderService.getStatistics).toHaveBeenCalledWith(from, to, [1, 2]);
-      expect(router.navigate).toHaveBeenCalledWith(['.'], {
+      expect(router.navigate).toHaveBeenCalledWith([], {
         queryParams: { from, to, grcs: [1, 2] },
-        relativeTo: TestBed.inject(ActivatedRoute),
         replaceUrl: true
       });
     });
@@ -335,6 +339,8 @@ describe('StatisticsComponent', () => {
         to: '2020-01-01',
         grcs: ['2']
       });
+
+      tester = new StatisticsComponentTester();
       tester.detectChanges();
 
       expect(tester.from).toHaveValue('01/01/2019');
@@ -350,6 +356,7 @@ describe('StatisticsComponent', () => {
     });
 
     it('should initialize form when no query param', () => {
+      tester = new StatisticsComponentTester();
       tester.detectChanges();
 
       const currentYear = new Date().getFullYear();
@@ -370,6 +377,8 @@ describe('StatisticsComponent', () => {
         to: '2020-01-01',
         grcs: ['1']
       });
+
+      tester = new StatisticsComponentTester();
       tester.detectChanges();
 
       expect(tester.from).toHaveValue(`01/01/2019`);
@@ -380,6 +389,7 @@ describe('StatisticsComponent', () => {
     });
 
     it('should get statistics', () => {
+      tester = new StatisticsComponentTester();
       tester.detectChanges();
 
       const currentYear = new Date().getFullYear();
@@ -387,9 +397,8 @@ describe('StatisticsComponent', () => {
       const from = `${currentYear}-01-01`;
       const to = formatDate(now, 'yyyy-MM-dd', 'en-us');
       expect(orderService.getStatistics).toHaveBeenCalledWith(from, to, [1]);
-      expect(router.navigate).toHaveBeenCalledWith(['.'], {
+      expect(router.navigate).toHaveBeenCalledWith([], {
         queryParams: { from, to, grcs: [1] },
-        relativeTo: TestBed.inject(ActivatedRoute),
         replaceUrl: true
       });
     });
@@ -400,6 +409,8 @@ describe('StatisticsComponent', () => {
         to: '2020-01-01',
         grcs: ['1']
       });
+
+      tester = new StatisticsComponentTester();
       tester.detectChanges();
 
       expect(tester.from).toHaveValue('01/01/2019');
@@ -410,6 +421,7 @@ describe('StatisticsComponent', () => {
 
   describe('after first display', () => {
     beforeEach(() => {
+      tester = new StatisticsComponentTester();
       tester.detectChanges();
       router.navigate.calls.reset();
       orderService.getStatistics.calls.reset();
@@ -420,9 +432,8 @@ describe('StatisticsComponent', () => {
       tester.to.fillWith('2019-02-01');
       tester.refreshButton.click();
 
-      expect(router.navigate).toHaveBeenCalledWith(['.'], {
+      expect(router.navigate).toHaveBeenCalledWith([], {
         queryParams: { from: '2019-01-01', to: '2019-02-01' },
-        relativeTo: TestBed.inject(ActivatedRoute),
         replaceUrl: true
       });
       expect(orderService.getStatistics).toHaveBeenCalledWith('2019-01-01', '2019-02-01', []);
@@ -457,6 +468,7 @@ describe('StatisticsComponent', () => {
 
   describe('after first display', () => {
     beforeEach(() => {
+      tester = new StatisticsComponentTester();
       tester.detectChanges();
       router.navigate.calls.reset();
       orderService.getStatistics.calls.reset();
@@ -467,9 +479,8 @@ describe('StatisticsComponent', () => {
       tester.to.fillWith('2019-02-01');
       tester.refreshButton.click();
 
-      expect(router.navigate).toHaveBeenCalledWith(['.'], {
+      expect(router.navigate).toHaveBeenCalledWith([], {
         queryParams: { from: '2019-01-01', to: '2019-02-01' },
-        relativeTo: TestBed.inject(ActivatedRoute),
         replaceUrl: true
       });
       expect(orderService.getStatistics).toHaveBeenCalledWith('2019-01-01', '2019-02-01', []);

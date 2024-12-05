@@ -23,6 +23,8 @@ interface ItemFormValue {
   imports: [ReactiveFormsModule, TranslateModule, FormControlValidationDirective, ValidationErrorsComponent, FaIconComponent]
 })
 export class EditOrderComponent implements OnInit, AfterViewInit {
+  private modalService = inject(ModalService);
+
   @Input({ required: true }) order!: Order;
 
   @Output() readonly saved = new EventEmitter<OrderCommand>();
@@ -48,8 +50,6 @@ export class EditOrderComponent implements OnInit, AfterViewInit {
   deleteIcon = faTrash;
   addItemIcon = faPlus;
   csvIcon = faFileCsv;
-
-  constructor(private modalService: ModalService) {}
 
   ngOnInit() {
     this.order.items.forEach(orderItem =>

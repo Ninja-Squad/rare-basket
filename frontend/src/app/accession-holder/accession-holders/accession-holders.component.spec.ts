@@ -48,12 +48,11 @@ describe('AccessionHoldersComponent', () => {
         { provide: ToastService, useValue: toastService }
       ]
     });
-
-    tester = new AccessionHoldersComponentTester();
   });
 
   it('should not display anything until accession holders are available', () => {
     accessionHolderService.list.and.returnValue(EMPTY);
+    tester = new AccessionHoldersComponentTester();
     tester.detectChanges();
 
     expect(tester.accessionHolders.length).toBe(0);
@@ -89,6 +88,7 @@ describe('AccessionHoldersComponent', () => {
     ];
 
     accessionHolderService.list.and.returnValue(of(accessionHolders));
+    tester = new AccessionHoldersComponentTester();
     tester.detectChanges();
 
     expect(tester.accessionHolders.length).toBe(2);
@@ -130,6 +130,7 @@ describe('AccessionHoldersComponent', () => {
     ];
 
     accessionHolderService.list.and.returnValues(of(accessionHolders), of([accessionHolders[1]]));
+    tester = new AccessionHoldersComponentTester();
     tester.detectChanges();
 
     confirmationService.confirm.and.returnValue(of(undefined));

@@ -1,4 +1,4 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { AccessionHolder, Grc, Permission, User, UserCommand } from '../../shared/user.model';
 import { AbstractControl, FormControl, NonNullableFormBuilder, ReactiveFormsModule, ValidationErrors, Validators } from '@angular/forms';
@@ -37,7 +37,11 @@ function atLeastOneSelection(control: AbstractControl): ValidationErrors | null 
     PermissionEnumPipe
   ]
 })
-export class EditUserComponent implements OnInit {
+export class EditUserComponent {
+  private userService = inject(UserService);
+  private router = inject(Router);
+  private toastService = inject(ToastService);
+
   mode: 'create' | 'update' | null = null;
   editedUser: User | null = null;
   private fb = inject(NonNullableFormBuilder);
@@ -55,14 +59,7 @@ export class EditUserComponent implements OnInit {
   grcs: Array<Grc> = [];
   keycloakUrl = `${environment.keycloakUrl}${environment.usersRealmPath}`;
 
-  constructor(
-    private route: ActivatedRoute,
-    private userService: UserService,
-    private accessionHolderService: AccessionHolderService,
-    private grcService: GrcService,
-    private router: Router,
-    private toastService: ToastService
-  ) {
+  constructor() {
     this.form.controls.orderManagement.valueChanges.subscribe(orderManagementSelected => {
       if (orderManagementSelected) {
         this.form.controls.accessionHolders.enable();
@@ -93,12 +90,13 @@ export class EditUserComponent implements OnInit {
         this.form.controls.visualizationGrcs.disable();
       }
     });
-  }
 
-  ngOnInit() {
-    const accessionHolders$ = this.accessionHolderService.list();
-    const grcs$ = this.grcService.list();
-    const userId = this.route.snapshot.paramMap.get('userId');
+    const accessionHolderService = inject(AccessionHolderService);
+    const accessionHolders$ = accessionHolderService.list();
+    const grcService = inject(GrcService);
+    const grcs$ = grcService.list();
+    const route = inject(ActivatedRoute);
+    const userId = route.snapshot.paramMap.get('userId');
 
     const user$: Observable<User | null> = userId ? this.userService.get(+userId) : of(null);
 

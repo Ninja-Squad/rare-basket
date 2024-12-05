@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { BasketService } from '../basket.service';
 import { faExclamationCircle } from '@fortawesome/free-solid-svg-icons';
@@ -18,18 +18,16 @@ import { FaIconComponent } from '@fortawesome/angular-fontawesome';
   styleUrl: './basket-confirmation.component.scss',
   imports: [FaIconComponent, TranslateModule, RouterLink]
 })
-export class BasketConfirmationComponent implements OnInit {
+export class BasketConfirmationComponent {
+  private route = inject(ActivatedRoute);
+  private basketService = inject(BasketService);
+  private router = inject(Router);
+
   basketReference: string | null = null;
   errorIcon = faExclamationCircle;
   confirmationFailed = false;
 
-  constructor(
-    private route: ActivatedRoute,
-    private basketService: BasketService,
-    private router: Router
-  ) {}
-
-  ngOnInit(): void {
+  constructor() {
     this.basketReference = this.route.snapshot.paramMap.get('reference')!;
     const confirmationCode = this.route.snapshot.queryParamMap.get('code')!;
     this.basketService.confirm(this.basketReference, confirmationCode).subscribe({

@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Grc, GrcCommand } from './user.model';
@@ -7,7 +7,7 @@ import { Grc, GrcCommand } from './user.model';
   providedIn: 'root'
 })
 export class GrcService {
-  constructor(private http: HttpClient) {}
+  private http = inject(HttpClient);
 
   /**
    * Lists the GRCs.

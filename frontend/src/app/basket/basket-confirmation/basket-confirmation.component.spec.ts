@@ -36,14 +36,13 @@ describe('BasketConfirmationComponent', () => {
     TestBed.configureTestingModule({
       providers: [provideI18nTesting(), { provide: ActivatedRoute, useValue: route }, { provide: BasketService, useValue: basketService }]
     });
-
-    tester = new BasketConfirmationComponentTester();
   });
 
   it('should confirm and redirect if successful', () => {
     basketService.confirm.and.returnValue(of(undefined));
     const router = TestBed.inject(Router);
     spyOn(router, 'navigate');
+    tester = new BasketConfirmationComponentTester();
     tester.detectChanges();
 
     expect(tester.alert).toBeNull();
@@ -55,6 +54,7 @@ describe('BasketConfirmationComponent', () => {
     basketService.confirm.and.returnValue(throwError(() => undefined));
     const router = TestBed.inject(Router);
     spyOn(router, 'navigate');
+    tester = new BasketConfirmationComponentTester();
     tester.detectChanges();
 
     expect(basketService.confirm).toHaveBeenCalledWith('ABCDEFGH', 'XYXWVUTS');

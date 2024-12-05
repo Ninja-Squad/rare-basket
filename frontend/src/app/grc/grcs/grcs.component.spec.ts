@@ -48,11 +48,11 @@ describe('GrcsComponent', () => {
         { provide: ToastService, useValue: toastService }
       ]
     });
-    tester = new GrcsComponentTester();
   });
 
   it('should not display anything until grcs are available', () => {
     grcService.list.and.returnValue(EMPTY);
+    tester = new GrcsComponentTester();
     tester.detectChanges();
 
     expect(tester.grcs.length).toBe(0);
@@ -76,6 +76,7 @@ describe('GrcsComponent', () => {
     ];
 
     grcService.list.and.returnValue(of(grcs));
+    tester = new GrcsComponentTester();
     tester.detectChanges();
 
     expect(tester.grcs.length).toBe(2);
@@ -103,6 +104,7 @@ describe('GrcsComponent', () => {
     ];
 
     grcService.list.and.returnValues(of(grcs), of([grcs[1]]));
+    tester = new GrcsComponentTester();
     tester.detectChanges();
 
     confirmationService.confirm.and.returnValue(of(undefined));

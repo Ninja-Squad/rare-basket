@@ -32,6 +32,8 @@ import { TranslateModule } from '@ngx-translate/core';
   ]
 })
 export class EditBasketComponent implements OnInit {
+  private confirmationService = inject(ConfirmationService);
+
   @Input({ required: true }) basket!: Basket;
 
   @Output() readonly basketSaved = new EventEmitter<BasketCommand>();
@@ -62,8 +64,6 @@ export class EditBasketComponent implements OnInit {
   quantityDisplayed = false;
   deleteItemDisabled = false;
   saveForbidden = false;
-
-  constructor(private confirmationService: ConfirmationService) {}
 
   ngOnInit(): void {
     const customer = this.basket.customer;

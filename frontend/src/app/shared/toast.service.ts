@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { Observable, Subject } from 'rxjs';
 import { TranslateService } from '@ngx-translate/core';
 
@@ -11,9 +11,9 @@ export interface Toast {
   providedIn: 'root'
 })
 export class ToastService {
-  private toastSubject = new Subject<Toast>();
+  private translateService = inject(TranslateService);
 
-  constructor(private translateService: TranslateService) {}
+  private toastSubject = new Subject<Toast>();
 
   error(messageKey: string, interpolateParams?: Record<string, unknown>) {
     this.signal(messageKey, 'error', interpolateParams);

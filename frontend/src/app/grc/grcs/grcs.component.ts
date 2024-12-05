@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { Grc } from '../../shared/user.model';
 import { ConfirmationService } from '../../shared/confirmation.service';
 import { switchMap, tap } from 'rxjs/operators';
@@ -16,20 +16,18 @@ import { FaIconComponent } from '@fortawesome/angular-fontawesome';
   styleUrl: './grcs.component.scss',
   imports: [TranslateModule, RouterLink, FaIconComponent]
 })
-export class GrcsComponent implements OnInit {
+export class GrcsComponent {
+  private grcService = inject(GrcService);
+  private confirmationService = inject(ConfirmationService);
+  private toastService = inject(ToastService);
+
   grcs: Array<Grc> | null = null;
 
   grcIcon = faBuilding;
   createGrcIcon = faPlus;
   deleteGrcIcon = faTrash;
 
-  constructor(
-    private grcService: GrcService,
-    private confirmationService: ConfirmationService,
-    private toastService: ToastService
-  ) {}
-
-  ngOnInit() {
+  constructor() {
     this.grcService.list().subscribe(grcs => (this.grcs = grcs));
   }
 

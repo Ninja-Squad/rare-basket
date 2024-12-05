@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
 import { ConfirmationModalComponent } from './confirmation-modal/confirmation-modal.component';
 import { ModalService } from '../rb-ngb/modal.service';
@@ -20,10 +20,8 @@ export interface ConfirmationOptions {
   providedIn: 'root'
 })
 export class ConfirmationService {
-  constructor(
-    private modalService: ModalService,
-    private translateService: TranslateService
-  ) {}
+  private modalService = inject(ModalService);
+  private translateService = inject(TranslateService);
 
   /**
    * Opens a confirmation modal, and returns an observable, which emits and completes if the user clicks "Yes".

@@ -1,4 +1,4 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { Grc, GrcCommand } from '../../shared/user.model';
 import { NonNullableFormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
@@ -15,7 +15,12 @@ import { TranslateModule } from '@ngx-translate/core';
   styleUrl: './edit-grc.component.scss',
   imports: [TranslateModule, ReactiveFormsModule, FormControlValidationDirective, ValidationErrorsComponent, RouterLink]
 })
-export class EditGrcComponent implements OnInit {
+export class EditGrcComponent {
+  private route = inject(ActivatedRoute);
+  private grcService = inject(GrcService);
+  private router = inject(Router);
+  private toastService = inject(ToastService);
+
   mode: 'create' | 'update' = 'create';
   editedGrc: Grc | null = null;
   form = inject(NonNullableFormBuilder).group({
@@ -24,14 +29,7 @@ export class EditGrcComponent implements OnInit {
     address: ['', Validators.required]
   });
 
-  constructor(
-    private route: ActivatedRoute,
-    private grcService: GrcService,
-    private router: Router,
-    private toastService: ToastService
-  ) {}
-
-  ngOnInit(): void {
+  constructor() {
     const grcId = this.route.snapshot.paramMap.get('grcId');
     if (grcId) {
       this.mode = 'update';

@@ -14,6 +14,8 @@ import { TranslateModule } from '@ngx-translate/core';
   imports: [TranslateModule, ReactiveFormsModule, FormControlValidationDirective, AccessionComponent, DecimalPipe]
 })
 export class CsvModalComponent {
+  private modal = inject(NgbActiveModal);
+
   form = inject(NonNullableFormBuilder).group({
     csv: ''
   });
@@ -22,10 +24,8 @@ export class CsvModalComponent {
     items: []
   };
 
-  constructor(
-    private modal: NgbActiveModal,
-    csvParser: OrderCsvParserService
-  ) {
+  constructor() {
+    const csvParser = inject(OrderCsvParserService);
     this.form.controls.csv.valueChanges.subscribe(csv => (this.result = csvParser.parse(csv)));
   }
 

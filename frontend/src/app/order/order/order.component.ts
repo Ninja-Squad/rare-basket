@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { OrderService } from '../order.service';
 import { CustomerInformationCommand, DetailedOrder, Document, DocumentCommand, OrderCommand } from '../order.model';
@@ -56,7 +56,14 @@ import { DatePipe, DecimalPipe } from '@angular/common';
     DocumentTypeEnumPipe
   ]
 })
-export class OrderComponent implements OnInit {
+export class OrderComponent {
+  private orderService = inject(OrderService);
+  private confirmationService = inject(ConfirmationService);
+  private downloadService = inject(DownloadService);
+  private translateService = inject(TranslateService);
+  private modalService = inject(ModalService);
+  private toastService = inject(ToastService);
+
   order: DetailedOrder | null = null;
 
   editIcon = faEdit;
@@ -80,18 +87,9 @@ export class OrderComponent implements OnInit {
 
   private downloadingDocumentIds = new Set<number>();
 
-  constructor(
-    private route: ActivatedRoute,
-    private orderService: OrderService,
-    private confirmationService: ConfirmationService,
-    private downloadService: DownloadService,
-    private translateService: TranslateService,
-    private modalService: ModalService,
-    private toastService: ToastService
-  ) {}
-
-  ngOnInit(): void {
-    const orderId = +this.route.snapshot.paramMap.get('orderId')!;
+  constructor() {
+    const route = inject(ActivatedRoute);
+    const orderId = +route.snapshot.paramMap.get('orderId')!;
     this.orderService.get(orderId).subscribe(order => {
       this.order = order;
       if (this.order.items.length === 0) {

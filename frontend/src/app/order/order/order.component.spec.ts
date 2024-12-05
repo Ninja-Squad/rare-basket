@@ -124,8 +124,6 @@ describe('OrderComponent', () => {
 
     modalService = TestBed.inject(MockModalService);
 
-    tester = new OrderComponentTester();
-
     order = {
       id: 42,
       status: 'DRAFT',
@@ -183,6 +181,7 @@ describe('OrderComponent', () => {
 
   it('should not display anything until order is there', () => {
     orderService.get.and.returnValue(EMPTY);
+    tester = new OrderComponentTester();
     tester.detectChanges();
 
     expect(orderService.get).toHaveBeenCalledWith(42);
@@ -193,6 +192,7 @@ describe('OrderComponent', () => {
 
   it('should have a title', () => {
     orderService.get.and.returnValue(of(order));
+    tester = new OrderComponentTester();
     tester.detectChanges();
 
     expect(tester.title).toContainText('Commande n° ABCDEFGH');
@@ -200,6 +200,7 @@ describe('OrderComponent', () => {
 
   it('should display order and customer information', () => {
     orderService.get.and.returnValue(of(order));
+    tester = new OrderComponentTester();
     tester.detectChanges();
 
     expect(tester.testElement).toContainText('pour the flower holder');
@@ -215,6 +216,7 @@ describe('OrderComponent', () => {
 
   it('should display order items', () => {
     orderService.get.and.returnValue(of(order));
+    tester = new OrderComponentTester();
     tester.detectChanges();
 
     expect(tester.items.length).toBe(2);
@@ -227,6 +229,7 @@ describe('OrderComponent', () => {
 
   it('should not display edit button if order is not draft', () => {
     orderService.get.and.returnValue(of({ ...order, status: 'CANCELLED' }));
+    tester = new OrderComponentTester();
     tester.detectChanges();
 
     expect(tester.editOrderButton).toBeNull();
@@ -234,6 +237,7 @@ describe('OrderComponent', () => {
 
   it('should edit order', () => {
     orderService.get.and.returnValue(of(order));
+    tester = new OrderComponentTester();
     tester.detectChanges();
 
     tester.editOrderButton.click();
@@ -245,6 +249,7 @@ describe('OrderComponent', () => {
 
   it('should cancel edition', () => {
     orderService.get.and.returnValue(of(order));
+    tester = new OrderComponentTester();
     tester.detectChanges();
 
     tester.editOrderButton.click();
@@ -259,6 +264,7 @@ describe('OrderComponent', () => {
   it('should save and refresh', () => {
     const newOrder = { ...order };
     orderService.get.and.returnValues(of(order), of(newOrder));
+    tester = new OrderComponentTester();
     tester.detectChanges();
 
     tester.editOrderButton.click();
@@ -277,6 +283,7 @@ describe('OrderComponent', () => {
   it('should not have a finalize order button when status is not DRAFT', () => {
     order.status = 'CANCELLED';
     orderService.get.and.returnValue(of(order));
+    tester = new OrderComponentTester();
     tester.detectChanges();
 
     expect(tester.finalizeOrderButton).toBeNull();
@@ -298,6 +305,7 @@ describe('OrderComponent', () => {
 
     orderService.finalize.and.returnValue(of(undefined));
     orderService.get.and.returnValues(of(order), of(newOrder));
+    tester = new OrderComponentTester();
     tester.detectChanges();
 
     tester.finalizeOrderButton.click();
@@ -314,7 +322,7 @@ describe('OrderComponent', () => {
     const newOrder: DetailedOrder = { ...order, status: 'FINALIZED' };
     orderService.finalize.and.returnValue(of(undefined));
     orderService.get.and.returnValues(of(order), of(newOrder));
-
+    tester = new OrderComponentTester();
     tester.detectChanges();
 
     const warningsComponent = createMock(FinalizationWarningsModalComponent);
@@ -336,6 +344,7 @@ describe('OrderComponent', () => {
   it('should not have a cancel order button when status is not DRAFT', () => {
     order.status = 'CANCELLED';
     orderService.get.and.returnValue(of(order));
+    tester = new OrderComponentTester();
     tester.detectChanges();
 
     expect(tester.cancelOrderButton).toBeNull();
@@ -347,6 +356,7 @@ describe('OrderComponent', () => {
 
     orderService.cancel.and.returnValue(of(undefined));
     orderService.get.and.returnValues(of(order), of(newOrder));
+    tester = new OrderComponentTester();
     tester.detectChanges();
 
     tester.cancelOrderButton.click();
@@ -359,6 +369,7 @@ describe('OrderComponent', () => {
 
   it('should display documents', () => {
     orderService.get.and.returnValue(of(order));
+    tester = new OrderComponentTester();
     tester.detectChanges();
 
     expect(tester.documents.length).toBe(1);
@@ -378,6 +389,7 @@ describe('OrderComponent', () => {
   it('should not display document delete buttons and add button if not DRAFT', () => {
     order.status = 'FINALIZED';
     orderService.get.and.returnValue(of(order));
+    tester = new OrderComponentTester();
     tester.detectChanges();
 
     expect(tester.deleteDocumentButtons.length).toBe(0);
@@ -386,6 +398,7 @@ describe('OrderComponent', () => {
 
   it('should disable buttons when editing', () => {
     orderService.get.and.returnValue(of(order));
+    tester = new OrderComponentTester();
     tester.detectChanges();
 
     tester.editOrderButton.click();
@@ -398,6 +411,7 @@ describe('OrderComponent', () => {
 
   it('should disable buttons when adding document', () => {
     orderService.get.and.returnValue(of(order));
+    tester = new OrderComponentTester();
     tester.detectChanges();
 
     tester.addDocumentButton.click();
@@ -413,6 +427,7 @@ describe('OrderComponent', () => {
 
     orderService.deleteDocument.and.returnValue(of(undefined));
     orderService.get.and.returnValues(of(order), of(newOrder));
+    tester = new OrderComponentTester();
     tester.detectChanges();
 
     tester.deleteDocumentButtons[0].click();
@@ -425,6 +440,7 @@ describe('OrderComponent', () => {
 
   it('should add document', () => {
     orderService.get.and.returnValue(of(order));
+    tester = new OrderComponentTester();
     tester.detectChanges();
 
     tester.addDocumentButton.click();
@@ -437,6 +453,7 @@ describe('OrderComponent', () => {
 
   it('should cancel document addition', () => {
     orderService.get.and.returnValue(of(order));
+    tester = new OrderComponentTester();
     tester.detectChanges();
 
     tester.addDocumentButton.click();
@@ -451,6 +468,7 @@ describe('OrderComponent', () => {
   it('should create new document and refresh', () => {
     const newOrder = { ...order, documents: [order.documents[0], { ...order.documents[0], id: 765 }] };
     orderService.get.and.returnValues(of(order), of(newOrder));
+    tester = new OrderComponentTester();
     tester.detectChanges();
 
     tester.addDocumentButton.click();
@@ -494,6 +512,7 @@ describe('OrderComponent', () => {
 
   it('should download file', () => {
     orderService.get.and.returnValue(of(order));
+    tester = new OrderComponentTester();
     tester.detectChanges();
 
     expect(tester.downloadSpinner(0)).toBeNull();
@@ -518,6 +537,7 @@ describe('OrderComponent', () => {
     orderService.get.and.returnValue(of(order));
     order.status = 'DRAFT';
     order.documents[0].onDeliveryForm = true;
+    tester = new OrderComponentTester();
     tester.detectChanges();
 
     expect(tester.deliveryFormButton).toBeNull();
@@ -533,6 +553,7 @@ describe('OrderComponent', () => {
   it('should download delivery form', () => {
     orderService.get.and.returnValue(of(order));
     order.status = 'FINALIZED';
+    tester = new OrderComponentTester();
     tester.detectChanges();
 
     const response = new HttpResponse<Blob>();
@@ -547,6 +568,7 @@ describe('OrderComponent', () => {
   it('should not have complete delivery form button if no document is attached', () => {
     orderService.get.and.returnValue(of(order));
     order.status = 'FINALIZED';
+    tester = new OrderComponentTester();
     tester.detectChanges();
 
     expect(tester.completeDeliveryFormButton).toBeNull();
@@ -556,6 +578,7 @@ describe('OrderComponent', () => {
     orderService.get.and.returnValue(of(order));
     order.status = 'FINALIZED';
     order.documents[0].onDeliveryForm = true;
+    tester = new OrderComponentTester();
     tester.detectChanges();
 
     const deliveryFormResponse = new HttpResponse<Blob>();

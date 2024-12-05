@@ -13,17 +13,15 @@ const REQUESTED_URL_KEY = 'rare-basket-requested-url';
   providedIn: 'root'
 })
 export class AuthenticationService {
+  private oidcSecurityService = inject(OidcSecurityService);
+  private router = inject(Router);
+  private http = inject(HttpClient);
+
   // Use a ReplaySubject and not a BehaviorSubject so that the authentication guard waits until the login is done
   // and the user is loaded before asking to login
   private currentUser = new ReplaySubject<User | null>(1);
 
   private window = inject(WINDOW);
-
-  constructor(
-    private oidcSecurityService: OidcSecurityService,
-    private router: Router,
-    private http: HttpClient
-  ) {}
 
   /**
    * Initializes the authentication system based on OpenID/Connect.

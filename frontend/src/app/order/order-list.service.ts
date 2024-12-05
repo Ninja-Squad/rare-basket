@@ -6,7 +6,7 @@ import { AuthenticationService } from '../shared/authentication.service';
 import { combineLatest, ignoreElements, merge, Observable, tap } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
 import { FormControl } from '@angular/forms';
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { OrderService } from './order.service';
 
 export interface OrderListViewModel {
@@ -28,11 +28,9 @@ export interface OrderListViewModel {
   providedIn: 'root'
 })
 export class OrderListService {
-  constructor(
-    private authenticationService: AuthenticationService,
-    private orderService: OrderService,
-    private router: Router
-  ) {}
+  private authenticationService = inject(AuthenticationService);
+  private orderService = inject(OrderService);
+  private router = inject(Router);
 
   /**
    * Creates the observable for the "in progress" orders
@@ -74,7 +72,7 @@ export class OrderListService {
       vm$,
       accessionHolderIdCtrl.valueChanges.pipe(
         tap(accessionHolderId => {
-          this.router.navigate(['.'], { relativeTo: route, queryParams: { page: 0, h: accessionHolderId ?? undefined } });
+          this.router.navigate([], { queryParams: { page: 0, h: accessionHolderId ?? undefined } });
         }),
         ignoreElements() // to avoid actually merging any elements to the vm$ observable
       )

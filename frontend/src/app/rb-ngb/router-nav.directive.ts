@@ -1,4 +1,4 @@
-import { ContentChildren, Directive, Input, QueryList } from '@angular/core';
+import { ContentChildren, Directive, Input, QueryList, inject } from '@angular/core';
 import { RouterLinkActive } from '@angular/router';
 
 let counter = 0;
@@ -38,17 +38,15 @@ let counter = 0;
   standalone: true
 })
 export class RouterNavLinkDirective {
+  private routerLinkActive = inject(RouterLinkActive);
+  nav = inject(RouterNavDirective);
+
   /**
    * The ID of the link. If not specified, it's auto-generated
    */
   @Input('rbRouterNavLink') itemId: string | null = null;
 
   private domId = 'router-nav-link-' + counter++;
-
-  constructor(
-    private routerLinkActive: RouterLinkActive,
-    public nav: RouterNavDirective
-  ) {}
 
   get selected() {
     return this.routerLinkActive.isActive;

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { Toast, ToastService } from '../../shared/toast.service';
 import { faCheckCircle, faExclamationCircle } from '@fortawesome/free-solid-svg-icons';
 import { FaIconComponent } from '@fortawesome/angular-fontawesome';
@@ -10,12 +10,12 @@ import { NgbToast } from '@ng-bootstrap/ng-bootstrap';
   styleUrl: './toasts.component.scss',
   imports: [NgbToast, FaIconComponent]
 })
-export class ToastsComponent implements OnInit {
+export class ToastsComponent {
+  private toastService = inject(ToastService);
+
   toasts: Array<Toast> = [];
 
-  constructor(private toastService: ToastService) {}
-
-  ngOnInit() {
+  constructor() {
     this.toastService.toasts().subscribe(toast => this.toasts.push(toast));
   }
 

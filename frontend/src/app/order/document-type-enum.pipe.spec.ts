@@ -3,7 +3,7 @@ import { testEnumPipe } from '../shared/base-enum-pipe.spec';
 
 describe('DocumentTypeEnumPipe', () => {
   it('should translate document types', () => {
-    testEnumPipe(ts => new DocumentTypeEnumPipe(ts), {
+    testEnumPipe(DocumentTypeEnumPipe, {
       INVOICE: 'Facture',
       OTHER: 'Autre'
     });

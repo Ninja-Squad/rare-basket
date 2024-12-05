@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { AccessionHolder } from '../../shared/user.model';
 import { faPlus, faStoreAlt, faTrash } from '@fortawesome/free-solid-svg-icons';
 import { AccessionHolderService } from '../../shared/accession-holder.service';
@@ -16,20 +16,18 @@ import { TranslateModule } from '@ngx-translate/core';
   styleUrl: './accession-holders.component.scss',
   imports: [TranslateModule, FaIconComponent, RouterLink]
 })
-export class AccessionHoldersComponent implements OnInit {
+export class AccessionHoldersComponent {
+  private accessionHolderService = inject(AccessionHolderService);
+  private confirmationService = inject(ConfirmationService);
+  private toastService = inject(ToastService);
+
   accessionHolders: Array<AccessionHolder> | null = null;
 
   accessionHolderIcon = faStoreAlt;
   createAccessionHolderIcon = faPlus;
   deleteAccessionHolderIcon = faTrash;
 
-  constructor(
-    private accessionHolderService: AccessionHolderService,
-    private confirmationService: ConfirmationService,
-    private toastService: ToastService
-  ) {}
-
-  ngOnInit() {
+  constructor() {
     this.accessionHolderService.list().subscribe(accessionHolders => (this.accessionHolders = accessionHolders));
   }
 

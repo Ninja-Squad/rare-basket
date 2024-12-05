@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { AuthenticationService } from '../../shared/authentication.service';
 import { Permission } from '../../shared/user.model';
 import { Observable } from 'rxjs';
@@ -24,7 +24,7 @@ import { TranslateModule } from '@ngx-translate/core';
   ]
 })
 export class OrdersContainerComponent {
-  constructor(private authenticationService: AuthenticationService) {}
+  private authenticationService = inject(AuthenticationService);
 
   hasPermission(permission: Permission): Observable<boolean> {
     return this.authenticationService.getCurrentUser().pipe(map(user => !!user && user.permissions.includes(permission)));

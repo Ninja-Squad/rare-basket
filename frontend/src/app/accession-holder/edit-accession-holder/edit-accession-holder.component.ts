@@ -1,4 +1,4 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { AccessionHolder, AccessionHolderCommand, Grc } from '../../shared/user.model';
 import { NonNullableFormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
@@ -17,7 +17,12 @@ import { TranslateModule } from '@ngx-translate/core';
   styleUrl: './edit-accession-holder.component.scss',
   imports: [TranslateModule, ReactiveFormsModule, FormControlValidationDirective, ValidationErrorsComponent, RouterLink]
 })
-export class EditAccessionHolderComponent implements OnInit {
+export class EditAccessionHolderComponent {
+  private route = inject(ActivatedRoute);
+  private accessionHolderService = inject(AccessionHolderService);
+  private router = inject(Router);
+  private toastService = inject(ToastService);
+
   mode: 'create' | 'update' = 'create';
   editedAccessionHolder: AccessionHolder | null = null;
   form = inject(NonNullableFormBuilder).group({
@@ -28,16 +33,9 @@ export class EditAccessionHolderComponent implements OnInit {
   });
   grcs: Array<Grc> | null = null;
 
-  constructor(
-    private route: ActivatedRoute,
-    private accessionHolderService: AccessionHolderService,
-    private grcService: GrcService,
-    private router: Router,
-    private toastService: ToastService
-  ) {}
-
-  ngOnInit(): void {
-    this.grcService.list().subscribe(grcs => (this.grcs = grcs));
+  constructor() {
+    const grcService = inject(GrcService);
+    grcService.list().subscribe(grcs => (this.grcs = grcs));
     const accessionHolderId = this.route.snapshot.paramMap.get('accessionHolderId');
     if (accessionHolderId) {
       this.mode = 'update';

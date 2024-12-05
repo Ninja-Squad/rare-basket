@@ -112,7 +112,7 @@ describe('PaginationComponent', () => {
       tester.firstPageLink.click();
       tick();
 
-      expect(router.navigate).toHaveBeenCalledWith(['.'], { relativeTo: route, queryParams: { page: 0 }, queryParamsHandling: 'merge' });
+      expect(router.navigate).toHaveBeenCalledWith([], { queryParams: { page: 0 }, queryParamsHandling: 'merge' });
       expect(tester.componentInstance.newPage).toBe(0);
     }));
   });
