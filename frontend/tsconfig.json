@@ -4,10 +4,6 @@
     "outDir": "./dist/out-tsc",
     "esModuleInterop": true,
     "strict": true,
-    "sourceMap": true,
-    "declaration": false,
-    "module": "esnext",
-    "moduleResolution": "bundler",
     "noImplicitAny": true,
     "strictFunctionTypes": true,
     "noImplicitThis": true,
@@ -18,18 +14,20 @@
     "noFallthroughCasesInSwitch": true,
     "skipLibCheck": true,
     "isolatedModules": true,
+    "moduleResolution": "bundler",
     "importHelpers": true,
     "target": "ES2022",
-    "lib": [
-      "es2018",
-      "dom"
-    ],
+    "module": "ES2022",
     "types": [
       "@angular/localize"
     ]
   },
   "angularCompilerOptions": {
+    "fullTemplateTypeCheck": true,
+    "strictInjectionParameters": true,
     "strictTemplates": true,
-    "strictInjectionParameters": true
+    "extendedDiagnostics": {
+      "defaultCategory": "error"
+    }
   }
 }
