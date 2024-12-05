@@ -30,7 +30,7 @@ import { EditDocumentComponent } from '../edit-document/edit-document.component'
 import { EditOrderComponent } from '../edit-order/edit-order.component';
 import { AccessionComponent } from '../../shared/accession/accession.component';
 import { EditCustomerInformationComponent } from '../edit-customer-information/edit-customer-information.component';
-import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { FaIconComponent } from '@fortawesome/angular-fontawesome';
 import { CustomerInformationComponent } from '../../shared/customer-information/customer-information.component';
 import { DatePipe, DecimalPipe } from '@angular/common';
 
@@ -44,7 +44,7 @@ import { DatePipe, DecimalPipe } from '@angular/common';
   imports: [
     TranslateModule,
     CustomerInformationComponent,
-    FontAwesomeModule,
+    FaIconComponent,
     EditCustomerInformationComponent,
     AccessionComponent,
     EditOrderComponent,

@@ -10,13 +10,13 @@ import { ConfirmationService } from '../../shared/confirmation.service';
 import { merge, Subject } from 'rxjs';
 import { ToastService } from '../../shared/toast.service';
 import { PaginationComponent } from '../../rb-ngb/pagination/pagination.component';
-import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { FaIconComponent } from '@fortawesome/angular-fontawesome';
 
 @Component({
   selector: 'rb-users',
   templateUrl: './users.component.html',
   styleUrl: './users.component.scss',
-  imports: [TranslateModule, FontAwesomeModule, RouterLink, PaginationComponent]
+  imports: [TranslateModule, FaIconComponent, RouterLink, PaginationComponent]
 })
 export class UsersComponent implements OnInit {
   users: Page<User> | null = null;

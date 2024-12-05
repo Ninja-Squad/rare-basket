@@ -4,7 +4,7 @@ import { FormControl, FormGroup, NonNullableFormBuilder, ReactiveFormsModule, Va
 import { faFileCsv, faPlus, faTrash } from '@fortawesome/free-solid-svg-icons';
 import { ModalService } from '../../rb-ngb/modal.service';
 import { CsvModalComponent } from '../csv-modal/csv-modal.component';
-import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { FaIconComponent } from '@fortawesome/angular-fontawesome';
 import { ValidationErrorsComponent } from 'ngx-valdemort';
 import { FormControlValidationDirective } from '../../shared/form-control-validation.directive';
 import { TranslateModule } from '@ngx-translate/core';
@@ -20,7 +20,7 @@ interface ItemFormValue {
   selector: 'rb-edit-order',
   templateUrl: './edit-order.component.html',
   styleUrl: './edit-order.component.scss',
-  imports: [ReactiveFormsModule, TranslateModule, FormControlValidationDirective, ValidationErrorsComponent, FontAwesomeModule]
+  imports: [ReactiveFormsModule, TranslateModule, FormControlValidationDirective, ValidationErrorsComponent, FaIconComponent]
 })
 export class EditOrderComponent implements OnInit, AfterViewInit {
   @Input({ required: true }) order!: Order;

@@ -3,7 +3,7 @@ import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { BasketService } from '../basket.service';
 import { faExclamationCircle } from '@fortawesome/free-solid-svg-icons';
 import { TranslateModule } from '@ngx-translate/core';
-import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { FaIconComponent } from '@fortawesome/angular-fontawesome';
 
 /**
  * Component that is used only when the customer clicks on the confirmation link in the
@@ -16,7 +16,7 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
   selector: 'rb-basket-confirmation',
   templateUrl: './basket-confirmation.component.html',
   styleUrl: './basket-confirmation.component.scss',
-  imports: [FontAwesomeModule, TranslateModule, RouterLink]
+  imports: [FaIconComponent, TranslateModule, RouterLink]
 })
 export class BasketConfirmationComponent implements OnInit {
   basketReference: string | null = null;

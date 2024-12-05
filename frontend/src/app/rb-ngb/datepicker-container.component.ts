@@ -3,7 +3,7 @@ import { Component, ContentChild } from '@angular/core';
 import { NgbInputDatepicker } from '@ng-bootstrap/ng-bootstrap';
 import { faCalendarAlt } from '@fortawesome/free-solid-svg-icons';
 import { TranslateModule } from '@ngx-translate/core';
-import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { FaIconComponent } from '@fortawesome/angular-fontawesome';
 
 /**
  * Component used to simplify the markup of a datepicker in a popup. It wraps the input which has the
@@ -21,7 +21,7 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
   host: {
     class: 'input-group'
   },
-  imports: [FontAwesomeModule, TranslateModule]
+  imports: [FaIconComponent, TranslateModule]
 })
 export class DatepickerContainerComponent {
   @ContentChild(NgbInputDatepicker) datePicker!: NgbInputDatepicker;

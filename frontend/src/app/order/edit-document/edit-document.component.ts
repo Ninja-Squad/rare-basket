@@ -10,7 +10,7 @@ import {
 } from '../order.model';
 import { faFileUpload } from '@fortawesome/free-solid-svg-icons';
 import { DocumentTypeEnumPipe } from '../document-type-enum.pipe';
-import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { FaIconComponent } from '@fortawesome/angular-fontawesome';
 import { NgbProgressbar } from '@ng-bootstrap/ng-bootstrap';
 import { FormControlValidationDirective } from '../../shared/form-control-validation.directive';
 import { ValidationErrorsComponent } from 'ngx-valdemort';
@@ -30,7 +30,7 @@ const maxFileSize = 10 * 1024 * 1024; // 10 MB
     ValidationErrorsComponent,
     FormControlValidationDirective,
     NgbProgressbar,
-    FontAwesomeModule,
+    FaIconComponent,
     DecimalPipe,
     DocumentTypeEnumPipe
   ]

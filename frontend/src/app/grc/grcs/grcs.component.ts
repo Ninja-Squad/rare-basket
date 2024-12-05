@@ -6,15 +6,15 @@ import { GrcService } from '../../shared/grc.service';
 import { faBuilding, faPlus, faTrash } from '@fortawesome/free-solid-svg-icons';
 import { ToastService } from '../../shared/toast.service';
 import { RouterLink } from '@angular/router';
-import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 
 import { TranslateModule } from '@ngx-translate/core';
+import { FaIconComponent } from '@fortawesome/angular-fontawesome';
 
 @Component({
   selector: 'rb-grcs',
   templateUrl: './grcs.component.html',
   styleUrl: './grcs.component.scss',
-  imports: [TranslateModule, FontAwesomeModule, RouterLink]
+  imports: [TranslateModule, RouterLink, FaIconComponent]
 })
 export class GrcsComponent implements OnInit {
   grcs: Array<Grc> | null = null;

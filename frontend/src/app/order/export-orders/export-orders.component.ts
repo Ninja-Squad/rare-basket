@@ -7,7 +7,7 @@ import { finalize } from 'rxjs/operators';
 import { faSpinner } from '@fortawesome/free-solid-svg-icons';
 import { validDateRange } from '../../shared/validators';
 import { ValidationErrorsComponent } from 'ngx-valdemort';
-import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { FaIconComponent } from '@fortawesome/angular-fontawesome';
 import { FormControlValidationDirective } from '../../shared/form-control-validation.directive';
 import { NgbInputDatepicker } from '@ng-bootstrap/ng-bootstrap';
 import { DatepickerContainerComponent } from '../../rb-ngb/datepicker-container.component';
@@ -23,7 +23,7 @@ import { TranslateModule } from '@ngx-translate/core';
     DatepickerContainerComponent,
     NgbInputDatepicker,
     FormControlValidationDirective,
-    FontAwesomeModule,
+    FaIconComponent,
     ValidationErrorsComponent
   ]
 })

@@ -6,7 +6,7 @@ import { ConfirmationService } from '../../shared/confirmation.service';
 import { environment } from '../../../environments/environment';
 import { timer } from 'rxjs';
 import { CustomerTypeEnumPipe } from '../../shared/customer-type-enum.pipe';
-import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { FaIconComponent } from '@fortawesome/angular-fontawesome';
 import { AccessionComponent } from '../../shared/accession/accession.component';
 import { DecimalPipe } from '@angular/common';
 import { NgbCollapse } from '@ng-bootstrap/ng-bootstrap';
@@ -25,7 +25,7 @@ import { TranslateModule } from '@ngx-translate/core';
     ValidationErrorsComponent,
     NgbCollapse,
     AccessionComponent,
-    FontAwesomeModule,
+    FaIconComponent,
     ValidationErrorDirective,
     DecimalPipe,
     CustomerTypeEnumPipe

@@ -12,7 +12,7 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import { Permission, User } from '../shared/user.model';
 import { TranslateModule } from '@ngx-translate/core';
-import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { FaIconComponent } from '@fortawesome/angular-fontawesome';
 import { RouterLink } from '@angular/router';
 
 import { NgbCollapse, NgbDropdown, NgbDropdownItem, NgbDropdownMenu, NgbDropdownToggle } from '@ng-bootstrap/ng-bootstrap';
@@ -27,7 +27,7 @@ type ViewModel = { status: 'unknown' | 'absent' } | { status: 'present'; user: U
   styleUrl: './navbar.component.scss',
   imports: [
     RouterLink,
-    FontAwesomeModule,
+    FaIconComponent,
     TranslateModule,
     NgbDropdown,
     NgbDropdownToggle,

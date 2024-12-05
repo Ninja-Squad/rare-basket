@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { Observable } from 'rxjs';
 import { faPlus, faThumbsUp } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { FaIconComponent } from '@fortawesome/angular-fontawesome';
 import { OrdersComponent } from '../orders/orders.component';
 import { TranslateModule } from '@ngx-translate/core';
 import { AsyncPipe, DecimalPipe } from '@angular/common';
@@ -13,7 +13,7 @@ import { OrderListService, OrderListViewModel } from '../order-list.service';
   selector: 'rb-in-progress-orders',
   templateUrl: './in-progress-orders.component.html',
   styleUrl: './in-progress-orders.component.scss',
-  imports: [TranslateModule, OrdersComponent, FontAwesomeModule, RouterLink, DecimalPipe, AsyncPipe, ReactiveFormsModule]
+  imports: [TranslateModule, OrdersComponent, FaIconComponent, RouterLink, DecimalPipe, AsyncPipe, ReactiveFormsModule]
 })
 export class InProgressOrdersComponent {
   vm$: Observable<OrderListViewModel>;
