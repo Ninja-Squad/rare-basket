@@ -1,5 +1,5 @@
-import com.github.gradle.node.yarn.task.YarnInstallTask
-import com.github.gradle.node.yarn.task.YarnTask
+import com.github.gradle.node.pnpm.task.PnpmInstallTask
+import com.github.gradle.node.pnpm.task.PnpmTask
 
 plugins {
     base
@@ -9,7 +9,6 @@ plugins {
 node {
     version.set("20.12.2")
     npmVersion.set("10.5.0")
-    yarnVersion.set("1.22.19")
     download.set(true)
 }
 
@@ -18,36 +17,36 @@ tasks {
         enabled = false
     }
 
-    named<YarnInstallTask>(YarnInstallTask.NAME) {
+    named<PnpmInstallTask>(PnpmInstallTask.NAME) {
         ignoreExitValue.set(true)
     }
 
     val prepare by registering {
-        dependsOn(YarnInstallTask.NAME)
+        dependsOn(PnpmInstallTask.NAME)
     }
 
-    val yarnBuild by registering(YarnTask::class) {
+    val pnpmBuild by registering(PnpmTask::class) {
         args.set(listOf("build"))
         dependsOn(prepare)
         inputs.dir("src")
         outputs.dir("dist")
     }
 
-    val yarnTest by registering(YarnTask::class) {
+    val pnpmTest by registering(PnpmTask::class) {
         args.set(listOf("test"))
         dependsOn(prepare)
         inputs.dir("src")
         outputs.dir("coverage")
     }
 
-    val yarnE2e by registering(YarnTask::class) {
+    val pnpmE2e by registering(PnpmTask::class) {
         args.set(listOf("e2e"))
         dependsOn(prepare)
         inputs.dir("src")
         outputs.dir("playwright-report")
     }
 
-    val yarnLint by registering(YarnTask::class){
+    val pnpmLint by registering(PnpmTask::class){
         args.set(listOf("lint"))
         dependsOn(prepare)
         inputs.dir("src")
@@ -57,15 +56,15 @@ tasks {
     }
 
     val lint by registering {
-        dependsOn(yarnLint)
+        dependsOn(pnpmLint)
     }
 
     val test by registering {
-        dependsOn(yarnTest)
+        dependsOn(pnpmTest)
     }
 
     val e2e by registering {
-        dependsOn(yarnE2e)
+        dependsOn(pnpmE2e)
     }
 
     check {
@@ -75,12 +74,12 @@ tasks {
     }
 
     assemble {
-        dependsOn(yarnBuild)
+        dependsOn(pnpmBuild)
     }
 
     val clean by getting {
-        dependsOn("cleanYarnBuild")
-        dependsOn("cleanYarnTest")
-        dependsOn("cleanYarnE2e")
+        dependsOn("cleanPnpmBuild")
+        dependsOn("cleanPnpmTest")
+        dependsOn("cleanPnpmE2e")
     }
 }
