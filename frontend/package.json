@@ -7,13 +7,14 @@
     "start:e2e": "ng serve --configuration=e2e",
     "build": "ng build --no-progress",
     "test": "ng test --code-coverage --no-progress --no-watch",
-    "lint": "mkdir -p build && ng lint > build/eslint-result.txt",
+    "lint": "pnpx mkdirp build && ng lint > build/eslint-result.txt",
     "format": "prettier --write \"{src,e2e}/**/*.+(ts|js|json|html|scss)\"",
-    "e2e": "yarn playwright test",
-    "postinstall": "npx playwright install",
-    "knip": "npx knip --fix-type exports,types --exclude dependencies,unlisted,files,binaries --tags=knipignore"
+    "e2e": "pnpm playwright test",
+    "postinstall": "pnpx playwright install",
+    "knip": "pnpx knip --fix-type exports,types --exclude dependencies,unlisted,files,binaries --tags=knipignore"
   },
   "private": true,
+  "packageManager": "pnpm@9.14.4",
   "dependencies": {
     "@angular/common": "19.0.3",
     "@angular/compiler": "19.0.3",
