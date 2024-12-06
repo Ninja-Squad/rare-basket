@@ -286,6 +286,7 @@
             "secret": "**********",
             "redirectUris": [
                 "http://localhost:4201/rare-basket/",
+                "http://localhost:4202/rare-basket/",
                 "http://localhost:8081/rare-basket/"
             ],
             "webOrigins": [

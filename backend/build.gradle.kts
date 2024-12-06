@@ -42,7 +42,7 @@ tasks {
     test {
         useJUnitPlatform()
         // On CI, Gitlab will spin a Postgres service on host "postgres"
-        if (System.getenv("CI") != null) {
+        if (System.getenv("GITLAB_CI") != null) {
             systemProperty("rare-basket.database.host-and-port", "postgres:5432")
         }
     }

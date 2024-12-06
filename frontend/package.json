@@ -4,7 +4,6 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
-    "start:e2e": "ng serve --configuration=e2e",
     "build": "ng build --no-progress",
     "test": "ng test --code-coverage --no-progress --no-watch",
     "lint": "pnpx mkdirp build && ng lint > build/eslint-result.txt",
