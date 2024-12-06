@@ -78,7 +78,7 @@ export class AuthenticationConfigService {
 
     return {
       configId: CONFIG_ID,
-      authority: keycloakUrl,
+      authority: realmUrl,
       redirectUrl: url,
       clientId: 'rare-basket',
       responseType: 'code',
