@@ -39,7 +39,11 @@ test:
  script:
   # create the test db before running the tests
   - psql -h postgres -U postgres -f backend/database/setup/setup.sql
-  - ./gradlew check build --no-daemon --parallel
+  # do not run e2e tests as they rely on keycloak which we can't start easily on gitlab:
+  # - starting it as a service does not allow to import the realm data
+  # - using docker compose as we do locally or on circleci is not possible using the kaniko image
+  # - using another image that does allow to run docker compose (as the docker image) does not allow to run gradle
+  - ./gradlew check build -x :frontend:pnpmE2e --no-daemon --parallel
  artifacts:
   paths:
    - backend/build/libs/rare-basket.jar

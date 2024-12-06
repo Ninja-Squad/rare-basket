@@ -3,23 +3,14 @@ orbs:
   browser-tools: circleci/browser-tools@1.4.9
 jobs: # a collection of steps
   build: # runs not using Workflows must have a `build` job as entry point
-
+    machine:
+      image: ubuntu-2004:current
     working_directory: ~/rare-basket # directory where steps will run
-
-    docker: # run the steps with Docker
-      - image: cimg/openjdk:17.0-browsers # ...with this image as the primary container; this is where all `steps` will run
-      - image: postgres:17.2-alpine
-        name: postgres
-        environment:
-          - POSTGRES_HOST_AUTH_METHOD=trust
-
     steps: # a collection of executable commands
       - browser-tools/install-chrome
       # check out source code to working directory
       - checkout
-      # install the postgresql client
-      - run: sudo apt-get update
-      - run: sudo apt-get install postgresql-client
-      # create the test db before running the build
-      - run: psql -h postgres -U postgres -f backend/database/setup/setup.sql
+      # start postgresql and keycloak
+      - run: docker compose up -d
+      - run: docker ps
       - run: ./gradlew check build
