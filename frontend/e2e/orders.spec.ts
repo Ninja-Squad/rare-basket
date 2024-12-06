@@ -1,13 +1,14 @@
 import { expect, Page, test } from '@playwright/test';
+import { loginWithKeycloak } from './utils-e2e';
 
 const inProgressNinjaSquadOrder = {
   id: 952,
   basket: {
     reference: 'OMGVJPNK',
-    rationale: null as string,
+    rationale: null,
     customer: {
       name: 'Ninja Squad',
-      organization: null as string,
+      organization: null,
       email: 'contact@ninja-squad.com',
       deliveryAddress: '13 lot les Tilleuls, 42170 ST JUST ST RAMBERT',
       billingAddress: '13 lot les Tilleuls, 42170 ST JUST ST RAMBERT',
@@ -43,14 +44,15 @@ const getOrder = (page: Page) =>
 
 test.describe('Orders', () => {
   test('should display in progress orders', async ({ page }) => {
+    await page.goto('/rare-basket/');
+    await loginWithKeycloak(page);
+
+    // click on the Orders link
+    await page.locator('#orders-link').click();
+
     // api call to get the "in progress" orders
     await inProgressOrders(page);
-    // api call to get an order
-    await getOrder(page);
-    // api call to create a new order
-    await postOrder(page);
 
-    await page.goto('/rare-basket/orders');
     await expect(page.locator('h1')).toHaveText('Orders');
     await expect(page.locator('a.active')).toHaveText('In progress');
 
@@ -66,6 +68,11 @@ test.describe('Orders', () => {
     await page.getByText('Use the delivery address as the billing address').check();
     await page.getByText('Customer category').selectOption({ label: 'French private company' });
     await page.getByText('Preferred language of the customer').selectOption({ label: 'French' });
+
+    // api call to create a new order
+    await postOrder(page);
+    // api call to get an order
+    await getOrder(page);
     await page.getByText('Save').click();
 
     // accession selection
