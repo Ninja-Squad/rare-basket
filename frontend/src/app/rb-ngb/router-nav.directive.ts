@@ -1,4 +1,4 @@
-import { ContentChildren, Directive, Input, QueryList, inject } from '@angular/core';
+import { ContentChildren, Directive, QueryList, inject, input } from '@angular/core';
 import { RouterLinkActive } from '@angular/router';
 
 let counter = 0;
@@ -33,8 +33,7 @@ let counter = 0;
     '[attr.aria-selected]': 'selected',
     '[attr.id]': 'id',
     '[class.nav-link]': 'true'
-  },
-  standalone: true
+  }
 })
 export class RouterNavLinkDirective {
   private routerLinkActive = inject(RouterLinkActive);
@@ -43,7 +42,7 @@ export class RouterNavLinkDirective {
   /**
    * The ID of the link. If not specified, it's auto-generated
    */
-  @Input('rbRouterNavLink') itemId: string | null = null;
+  readonly itemId = input<string | null>(null, { alias: 'rbRouterNavLink' });
 
   private domId = 'router-nav-link-' + counter++;
 
@@ -52,7 +51,7 @@ export class RouterNavLinkDirective {
   }
 
   get id() {
-    return this.itemId || this.domId;
+    return this.itemId() || this.domId;
   }
 }
 
@@ -60,15 +59,14 @@ export class RouterNavLinkDirective {
   selector: '[rbRouterNavPanel]',
   host: {
     '[attr.role]': `'tabpanel'`,
-    '[attr.aria-labelledby]': 'nav.selectedId'
-  },
-  standalone: true
+    '[attr.aria-labelledby]': 'nav().selectedId'
+  }
 })
 export class RouterNavPanelDirective {
   /**
    * The reference to the router nav directive.
    */
-  @Input({ alias: 'rbRouterNavPanel', required: true }) nav!: RouterNavDirective;
+  readonly nav = input.required<RouterNavDirective>({ alias: 'rbRouterNavPanel' });
 }
 
 @Directive({
@@ -77,8 +75,7 @@ export class RouterNavPanelDirective {
   host: {
     '[attr.role]': `'tablist'`,
     '[class.nav]': 'true'
-  },
-  standalone: true
+  }
 })
 export class RouterNavDirective {
   @ContentChildren(RouterNavLinkDirective, { descendants: true }) navItems!: QueryList<RouterNavLinkDirective>;

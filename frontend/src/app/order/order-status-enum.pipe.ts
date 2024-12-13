@@ -3,8 +3,7 @@ import { BaseEnumPipe } from '../shared/base-enum-pipe';
 import { OrderStatus } from './order.model';
 
 @Pipe({
-  name: 'orderStatusEnum',
-  standalone: true
+  name: 'orderStatusEnum'
 })
 export class OrderStatusEnumPipe extends BaseEnumPipe<OrderStatus> implements PipeTransform {
   constructor() {

@@ -8,7 +8,7 @@
       <p>
         <span translate="basket.confirmed.dispatched-message"></span>
         &nbsp;
-        <code style="white-space: pre">{{ basket.customer?.email }}</code
+        <code style="white-space: pre">{{ basket().customer?.email }}</code
         >.
       </p>
       <p translate="basket.confirmed.mailbox-message"></p>
@@ -17,5 +17,5 @@
 </div>
 
 <div class="content mt-2">
-  <rb-basket-content [basket]="basket" />
+  <rb-basket-content [basket]="basket()" />
 </div>

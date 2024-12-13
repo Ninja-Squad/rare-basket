@@ -30,8 +30,8 @@ export class ConfirmationService {
    */
   confirm(options: ConfirmationOptions): Observable<void> {
     const modalRef = this.modalService.open(ConfirmationModalComponent, options);
-    modalRef.componentInstance.title = this.translateService.instant(options.titleKey ?? 'common.confirmation-modal-title');
-    modalRef.componentInstance.message = this.translateService.instant(options.messageKey);
+    modalRef.componentInstance.title.set(this.translateService.instant(options.titleKey ?? 'common.confirmation-modal-title'));
+    modalRef.componentInstance.message.set(this.translateService.instant(options.messageKey));
     return modalRef.result;
   }
 }

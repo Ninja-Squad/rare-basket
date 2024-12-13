@@ -1,43 +1,23 @@
-import { AfterViewInit, Component, ElementRef, Input, NgZone, OnChanges, OnDestroy, ViewChild, inject } from '@angular/core';
+import { Component, ElementRef, NgZone, inject, input, viewChild, afterRenderEffect } from '@angular/core';
 import { Chart, ChartConfiguration } from 'chart.js';
 
 @Component({
   selector: 'rb-chart',
   templateUrl: './chart.component.html',
-  styleUrl: './chart.component.scss',
-  standalone: true
+  styleUrl: './chart.component.scss'
 })
-export class ChartComponent implements AfterViewInit, OnChanges, OnDestroy {
+export class ChartComponent {
   private zone = inject(NgZone);
 
-  @Input({ required: true }) configuration!: ChartConfiguration<'doughnut', number[]>;
-  @ViewChild('canvas') canvas!: ElementRef<HTMLCanvasElement>;
+  readonly configuration = input.required<ChartConfiguration<'doughnut', number[]>>();
+  readonly canvas = viewChild.required<ElementRef<HTMLCanvasElement>>('canvas');
 
-  private chart: Chart<'doughnut'> | null = null;
-
-  ngOnChanges() {
-    this.createChart();
-  }
-
-  ngAfterViewInit() {
-    this.createChart();
-  }
-
-  ngOnDestroy() {
-    if (this.chart) {
-      this.chart.destroy();
-    }
-  }
-
-  private createChart() {
-    if (this.chart) {
-      this.chart.destroy();
-    }
-    if (this.canvas) {
-      const ctx = this.canvas.nativeElement;
+  constructor() {
+    afterRenderEffect(onCleanup => {
       this.zone.runOutsideAngular(() => {
-        this.chart = new Chart(ctx, this.configuration);
+        const chart = new Chart(this.canvas().nativeElement, this.configuration());
+        onCleanup(() => chart.destroy());
       });
-    }
+    });
   }
 }

@@ -1,4 +1,4 @@
-import { Component, inject, Input, OnInit, output } from '@angular/core';
+import { Component, inject, OnInit, output, input } from '@angular/core';
 import { ALL_CUSTOMER_TYPES, ALL_LANGUAGES, CustomerCommand, CustomerType } from '../../basket/basket.model';
 import { NonNullableFormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CustomerInformationCommand } from '../order.model';
@@ -9,6 +9,8 @@ import { NgbCollapse } from '@ng-bootstrap/ng-bootstrap';
 import { ValidationErrorsComponent } from 'ngx-valdemort';
 import { FormControlValidationDirective } from '../../shared/form-control-validation.directive';
 import { TranslateModule } from '@ngx-translate/core';
+import { startWith } from 'rxjs';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'rb-edit-customer-information',
@@ -25,10 +27,9 @@ import { TranslateModule } from '@ngx-translate/core';
   ]
 })
 export class EditCustomerInformationComponent implements OnInit {
-  @Input({ required: true }) customerInformation!: CustomerInformationCommand;
+  readonly customerInformation = input.required<CustomerInformationCommand>();
 
   readonly saved = output<CustomerInformationCommand>();
-
   readonly cancelled = output<void>();
 
   private fb = inject(NonNullableFormBuilder);
@@ -51,18 +52,20 @@ export class EditCustomerInformationComponent implements OnInit {
   constructor() {
     // if we use the delivery address as the billing address
     // then disable the billing address field
-    this.useDeliveryAddressControl.valueChanges.subscribe(useDeliveryAddress => {
-      const billingAddressControl = this.form.controls.customer.controls.billingAddress;
-      if (useDeliveryAddress) {
-        billingAddressControl.disable();
-      } else {
-        billingAddressControl.enable();
-      }
-    });
+    this.useDeliveryAddressControl.valueChanges
+      .pipe(startWith(this.useDeliveryAddressControl.value), takeUntilDestroyed())
+      .subscribe(useDeliveryAddress => {
+        const billingAddressControl = this.form.controls.customer.controls.billingAddress;
+        if (useDeliveryAddress) {
+          billingAddressControl.disable();
+        } else {
+          billingAddressControl.enable();
+        }
+      });
   }
 
   ngOnInit(): void {
-    const customer = this.customerInformation.customer;
+    const customer = this.customerInformation().customer;
     const customerCommand: CustomerCommand = {
       name: customer.name,
       organization: customer.organization,
@@ -74,14 +77,14 @@ export class EditCustomerInformationComponent implements OnInit {
     };
     const formValue: CustomerInformationCommand = {
       customer: customerCommand,
-      rationale: this.customerInformation.rationale
+      rationale: this.customerInformation().rationale
     };
     this.form.setValue(formValue);
     this.useDeliveryAddressControl.setValue(!!customer.billingAddress && customer.billingAddress === customer.deliveryAddress);
   }
 
   save() {
-    if (this.form.invalid) {
+    if (!this.form.valid) {
       return;
     }
     const customerInformationCommand = this.form.value as CustomerInformationCommand;

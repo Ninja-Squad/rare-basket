@@ -244,7 +244,7 @@ describe('OrderComponent', () => {
 
     expect(tester.items.length).toBe(0);
     expect(tester.editOrderComponent).not.toBeNull();
-    expect(tester.editOrderComponent.order).toBe(tester.componentInstance.order);
+    expect(tester.editOrderComponent.order()).toBe(tester.componentInstance.order);
   });
 
   it('should cancel edition', () => {
@@ -447,8 +447,8 @@ describe('OrderComponent', () => {
 
     expect(tester.addDocumentButton).toBeNull();
     expect(tester.editDocumentComponent).not.toBeNull();
-    expect(tester.editDocumentComponent.uploadProgress).toBeNull();
-    expect(tester.editDocumentComponent.order).toBe(order);
+    expect(tester.editDocumentComponent.uploadProgress()).toBeNull();
+    expect(tester.editDocumentComponent.order()).toBe(order);
   });
 
   it('should cancel document addition', () => {
@@ -495,11 +495,11 @@ describe('OrderComponent', () => {
 
     progressSubject.next(event1);
     tester.detectChanges();
-    expect(tester.editDocumentComponent.uploadProgress).toBe(0.5);
+    expect(tester.editDocumentComponent.uploadProgress()).toBe(0.5);
 
     progressSubject.next(event2);
     tester.detectChanges();
-    expect(tester.editDocumentComponent.uploadProgress).toBe(1);
+    expect(tester.editDocumentComponent.uploadProgress()).toBe(1);
 
     progressSubject.next(event3);
     progressSubject.complete();

@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, ElementRef, inject, Input, OnInit, QueryList, ViewChildren, output } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, inject, OnInit, QueryList, ViewChildren, output, input, DestroyRef } from '@angular/core';
 import { Order, OrderCommand, OrderItemCommand } from '../order.model';
 import { FormControl, FormGroup, NonNullableFormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { faFileCsv, faPlus, faTrash } from '@fortawesome/free-solid-svg-icons';
@@ -8,6 +8,7 @@ import { FaIconComponent } from '@fortawesome/angular-fontawesome';
 import { ValidationErrorsComponent } from 'ngx-valdemort';
 import { FormControlValidationDirective } from '../../shared/form-control-validation.directive';
 import { TranslateModule } from '@ngx-translate/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 interface ItemFormValue {
   name: string;
@@ -24,17 +25,17 @@ interface ItemFormValue {
 })
 export class EditOrderComponent implements OnInit, AfterViewInit {
   private modalService = inject(ModalService);
+  private destroyRef = inject(DestroyRef);
 
-  @Input({ required: true }) order!: Order;
+  readonly order = input.required<Order>();
 
   readonly saved = output<OrderCommand>();
-
   readonly cancelled = output<void>();
 
   @ViewChildren('name') nameInputs!: QueryList<ElementRef<HTMLInputElement>>;
 
   private fb = inject(NonNullableFormBuilder);
-  itemGroups = this.fb.array<
+  readonly itemGroups = this.fb.array<
     FormGroup<{
       name: FormControl<string>;
       identifier: FormControl<string>;
@@ -43,23 +44,23 @@ export class EditOrderComponent implements OnInit, AfterViewInit {
     }>
   >([]);
 
-  form = this.fb.group({
+  readonly form = this.fb.group({
     items: this.itemGroups
   });
 
-  deleteIcon = faTrash;
-  addItemIcon = faPlus;
-  csvIcon = faFileCsv;
+  readonly deleteIcon = faTrash;
+  readonly addItemIcon = faPlus;
+  readonly csvIcon = faFileCsv;
 
   ngOnInit() {
-    this.order.items.forEach(orderItem =>
+    this.order().items.forEach(orderItem =>
       this.itemGroups.push(
         this.createItemGroup(orderItem.accession.name, orderItem.accession.identifier, orderItem.quantity, orderItem.unit)
       )
     );
 
     // add item right away if there is none
-    if (this.order.items.length === 0) {
+    if (this.order().items.length === 0) {
       this.addItem();
     }
   }
@@ -69,7 +70,7 @@ export class EditOrderComponent implements OnInit, AfterViewInit {
   }
 
   save() {
-    if (this.form.invalid) {
+    if (!this.form.valid) {
       return;
     }
 
@@ -109,20 +110,23 @@ export class EditOrderComponent implements OnInit, AfterViewInit {
   }
 
   openCsvModal() {
-    this.modalService.open(CsvModalComponent).result.subscribe((items: Array<OrderItemCommand>) => {
-      // if the last item is blank, remove it. This happens, for example, when we create an order
-      // from scratch, and immediately open this component with an empty order item
-      if (this.itemGroups.length > 0) {
-        const lastIndex = this.itemGroups.length - 1;
-        const lastItemValue = this.itemGroups.controls[lastIndex].value;
-        if (this.isBlank(lastItemValue)) {
-          this.delete(lastIndex);
+    this.modalService
+      .open(CsvModalComponent)
+      .result.pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((items: Array<OrderItemCommand>) => {
+        // if the last item is blank, remove it. This happens, for example, when we create an order
+        // from scratch, and immediately open this component with an empty order item
+        if (this.itemGroups.length > 0) {
+          const lastIndex = this.itemGroups.length - 1;
+          const lastItemValue = this.itemGroups.controls[lastIndex].value;
+          if (this.isBlank(lastItemValue)) {
+            this.delete(lastIndex);
+          }
         }
-      }
-      items.forEach(item => {
-        this.itemGroups.push(this.createItemGroup(item.accession.name, item.accession.identifier, item.quantity, item.unit));
+        items.forEach(item => {
+          this.itemGroups.push(this.createItemGroup(item.accession.name, item.accession.identifier, item.quantity, item.unit));
+        });
       });
-    });
   }
 
   private isBlank(value: Partial<ItemFormValue>) {

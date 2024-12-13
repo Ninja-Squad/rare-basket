@@ -1,13 +1,12 @@
-import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 import { Accession } from '../../basket/basket.model';
 
 @Component({
   selector: 'rb-accession',
   templateUrl: './accession.component.html',
   styleUrl: './accession.component.scss',
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: true
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AccessionComponent {
-  @Input({ required: true }) accession!: Accession;
+  readonly accession = input.required<Accession>();
 }

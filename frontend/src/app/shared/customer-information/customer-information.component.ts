@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, input } from '@angular/core';
 import { Customer } from '../../basket/basket.model';
 import {
   faAddressCard,
@@ -23,18 +23,16 @@ import { FaIconComponent } from '@fortawesome/angular-fontawesome';
   imports: [FaIconComponent, TranslateModule, CustomerTypeEnumPipe, LanguageEnumPipe]
 })
 export class CustomerInformationComponent {
-  @Input({ required: true }) customer!: Customer;
+  readonly customer = input.required<Customer>();
+  readonly rationale = input.required<string | null>();
+  readonly withLanguage = input(false);
 
-  @Input({ required: true }) rationale: string | null = null;
-
-  @Input() withLanguage = false;
-
-  nameIcon = faUser;
-  organizationIcon = faSitemap;
-  emailIcon = faAt;
-  deliveryAddressIcon = faHome;
-  billingAddressIcon = faFileInvoiceDollar;
-  customerTypeIcon = faAddressCard;
-  languageIcon = faMicrophone;
-  rationaleIcon = faCommentDots;
+  readonly nameIcon = faUser;
+  readonly organizationIcon = faSitemap;
+  readonly emailIcon = faAt;
+  readonly deliveryAddressIcon = faHome;
+  readonly billingAddressIcon = faFileInvoiceDollar;
+  readonly customerTypeIcon = faAddressCard;
+  readonly languageIcon = faMicrophone;
+  readonly rationaleIcon = faCommentDots;
 }

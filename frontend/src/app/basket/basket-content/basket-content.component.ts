@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, Input, OnChanges } from '@angular/core';
+import { ChangeDetectionStrategy, Component, input, computed } from '@angular/core';
 import { Basket } from '../basket.model';
 import { AccessionComponent } from '../../shared/accession/accession.component';
 import { DecimalPipe } from '@angular/common';
@@ -15,14 +15,10 @@ import { TranslateModule } from '@ngx-translate/core';
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [TranslateModule, CustomerInformationComponent, AccessionComponent, DecimalPipe]
 })
-export class BasketContentComponent implements OnChanges {
-  @Input({ required: true }) basket!: Basket;
+export class BasketContentComponent {
+  readonly basket = input.required<Basket>();
 
-  quantityDisplayed = false;
-
-  ngOnChanges() {
-    this.quantityDisplayed = this.basket.accessionHolderBaskets.some(accessionHolderBasket =>
-      accessionHolderBasket.items.some(item => !!item.quantity)
-    );
-  }
+  quantityDisplayed = computed(() =>
+    this.basket().accessionHolderBaskets.some(accessionHolderBasket => accessionHolderBasket.items.some(item => !!item.quantity))
+  );
 }
