@@ -1,4 +1,4 @@
-import { ContentChildren, Directive, QueryList, inject, input } from '@angular/core';
+import { Directive, inject, input, contentChildren } from '@angular/core';
 import { RouterLinkActive } from '@angular/router';
 
 let counter = 0;
@@ -13,7 +13,7 @@ let counter = 0;
  *
  * ```
  * <ul class="nav-tabs" rbRouterNav #nav="rbRouterNav">
- *   <li *ngIf="true" class="nav-item">
+ *   <li class="nav-item">
  *     <a routerLink="/foo" routerLinkActive="active" rbRouterNavLink>Foo</a>
  *   </li>
  *   <li class="nav-item">
@@ -78,9 +78,9 @@ export class RouterNavPanelDirective {
   }
 })
 export class RouterNavDirective {
-  @ContentChildren(RouterNavLinkDirective, { descendants: true }) navItems!: QueryList<RouterNavLinkDirective>;
+  readonly navItems = contentChildren(RouterNavLinkDirective, { descendants: true });
 
   get selectedId() {
-    return this.navItems?.find(item => item.nav === this && item.selected)?.id;
+    return this.navItems()?.find(item => item.nav === this && item.selected)?.id;
   }
 }
