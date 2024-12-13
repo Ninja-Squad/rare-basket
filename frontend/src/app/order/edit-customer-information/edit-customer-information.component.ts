@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, output, input } from '@angular/core';
+import { Component, inject, OnInit, output, input, ChangeDetectionStrategy } from '@angular/core';
 import { ALL_CUSTOMER_TYPES, ALL_LANGUAGES, CustomerCommand, CustomerType } from '../../basket/basket.model';
 import { NonNullableFormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CustomerInformationCommand } from '../order.model';
@@ -24,7 +24,8 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
     NgbCollapse,
     CustomerTypeEnumPipe,
     LanguageEnumPipe
-  ]
+  ],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class EditCustomerInformationComponent implements OnInit {
   readonly customerInformation = input.required<CustomerInformationCommand>();
@@ -33,7 +34,7 @@ export class EditCustomerInformationComponent implements OnInit {
   readonly cancelled = output<void>();
 
   private fb = inject(NonNullableFormBuilder);
-  form = this.fb.group({
+  readonly form = this.fb.group({
     customer: this.fb.group({
       name: [null as string | null, Validators.required],
       organization: null as string | null,
@@ -45,9 +46,9 @@ export class EditCustomerInformationComponent implements OnInit {
     }),
     rationale: null as string | null
   });
-  useDeliveryAddressControl = this.fb.control(false);
-  customerTypes = ALL_CUSTOMER_TYPES;
-  languages = ALL_LANGUAGES;
+  readonly useDeliveryAddressControl = this.fb.control(false);
+  readonly customerTypes = ALL_CUSTOMER_TYPES;
+  readonly languages = ALL_LANGUAGES;
 
   constructor() {
     // if we use the delivery address as the billing address

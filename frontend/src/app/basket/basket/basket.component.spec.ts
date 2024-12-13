@@ -97,7 +97,7 @@ describe('BasketComponent', () => {
       tester.detectChanges();
 
       expect(basketService.save).toHaveBeenCalledWith('ABCDEFGH', command);
-      expect(tester.componentInstance.basket).toBe(savedBasket);
+      expect(tester.componentInstance.basket()).toBe(savedBasket);
       expect(tester.editBasketComponent).toBeNull();
       expect(tester.editConfirmationComponent).not.toBeNull();
       expect(tester.editConfirmationComponent.basket()).toBe(savedBasket);
@@ -149,7 +149,7 @@ describe('BasketComponent', () => {
       tester.detectChanges();
 
       expect(basketService.confirm).toHaveBeenCalledWith('ABCDEFGH', 'CODE');
-      expect(tester.componentInstance.basket).toBe(confirmedBasket);
+      expect(tester.componentInstance.basket()).toBe(confirmedBasket);
       expect(tester.editConfirmationComponent).toBeNull();
       expect(tester.confirmedComponent).not.toBeNull();
       expect(tester.confirmedComponent.basket()).toBe(confirmedBasket);
@@ -159,7 +159,7 @@ describe('BasketComponent', () => {
       tester.editConfirmationComponent.refreshRequested.emit(undefined);
       tester.detectChanges();
 
-      expect(tester.componentInstance.basket).toBe(confirmedBasket);
+      expect(tester.componentInstance.basket()).toBe(confirmedBasket);
     });
   });
 });

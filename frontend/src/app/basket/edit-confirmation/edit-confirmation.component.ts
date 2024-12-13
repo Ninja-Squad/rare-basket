@@ -1,4 +1,4 @@
-import { Component, inject, output, input } from '@angular/core';
+import { Component, inject, output, input, ChangeDetectionStrategy } from '@angular/core';
 import { Basket } from '../basket.model';
 import { NonNullableFormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { faCheckCircle, faInfoCircle } from '@fortawesome/free-solid-svg-icons';
@@ -15,7 +15,8 @@ import { FaIconComponent } from '@fortawesome/angular-fontawesome';
   selector: 'rb-edit-confirmation',
   templateUrl: './edit-confirmation.component.html',
   styleUrl: './edit-confirmation.component.scss',
-  imports: [FaIconComponent, TranslateModule, ReactiveFormsModule, FormControlValidationDirective, BasketContentComponent]
+  imports: [FaIconComponent, TranslateModule, ReactiveFormsModule, FormControlValidationDirective, BasketContentComponent],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class EditConfirmationComponent {
   readonly basket = input.required<Basket>();

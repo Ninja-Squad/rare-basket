@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, Signal, signal } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { OrderService } from '../order.service';
 import { CustomerInformationCommand, DetailedOrder, Document, DocumentCommand, OrderCommand } from '../order.model';
@@ -21,7 +21,7 @@ import { HttpEventType } from '@angular/common/http';
 import { DownloadService } from '../../shared/download.service';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { FinalizationWarningsModalComponent } from '../finalization-warnings-modal/finalization-warnings-modal.component';
-import { Observable } from 'rxjs';
+import { map, Observable, startWith, Subject } from 'rxjs';
 import { ModalService } from '../../rb-ngb/modal.service';
 import { ToastService } from '../../shared/toast.service';
 import { DocumentTypeEnumPipe } from '../document-type-enum.pipe';
@@ -33,6 +33,7 @@ import { EditCustomerInformationComponent } from '../edit-customer-information/e
 import { FaIconComponent } from '@fortawesome/angular-fontawesome';
 import { CustomerInformationComponent } from '../../shared/customer-information/customer-information.component';
 import { DatePipe, DecimalPipe } from '@angular/common';
+import { toSignal } from '@angular/core/rxjs-interop';
 
 /**
  * Component displaying the details of an order to a GRC user
@@ -54,7 +55,8 @@ import { DatePipe, DecimalPipe } from '@angular/common';
     DatePipe,
     OrderStatusEnumPipe,
     DocumentTypeEnumPipe
-  ]
+  ],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class OrderComponent {
   private orderService = inject(OrderService);
@@ -64,147 +66,148 @@ export class OrderComponent {
   private modalService = inject(ModalService);
   private toastService = inject(ToastService);
 
-  order: DetailedOrder | null = null;
+  readonly order: Signal<DetailedOrder | undefined>;
 
-  editIcon = faEdit;
-  finalizeOrderIcon = faCheckSquare;
-  cancelOrderIcon = faWindowClose;
-  allOrdersIcon = faChevronLeft;
-  documentOnDeliveryFormIcon = faFileMedical;
-  documentNotOnDeliveryFormIcon = faFile;
-  addDocumentIcon = faPlus;
-  deleteDocumentIcon = faTrash;
-  downloadingIcon = faSpinner;
-  deliveryFormIcon = faClipboard;
-  completeDeliveryFormIcon = faClipboardList;
+  readonly editIcon = faEdit;
+  readonly finalizeOrderIcon = faCheckSquare;
+  readonly cancelOrderIcon = faWindowClose;
+  readonly allOrdersIcon = faChevronLeft;
+  readonly documentOnDeliveryFormIcon = faFileMedical;
+  readonly documentNotOnDeliveryFormIcon = faFile;
+  readonly addDocumentIcon = faPlus;
+  readonly deleteDocumentIcon = faTrash;
+  readonly downloadingIcon = faSpinner;
+  readonly deliveryFormIcon = faClipboard;
+  readonly completeDeliveryFormIcon = faClipboardList;
 
-  editing = false;
-  editingCustomer = false;
-  addingDocument = false;
-  uploadProgress: number | null = null;
-  statusChanged = false;
-  downloadingDeliveryForm = false;
+  readonly editing = signal(false);
+  readonly editingCustomer = signal(false);
+  readonly addingDocument = signal(false);
+  readonly operationInProgress = computed(() => this.editing() || this.editingCustomer() || this.addingDocument());
+  readonly uploadProgress = signal<number | null>(null);
+  readonly statusChanged = signal(false);
+  readonly downloadingDeliveryForm = signal(false);
 
-  private downloadingDocumentIds = new Set<number>();
+  private downloadingDocumentIds = signal<Array<number>>([]);
+
+  readonly refresh = new Subject<void>();
 
   constructor() {
     const route = inject(ActivatedRoute);
-    const orderId = +route.snapshot.paramMap.get('orderId')!;
-    this.orderService.get(orderId).subscribe(order => {
-      this.order = order;
-      if (this.order.items.length === 0) {
-        // we have just created the order, so let's start by editing the order right away
-        this.editing = true;
-      }
-    });
+    const orderId = parseInt(route.snapshot.paramMap.get('orderId')!);
+    this.order = toSignal(
+      this.refresh.pipe(
+        map(() => 'refresh'),
+        startWith('init'),
+        switchMap(cause => this.orderService.get(orderId).pipe(map(order => ({ order, cause })))),
+        tap(({ order, cause }) => {
+          if (cause === 'init' && order.items.length === 0) {
+            this.editing.set(true);
+          }
+        }),
+        map(({ order }) => order)
+      )
+    );
   }
 
   edit() {
-    this.editing = true;
+    this.editing.set(true);
   }
 
   editCustomer() {
-    this.editingCustomer = true;
+    this.editingCustomer.set(true);
   }
 
   saved(command: OrderCommand) {
-    this.orderService
-      .update(this.order!.id, command)
-      .pipe(switchMap(() => this.orderService.get(this.order!.id)))
-      .subscribe(order => {
-        this.editing = false;
-        this.order = order;
-      });
+    const order = this.order()!;
+    this.orderService.update(order.id, command).subscribe(() => {
+      this.editing.set(false);
+      this.refresh.next();
+    });
   }
 
   customerSaved(command: CustomerInformationCommand) {
-    this.orderService
-      .updateCustomerInformation(this.order!.id, command)
-      .pipe(switchMap(() => this.orderService.get(this.order!.id)))
-      .subscribe(order => {
-        this.editingCustomer = false;
-        this.order = order;
-      });
+    const order = this.order()!;
+    this.orderService.updateCustomerInformation(order.id, command).subscribe(() => {
+      this.editingCustomer.set(false);
+      this.refresh.next();
+    });
   }
 
   cancelOrder() {
+    const order = this.order()!;
     this.confirmationService
       .confirm({
         messageKey: 'order.order.cancel-confirmation'
       })
       .pipe(
-        tap(() => (this.statusChanged = false)),
-        switchMap(() => this.orderService.cancel(this.order!.id)),
-        tap(() => this.toastService.success('order.order.cancelled')),
-        switchMap(() => this.orderService.get(this.order!.id))
+        tap(() => this.statusChanged.set(false)),
+        switchMap(() => this.orderService.cancel(order.id))
       )
-      .subscribe(order => {
-        this.order = order;
-        this.statusChanged = true;
+      .subscribe(() => {
+        this.toastService.success('order.order.cancelled');
+        this.refresh.next();
+        this.statusChanged.set(true);
       });
   }
 
   createDocument(command: DocumentCommand) {
+    const order = this.order()!;
     this.orderService
-      .addDocument(this.order!.id, command)
+      .addDocument(order.id, command)
       .pipe(
-        finalize(() => (this.uploadProgress = null)),
+        finalize(() => this.uploadProgress.set(null)),
         tap(progressEvent => {
           if (progressEvent.type === HttpEventType.UploadProgress) {
-            this.uploadProgress = progressEvent.loaded / progressEvent.total!;
+            this.uploadProgress.set(progressEvent.loaded / progressEvent.total!);
           }
         }),
         filter(progressEvent => progressEvent.type === HttpEventType.Response),
-        finalize(() => (this.addingDocument = false)),
-        switchMap(() => this.orderService.get(this.order!.id))
+        finalize(() => this.addingDocument.set(false))
       )
-      .subscribe(order => (this.order = order));
+      .subscribe(() => this.refresh.next());
   }
 
   deleteDocument(document: Document) {
+    const order = this.order()!;
     this.confirmationService
       .confirm({
         messageKey: 'order.order.delete-document-confirmation'
       })
-      .pipe(
-        switchMap(() => this.orderService.deleteDocument(this.order!.id, document.id)),
-        switchMap(() => this.orderService.get(this.order!.id))
-      )
-      .subscribe(order => (this.order = order));
-  }
-
-  get operationInProgress() {
-    return this.editing || this.editingCustomer || this.addingDocument;
+      .pipe(switchMap(() => this.orderService.deleteDocument(order.id, document.id)))
+      .subscribe(() => this.refresh.next());
   }
 
   download(document: Document, event: Event) {
+    const order = this.order()!;
     event.stopPropagation();
     event.preventDefault();
-    this.downloadingDocumentIds.add(document.id);
+    this.downloadingDocumentIds.update(ids => [...ids, document.id]);
     this.orderService
-      .downloadDocument(this.order!.id, document.id)
-      .pipe(finalize(() => this.downloadingDocumentIds.delete(document.id)))
+      .downloadDocument(order.id, document.id)
+      .pipe(finalize(() => this.downloadingDocumentIds.update(ids => ids.filter(id => id !== document.id))))
       .subscribe(response => this.downloadService.download(response, document.originalFileName));
   }
 
   isDownloading(document: Document) {
-    return this.downloadingDocumentIds.has(document.id);
+    return this.downloadingDocumentIds().includes(document.id);
   }
 
   finalizeOrder() {
+    const order = this.order()!;
     let result$: Observable<void>;
 
     const warnings: Array<string> = [];
-    if (!this.order!.documents.some(doc => doc.type === 'MTA' || doc.type === 'SMTA')) {
+    if (!order.documents.some(doc => doc.type === 'MTA' || doc.type === 'SMTA')) {
       warnings.push(this.translateService.instant('order.order.missing-mta-warning'));
     }
-    if (!this.order!.documents.some(doc => doc.type === 'SANITARY_PASSPORT')) {
+    if (!order.documents.some(doc => doc.type === 'SANITARY_PASSPORT')) {
       warnings.push(this.translateService.instant('order.order.missing-sanitary-passport-warning'));
     }
-    if (this.order!.items.some(item => item.quantity === null)) {
+    if (order.items.some(item => item.quantity === null)) {
       warnings.push(this.translateService.instant('order.order.missing-quantity-warning'));
     }
-    if (this.order!.items.some(item => item.unit === null)) {
+    if (order.items.some(item => item.unit === null)) {
       warnings.push(this.translateService.instant('order.order.missing-unit-warning'));
     }
 
@@ -220,25 +223,25 @@ export class OrderComponent {
 
     result$
       .pipe(
-        tap(() => (this.statusChanged = false)),
-        switchMap(() => this.orderService.finalize(this.order!.id)),
-        tap(() => this.toastService.success('order.order.finalized')),
-        switchMap(() => this.orderService.get(this.order!.id))
+        tap(() => this.statusChanged.set(false)),
+        switchMap(() => this.orderService.finalize(order.id))
       )
-      .subscribe(order => {
-        this.order = order;
-        this.statusChanged = true;
+      .subscribe(() => {
+        this.toastService.success('order.order.finalized');
+        this.statusChanged.set(true);
+        this.refresh.next();
       });
   }
 
   downloadDeliveryForm(options = { withDocuments: false }) {
+    const order = this.order()!;
     this.orderService
-      .downloadDeliveryForm(this.order!.id, options)
-      .subscribe(response => this.downloadService.download(response, `bon-de-livraison-${this.order!.id}.pdf`));
+      .downloadDeliveryForm(order.id, options)
+      .subscribe(response => this.downloadService.download(response, `bon-de-livraison-${order.id}.pdf`));
   }
 
   hasOnDeliveryFormDocument() {
-    return this.order!.documents.some(document => document.onDeliveryForm);
+    return this.order()!.documents.some(document => document.onDeliveryForm);
   }
 
   downloadCompleteDeliveryForm() {

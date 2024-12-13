@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { BasketService } from '../basket.service';
 import { faExclamationCircle } from '@fortawesome/free-solid-svg-icons';
@@ -16,7 +16,8 @@ import { FaIconComponent } from '@fortawesome/angular-fontawesome';
   selector: 'rb-basket-confirmation',
   templateUrl: './basket-confirmation.component.html',
   styleUrl: './basket-confirmation.component.scss',
-  imports: [FaIconComponent, TranslateModule, RouterLink]
+  imports: [FaIconComponent, TranslateModule, RouterLink],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class BasketConfirmationComponent {
   private route = inject(ActivatedRoute);
@@ -24,15 +25,15 @@ export class BasketConfirmationComponent {
   private router = inject(Router);
 
   basketReference: string | null = null;
-  errorIcon = faExclamationCircle;
-  confirmationFailed = false;
+  readonly errorIcon = faExclamationCircle;
+  readonly confirmationFailed = signal(false);
 
   constructor() {
     this.basketReference = this.route.snapshot.paramMap.get('reference')!;
     const confirmationCode = this.route.snapshot.queryParamMap.get('code')!;
     this.basketService.confirm(this.basketReference, confirmationCode).subscribe({
       next: () => this.router.navigate(['/baskets', this.basketReference]),
-      error: () => (this.confirmationFailed = true)
+      error: () => this.confirmationFailed.set(true)
     });
   }
 }

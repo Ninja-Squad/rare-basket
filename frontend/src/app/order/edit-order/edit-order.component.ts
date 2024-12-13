@@ -1,4 +1,16 @@
-import { AfterViewInit, Component, ElementRef, inject, OnInit, QueryList, ViewChildren, output, input, DestroyRef } from '@angular/core';
+import {
+  AfterViewInit,
+  Component,
+  ElementRef,
+  inject,
+  OnInit,
+  QueryList,
+  ViewChildren,
+  output,
+  input,
+  DestroyRef,
+  ChangeDetectionStrategy
+} from '@angular/core';
 import { Order, OrderCommand, OrderItemCommand } from '../order.model';
 import { FormControl, FormGroup, NonNullableFormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { faFileCsv, faPlus, faTrash } from '@fortawesome/free-solid-svg-icons';
@@ -21,7 +33,8 @@ interface ItemFormValue {
   selector: 'rb-edit-order',
   templateUrl: './edit-order.component.html',
   styleUrl: './edit-order.component.scss',
-  imports: [ReactiveFormsModule, TranslateModule, FormControlValidationDirective, ValidationErrorsComponent, FaIconComponent]
+  imports: [ReactiveFormsModule, TranslateModule, FormControlValidationDirective, ValidationErrorsComponent, FaIconComponent],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class EditOrderComponent implements OnInit, AfterViewInit {
   private modalService = inject(ModalService);

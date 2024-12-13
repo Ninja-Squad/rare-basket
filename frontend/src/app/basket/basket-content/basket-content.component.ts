@@ -12,8 +12,8 @@ import { TranslateModule } from '@ngx-translate/core';
   selector: 'rb-basket-content',
   templateUrl: './basket-content.component.html',
   styleUrl: './basket-content.component.scss',
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [TranslateModule, CustomerInformationComponent, AccessionComponent, DecimalPipe]
+  imports: [TranslateModule, CustomerInformationComponent, AccessionComponent, DecimalPipe],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class BasketContentComponent {
   readonly basket = input.required<Basket>();

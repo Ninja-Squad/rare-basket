@@ -9,7 +9,7 @@
     </div>
   </form>
 
-  @if (result.errors.length) {
+  @if (result().errors.length) {
     <div class="alert alert-danger scrolling">
       <h4 class="visually-hidden" translate="order.csv-modal.csv-errors"></h4>
       <table class="table table-sm mb-0 csv-errors">
@@ -20,7 +20,7 @@
           </tr>
         </thead>
         <tbody>
-          @for (error of result.errors; track error) {
+          @for (error of result().errors; track $index) {
             <tr class="csv-error">
               @if (error.row !== undefined) {
                 <th scope="row">{{ error.row + 1 | number }}</th>
@@ -45,7 +45,7 @@
         </tr>
       </thead>
       <tbody>
-        @for (item of result.items; track item) {
+        @for (item of result().items; track $index) {
           <tr class="order-item">
             <td><rb-accession [accession]="item.accession" /></td>
             <td>{{ item.quantity | number }} {{ item.unit }}</td>
@@ -59,7 +59,7 @@
   <button
     type="button"
     class="btn btn-primary"
-    [disabled]="result.items.length === 0"
+    [disabled]="result().items.length === 0"
     (click)="close()"
     id="add-items-button"
     translate="order.csv-modal.add-items"

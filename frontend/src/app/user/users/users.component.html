@@ -1,6 +1,6 @@
 <h1 translate="user.users.title"></h1>
 
-@if (users) {
+@if (users(); as users) {
   <div>
     <div class="content mt-2">
       @for (user of users.content; track user.id) {

@@ -1,5 +1,5 @@
 <div class="toast-container position-absolute p-3 top-0 end-0">
-  @for (toast of toasts; track toast) {
+  @for (toast of toasts(); track toast) {
     <ngb-toast [class]="toast.type" [autohide]="true" [delay]="5000" (hidden)="remove(toast)">
       <div class="d-flex">
         <div class="me-2">

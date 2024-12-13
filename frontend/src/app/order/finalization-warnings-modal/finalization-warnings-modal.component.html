@@ -9,7 +9,7 @@
     <div class="m-2 flex-grow-1">
       <p translate="order.finalization-warnings-modal.message"></p>
       <ul>
-        @for (message of messages; track $index) {
+        @for (message of messages(); track $index) {
           <li>{{ message }}</li>
         }
       </ul>

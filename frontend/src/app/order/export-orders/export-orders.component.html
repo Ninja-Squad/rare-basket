@@ -12,8 +12,8 @@
     </rb-datepicker-container>
 
     <div class="col-12 mt-2 mt-sm-0">
-      <button type="submit" [disabled]="exporting" class="btn btn-primary" id="export-button">
-        @if (exporting) {
+      <button type="submit" [disabled]="exporting()" class="btn btn-primary" id="export-button">
+        @if (exporting()) {
           <fa-icon [icon]="exportingIcon" [animation]="'spin'" class="me-1" id="export-spinner" />
         }
         <span translate="order.export-orders.export"></span>

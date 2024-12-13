@@ -244,7 +244,7 @@ describe('OrderComponent', () => {
 
     expect(tester.items.length).toBe(0);
     expect(tester.editOrderComponent).not.toBeNull();
-    expect(tester.editOrderComponent.order()).toBe(tester.componentInstance.order);
+    expect(tester.editOrderComponent.order()).toBe(tester.componentInstance.order());
   });
 
   it('should cancel edition', () => {
@@ -275,7 +275,7 @@ describe('OrderComponent', () => {
     tester.detectChanges();
 
     expect(orderService.update).toHaveBeenCalledWith(order.id, command);
-    expect(tester.componentInstance.order).toBe(newOrder);
+    expect(tester.componentInstance.order()).toBe(newOrder);
     expect(tester.items.length).toBe(2);
     expect(tester.editOrderComponent).toBeNull();
   });
@@ -311,9 +311,9 @@ describe('OrderComponent', () => {
     tester.finalizeOrderButton.click();
 
     expect(confirmationService.confirm).toHaveBeenCalled();
-    expect(orderService.finalize).toHaveBeenCalledWith(tester.componentInstance.order.id);
+    expect(orderService.finalize).toHaveBeenCalledWith(tester.componentInstance.order()!.id);
     expect(toastService.success).toHaveBeenCalled();
-    expect(tester.componentInstance.order).toBe(newOrder);
+    expect(tester.componentInstance.order()).toBe(newOrder);
   });
 
   it('should finalize order after confirmation with warnings', () => {
@@ -336,9 +336,9 @@ describe('OrderComponent', () => {
       `Certaines des accessions commandées n'ont pas de quantité spécifiée`,
       `Certaines des accessions commandées n'ont pas d'unité spécifiée`
     ]);
-    expect(orderService.finalize).toHaveBeenCalledWith(tester.componentInstance.order.id);
+    expect(orderService.finalize).toHaveBeenCalledWith(tester.componentInstance.order()!.id);
     expect(toastService.success).toHaveBeenCalled();
-    expect(tester.componentInstance.order).toBe(newOrder);
+    expect(tester.componentInstance.order()).toBe(newOrder);
   });
 
   it('should not have a cancel order button when status is not DRAFT', () => {
@@ -362,9 +362,9 @@ describe('OrderComponent', () => {
     tester.cancelOrderButton.click();
 
     expect(confirmationService.confirm).toHaveBeenCalled();
-    expect(orderService.cancel).toHaveBeenCalledWith(tester.componentInstance.order.id);
+    expect(orderService.cancel).toHaveBeenCalledWith(tester.componentInstance.order()!.id);
     expect(toastService.success).toHaveBeenCalled();
-    expect(tester.componentInstance.order).toBe(newOrder);
+    expect(tester.componentInstance.order()).toBe(newOrder);
   });
 
   it('should display documents', () => {
@@ -433,8 +433,8 @@ describe('OrderComponent', () => {
     tester.deleteDocumentButtons[0].click();
 
     expect(confirmationService.confirm).toHaveBeenCalled();
-    expect(orderService.deleteDocument).toHaveBeenCalledWith(tester.componentInstance.order.id, 543);
-    expect(tester.componentInstance.order).toBe(newOrder);
+    expect(orderService.deleteDocument).toHaveBeenCalledWith(tester.componentInstance.order()!.id, 543);
+    expect(tester.componentInstance.order()).toBe(newOrder);
     expect(tester.testElement).toContainText('Aucun document');
   });
 
@@ -505,7 +505,7 @@ describe('OrderComponent', () => {
     progressSubject.complete();
     tester.detectChanges();
 
-    expect(tester.componentInstance.order).toBe(newOrder);
+    expect(tester.componentInstance.order()).toBe(newOrder);
     expect(tester.documents.length).toBe(2);
     expect(tester.editDocumentComponent).toBeNull();
   });

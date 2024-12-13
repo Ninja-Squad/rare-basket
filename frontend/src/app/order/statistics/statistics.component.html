@@ -1,4 +1,4 @@
-@if (user) {
+@if (vm(); as vm) {
   <div>
     <form [formGroup]="form" (ngSubmit)="refresh()">
       <div class="mb-3">
@@ -16,9 +16,9 @@
         <val-errors [control]="form" [label]="'order.statistics.date-range-error-label' | translate" />
       </div>
 
-      @if (perimeterEdited) {
+      @if (perimeterEdited()) {
         <div class="mb-2">
-          @if (user.globalVisualization) {
+          @if (vm.user.globalVisualization) {
             <div>
               <div class="form-check form-check-inline">
                 <input formControlName="global" class="form-check-input" type="radio" id="no-global-visualization" [value]="false" />
@@ -59,13 +59,13 @@
               id="perimeter"
             ></span>
           }
-          @if (perimeterModifiable) {
+          @if (perimeterModifiable()) {
             <a
               href="#"
               role="button"
               class="small ms-2"
               translate="order.statistics.edit-perimeter"
-              (click)="perimeterEdited = true; $event.preventDefault()"
+              (click)="perimeterEdited.set(true); $event.preventDefault()"
               id="edit-perimeter"
             ></a>
           }
@@ -77,20 +77,20 @@
       </div>
     </form>
 
-    @if (stats) {
+    @if (stats(); as stats) {
       <div>
         <h2 translate="order.statistics.key-numbers"></h2>
         <div class="row g-2 align-items-stretch" id="numbers">
           <div class="mb-2 col-md-4 col-lg d-flex">
             <div class="border rounded bg-light text-center p-2 flex-grow-1">
-              <div class="key-number" [class.refreshed]="refreshed">{{ stats.createdOrderCount | number }}</div>
+              <div class="key-number" [class.refreshed]="refreshed()">{{ stats.createdOrderCount | number }}</div>
               &ngsp;
               <div [translate]="stats.createdOrderCount <= 1 ? 'order.statistics.created-order' : 'order.statistics.created-orders'"></div>
             </div>
           </div>
           <div class="mb-2 col-md-4 col-lg d-flex">
             <div class="border rounded bg-light text-center p-2 flex-grow-1">
-              <div class="key-number" [class.refreshed]="refreshed">{{ stats.finalizedOrderCount | number }}</div>
+              <div class="key-number" [class.refreshed]="refreshed()">{{ stats.finalizedOrderCount | number }}</div>
               &ngsp;
               <div
                 [translate]="stats.finalizedOrderCount <= 1 ? 'order.statistics.finalized-order' : 'order.statistics.finalized-orders'"
@@ -99,7 +99,7 @@
           </div>
           <div class="mb-2 col-md-4 col-lg d-flex">
             <div class="border rounded bg-light text-center p-2 flex-grow-1">
-              <div class="key-number" [class.refreshed]="refreshed">{{ stats.cancelledOrderCount | number }}</div>
+              <div class="key-number" [class.refreshed]="refreshed()">{{ stats.cancelledOrderCount | number }}</div>
               &ngsp;
               <div
                 [translate]="stats.cancelledOrderCount <= 1 ? 'order.statistics.cancelled-order' : 'order.statistics.cancelled-orders'"
@@ -108,7 +108,7 @@
           </div>
           <div class="mb-2 col-md-6 col-lg d-flex">
             <div class="border rounded bg-light text-center p-2 flex-grow-1">
-              <div class="key-number" [class.refreshed]="refreshed">{{ stats.distinctFinalizedOrderCustomerCount | number }}</div>
+              <div class="key-number" [class.refreshed]="refreshed()">{{ stats.distinctFinalizedOrderCustomerCount | number }}</div>
               &ngsp;
               <div
                 [translate]="
@@ -121,7 +121,7 @@
           </div>
           <div class="mb-2 col-md-6 col-lg d-flex">
             <div class="border rounded bg-light text-center p-2 flex-grow-1">
-              <div class="key-number" [class.refreshed]="refreshed">{{ stats.averageFinalizationDurationInDays | number: '.0-1' }}</div>
+              <div class="key-number" [class.refreshed]="refreshed()">{{ stats.averageFinalizationDurationInDays | number: '.0-1' }}</div>
               &ngsp;
               <div
                 [translate]="
@@ -137,7 +137,9 @@
         @if (stats.finalizedOrderCount) {
           <div class="row align-items-center">
             <div class="col-md mb-2 mb-md-2">
-              <rb-chart [configuration]="customerTypeDoughnut!" id="customer-types-chart" />
+              @if (customerTypeDoughnut(); as customerTypeDoughnut) {
+                <rb-chart [configuration]="customerTypeDoughnut" id="customer-types-chart" />
+              }
             </div>
             <div class="col-md">
               <table class="table table-sm">
@@ -176,7 +178,9 @@
         @if (stats.createdOrderCount) {
           <div class="row align-items-center">
             <div class="col-md mb-2 mb-md-2">
-              <rb-chart [configuration]="orderStatusDoughnut!" id="order-status-chart" />
+              @if (orderStatusDoughnut(); as orderStatusDoughnut) {
+                <rb-chart [configuration]="orderStatusDoughnut" id="order-status-chart" />
+              }
             </div>
             <div class="col-md">
               <table class="table table-sm">

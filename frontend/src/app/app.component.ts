@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { AuthenticationService } from './shared/authentication.service';
 import { ToastsComponent } from './rb-ngb/toasts/toasts.component';
 import { RouterOutlet } from '@angular/router';
@@ -10,7 +10,8 @@ import { TranslateModule } from '@ngx-translate/core';
   selector: 'rb-root',
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss',
-  imports: [TranslateModule, NavbarComponent, ValidationDefaultsComponent, RouterOutlet, ToastsComponent]
+  imports: [TranslateModule, NavbarComponent, ValidationDefaultsComponent, RouterOutlet, ToastsComponent],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AppComponent {
   constructor() {

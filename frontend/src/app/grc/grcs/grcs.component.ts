@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, Signal } from '@angular/core';
 import { Grc } from '../../shared/user.model';
 import { ConfirmationService } from '../../shared/confirmation.service';
 import { switchMap, tap } from 'rxjs/operators';
@@ -9,26 +9,35 @@ import { RouterLink } from '@angular/router';
 
 import { TranslateModule } from '@ngx-translate/core';
 import { FaIconComponent } from '@fortawesome/angular-fontawesome';
+import { startWith, Subject } from 'rxjs';
+import { toSignal } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'rb-grcs',
   templateUrl: './grcs.component.html',
   styleUrl: './grcs.component.scss',
-  imports: [TranslateModule, RouterLink, FaIconComponent]
+  imports: [TranslateModule, RouterLink, FaIconComponent],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class GrcsComponent {
   private grcService = inject(GrcService);
   private confirmationService = inject(ConfirmationService);
   private toastService = inject(ToastService);
 
-  grcs: Array<Grc> | null = null;
+  readonly refresh = new Subject<void>();
+  readonly grcs: Signal<Array<Grc> | undefined>;
 
-  grcIcon = faBuilding;
-  createGrcIcon = faPlus;
-  deleteGrcIcon = faTrash;
+  readonly grcIcon = faBuilding;
+  readonly createGrcIcon = faPlus;
+  readonly deleteGrcIcon = faTrash;
 
   constructor() {
-    this.grcService.list().subscribe(grcs => (this.grcs = grcs));
+    this.grcs = toSignal(
+      this.refresh.pipe(
+        startWith(undefined),
+        switchMap(() => this.grcService.list())
+      )
+    );
   }
 
   deleteGrc(grc: Grc) {
@@ -36,9 +45,8 @@ export class GrcsComponent {
       .confirm({ messageKey: 'grc.grcs.delete-confirmation' })
       .pipe(
         switchMap(() => this.grcService.delete(grc.id)),
-        tap(() => this.toastService.success('grc.grcs.deleted', { name: grc.name })),
-        switchMap(() => this.grcService.list())
+        tap(() => this.toastService.success('grc.grcs.deleted', { name: grc.name }))
       )
-      .subscribe(grcs => (this.grcs = grcs));
+      .subscribe(grcs => this.refresh.next());
   }
 }

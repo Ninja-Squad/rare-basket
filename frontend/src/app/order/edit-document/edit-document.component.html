@@ -30,7 +30,7 @@
           class="form-control from-control-sm"
           id="document-file"
           [accept]="fileAccept"
-          (change)="fileChanged()"
+          (change)="fileChanged(fileInput.files)"
           [disabled]="uploadProgress() !== null"
           [class.is-invalid]="formDirective.submitted && hasFileError()"
           [class.highlighted]="highlightFileInput()"
@@ -41,7 +41,7 @@
           (dragover)="$event.preventDefault()"
         />
         <div class="invalid-feedback" [class.d-none]="!formDirective.submitted">
-          @if (!selectedFile) {
+          @if (!selectedFile()) {
             <div translate="common.errors.required" [translateParams]="{ label: 'order.edit-document.file-error-label' | translate }"></div>
           }
           @if (!selectedFileValid()) {

@@ -12,7 +12,6 @@ import { DatePipe, DecimalPipe, NgPlural, NgPluralCase } from '@angular/common';
   selector: 'rb-orders',
   templateUrl: './orders.component.html',
   styleUrl: './orders.component.scss',
-  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     RouterLink,
     NgPlural,
@@ -23,7 +22,8 @@ import { DatePipe, DecimalPipe, NgPlural, NgPluralCase } from '@angular/common';
     DatePipe,
     CustomerTypeEnumPipe,
     OrderStatusEnumPipe
-  ]
+  ],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class OrdersComponent {
   readonly orders = input.required<Page<Order>>();
