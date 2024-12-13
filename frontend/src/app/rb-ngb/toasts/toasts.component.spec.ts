@@ -38,12 +38,14 @@ describe('ToastsComponent', () => {
     expect(tester.toasts.length).toBe(0);
 
     toastsSubject.next({ message: 'foo', type: 'error' });
+    tick(1);
     tester.detectChanges();
     expect(tester.toasts.length).toBe(1);
     expect(tester.testElement).toContainText('foo');
 
     tick(2500);
     toastsSubject.next({ message: 'bar', type: 'success' });
+    tick(1);
     tester.detectChanges();
     expect(tester.toasts.length).toBe(2);
     expect(tester.testElement).toContainText('foo');

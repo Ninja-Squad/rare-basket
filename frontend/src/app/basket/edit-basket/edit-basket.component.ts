@@ -144,9 +144,11 @@ export class EditBasketComponent implements OnInit {
   }
 
   save() {
-    if (this.form.invalid) {
+    if (!this.form.valid) {
       this.saveForbidden.set(true);
-      timer(350).subscribe(() => this.saveForbidden.set(false));
+      timer(350)
+        .pipe(takeUntilDestroyed(this.destroyRef))
+        .subscribe(() => this.saveForbidden.set(false));
       return;
     }
 

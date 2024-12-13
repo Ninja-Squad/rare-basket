@@ -4,6 +4,7 @@ import { faCheckCircle, faExclamationCircle } from '@fortawesome/free-solid-svg-
 import { FaIconComponent } from '@fortawesome/angular-fontawesome';
 import { NgbToast } from '@ng-bootstrap/ng-bootstrap';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { delay } from 'rxjs';
 
 @Component({
   selector: 'rb-toasts',
@@ -20,8 +21,14 @@ export class ToastsComponent {
   constructor() {
     this.toastService
       .toasts()
-      .pipe(takeUntilDestroyed())
-      .subscribe(toast => this.toasts.update(toasts => [...toasts, toast]));
+      .pipe(
+        // add a delay because otherwise errors caused by toSignal aren't displayed
+        delay(1),
+        takeUntilDestroyed()
+      )
+      .subscribe(toast => {
+        this.toasts.update(toasts => [...toasts, toast]);
+      });
   }
 
   remove(toast: Toast) {
