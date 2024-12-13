@@ -1,6 +1,6 @@
 <h1 translate="order.create-order.title"></h1>
 
-@if (accessionHolders$ | async; as accessionHolders) {
+@if (accessionHolders(); as accessionHolders) {
   <div class="content mb-2">
     <form [formGroup]="form" (ngSubmit)="save()">
       @if (accessionHolders.length > 1) {

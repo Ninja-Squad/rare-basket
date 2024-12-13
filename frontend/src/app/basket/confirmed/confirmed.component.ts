@@ -1,4 +1,4 @@
-import { Component, input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 import { Basket } from '../basket.model';
 import { faCheckCircle } from '@fortawesome/free-solid-svg-icons';
 import { BasketContentComponent } from '../basket-content/basket-content.component';
@@ -12,7 +12,8 @@ import { FaIconComponent } from '@fortawesome/angular-fontawesome';
   selector: 'rb-confirmed',
   templateUrl: './confirmed.component.html',
   styleUrl: './confirmed.component.scss',
-  imports: [FaIconComponent, TranslateModule, BasketContentComponent]
+  imports: [FaIconComponent, TranslateModule, BasketContentComponent],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ConfirmedComponent {
   readonly basket = input.required<Basket>();

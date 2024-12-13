@@ -1,26 +1,31 @@
-import { Component, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { Toast, ToastService } from '../../shared/toast.service';
 import { faCheckCircle, faExclamationCircle } from '@fortawesome/free-solid-svg-icons';
 import { FaIconComponent } from '@fortawesome/angular-fontawesome';
 import { NgbToast } from '@ng-bootstrap/ng-bootstrap';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'rb-toasts',
   templateUrl: './toasts.component.html',
   styleUrl: './toasts.component.scss',
-  imports: [NgbToast, FaIconComponent]
+  imports: [NgbToast, FaIconComponent],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ToastsComponent {
   private toastService = inject(ToastService);
 
-  toasts: Array<Toast> = [];
+  toasts = signal<Array<Toast>>([]);
 
   constructor() {
-    this.toastService.toasts().subscribe(toast => this.toasts.push(toast));
+    this.toastService
+      .toasts()
+      .pipe(takeUntilDestroyed())
+      .subscribe(toast => this.toasts.update(toasts => [...toasts, toast]));
   }
 
   remove(toast: Toast) {
-    this.toasts.splice(this.toasts.indexOf(toast), 1);
+    this.toasts.update(toasts => toasts.filter(t => t !== toast));
   }
 
   icon(toast: Toast) {

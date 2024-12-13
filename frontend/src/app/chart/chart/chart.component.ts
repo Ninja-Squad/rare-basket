@@ -1,10 +1,11 @@
-import { Component, ElementRef, NgZone, inject, input, viewChild, afterRenderEffect } from '@angular/core';
+import { Component, ElementRef, NgZone, inject, input, viewChild, afterRenderEffect, ChangeDetectionStrategy } from '@angular/core';
 import { Chart, ChartConfiguration } from 'chart.js';
 
 @Component({
   selector: 'rb-chart',
   templateUrl: './chart.component.html',
-  styleUrl: './chart.component.scss'
+  styleUrl: './chart.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ChartComponent {
   private zone = inject(NgZone);

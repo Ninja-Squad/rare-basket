@@ -2,7 +2,7 @@
 
 <div class="content mt-2">
   <ul class="nav-tabs mb-4" rbRouterNav #nav="rbRouterNav">
-    @if (hasPermission('ORDER_MANAGEMENT') | async) {
+    @if (hasPermission('ORDER_MANAGEMENT')) {
       <li class="nav-item">
         <a routerLink="in-progress" routerLinkActive="active" rbRouterNavLink translate="order.orders-container.in-progress"></a>
       </li>
@@ -11,7 +11,7 @@
         <a routerLink="done" routerLinkActive="active" rbRouterNavLink translate="order.orders-container.done"></a>
       </li>
     }
-    @if (hasPermission('ORDER_VISUALIZATION') | async) {
+    @if (hasPermission('ORDER_VISUALIZATION')) {
       <li class="nav-item">
         <a routerLink="stats" routerLinkActive="active" rbRouterNavLink translate="order.orders-container.statistics"></a>
       </li>

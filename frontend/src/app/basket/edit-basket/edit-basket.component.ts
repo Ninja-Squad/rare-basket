@@ -1,4 +1,16 @@
-import { Component, computed, DestroyRef, inject, input, linkedSignal, LOCALE_ID, OnInit, output, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  DestroyRef,
+  inject,
+  input,
+  linkedSignal,
+  LOCALE_ID,
+  OnInit,
+  output,
+  signal
+} from '@angular/core';
 import {
   AccessionHolderBasket,
   ALL_CUSTOMER_TYPES,
@@ -38,23 +50,24 @@ import { CustomerTypeEnumPipe } from '../../shared/customer-type-enum.pipe';
     DecimalPipe,
     FormControlValidationDirective,
     CustomerTypeEnumPipe
-  ]
+  ],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class EditBasketComponent implements OnInit {
   private destroyRef = inject(DestroyRef);
   private confirmationService = inject(ConfirmationService);
 
   readonly basket = input.required<Basket>();
-  accessionHolderBaskets = linkedSignal<Array<AccessionHolderBasket>>(() => this.basket().accessionHolderBaskets);
+  readonly accessionHolderBaskets = linkedSignal<Array<AccessionHolderBasket>>(() => this.basket().accessionHolderBaskets);
 
   readonly basketSaved = output<BasketCommand>();
 
-  gdprDetailsUrl = environment.gdprDetailsUrl;
-  customerTypes = ALL_CUSTOMER_TYPES;
+  readonly gdprDetailsUrl = environment.gdprDetailsUrl;
+  readonly customerTypes = ALL_CUSTOMER_TYPES;
 
   private fb = inject(NonNullableFormBuilder);
   private language: Language = inject(LOCALE_ID) as Language;
-  form = this.fb.group({
+  readonly form = this.fb.group({
     customer: this.fb.group({
       name: [null as string | null, Validators.required],
       organization: [null as string | null],
@@ -67,10 +80,10 @@ export class EditBasketComponent implements OnInit {
     rationale: null as string | null,
     gdprAgreement: [false, Validators.requiredTrue]
   });
-  useDeliveryAddressControl = this.fb.control(false);
+  readonly useDeliveryAddressControl = this.fb.control(false);
 
-  deleteIcon = faTrash;
-  saveIcon = faCheck;
+  readonly deleteIcon = faTrash;
+  readonly saveIcon = faCheck;
 
   quantityDisplayed = computed(() =>
     this.accessionHolderBaskets().some(accessionHolderBasket => accessionHolderBasket.items.some(item => !!item.quantity))

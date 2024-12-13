@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, signal, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, signal, inject, Signal } from '@angular/core';
 import { AuthenticationService } from '../shared/authentication.service';
 import {
   faBuilding,
@@ -16,8 +16,8 @@ import { FaIconComponent } from '@fortawesome/angular-fontawesome';
 import { RouterLink } from '@angular/router';
 
 import { NgbCollapse, NgbDropdown, NgbDropdownItem, NgbDropdownMenu, NgbDropdownToggle } from '@ng-bootstrap/ng-bootstrap';
-import { map, Observable, startWith } from 'rxjs';
-import { AsyncPipe } from '@angular/common';
+import { map } from 'rxjs';
+import { toSignal } from '@angular/core/rxjs-interop';
 
 type ViewModel = { status: 'unknown' | 'absent' } | { status: 'present'; user: User };
 
@@ -25,38 +25,32 @@ type ViewModel = { status: 'unknown' | 'absent' } | { status: 'present'; user: U
   selector: 'rb-navbar',
   templateUrl: './navbar.component.html',
   styleUrl: './navbar.component.scss',
-  imports: [
-    RouterLink,
-    FaIconComponent,
-    TranslateModule,
-    NgbDropdown,
-    NgbDropdownToggle,
-    NgbDropdownMenu,
-    NgbDropdownItem,
-    AsyncPipe,
-    NgbCollapse
-  ],
+  imports: [RouterLink, FaIconComponent, TranslateModule, NgbDropdown, NgbDropdownToggle, NgbDropdownMenu, NgbDropdownItem, NgbCollapse],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class NavbarComponent {
   private authenticationService = inject(AuthenticationService);
 
-  collapsed = signal(true);
-  vm$: Observable<ViewModel>;
+  readonly collapsed = signal(true);
+  readonly vm: Signal<ViewModel>;
 
-  ordersIcon = faShoppingBag;
-  administrationIcon = faShieldAlt;
-  usersIcon = faUsersCog;
-  userIcon = faUser;
-  grcIcon = faBuilding;
-  accessionHolderIcon = faStoreAlt;
-  loginIcon = faSignInAlt;
-  logoutIcon = faPowerOff;
+  readonly ordersIcon = faShoppingBag;
+  readonly administrationIcon = faShieldAlt;
+  readonly usersIcon = faUsersCog;
+  readonly userIcon = faUser;
+  readonly grcIcon = faBuilding;
+  readonly accessionHolderIcon = faStoreAlt;
+  readonly loginIcon = faSignInAlt;
+  readonly logoutIcon = faPowerOff;
 
   constructor() {
-    this.vm$ = this.authenticationService.getCurrentUser().pipe(
-      map((user): ViewModel => (user ? { status: 'present', user } : { status: 'absent' })),
-      startWith({ status: 'unknown' as const })
+    this.vm = toSignal(
+      this.authenticationService
+        .getCurrentUser()
+        .pipe(map((user): ViewModel => (user ? { status: 'present', user } : { status: 'absent' }))),
+      {
+        initialValue: { status: 'unknown' as const }
+      }
     );
   }
 
@@ -68,7 +62,8 @@ export class NavbarComponent {
     this.authenticationService.logout();
   }
 
-  hasPermission(vm: ViewModel, permission: Permission): boolean {
+  hasPermission(permission: Permission): boolean {
+    const vm = this.vm();
     return vm.status === 'present' && vm.user.permissions.includes(permission);
   }
 }

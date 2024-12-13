@@ -1,4 +1,4 @@
-@if (order) {
+@if (order(); as order) {
   <div>
     <h1 class="d-flex align-items-center">
       <div
@@ -8,7 +8,7 @@
         [class.cancelled]="order.status === 'CANCELLED'"
       ></div>
       <div>
-        <span class="badge bg-secondary ms-2" [class.status-changed]="statusChanged">{{ order.status | orderStatusEnum }}</span>
+        <span class="badge bg-secondary ms-2" [class.status-changed]="statusChanged()">{{ order.status | orderStatusEnum }}</span>
       </div>
     </h1>
 
@@ -21,11 +21,11 @@
       <div class="row">
         <div class="col-md-5">
           <h2 translate="order.order.customer-information"></h2>
-          @if (editingCustomer) {
+          @if (editingCustomer()) {
             <rb-edit-customer-information
               [customerInformation]="order.basket"
               (saved)="customerSaved($event)"
-              (cancelled)="editingCustomer = false"
+              (cancelled)="editingCustomer.set(false)"
             />
           } @else {
             <div>
@@ -37,7 +37,7 @@
                     type="button"
                     class="btn btn-sm btn-outline-primary"
                     id="edit-customer-button"
-                    [disabled]="operationInProgress"
+                    [disabled]="operationInProgress()"
                     (click)="editCustomer()"
                   >
                     <fa-icon [icon]="editIcon" class="me-1" />
@@ -50,8 +50,8 @@
         </div>
         <div class="col-md-7">
           <h2 translate="order.order.ordered-accessions"></h2>
-          @if (editing) {
-            <rb-edit-order [order]="order" (saved)="saved($event)" (cancelled)="editing = false" />
+          @if (editing()) {
+            <rb-edit-order [order]="order" (saved)="saved($event)" (cancelled)="editing.set(false)" />
           } @else {
             <div>
               <div class="scrolling-accessions mb-2">
@@ -78,7 +78,7 @@
                     type="button"
                     class="btn btn-sm btn-outline-primary"
                     id="edit-order-button"
-                    [disabled]="operationInProgress"
+                    [disabled]="operationInProgress()"
                     (click)="edit()"
                   >
                     <fa-icon [icon]="editIcon" class="me-1" />
@@ -141,7 +141,7 @@
                 <button
                   type="button"
                   class="btn btn-sm btn-outline-danger delete-document-button"
-                  [disabled]="operationInProgress"
+                  [disabled]="operationInProgress()"
                   (click)="deleteDocument(document)"
                 >
                   <fa-icon [icon]="deleteDocumentIcon" />
@@ -156,12 +156,12 @@
       }
 
       <div>
-        @if (order.status === 'DRAFT' && !addingDocument) {
+        @if (order.status === 'DRAFT' && !addingDocument()) {
           <button
-            (click)="addingDocument = true"
+            (click)="addingDocument.set(true)"
             type="button"
             class="btn btn-sm btn-outline-primary"
-            [disabled]="operationInProgress"
+            [disabled]="operationInProgress()"
             id="add-document-button"
           >
             <fa-icon [icon]="addDocumentIcon" class="me-1" />
@@ -170,14 +170,14 @@
         }
       </div>
 
-      @if (addingDocument) {
+      @if (addingDocument()) {
         <div class="border rounded p-3">
           <h3 translate="order.order.add-document-title"></h3>
           <rb-edit-document
             (saved)="createDocument($event)"
-            (cancelled)="addingDocument = false"
+            (cancelled)="addingDocument.set(false)"
             [order]="order"
-            [uploadProgress]="uploadProgress"
+            [uploadProgress]="uploadProgress()"
           />
         </div>
       }
@@ -189,7 +189,7 @@
           @if (order.status === 'DRAFT') {
             <button
               (click)="finalizeOrder()"
-              [disabled]="operationInProgress"
+              [disabled]="operationInProgress()"
               type="button"
               class="btn btn-primary btn-sm-block my-1 me-md-2"
               id="finalize-order-button"
@@ -200,7 +200,7 @@
 
             <button
               (click)="cancelOrder()"
-              [disabled]="operationInProgress"
+              [disabled]="operationInProgress()"
               type="button"
               class="btn btn-danger btn-sm-block"
               id="cancel-order-button"
@@ -211,7 +211,7 @@
           } @else if (order.status === 'FINALIZED') {
             <button
               class="btn btn-primary btn-sm-block my-1 me-md-2"
-              [disabled]="downloadingDeliveryForm"
+              [disabled]="downloadingDeliveryForm()"
               (click)="downloadDeliveryForm()"
               id="delivery-form-button"
             >
@@ -223,7 +223,7 @@
               <button
                 class="btn btn-primary btn-sm-block"
                 (click)="downloadCompleteDeliveryForm()"
-                [disabled]="downloadingDeliveryForm"
+                [disabled]="downloadingDeliveryForm()"
                 id="complete-delivery-form-button"
               >
                 <fa-icon [icon]="completeDeliveryFormIcon" class="me-1" />

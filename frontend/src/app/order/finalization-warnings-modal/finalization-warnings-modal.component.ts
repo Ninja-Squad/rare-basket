@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { faExclamationTriangle } from '@fortawesome/free-solid-svg-icons';
 
@@ -12,12 +12,12 @@ import { TranslateModule } from '@ngx-translate/core';
   imports: [TranslateModule, FaIconComponent]
 })
 export class FinalizationWarningsModalComponent {
-  activeModal = inject(NgbActiveModal);
+  readonly activeModal = inject(NgbActiveModal);
 
-  messages: Array<string> = [];
-  warningIcon = faExclamationTriangle;
+  readonly messages = signal<Array<string>>([]);
+  readonly warningIcon = faExclamationTriangle;
 
   init(messages: Array<string>) {
-    this.messages = messages;
+    this.messages.set(messages);
   }
 }

@@ -1,6 +1,6 @@
 <h1 translate="grc.grcs.title"></h1>
 
-@if (grcs) {
+@if (grcs(); as grcs) {
   <div>
     <div class="content mt-2">
       @for (grc of grcs; track grc.id) {

@@ -1,4 +1,4 @@
-import { Component, input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 import { Customer } from '../../basket/basket.model';
 import {
   faAddressCard,
@@ -20,7 +20,8 @@ import { FaIconComponent } from '@fortawesome/angular-fontawesome';
   selector: 'rb-customer-information',
   templateUrl: './customer-information.component.html',
   styleUrl: './customer-information.component.scss',
-  imports: [FaIconComponent, TranslateModule, CustomerTypeEnumPipe, LanguageEnumPipe]
+  imports: [FaIconComponent, TranslateModule, CustomerTypeEnumPipe, LanguageEnumPipe],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class CustomerInformationComponent {
   readonly customer = input.required<Customer>();

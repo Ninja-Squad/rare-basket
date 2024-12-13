@@ -1,12 +1,10 @@
-import { Component, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { AuthenticationService } from '../../shared/authentication.service';
 import { Permission } from '../../shared/user.model';
-import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
 import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
-import { AsyncPipe } from '@angular/common';
 import { RouterNavDirective, RouterNavLinkDirective, RouterNavPanelDirective } from '../../rb-ngb/router-nav.directive';
 import { TranslateModule } from '@ngx-translate/core';
+import { toSignal } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'rb-orders-container',
@@ -19,14 +17,15 @@ import { TranslateModule } from '@ngx-translate/core';
     RouterLinkActive,
     RouterNavLinkDirective,
     RouterNavPanelDirective,
-    RouterOutlet,
-    AsyncPipe
-  ]
+    RouterOutlet
+  ],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class OrdersContainerComponent {
-  private authenticationService = inject(AuthenticationService);
+  private user = toSignal(inject(AuthenticationService).getCurrentUser());
 
-  hasPermission(permission: Permission): Observable<boolean> {
-    return this.authenticationService.getCurrentUser().pipe(map(user => !!user && user.permissions.includes(permission)));
+  hasPermission(permission: Permission): boolean {
+    const user = this.user();
+    return !!user && user.permissions.includes(permission);
   }
 }

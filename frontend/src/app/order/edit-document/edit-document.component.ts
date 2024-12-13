@@ -1,4 +1,16 @@
-import { Component, ElementRef, inject, ViewChild, output, input, effect, computed, signal } from '@angular/core';
+import {
+  Component,
+  ElementRef,
+  inject,
+  output,
+  input,
+  effect,
+  computed,
+  signal,
+  ChangeDetectionStrategy,
+  viewChild,
+  afterNextRender
+} from '@angular/core';
 import { NonNullableFormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import {
   ALL_DOCUMENT_TYPES,
@@ -33,7 +45,8 @@ const maxFileSize = 10 * 1024 * 1024; // 10 MB
     FaIconComponent,
     DecimalPipe,
     DocumentTypeEnumPipe
-  ]
+  ],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class EditDocumentComponent {
   form = inject(NonNullableFormBuilder).group({
@@ -42,7 +55,7 @@ export class EditDocumentComponent {
     onDeliveryForm: false
   });
 
-  @ViewChild('fileInput') fileInput!: ElementRef<HTMLInputElement>;
+  fileInput = viewChild.required<ElementRef<HTMLInputElement>>('fileInput');
 
   readonly order = input.required<DetailedOrder>();
   readonly uploadProgress = input.required<number | null>();
@@ -52,8 +65,9 @@ export class EditDocumentComponent {
   readonly maxFileSizeInMB = maxFileSize / (1024 * 1024);
   readonly fileAccept = validExtensions.join(',');
   readonly acceptedExtensions = validExtensions.join(', ');
+  readonly selectedFile = signal<File | null>(null);
 
-  highlightFileInput = signal(false);
+  readonly highlightFileInput = signal(false);
   readonly documentTypes = computed(() =>
     ALL_DOCUMENT_TYPES.filter(
       documentType => !isDocumentTypeUnique(documentType) || !this.order().documents.some(doc => doc.type === documentType)
@@ -81,6 +95,10 @@ export class EditDocumentComponent {
         this.form.enable();
       }
     });
+
+    afterNextRender(() => {
+      this.fileInput().nativeElement.files?.item(0);
+    });
   }
 
   fileDropped(event: DragEvent) {
@@ -88,11 +106,12 @@ export class EditDocumentComponent {
     if (this.uploadProgress()) {
       return;
     }
-    this.fileInput.nativeElement.files = event.dataTransfer!.files;
+    this.fileInput().nativeElement.files = event.dataTransfer!.files;
+    this.fileChanged(this.fileInput().nativeElement.files);
   }
 
-  fileChanged() {
-    // do nothing: the event is just there to trick Angular into detecting changes
+  fileChanged(files: FileList | null) {
+    this.selectedFile.set(files?.item(0) ?? null);
   }
 
   hasFileError() {
@@ -106,7 +125,7 @@ export class EditDocumentComponent {
 
     const document = this.form.value;
     const command: DocumentCommand = {
-      file: this.selectedFile!,
+      file: this.selectedFile()!,
       document: {
         type: document.type!,
         description: document.description!,
@@ -121,23 +140,21 @@ export class EditDocumentComponent {
   }
 
   selectedFileValid() {
-    if (!this.selectedFile) {
+    const selectedFile = this.selectedFile();
+    if (!selectedFile) {
       return true;
     }
 
-    const lowercaseName = this.selectedFile.name.toLowerCase();
+    const lowercaseName = selectedFile.name.toLowerCase();
     return validExtensions.some(extension => lowercaseName.endsWith(extension));
   }
 
   selectedFileSizeValid() {
-    if (!this.selectedFile) {
+    const selectedFile = this.selectedFile();
+    if (!selectedFile) {
       return true;
     }
 
-    return this.selectedFile.size <= maxFileSize;
-  }
-
-  get selectedFile(): File | null {
-    return this.fileInput?.nativeElement?.files?.item(0) ?? null;
+    return selectedFile.size <= maxFileSize;
   }
 }

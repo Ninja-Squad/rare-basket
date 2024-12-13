@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, Signal } from '@angular/core';
 import { AccessionHolder } from '../../shared/user.model';
 import { faPlus, faStoreAlt, faTrash } from '@fortawesome/free-solid-svg-icons';
 import { AccessionHolderService } from '../../shared/accession-holder.service';
@@ -9,26 +9,35 @@ import { RouterLink } from '@angular/router';
 import { FaIconComponent } from '@fortawesome/angular-fontawesome';
 
 import { TranslateModule } from '@ngx-translate/core';
+import { startWith, Subject } from 'rxjs';
+import { toSignal } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'rb-accession-holders',
   templateUrl: './accession-holders.component.html',
   styleUrl: './accession-holders.component.scss',
-  imports: [TranslateModule, FaIconComponent, RouterLink]
+  imports: [TranslateModule, FaIconComponent, RouterLink],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AccessionHoldersComponent {
   private accessionHolderService = inject(AccessionHolderService);
   private confirmationService = inject(ConfirmationService);
   private toastService = inject(ToastService);
 
-  accessionHolders: Array<AccessionHolder> | null = null;
+  readonly accessionHolders: Signal<Array<AccessionHolder> | undefined>;
+  readonly refresh = new Subject<void>();
 
-  accessionHolderIcon = faStoreAlt;
-  createAccessionHolderIcon = faPlus;
-  deleteAccessionHolderIcon = faTrash;
+  readonly accessionHolderIcon = faStoreAlt;
+  readonly createAccessionHolderIcon = faPlus;
+  readonly deleteAccessionHolderIcon = faTrash;
 
   constructor() {
-    this.accessionHolderService.list().subscribe(accessionHolders => (this.accessionHolders = accessionHolders));
+    this.accessionHolders = toSignal(
+      this.refresh.pipe(
+        startWith(undefined),
+        switchMap(() => this.accessionHolderService.list())
+      )
+    );
   }
 
   deleteAccessionHolder(accessionHolder: AccessionHolder) {
@@ -36,9 +45,8 @@ export class AccessionHoldersComponent {
       .confirm({ messageKey: 'accession-holder.accession-holders.delete-confirmation' })
       .pipe(
         switchMap(() => this.accessionHolderService.delete(accessionHolder.id)),
-        tap(() => this.toastService.success('accession-holder.accession-holders.deleted', { name: accessionHolder.name })),
-        switchMap(() => this.accessionHolderService.list())
+        tap(() => this.toastService.success('accession-holder.accession-holders.deleted', { name: accessionHolder.name }))
       )
-      .subscribe(accessionHolders => (this.accessionHolders = accessionHolders));
+      .subscribe(() => this.refresh.next());
   }
 }

@@ -1,4 +1,4 @@
-@if (basket) {
+@if (basket(); as basket) {
   <div>
     <h1 translate="basket.basket.title" [translateParams]="{ reference: basket.reference }"></h1>
     @switch (basket.status) {

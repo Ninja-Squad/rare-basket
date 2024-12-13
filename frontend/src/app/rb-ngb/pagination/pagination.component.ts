@@ -1,4 +1,4 @@
-import { Component, inject, output, input } from '@angular/core';
+import { Component, inject, output, input, ChangeDetectionStrategy } from '@angular/core';
 import { Router } from '@angular/router';
 import { Page } from '../../shared/page.model';
 import { NgbPagination } from '@ng-bootstrap/ng-bootstrap';
@@ -7,7 +7,8 @@ import { NgbPagination } from '@ng-bootstrap/ng-bootstrap';
   selector: 'rb-pagination',
   templateUrl: './pagination.component.html',
   styleUrl: './pagination.component.scss',
-  imports: [NgbPagination]
+  imports: [NgbPagination],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class PaginationComponent {
   readonly page = input.required<Page<unknown>>();

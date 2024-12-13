@@ -1,6 +1,6 @@
 <h1 translate="accession-holder.accession-holders.title"></h1>
 
-@if (accessionHolders) {
+@if (accessionHolders(); as accessionHolders) {
   <div>
     <div class="content mt-2">
       @for (accessionHolder of accessionHolders; track accessionHolder.id) {

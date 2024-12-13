@@ -1,6 +1,6 @@
-@if (mode) {
+@if (vm(); as vm) {
   <div>
-    <h1 [translate]="'user.edit.title.' + mode" [translateParams]="{ user: editedUser }"></h1>
+    <h1 [translate]="'user.edit.title.' + vm.mode" [translateParams]="{ user: vm.editedUser }"></h1>
 
     <div class="content mt-2">
       <form [formGroup]="form" (ngSubmit)="save()">
@@ -25,7 +25,7 @@
             <div class="mt-1 mb-3 ms-4">
               <h3 class="fs-6" translate="user.edit.accession-holders"></h3>
               <div formGroupName="accessionHolders" class="border rounded py-1 px-2 accession-holders">
-                @for (group of grcOptionGroups; track group) {
+                @for (group of grcOptionGroups(); track group) {
                   <div>
                     <h4 class="fs-6">{{ group.name }}</h4>
                     <div class="ms-3">
@@ -84,7 +84,7 @@
                 <div class="mt-1 mb-3">
                   <h2 class="fs-6" translate="user.edit.visualization-grcs"></h2>
                   <div formGroupName="visualizationGrcs" class="border rounded py-1 px-2 grcs">
-                    @for (grc of grcs; track grc) {
+                    @for (grc of vm.grcs; track grc) {
                       <div class="form-check">
                         <input [formControlName]="grc.id.toString()" class="form-check-input" type="checkbox" [id]="'grc-' + grc.id" />
                         <label class="form-check-label" [for]="'grc-' + grc.id">

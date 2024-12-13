@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, Signal } from '@angular/core';
 import { UserService } from '../user.service';
 import { User } from '../../shared/user.model';
 import { Page } from '../../shared/page.model';
@@ -11,12 +11,14 @@ import { merge, Subject } from 'rxjs';
 import { ToastService } from '../../shared/toast.service';
 import { PaginationComponent } from '../../rb-ngb/pagination/pagination.component';
 import { FaIconComponent } from '@fortawesome/angular-fontawesome';
+import { toSignal } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'rb-users',
   templateUrl: './users.component.html',
   styleUrl: './users.component.scss',
-  imports: [TranslateModule, FaIconComponent, RouterLink, PaginationComponent]
+  imports: [TranslateModule, FaIconComponent, RouterLink, PaginationComponent],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class UsersComponent {
   private userService = inject(UserService);
@@ -24,20 +26,18 @@ export class UsersComponent {
   private confirmationService = inject(ConfirmationService);
   private toastService = inject(ToastService);
 
-  users: Page<User> | null = null;
+  readonly users: Signal<Page<User> | undefined>;
 
-  userIcon = faUser;
-  createUserIcon = faPlus;
-  deleteUserIcon = faTrash;
+  readonly userIcon = faUser;
+  readonly createUserIcon = faPlus;
+  readonly deleteUserIcon = faTrash;
 
   private reloadPage$ = new Subject<number>();
 
   constructor() {
     const route = inject(ActivatedRoute);
     const navigationPage$ = route.queryParamMap.pipe(map(params => +(params.get('page') || 0)));
-    merge(navigationPage$, this.reloadPage$)
-      .pipe(switchMap(page => this.userService.list(page)))
-      .subscribe(users => (this.users = users));
+    this.users = toSignal(merge(navigationPage$, this.reloadPage$).pipe(switchMap(page => this.userService.list(page))));
   }
 
   permissions(user: User) {
@@ -48,12 +48,13 @@ export class UsersComponent {
   }
 
   deleteUser(user: User) {
+    const page = this.users()!;
     this.confirmationService
       .confirm({ messageKey: 'user.users.delete-confirmation' })
       .pipe(
         switchMap(() => this.userService.delete(user.id)),
         tap(() => this.toastService.success('user.users.deleted', { name: user.name }))
       )
-      .subscribe(() => this.reloadPage$.next(this.users!.number));
+      .subscribe(() => this.reloadPage$.next(page.number));
   }
 }

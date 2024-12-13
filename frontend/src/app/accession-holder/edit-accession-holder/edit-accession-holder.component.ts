@@ -1,21 +1,30 @@
-import { Component, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, Signal } from '@angular/core';
 import { AccessionHolder, AccessionHolderCommand, Grc } from '../../shared/user.model';
 import { NonNullableFormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { AccessionHolderService } from '../../shared/accession-holder.service';
 import { GrcService } from '../../shared/grc.service';
-import { Observable } from 'rxjs';
+import { combineLatest, map, Observable, of } from 'rxjs';
 import { ToastService } from '../../shared/toast.service';
 
 import { ValidationErrorsComponent } from 'ngx-valdemort';
 import { FormControlValidationDirective } from '../../shared/form-control-validation.directive';
 import { TranslateModule } from '@ngx-translate/core';
+import { toSignal } from '@angular/core/rxjs-interop';
+import { tap } from 'rxjs/operators';
+
+interface ViewModel {
+  mode: 'create' | 'update';
+  editedAccessionHolder: AccessionHolder | null;
+  grcs: Array<Grc>;
+}
 
 @Component({
   selector: 'rb-edit-accession-holder',
   templateUrl: './edit-accession-holder.component.html',
   styleUrl: './edit-accession-holder.component.scss',
-  imports: [TranslateModule, ReactiveFormsModule, FormControlValidationDirective, ValidationErrorsComponent, RouterLink]
+  imports: [TranslateModule, ReactiveFormsModule, FormControlValidationDirective, ValidationErrorsComponent, RouterLink],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class EditAccessionHolderComponent {
   private route = inject(ActivatedRoute);
@@ -23,36 +32,44 @@ export class EditAccessionHolderComponent {
   private router = inject(Router);
   private toastService = inject(ToastService);
 
-  mode: 'create' | 'update' = 'create';
-  editedAccessionHolder: AccessionHolder | null = null;
+  vm: Signal<ViewModel | undefined>;
   form = inject(NonNullableFormBuilder).group({
     name: ['', Validators.required],
     email: ['', [Validators.required, Validators.email]],
     phone: ['', Validators.required],
     grcId: [null as number | null, Validators.required]
   });
-  grcs: Array<Grc> | null = null;
 
   constructor() {
-    const grcService = inject(GrcService);
-    grcService.list().subscribe(grcs => (this.grcs = grcs));
     const accessionHolderId = this.route.snapshot.paramMap.get('accessionHolderId');
-    if (accessionHolderId) {
-      this.mode = 'update';
-      this.accessionHolderService.get(+accessionHolderId).subscribe(accessionHolder => {
-        this.editedAccessionHolder = accessionHolder;
-        this.form.setValue({
-          name: accessionHolder.name,
-          email: accessionHolder.email,
-          phone: accessionHolder.phone,
-          grcId: accessionHolder.grc.id
-        });
-      });
-    }
+    const grcService = inject(GrcService);
+
+    this.vm = toSignal(
+      combineLatest({
+        grcs: grcService.list(),
+        editedAccessionHolder: accessionHolderId ? this.accessionHolderService.get(parseInt(accessionHolderId)) : of(null)
+      }).pipe(
+        map(
+          ({ grcs, editedAccessionHolder }): ViewModel => ({
+            grcs,
+            editedAccessionHolder,
+            mode: editedAccessionHolder ? 'update' : 'create'
+          })
+        ),
+        tap(vm => {
+          this.form.setValue({
+            name: vm.editedAccessionHolder?.name ?? '',
+            email: vm.editedAccessionHolder?.email ?? '',
+            phone: vm.editedAccessionHolder?.phone ?? '',
+            grcId: vm.editedAccessionHolder?.grc.id ?? null
+          });
+        })
+      )
+    );
   }
 
   save() {
-    if (this.form.invalid) {
+    if (!this.form.valid) {
       return;
     }
 
@@ -64,16 +81,17 @@ export class EditAccessionHolderComponent {
       grcId: formValue.grcId!
     };
 
+    const vm = this.vm()!;
     let obs: Observable<AccessionHolder | void>;
-    if (this.mode === 'update') {
-      obs = this.accessionHolderService.update(this.editedAccessionHolder!.id, command);
+    if (vm.mode === 'update') {
+      obs = this.accessionHolderService.update(vm.editedAccessionHolder!.id, command);
     } else {
       obs = this.accessionHolderService.create(command);
     }
 
     obs.subscribe(() => {
       this.router.navigate(['/accession-holders']);
-      this.toastService.success(`accession-holder.edit.success.${this.mode}`, { name: command.name });
+      this.toastService.success(`accession-holder.edit.success.${vm.mode}`, { name: command.name });
     });
   }
 }

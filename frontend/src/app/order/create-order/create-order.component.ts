@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, Signal } from '@angular/core';
 import { OrderCreationCommand } from '../order.model';
 import { OrderService } from '../order.service';
 import { Router } from '@angular/router';
@@ -12,11 +12,10 @@ import { FormControlValidationDirective } from '../../shared/form-control-valida
 import { LanguageEnumPipe } from '../../shared/language-enum.pipe';
 import { ValidationErrorsComponent } from 'ngx-valdemort';
 import { NgbCollapse } from '@ng-bootstrap/ng-bootstrap';
-import { AsyncPipe } from '@angular/common';
 import { AuthenticationService } from '../../shared/authentication.service';
 import { first, map, tap } from 'rxjs/operators';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { Observable } from 'rxjs';
+import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
+import { startWith } from 'rxjs';
 
 @Component({
   selector: 'rb-create-order',
@@ -29,9 +28,9 @@ import { Observable } from 'rxjs';
     FormControlValidationDirective,
     LanguageEnumPipe,
     ValidationErrorsComponent,
-    NgbCollapse,
-    AsyncPipe
-  ]
+    NgbCollapse
+  ],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class CreateOrderComponent {
   private orderService = inject(OrderService);
@@ -39,7 +38,7 @@ export class CreateOrderComponent {
   private toastService = inject(ToastService);
 
   private fb = inject(NonNullableFormBuilder);
-  form = this.fb.group({
+  readonly form = this.fb.group({
     accessionHolder: [null as AccessionHolder | null, Validators.required],
     customer: this.fb.group({
       name: [null as string | null, Validators.required],
@@ -52,34 +51,37 @@ export class CreateOrderComponent {
     }),
     rationale: null as string | null
   });
-  useDeliveryAddressControl = this.fb.control(false);
-  customerTypes = ALL_CUSTOMER_TYPES;
-  languages = ALL_LANGUAGES;
-  accessionHolders$: Observable<Array<AccessionHolder>>;
+  readonly useDeliveryAddressControl = this.fb.control(false);
+  readonly customerTypes = ALL_CUSTOMER_TYPES;
+  readonly languages = ALL_LANGUAGES;
+  readonly accessionHolders: Signal<Array<AccessionHolder> | undefined>;
 
   constructor() {
     const authenticationService = inject(AuthenticationService);
 
     // if we use the delivery address as the billing address
     // then disable the billing address field
-    this.useDeliveryAddressControl.valueChanges.subscribe(useDeliveryAddress => {
-      const billingAddressControl = this.form.controls.customer.controls.billingAddress;
-      if (useDeliveryAddress) {
-        billingAddressControl.disable();
-      } else {
-        billingAddressControl.enable();
-      }
-    });
-
-    this.accessionHolders$ = authenticationService.getCurrentUser().pipe(
-      first(),
-      map(u => u?.accessionHolders ?? []),
-      tap(accessionHolders => {
-        if (accessionHolders.length === 1) {
-          this.form.controls.accessionHolder.setValue(accessionHolders[0]);
+    this.useDeliveryAddressControl.valueChanges
+      .pipe(startWith(this.useDeliveryAddressControl.value), takeUntilDestroyed())
+      .subscribe(useDeliveryAddress => {
+        const billingAddressControl = this.form.controls.customer.controls.billingAddress;
+        if (useDeliveryAddress) {
+          billingAddressControl.disable();
+        } else {
+          billingAddressControl.enable();
         }
-      }),
-      takeUntilDestroyed()
+      });
+
+    this.accessionHolders = toSignal(
+      authenticationService.getCurrentUser().pipe(
+        first(),
+        map(u => u?.accessionHolders ?? []),
+        tap(accessionHolders => {
+          if (accessionHolders.length === 1) {
+            this.form.controls.accessionHolder.setValue(accessionHolders[0]);
+          }
+        })
+      )
     );
   }
 

@@ -1,4 +1,4 @@
-import { Component, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { TranslateModule } from '@ngx-translate/core';
 
@@ -6,7 +6,8 @@ import { TranslateModule } from '@ngx-translate/core';
   selector: 'rb-confirmation-modal',
   templateUrl: './confirmation-modal.component.html',
   styleUrl: './confirmation-modal.component.scss',
-  imports: [TranslateModule]
+  imports: [TranslateModule],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ConfirmationModalComponent {
   readonly activeModal = inject(NgbActiveModal);

@@ -121,15 +121,24 @@ describe('EditDocumentComponent', () => {
     tester.type.selectLabel('Facture');
     expect(tester.errors.length).toBe(1); // file
 
-    const mockFile = { name: 'foo.exe', size: 11 * 1024 * 1024 };
-    const selectedFile = mockFile as File;
-    spyOnProperty(tester.editDocumentComponent, 'selectedFile', 'get').and.returnValue(selectedFile);
+    let mockFile = { name: 'foo.exe', size: 11 * 1024 * 1024 };
+    let selectedFile = mockFile as File;
+    let fileList = {
+      item: (index: number) => [selectedFile][index] ?? null
+    } as unknown as FileList;
+    tester.editDocumentComponent.fileChanged(fileList);
     tester.detectChanges();
 
     expect(tester.testElement).toContainText(`Le fichier doit avoir l'une des extensions suivantes\u00a0: .pdf, .txt, .eml, .pst, .ost`);
     expect(tester.errors.length).toBe(1); // file invalid
 
-    mockFile.name = 'foo.pdf';
+    mockFile = { ...mockFile, name: 'foo.pdf' };
+    selectedFile = mockFile as File;
+    fileList = {
+      item: (index: number) => [selectedFile][index] ?? null
+    } as unknown as FileList;
+
+    tester.editDocumentComponent.fileChanged(fileList);
     tester.detectChanges();
 
     expect(tester.testElement).toContainText('Le fichier est trop volumineux. Il ne doit pas dépasser 10\u00a0MB');
@@ -166,7 +175,11 @@ describe('EditDocumentComponent', () => {
     tester.onDeliveryForm.check();
 
     const selectedFile = { name: 'foo.txt', size: 100 } as File;
-    spyOnProperty(tester.editDocumentComponent, 'selectedFile', 'get').and.returnValue(selectedFile);
+    const fileList = {
+      item: (index: number) => [selectedFile][index] ?? null
+    } as unknown as FileList;
+    tester.editDocumentComponent.fileChanged(fileList);
+    tester.detectChanges();
 
     tester.saveButton.click();
     const expectedCommand: DocumentCommand = {

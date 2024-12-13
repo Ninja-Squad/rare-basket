@@ -1,4 +1,4 @@
-import { Component, inject, LOCALE_ID } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, LOCALE_ID, signal } from '@angular/core';
 import { NonNullableFormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { formatDate } from '@angular/common';
 import { OrderService } from '../order.service';
@@ -25,21 +25,22 @@ import { TranslateModule } from '@ngx-translate/core';
     FormControlValidationDirective,
     FaIconComponent,
     ValidationErrorsComponent
-  ]
+  ],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ExportOrdersComponent {
   private orderService = inject(OrderService);
   private downloadService = inject(DownloadService);
 
-  form = inject(NonNullableFormBuilder).group(
+  readonly form = inject(NonNullableFormBuilder).group(
     {
       from: [null as string | null, Validators.required],
       to: [null as string | null, Validators.required]
     },
     { validators: validDateRange }
   );
-  exporting = false;
-  exportingIcon = faSpinner;
+  readonly exporting = signal(false);
+  readonly exportingIcon = faSpinner;
 
   constructor() {
     const now = new Date();
@@ -59,10 +60,10 @@ export class ExportOrdersComponent {
       return;
     }
 
-    this.exporting = true;
+    this.exporting.set(true);
     this.orderService
       .exportReport(this.form.value.from!, this.form.value.to!)
-      .pipe(finalize(() => (this.exporting = false)))
+      .pipe(finalize(() => this.exporting.set(false)))
       .subscribe(response => this.downloadService.download(response, 'orders.csv'));
   }
 }

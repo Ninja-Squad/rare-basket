@@ -1,13 +1,14 @@
+@let vm = this.vm();
 <h1 class="visually-hidden" translate="home.title"></h1>
 <div class="d-flex align-items-center justify-content-around bg">
-  @if (user !== undefined) {
+  @if (vm.status !== 'unknown') {
     <div class="card">
       <div class="card-body">
-        @if (user) {
-          <h2 translate="home.welcome" [translateParams]="user"></h2>
+        @if (vm.status === 'present') {
+          <h2 translate="home.welcome" [translateParams]="vm.user"></h2>
         }
         <p translate="home.message"></p>
-        @if (!user) {
+        @if (vm.status === 'absent') {
           <button class="btn btn-secondary" (click)="login()" id="login-button">
             <fa-icon [icon]="loginIcon" class="me-1" />
             <span translate="home.login"></span>
