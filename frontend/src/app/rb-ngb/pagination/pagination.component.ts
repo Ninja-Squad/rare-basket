@@ -1,4 +1,4 @@
-import { Component, EventEmitter, inject, Input, Output } from '@angular/core';
+import { Component, inject, Input, output } from '@angular/core';
 import { Router } from '@angular/router';
 import { Page } from '../../shared/page.model';
 import { NgbPagination } from '@ng-bootstrap/ng-bootstrap';
@@ -11,7 +11,7 @@ import { NgbPagination } from '@ng-bootstrap/ng-bootstrap';
 })
 export class PaginationComponent {
   @Input({ required: true }) page!: Page<unknown>;
-  @Output() readonly pageChanged = new EventEmitter<number>();
+  readonly pageChanged = output<number>();
 
   @Input() navigate = false;
 

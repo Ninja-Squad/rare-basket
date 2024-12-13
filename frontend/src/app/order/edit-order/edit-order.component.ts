@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, ElementRef, EventEmitter, inject, Input, OnInit, Output, QueryList, ViewChildren } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, inject, Input, OnInit, QueryList, ViewChildren, output } from '@angular/core';
 import { Order, OrderCommand, OrderItemCommand } from '../order.model';
 import { FormControl, FormGroup, NonNullableFormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { faFileCsv, faPlus, faTrash } from '@fortawesome/free-solid-svg-icons';
@@ -27,9 +27,9 @@ export class EditOrderComponent implements OnInit, AfterViewInit {
 
   @Input({ required: true }) order!: Order;
 
-  @Output() readonly saved = new EventEmitter<OrderCommand>();
+  readonly saved = output<OrderCommand>();
 
-  @Output() readonly cancelled = new EventEmitter<void>();
+  readonly cancelled = output<void>();
 
   @ViewChildren('name') nameInputs!: QueryList<ElementRef<HTMLInputElement>>;
 
