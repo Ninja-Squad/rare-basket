@@ -5,8 +5,7 @@ import { provideRouter, Router, RouterLink, RouterLinkActive, RouterOutlet } fro
 import { RouterNavDirective, RouterNavLinkDirective, RouterNavPanelDirective } from './router-nav.directive';
 
 @Component({
-  template: '',
-  standalone: true
+  template: ''
 })
 class PlaceholderComponent {}
 

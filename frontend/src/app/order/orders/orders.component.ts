@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 import { Order } from '../order.model';
 import { Page } from '../../shared/page.model';
 import { OrderStatusEnumPipe } from '../order-status-enum.pipe';
@@ -26,5 +26,5 @@ import { DatePipe, DecimalPipe, NgPlural, NgPluralCase } from '@angular/common';
   ]
 })
 export class OrdersComponent {
-  @Input({ required: true }) orders!: Page<Order>;
+  readonly orders = input.required<Page<Order>>();
 }

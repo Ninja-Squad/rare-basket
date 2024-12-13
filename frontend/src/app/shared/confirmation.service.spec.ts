@@ -27,8 +27,8 @@ describe('ConfirmationService', () => {
     let closed = false;
     confirmationService.confirm(commonOptions).subscribe(() => (closed = true));
 
-    expect(confirmationModalComponent.title).toBe('Confirmation');
-    expect(confirmationModalComponent.message).toBe('Voulez-vous vraiment supprimer cette accession de votre commande\u00a0?');
+    expect(confirmationModalComponent.title()).toBe('Confirmation');
+    expect(confirmationModalComponent.message()).toBe('Voulez-vous vraiment supprimer cette accession de votre commande\u00a0?');
     expect(closed).toBe(true);
   });
 

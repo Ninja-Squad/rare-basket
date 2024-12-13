@@ -1,4 +1,4 @@
-import { Component, Input, inject } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { TranslateModule } from '@ngx-translate/core';
 
@@ -9,8 +9,8 @@ import { TranslateModule } from '@ngx-translate/core';
   imports: [TranslateModule]
 })
 export class ConfirmationModalComponent {
-  activeModal = inject(NgbActiveModal);
+  readonly activeModal = inject(NgbActiveModal);
 
-  @Input({ required: true }) message!: string;
-  @Input({ required: true }) title!: string;
+  readonly message = signal<string>('');
+  readonly title = signal<string>('');
 }

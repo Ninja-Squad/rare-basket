@@ -3,15 +3,15 @@
     <fa-icon [icon]="nameIcon" [fixedWidth]="true" />
     <span class="visually-hidden" translate="common.customer-information.name"></span>
   </div>
-  <div class="flex-grow-1">{{ customer.name }}</div>
+  <div class="flex-grow-1">{{ customer().name }}</div>
 </div>
-@if (customer.organization) {
+@if (customer().organization) {
   <div class="d-flex">
     <div class="me-2">
       <fa-icon [icon]="organizationIcon" [fixedWidth]="true" />
       <span class="visually-hidden" translate="common.customer-information.organization"></span>
     </div>
-    <div class="flex-grow-1">{{ customer.organization }}</div>
+    <div class="flex-grow-1">{{ customer().organization }}</div>
   </div>
 }
 <div class="d-flex">
@@ -19,44 +19,44 @@
     <fa-icon [icon]="emailIcon" [fixedWidth]="true" />
     <span class="visually-hidden" translate="common.customer-information.email"></span>
   </div>
-  <div class="flex-grow-1">{{ customer.email }}</div>
+  <div class="flex-grow-1">{{ customer().email }}</div>
 </div>
 <div class="d-flex">
   <div class="me-2">
     <fa-icon [icon]="deliveryAddressIcon" [fixedWidth]="true" />
     <span class="visually-hidden" translate="common.customer-information.delivery-address"></span>
   </div>
-  <div class="flex-grow-1" style="white-space: pre-wrap">{{ customer.deliveryAddress }}</div>
+  <div class="flex-grow-1" style="white-space: pre-wrap">{{ customer().deliveryAddress }}</div>
 </div>
 <div class="d-flex">
   <div class="me-2">
     <fa-icon [icon]="billingAddressIcon" [fixedWidth]="true" />
     <span class="visually-hidden" translate="common.customer-information.billing-address"></span>
   </div>
-  <div class="flex-grow-1" style="white-space: pre-wrap">{{ customer.billingAddress }}</div>
+  <div class="flex-grow-1" style="white-space: pre-wrap">{{ customer().billingAddress }}</div>
 </div>
 <div class="d-flex">
   <div class="me-2">
     <fa-icon [icon]="customerTypeIcon" [fixedWidth]="true" />
     <span class="visually-hidden" translate="common.customer-information.type"></span>
   </div>
-  <div class="flex-grow-1">{{ customer.type | customerTypeEnum }}</div>
+  <div class="flex-grow-1">{{ customer().type | customerTypeEnum }}</div>
 </div>
-@if (withLanguage) {
+@if (withLanguage()) {
   <div class="d-flex">
     <div class="me-2">
       <fa-icon [icon]="languageIcon" [fixedWidth]="true" />
       <span class="visually-hidden" translate="common.customer-information.language"></span>
     </div>
-    <div class="flex-grow-1">{{ customer.language | languageEnum }}</div>
+    <div class="flex-grow-1">{{ customer().language | languageEnum }}</div>
   </div>
 }
-@if (rationale) {
+@if (rationale()) {
   <div class="d-flex">
     <div class="me-2">
       <fa-icon [icon]="rationaleIcon" [fixedWidth]="true" />
       <span class="visually-hidden" translate="common.customer-information.rationale"></span>
     </div>
-    <div class="flex-grow-1" style="white-space: pre-wrap">{{ rationale }}</div>
+    <div class="flex-grow-1" style="white-space: pre-wrap">{{ rationale() }}</div>
   </div>
 }

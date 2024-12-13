@@ -86,8 +86,8 @@ describe('OrdersComponent', () => {
   });
 
   it('should have a pagination', () => {
-    expect(tester.pagination.page).toBe(tester.componentInstance.orders);
-    expect(tester.pagination.navigate).toBe(true);
+    expect(tester.pagination.page()).toBe(tester.componentInstance.orders);
+    expect(tester.pagination.navigate()).toBe(true);
   });
 
   it('should have rows of data', () => {

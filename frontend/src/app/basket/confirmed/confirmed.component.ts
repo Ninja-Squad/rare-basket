@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, input } from '@angular/core';
 import { Basket } from '../basket.model';
 import { faCheckCircle } from '@fortawesome/free-solid-svg-icons';
 import { BasketContentComponent } from '../basket-content/basket-content.component';
@@ -15,7 +15,7 @@ import { FaIconComponent } from '@fortawesome/angular-fontawesome';
   imports: [FaIconComponent, TranslateModule, BasketContentComponent]
 })
 export class ConfirmedComponent {
-  @Input({ required: true }) basket!: Basket;
+  readonly basket = input.required<Basket>();
 
-  confirmedIcon = faCheckCircle;
+  readonly confirmedIcon = faCheckCircle;
 }

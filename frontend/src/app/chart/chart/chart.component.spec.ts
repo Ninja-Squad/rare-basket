@@ -40,7 +40,7 @@ describe('ChartComponent', () => {
     const canvas: HTMLCanvasElement = tester.element('canvas').nativeElement;
     expect(canvas.toDataURL().length).toBeGreaterThan(0);
     const chartComponent: ChartComponent = tester.component(ChartComponent);
-    expect(chartComponent.configuration).toBe(tester.componentInstance.configuration);
+    expect(chartComponent.configuration()).toBe(tester.componentInstance.configuration);
   });
 
   it('should display a different chart when input changes', () => {
@@ -70,6 +70,6 @@ describe('ChartComponent', () => {
     tester.detectChanges();
 
     expect(canvas.toDataURL()).not.toBe(firstImage);
-    expect(chartComponent.configuration).toBe(newConfiguration);
+    expect(chartComponent.configuration()).toBe(newConfiguration);
   });
 });

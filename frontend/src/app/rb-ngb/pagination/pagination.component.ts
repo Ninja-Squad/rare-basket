@@ -1,4 +1,4 @@
-import { Component, inject, Input, output } from '@angular/core';
+import { Component, inject, output, input } from '@angular/core';
 import { Router } from '@angular/router';
 import { Page } from '../../shared/page.model';
 import { NgbPagination } from '@ng-bootstrap/ng-bootstrap';
@@ -10,10 +10,10 @@ import { NgbPagination } from '@ng-bootstrap/ng-bootstrap';
   imports: [NgbPagination]
 })
 export class PaginationComponent {
-  @Input({ required: true }) page!: Page<unknown>;
+  readonly page = input.required<Page<unknown>>();
   readonly pageChanged = output<number>();
 
-  @Input() navigate = false;
+  readonly navigate = input(false);
 
   private router = inject(Router, { optional: true });
 
@@ -21,7 +21,7 @@ export class PaginationComponent {
     const newPage = $event - 1;
     this.pageChanged.emit(newPage);
 
-    if (this.navigate && this.router) {
+    if (this.navigate() && this.router) {
       this.router.navigate([], { queryParams: { page: newPage }, queryParamsHandling: 'merge' });
     }
   }

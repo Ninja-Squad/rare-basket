@@ -83,7 +83,7 @@ describe('BasketComponent', () => {
     it('should have an edit component', () => {
       expect(basketService.get).toHaveBeenCalledWith('ABCDEFGH');
       expect(tester.editBasketComponent).not.toBeNull();
-      expect(tester.editBasketComponent.basket).toBe(basket);
+      expect(tester.editBasketComponent.basket()).toBe(basket);
       expect(tester.editConfirmationComponent).toBeNull();
       expect(tester.confirmedComponent).toBeNull();
     });
@@ -100,7 +100,7 @@ describe('BasketComponent', () => {
       expect(tester.componentInstance.basket).toBe(savedBasket);
       expect(tester.editBasketComponent).toBeNull();
       expect(tester.editConfirmationComponent).not.toBeNull();
-      expect(tester.editConfirmationComponent.basket).toBe(savedBasket);
+      expect(tester.editConfirmationComponent.basket()).toBe(savedBasket);
     });
   });
 
@@ -139,7 +139,7 @@ describe('BasketComponent', () => {
       expect(tester.editConfirmationComponent).not.toBeNull();
       expect(tester.confirmedComponent).toBeNull();
 
-      expect(tester.editConfirmationComponent.basket).toBe(basket);
+      expect(tester.editConfirmationComponent.basket()).toBe(basket);
     });
 
     it('should confirm when edit confirmation component emits', () => {
@@ -152,7 +152,7 @@ describe('BasketComponent', () => {
       expect(tester.componentInstance.basket).toBe(confirmedBasket);
       expect(tester.editConfirmationComponent).toBeNull();
       expect(tester.confirmedComponent).not.toBeNull();
-      expect(tester.confirmedComponent.basket).toBe(confirmedBasket);
+      expect(tester.confirmedComponent.basket()).toBe(confirmedBasket);
     });
 
     it('should refresh when edit confirmation component asks to', () => {

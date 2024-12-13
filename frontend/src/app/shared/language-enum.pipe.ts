@@ -3,8 +3,7 @@ import { BaseEnumPipe } from './base-enum-pipe';
 import { Language } from '../basket/basket.model';
 
 @Pipe({
-  name: 'languageEnum',
-  standalone: true
+  name: 'languageEnum'
 })
 export class LanguageEnumPipe extends BaseEnumPipe<Language> implements PipeTransform {
   constructor() {

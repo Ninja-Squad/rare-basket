@@ -33,7 +33,7 @@ interface BasketItem {
   unit: string | null;
 }
 
-interface AccessionHolderBasket {
+export interface AccessionHolderBasket {
   grcName: string;
   accessionHolderName: string;
   items: Array<BasketItem>;
@@ -47,7 +47,7 @@ export interface Basket {
   status: BasketStatus;
   accessionHolderBaskets: Array<AccessionHolderBasket>;
   customer: Customer | null;
-  rationale: string;
+  rationale: string | null;
 }
 
 export const ALL_LANGUAGES = ['en', 'fr'] as const;

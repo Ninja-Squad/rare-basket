@@ -1,4 +1,4 @@
-import { Component, inject, Input, output } from '@angular/core';
+import { Component, inject, output, input } from '@angular/core';
 import { Basket } from '../basket.model';
 import { NonNullableFormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { faCheckCircle, faInfoCircle } from '@fortawesome/free-solid-svg-icons';
@@ -18,16 +18,16 @@ import { FaIconComponent } from '@fortawesome/angular-fontawesome';
   imports: [FaIconComponent, TranslateModule, ReactiveFormsModule, FormControlValidationDirective, BasketContentComponent]
 })
 export class EditConfirmationComponent {
-  @Input({ required: true }) basket!: Basket;
+  readonly basket = input.required<Basket>();
 
   readonly basketConfirmed = output<string>();
   readonly refreshRequested = output<void>();
 
-  form = inject(NonNullableFormBuilder).group({
+  readonly form = inject(NonNullableFormBuilder).group({
     confirmationCode: ['', Validators.required]
   });
-  infoIcon = faInfoCircle;
-  confirmIcon = faCheckCircle;
+  readonly infoIcon = faInfoCircle;
+  readonly confirmIcon = faCheckCircle;
 
   confirm() {
     if (this.form.invalid) {

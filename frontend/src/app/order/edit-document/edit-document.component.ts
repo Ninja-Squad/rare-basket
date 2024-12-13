@@ -1,4 +1,4 @@
-import { Component, ElementRef, inject, Input, OnChanges, SimpleChanges, ViewChild, output } from '@angular/core';
+import { Component, ElementRef, inject, ViewChild, output, input, effect, computed, signal } from '@angular/core';
 import { NonNullableFormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import {
   ALL_DOCUMENT_TYPES,
@@ -35,7 +35,7 @@ const maxFileSize = 10 * 1024 * 1024; // 10 MB
     DocumentTypeEnumPipe
   ]
 })
-export class EditDocumentComponent implements OnChanges {
+export class EditDocumentComponent {
   form = inject(NonNullableFormBuilder).group({
     type: [null as DocumentType | null, Validators.required],
     description: '',
@@ -44,17 +44,22 @@ export class EditDocumentComponent implements OnChanges {
 
   @ViewChild('fileInput') fileInput!: ElementRef<HTMLInputElement>;
 
-  @Input({ required: true }) order!: DetailedOrder;
-
-  @Input({ required: true }) uploadProgress: number | null = null;
+  readonly order = input.required<DetailedOrder>();
+  readonly uploadProgress = input.required<number | null>();
 
   readonly cancelled = output<void>();
-
   readonly saved = output<DocumentCommand>();
+  readonly maxFileSizeInMB = maxFileSize / (1024 * 1024);
+  readonly fileAccept = validExtensions.join(',');
+  readonly acceptedExtensions = validExtensions.join(', ');
 
-  highlightFileInput = false;
-  documentTypes: Array<DocumentType> | null = null;
-  saveIcon = faFileUpload;
+  highlightFileInput = signal(false);
+  readonly documentTypes = computed(() =>
+    ALL_DOCUMENT_TYPES.filter(
+      documentType => !isDocumentTypeUnique(documentType) || !this.order().documents.some(doc => doc.type === documentType)
+    )
+  );
+  readonly saveIcon = faFileUpload;
 
   constructor() {
     const descriptionControl = this.form.controls.description;
@@ -68,27 +73,19 @@ export class EditDocumentComponent implements OnChanges {
         onDeliveryFormControl.setValue(ON_DELIVERY_FORM_BY_DEFAULT_DOCUMENT_TYPES.includes(newType!));
       }
     });
-  }
 
-  ngOnChanges(changes: SimpleChanges): void {
-    if (changes.uploadProgress) {
-      if (this.uploadProgress !== null) {
+    effect(() => {
+      if (this.uploadProgress() !== null) {
         this.form.disable();
       } else {
         this.form.enable();
       }
-    }
-
-    if (changes.order) {
-      this.documentTypes = ALL_DOCUMENT_TYPES.filter(
-        documentType => !isDocumentTypeUnique(documentType) || !this.order.documents.some(doc => doc.type === documentType)
-      );
-    }
+    });
   }
 
   fileDropped(event: DragEvent) {
     event.preventDefault();
-    if (this.uploadProgress) {
+    if (this.uploadProgress()) {
       return;
     }
     this.fileInput.nativeElement.files = event.dataTransfer!.files;
@@ -103,7 +100,7 @@ export class EditDocumentComponent implements OnChanges {
   }
 
   save() {
-    if (this.form.invalid || this.hasFileError()) {
+    if (!this.form.valid || this.hasFileError()) {
       return;
     }
 
@@ -138,18 +135,6 @@ export class EditDocumentComponent implements OnChanges {
     }
 
     return this.selectedFile.size <= maxFileSize;
-  }
-
-  get maxFileSizeInMB() {
-    return maxFileSize / (1024 * 1024);
-  }
-
-  get fileAccept() {
-    return validExtensions.join(',');
-  }
-
-  get acceptedExtensions() {
-    return validExtensions.join(', ');
   }
 
   get selectedFile(): File | null {

@@ -3,8 +3,7 @@ import { BaseEnumPipe } from './base-enum-pipe';
 import { CustomerType } from '../basket/basket.model';
 
 @Pipe({
-  name: 'customerTypeEnum',
-  standalone: true
+  name: 'customerTypeEnum'
 })
 export class CustomerTypeEnumPipe extends BaseEnumPipe<CustomerType> implements PipeTransform {
   constructor() {

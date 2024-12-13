@@ -1,14 +1,14 @@
 <div class="row">
   <div class="col-sm">
     <h2 translate="basket.basket-content.information"></h2>
-    @if (basket.customer) {
-      <rb-customer-information [customer]="basket.customer" [rationale]="basket.rationale" />
+    @if (basket().customer) {
+      <rb-customer-information [customer]="basket().customer!" [rationale]="basket().rationale" />
     }
   </div>
   <div class="col-sm">
     <h2 translate="basket.basket-content.ordered-accessions"></h2>
 
-    @for (accessionHolderBasket of basket.accessionHolderBaskets; track accessionHolderBasket) {
+    @for (accessionHolderBasket of basket().accessionHolderBaskets; track accessionHolderBasket) {
       <div>
         <h3>{{ accessionHolderBasket.grcName }} - {{ accessionHolderBasket.accessionHolderName }}</h3>
 
@@ -17,7 +17,7 @@
             <thead class="table-light">
               <tr>
                 <th translate="basket.basket-content.accession-heading"></th>
-                @if (quantityDisplayed) {
+                @if (quantityDisplayed()) {
                   <th translate="basket.basket-content.quantity-heading" style="width: 25%"></th>
                 }
               </tr>
@@ -26,7 +26,7 @@
               @for (item of accessionHolderBasket.items; track item.id) {
                 <tr class="basket-item">
                   <td><rb-accession [accession]="item.accession" /></td>
-                  @if (quantityDisplayed) {
+                  @if (quantityDisplayed()) {
                     <td>{{ item.quantity | number }} {{ item.unit }}</td>
                   }
                 </tr>
