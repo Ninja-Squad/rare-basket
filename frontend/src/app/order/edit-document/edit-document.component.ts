@@ -1,4 +1,4 @@
-import { Component, ElementRef, EventEmitter, inject, Input, OnChanges, Output, SimpleChanges, ViewChild } from '@angular/core';
+import { Component, ElementRef, inject, Input, OnChanges, SimpleChanges, ViewChild, output } from '@angular/core';
 import { NonNullableFormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import {
   ALL_DOCUMENT_TYPES,
@@ -48,9 +48,9 @@ export class EditDocumentComponent implements OnChanges {
 
   @Input({ required: true }) uploadProgress: number | null = null;
 
-  @Output() readonly cancelled = new EventEmitter<void>();
+  readonly cancelled = output<void>();
 
-  @Output() readonly saved = new EventEmitter<DocumentCommand>();
+  readonly saved = output<DocumentCommand>();
 
   highlightFileInput = false;
   documentTypes: Array<DocumentType> | null = null;

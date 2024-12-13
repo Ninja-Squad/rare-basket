@@ -1,4 +1,4 @@
-import { Component, EventEmitter, inject, Input, LOCALE_ID, OnInit, Output } from '@angular/core';
+import { Component, inject, Input, LOCALE_ID, OnInit, output } from '@angular/core';
 import { ALL_CUSTOMER_TYPES, Basket, BasketCommand, BasketItemCommand, CustomerType, Language } from '../basket.model';
 import { NonNullableFormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { faCheck, faTrash } from '@fortawesome/free-solid-svg-icons';
@@ -36,7 +36,7 @@ export class EditBasketComponent implements OnInit {
 
   @Input({ required: true }) basket!: Basket;
 
-  @Output() readonly basketSaved = new EventEmitter<BasketCommand>();
+  readonly basketSaved = output<BasketCommand>();
 
   gdprDetailsUrl = environment.gdprDetailsUrl;
   customerTypes = ALL_CUSTOMER_TYPES;

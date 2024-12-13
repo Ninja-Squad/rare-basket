@@ -1,4 +1,4 @@
-import { Component, EventEmitter, inject, Input, OnInit, Output } from '@angular/core';
+import { Component, inject, Input, OnInit, output } from '@angular/core';
 import { ALL_CUSTOMER_TYPES, ALL_LANGUAGES, CustomerCommand, CustomerType } from '../../basket/basket.model';
 import { NonNullableFormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CustomerInformationCommand } from '../order.model';
@@ -27,9 +27,9 @@ import { TranslateModule } from '@ngx-translate/core';
 export class EditCustomerInformationComponent implements OnInit {
   @Input({ required: true }) customerInformation!: CustomerInformationCommand;
 
-  @Output() readonly saved = new EventEmitter<CustomerInformationCommand>();
+  readonly saved = output<CustomerInformationCommand>();
 
-  @Output() readonly cancelled = new EventEmitter<void>();
+  readonly cancelled = output<void>();
 
   private fb = inject(NonNullableFormBuilder);
   form = this.fb.group({
