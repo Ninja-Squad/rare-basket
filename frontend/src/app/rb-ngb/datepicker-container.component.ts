@@ -1,4 +1,4 @@
-import { Component, ContentChild } from '@angular/core';
+import { Component, contentChild } from '@angular/core';
 import { NgbInputDatepicker } from '@ng-bootstrap/ng-bootstrap';
 import { faCalendarAlt } from '@fortawesome/free-solid-svg-icons';
 import { TranslateModule } from '@ngx-translate/core';
@@ -23,10 +23,10 @@ import { FaIconComponent } from '@fortawesome/angular-fontawesome';
   imports: [FaIconComponent, TranslateModule]
 })
 export class DatepickerContainerComponent {
-  @ContentChild(NgbInputDatepicker) datePicker!: NgbInputDatepicker;
+  readonly datePicker = contentChild.required(NgbInputDatepicker);
   dateIcon = faCalendarAlt;
 
   toggle() {
-    this.datePicker.toggle();
+    this.datePicker().toggle();
   }
 }

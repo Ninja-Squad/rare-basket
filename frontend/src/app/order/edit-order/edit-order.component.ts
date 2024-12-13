@@ -1,15 +1,14 @@
 import {
-  AfterViewInit,
   Component,
   ElementRef,
   inject,
   OnInit,
-  QueryList,
-  ViewChildren,
   output,
   input,
   DestroyRef,
-  ChangeDetectionStrategy
+  ChangeDetectionStrategy,
+  viewChildren,
+  afterNextRender
 } from '@angular/core';
 import { Order, OrderCommand, OrderItemCommand } from '../order.model';
 import { FormControl, FormGroup, NonNullableFormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
@@ -36,7 +35,7 @@ interface ItemFormValue {
   imports: [ReactiveFormsModule, TranslateModule, FormControlValidationDirective, ValidationErrorsComponent, FaIconComponent],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class EditOrderComponent implements OnInit, AfterViewInit {
+export class EditOrderComponent implements OnInit {
   private modalService = inject(ModalService);
   private destroyRef = inject(DestroyRef);
 
@@ -45,7 +44,7 @@ export class EditOrderComponent implements OnInit, AfterViewInit {
   readonly saved = output<OrderCommand>();
   readonly cancelled = output<void>();
 
-  @ViewChildren('name') nameInputs!: QueryList<ElementRef<HTMLInputElement>>;
+  readonly nameInputs = viewChildren<ElementRef<HTMLInputElement>>('name');
 
   private fb = inject(NonNullableFormBuilder);
   readonly itemGroups = this.fb.array<
@@ -65,6 +64,10 @@ export class EditOrderComponent implements OnInit, AfterViewInit {
   readonly addItemIcon = faPlus;
   readonly csvIcon = faFileCsv;
 
+  constructor() {
+    afterNextRender(() => this.nameInputs().at(0)?.nativeElement?.focus());
+  }
+
   ngOnInit() {
     this.order().items.forEach(orderItem =>
       this.itemGroups.push(
@@ -76,10 +79,6 @@ export class EditOrderComponent implements OnInit, AfterViewInit {
     if (this.order().items.length === 0) {
       this.addItem();
     }
-  }
-
-  ngAfterViewInit(): void {
-    this.nameInputs.first?.nativeElement?.focus();
   }
 
   save() {

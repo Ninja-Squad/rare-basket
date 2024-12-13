@@ -1,16 +1,4 @@
-import {
-  Component,
-  ElementRef,
-  inject,
-  output,
-  input,
-  effect,
-  computed,
-  signal,
-  ChangeDetectionStrategy,
-  viewChild,
-  afterNextRender
-} from '@angular/core';
+import { Component, ElementRef, inject, output, input, effect, computed, signal, ChangeDetectionStrategy, viewChild } from '@angular/core';
 import { NonNullableFormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import {
   ALL_DOCUMENT_TYPES,
@@ -94,10 +82,6 @@ export class EditDocumentComponent {
       } else {
         this.form.enable();
       }
-    });
-
-    afterNextRender(() => {
-      this.fileInput().nativeElement.files?.item(0);
     });
   }
 
