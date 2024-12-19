@@ -49,9 +49,7 @@ export default [
             style: 'camelCase'
           }
         ],
-        /* TODO: enable when zoneless tests are implemented
         '@angular-eslint/prefer-on-push-component-change-detection': 'error',
-         */
         '@angular-eslint/prefer-signals': 'error',
         '@typescript-eslint/array-type': [
           'error',
@@ -62,7 +60,6 @@ export default [
         ],
         '@typescript-eslint/no-deprecated': 'error',
         '@typescript-eslint/no-empty-function': 'off',
-        /* TODO: enable when zoneless tests are implemented
         '@typescript-eslint/no-floating-promises': [
           'error',
           {
@@ -72,7 +69,6 @@ export default [
             ]
           }
         ],
-        */
         '@typescript-eslint/no-unused-vars': [
           'error',
           {

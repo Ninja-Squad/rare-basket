@@ -6,7 +6,8 @@ import { RouterNavDirective, RouterNavLinkDirective, RouterNavPanelDirective } f
 import { RouterTestingHarness } from '@angular/router/testing';
 
 @Component({
-  template: ''
+  template: '',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 class PlaceholderComponent {}
 

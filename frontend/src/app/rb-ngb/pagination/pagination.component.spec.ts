@@ -16,8 +16,8 @@ import { RouterTestingHarness } from '@angular/router/testing';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 class TestComponent {
-  page = signal<Page<string> | undefined>(undefined);
-  navigate = signal(false);
+  readonly page = signal<Page<string> | undefined>(undefined);
+  readonly navigate = signal(false);
 
   newPage: number | null = null;
 

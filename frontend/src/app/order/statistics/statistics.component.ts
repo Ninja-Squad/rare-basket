@@ -1,4 +1,4 @@
-import { Component, computed, inject, LOCALE_ID, signal, Signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, LOCALE_ID, signal, Signal } from '@angular/core';
 import { OrderService } from '../order.service';
 import { CustomerTypeStatistics, OrderStatistics, OrderStatusStatistics } from '../order.model';
 import { ArcElement, Chart, ChartConfiguration, DoughnutController, Legend, Tooltip } from 'chart.js';
@@ -62,7 +62,8 @@ interface StatsParams {
     PercentPipe,
     CustomerTypeEnumPipe,
     OrderStatusEnumPipe
-  ]
+  ],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class StatisticsComponent {
   private router = inject(Router);
