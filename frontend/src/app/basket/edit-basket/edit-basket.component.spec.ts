@@ -2,7 +2,7 @@ import { TestBed } from '@angular/core/testing';
 
 import { EditBasketComponent } from './edit-basket.component';
 import { ComponentTester, createMock, TestButton } from 'ngx-speculoos';
-import { Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { Basket, BasketCommand } from '../basket.model';
 import { ValidationDefaultsComponent } from '../../validation-defaults/validation-defaults.component';
 import { ConfirmationService } from '../../shared/confirmation.service';
@@ -13,7 +13,8 @@ import { provideI18nTesting } from '../../i18n/mock-18n.spec';
   template: `@if (basket) {
     <rb-edit-basket [basket]="basket" (basketSaved)="savedCommand = $event" />
   }`,
-  imports: [EditBasketComponent]
+  imports: [EditBasketComponent],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 class TestComponent {
   basket: Basket;
@@ -94,14 +95,14 @@ describe('EditBasketComponent', () => {
   let tester: TestComponentTester;
   let confirmationService: jasmine.SpyObj<ConfirmationService>;
 
-  beforeEach(() => {
+  beforeEach(async () => {
     confirmationService = createMock(ConfirmationService);
 
     TestBed.configureTestingModule({
       providers: [provideI18nTesting(), { provide: ConfirmationService, useValue: confirmationService }]
     });
 
-    TestBed.createComponent(ValidationDefaultsComponent).detectChanges();
+    await TestBed.createComponent(ValidationDefaultsComponent).whenStable();
 
     tester = new TestComponentTester();
   });
@@ -158,8 +159,8 @@ describe('EditBasketComponent', () => {
       };
     });
 
-    it('should display an empty form', () => {
-      tester.detectChanges();
+    it('should display an empty form', async () => {
+      await tester.stable();
 
       expect(tester.customerName).toHaveValue('');
       expect(tester.customerEmail).toHaveValue('');
@@ -184,10 +185,10 @@ describe('EditBasketComponent', () => {
       expect(tester.gdprAgreement).not.toBeChecked();
     });
 
-    it('should display quantities if at least one is set', () => {
+    it('should display quantities if at least one is set', async () => {
       tester.componentInstance.basket.accessionHolderBaskets[0].items[0].quantity = 10;
       tester.componentInstance.basket.accessionHolderBaskets[0].items[0].unit = 'bags';
-      tester.detectChanges();
+      await tester.stable();
 
       expect(tester.accessionsHeadings(0).length).toBe(3);
       expect(tester.accessionsHeadings(1).length).toBe(3);
@@ -197,10 +198,10 @@ describe('EditBasketComponent', () => {
       expect(tester.accessions[0]).toContainText('10 bags');
     });
 
-    it('should validate and not save', () => {
-      tester.detectChanges();
+    it('should validate and not save', async () => {
+      await tester.stable();
 
-      tester.saveButton.click();
+      await tester.saveButton.click();
       expect(tester.componentInstance.savedCommand).toBeNull();
       expect(tester.errors.length).toBe(6);
       expect(tester.testElement).toContainText('Le nom est obligatoire');
@@ -211,21 +212,21 @@ describe('EditBasketComponent', () => {
       expect(tester.testElement).toContainText(`Vous devez cocher cette case pour pouvoir finaliser votre commande`);
     });
 
-    it('should save', () => {
+    it('should save', async () => {
       tester.componentInstance.basket.accessionHolderBaskets[0].items[0].quantity = 10;
       tester.componentInstance.basket.accessionHolderBaskets[0].items[0].unit = 'bags';
-      tester.detectChanges();
+      await tester.stable();
 
-      tester.customerName.fillWith('John');
-      tester.customerOrganization.fillWith('Wheat SA');
-      tester.customerEmail.fillWith('john@mail.com');
-      tester.customerDeliveryAddress.fillWith('21 Jump Street');
-      tester.customerBillingAddress.fillWith('21 Jump Street - billing service');
-      tester.customerType.selectLabel('Citoyen');
-      tester.rationale.fillWith('Because');
-      tester.gdprAgreement.check();
+      await tester.customerName.fillWith('John');
+      await tester.customerOrganization.fillWith('Wheat SA');
+      await tester.customerEmail.fillWith('john@mail.com');
+      await tester.customerDeliveryAddress.fillWith('21 Jump Street');
+      await tester.customerBillingAddress.fillWith('21 Jump Street - billing service');
+      await tester.customerType.selectLabel('Citoyen');
+      await tester.rationale.fillWith('Because');
+      await tester.gdprAgreement.check();
 
-      tester.saveButton.click();
+      await tester.saveButton.click();
       expect(tester.errors.length).toBe(0);
 
       const expectedCommand: BasketCommand = {
@@ -270,34 +271,34 @@ describe('EditBasketComponent', () => {
       expect(tester.componentInstance.savedCommand).toEqual(expectedCommand);
     });
 
-    it('should use the delivery address as the billing address', () => {
-      tester.detectChanges();
+    it('should use the delivery address as the billing address', async () => {
+      await tester.stable();
 
-      tester.customerName.fillWith('John');
-      tester.customerOrganization.fillWith('Wheat SA');
-      tester.customerEmail.fillWith('john@mail.com');
-      tester.customerDeliveryAddress.fillWith('21 Jump Street');
-      tester.useDeliveryAddress.check();
+      await tester.customerName.fillWith('John');
+      await tester.customerOrganization.fillWith('Wheat SA');
+      await tester.customerEmail.fillWith('john@mail.com');
+      await tester.customerDeliveryAddress.fillWith('21 Jump Street');
+      await tester.useDeliveryAddress.check();
       expect(tester.customerBillingAddress.disabled).toBe(true);
-      tester.customerType.selectLabel('Citoyen');
-      tester.rationale.fillWith('Because');
-      tester.gdprAgreement.check();
+      await tester.customerType.selectLabel('Citoyen');
+      await tester.rationale.fillWith('Because');
+      await tester.gdprAgreement.check();
 
-      tester.saveButton.click();
+      await tester.saveButton.click();
       expect(tester.errors.length).toBe(0);
       expect(tester.componentInstance.savedCommand.customer.billingAddress).toEqual(
         tester.componentInstance.savedCommand.customer.deliveryAddress
       );
     });
 
-    it('should remove accession after confirmation and make last one removal disabled', () => {
+    it('should remove accession after confirmation and make last one removal disabled', async () => {
       tester.componentInstance.basket.accessionHolderBaskets[0].items[0].quantity = 10;
-      tester.detectChanges();
+      await tester.stable();
 
       confirmationService.confirm.and.returnValue(of(undefined));
 
       // delete first of 3 items
-      tester.accessionDeleteButtons[0].click();
+      await tester.accessionDeleteButtons[0].click();
 
       expect(confirmationService.confirm).toHaveBeenCalled();
       expect(tester.accessionsTables.length).toBe(2);
@@ -306,7 +307,7 @@ describe('EditBasketComponent', () => {
       expect(tester.accessionsHeadings(0).length).toBe(2); // because there is no accession with a quantity anymore
 
       // delete first of 2 items
-      tester.accessionDeleteButtons[0].click();
+      await tester.accessionDeleteButtons[0].click();
       expect(tester.accessionsTables.length).toBe(1); // because the first accession holder basket is now empty, thus removed
       expect(tester.accessions.length).toBe(1);
       expect(tester.accessions[0]).toContainText('Bacteria');
@@ -316,7 +317,7 @@ describe('EditBasketComponent', () => {
   });
 
   describe('with a non-empty draft basket', () => {
-    beforeEach(() => {
+    beforeEach(async () => {
       tester.componentInstance.basket = {
         id: 42,
         reference: 'ABCDEFGH',
@@ -350,7 +351,7 @@ describe('EditBasketComponent', () => {
         ]
       };
 
-      tester.detectChanges();
+      await tester.stable();
     });
 
     it('should display a filled form', () => {

@@ -77,7 +77,7 @@ describe('CreateOrderComponent', () => {
   let router: Router;
   let toastService: jasmine.SpyObj<ToastService>;
 
-  beforeEach(() => {
+  beforeEach(async () => {
     authenticationService = createMock(AuthenticationService);
     orderService = createMock(OrderService);
     toastService = createMock(ToastService);
@@ -91,20 +91,20 @@ describe('CreateOrderComponent', () => {
       ]
     });
 
-    TestBed.createComponent(ValidationDefaultsComponent).detectChanges();
+    await TestBed.createComponent(ValidationDefaultsComponent).whenStable();
 
     router = TestBed.inject(Router);
     spyOn(router, 'navigate');
   });
 
   describe('when current user has only one accession holder', () => {
-    beforeEach(() => {
+    beforeEach(async () => {
       const user: User = {
         accessionHolders: [{ id: 1, name: 'AH1', grc: { name: 'GRC1' } }]
       } as User;
       authenticationService.getCurrentUser.and.returnValue(of(user));
       tester = new CreateOrderComponentTester();
-      tester.detectChanges();
+      await tester.stable();
     });
 
     it('should not display accession holder and have the only one selected', () => {
@@ -113,8 +113,8 @@ describe('CreateOrderComponent', () => {
     });
   });
 
-  describe('when current user has several accession holders', () => {
-    beforeEach(() => {
+  describe('when current user has several accession holders', async () => {
+    beforeEach(async () => {
       const user: User = {
         accessionHolders: [
           { id: 1, name: 'AH1', grc: { name: 'GRC1' } },
@@ -123,7 +123,7 @@ describe('CreateOrderComponent', () => {
       } as User;
       authenticationService.getCurrentUser.and.returnValue(of(user));
       tester = new CreateOrderComponentTester();
-      tester.detectChanges();
+      await tester.stable();
     });
 
     it('should display an empty form', () => {
@@ -140,32 +140,30 @@ describe('CreateOrderComponent', () => {
       expect(tester.rationale).toHaveValue('');
     });
 
-    it('should not save if invalid', () => {
-      tester.saveButton.click();
+    it('should not save if invalid', async () => {
+      await tester.saveButton.click();
 
       // accession holder, name, email, delivery address, billing address, type, language are mandatory, but not organization nor rationale
       expect(tester.errors.length).toBe(7);
 
-      tester.email.fillWith('notAnEmail');
+      await tester.email.fillWith('notAnEmail');
       expect(tester.errors.length).toBe(7);
     });
 
-    it('should save', () => {
-      tester.detectChanges();
-
-      tester.accessionHolder.selectLabel('GRC2 – AH2');
-      tester.name.fillWith('Jane');
-      tester.organization.fillWith('Wheat SAS');
-      tester.email.fillWith('jane@mail.com');
-      tester.deliveryAddress.fillWith('2, Main Street');
-      tester.billingAddress.fillWith('2, Main Street - billing service');
-      tester.type.selectLabel('Autre');
-      tester.language.selectLabel('Français');
-      tester.rationale.fillWith('foo');
+    it('should save', async () => {
+      await tester.accessionHolder.selectLabel('GRC2 – AH2');
+      await tester.name.fillWith('Jane');
+      await tester.organization.fillWith('Wheat SAS');
+      await tester.email.fillWith('jane@mail.com');
+      await tester.deliveryAddress.fillWith('2, Main Street');
+      await tester.billingAddress.fillWith('2, Main Street - billing service');
+      await tester.type.selectLabel('Autre');
+      await tester.language.selectLabel('Français');
+      await tester.rationale.fillWith('foo');
 
       orderService.createOrder.and.returnValue(of({ id: 42 } as DetailedOrder));
 
-      tester.saveButton.click();
+      await tester.saveButton.click();
 
       const expectedCommand: OrderCreationCommand = {
         accessionHolderId: 2,
@@ -186,23 +184,21 @@ describe('CreateOrderComponent', () => {
       expect(toastService.success).toHaveBeenCalled();
     });
 
-    it('should use the delivery address as the billing address', () => {
-      tester.detectChanges();
-
-      tester.accessionHolder.selectLabel('GRC2 – AH2');
-      tester.name.fillWith('Jane');
-      tester.organization.fillWith('Wheat SAS');
-      tester.email.fillWith('jane@mail.com');
-      tester.deliveryAddress.fillWith('2, Main Street');
-      tester.useDeliveryAddress.check();
+    it('should use the delivery address as the billing address', async () => {
+      await tester.accessionHolder.selectLabel('GRC2 – AH2');
+      await tester.name.fillWith('Jane');
+      await tester.organization.fillWith('Wheat SAS');
+      await tester.email.fillWith('jane@mail.com');
+      await tester.deliveryAddress.fillWith('2, Main Street');
+      await tester.useDeliveryAddress.check();
       expect(tester.billingAddress.disabled).toBe(true);
 
-      tester.type.selectLabel('Autre');
-      tester.language.selectLabel('Français');
-      tester.rationale.fillWith('foo');
+      await tester.type.selectLabel('Autre');
+      await tester.language.selectLabel('Français');
+      await tester.rationale.fillWith('foo');
 
       orderService.createOrder.and.returnValue(of({ id: 42 } as DetailedOrder));
-      tester.saveButton.click();
+      await tester.saveButton.click();
 
       const expectedCommand: OrderCreationCommand = {
         accessionHolderId: 2,
@@ -223,10 +219,8 @@ describe('CreateOrderComponent', () => {
       expect(toastService.success).toHaveBeenCalled();
     });
 
-    it('should cancel', () => {
-      tester.detectChanges();
-
-      tester.cancelButton.click();
+    it('should cancel', async () => {
+      await tester.cancelButton.click();
       expect(router.navigate).toHaveBeenCalledWith(['/orders', 'in-progress']);
     });
   });

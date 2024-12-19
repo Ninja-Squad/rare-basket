@@ -1,7 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 
 import { EditConfirmationComponent } from './edit-confirmation.component';
-import { Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { Basket } from '../basket.model';
 import { ComponentTester, TestButton } from 'ngx-speculoos';
 import { provideI18nTesting } from '../../i18n/mock-18n.spec';
@@ -10,7 +10,8 @@ import { provideI18nTesting } from '../../i18n/mock-18n.spec';
   template: `
     <rb-edit-confirmation [basket]="basket" (basketConfirmed)="confirmationCode = $event" (refreshRequested)="refreshRequested = true" />
   `,
-  imports: [EditConfirmationComponent]
+  imports: [EditConfirmationComponent],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 class TestComponent {
   basket = {
@@ -44,13 +45,13 @@ class TestComponentTester extends ComponentTester<TestComponent> {
 describe('EditConfirmationComponent', () => {
   let tester: TestComponentTester;
 
-  beforeEach(() => {
+  beforeEach(async () => {
     TestBed.configureTestingModule({
       providers: [provideI18nTesting()]
     });
 
     tester = new TestComponentTester();
-    tester.detectChanges();
+    await tester.stable();
   });
 
   it('should display empty form', () => {
@@ -59,15 +60,15 @@ describe('EditConfirmationComponent', () => {
     expect(tester.confirmButton.disabled).toBe(true);
   });
 
-  it('should emit when info refresh link clicked', () => {
-    tester.infoRefreshLink.click();
+  it('should emit when info refresh link clicked', async () => {
+    await tester.infoRefreshLink.click();
     expect(tester.componentInstance.refreshRequested).toBe(true);
   });
 
-  it('should emit when confirming', () => {
-    tester.confirmationCode.fillWith('ZYXWVUTS');
+  it('should emit when confirming', async () => {
+    await tester.confirmationCode.fillWith('ZYXWVUTS');
     expect(tester.confirmButton.disabled).toBe(false);
-    tester.confirmButton.click();
+    await tester.confirmButton.click();
     expect(tester.componentInstance.confirmationCode).toBe('ZYXWVUTS');
   });
 });

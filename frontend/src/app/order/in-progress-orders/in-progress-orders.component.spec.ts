@@ -37,7 +37,7 @@ describe('InProgressOrdersComponent', () => {
   let authenticationService: jasmine.SpyObj<AuthenticationService>;
   let router: Router;
 
-  beforeEach(async () => {
+  beforeEach(() => {
     orderService = createMock(OrderService);
     authenticationService = createMock(AuthenticationService);
     authenticationService.getCurrentUser.and.returnValue(
@@ -71,7 +71,7 @@ describe('InProgressOrdersComponent', () => {
     orderService.listInProgress.and.returnValue(EMPTY);
     tester = new InProgressOrdersComponentTester(await RouterTestingHarness.create('/orders/in-progress'));
 
-    tester.detectChanges();
+    await tester.stable();
 
     expect(tester.ordersComponent).toBeNull();
     expect(tester.noOrderMessage).toBeNull();
@@ -99,7 +99,7 @@ describe('InProgressOrdersComponent', () => {
     orderService.listInProgress.and.returnValue(of(page0));
     tester = new InProgressOrdersComponentTester(await RouterTestingHarness.create('/orders/in-progress'));
 
-    tester.detectChanges();
+    await tester.stable();
 
     expect(tester.accessionHolder).toBeNull();
     expect(orderService.listInProgress).toHaveBeenCalledWith(0, null);
@@ -133,7 +133,7 @@ describe('InProgressOrdersComponent', () => {
     orderService.listInProgress.withArgs(0, 42).and.returnValue(of(page0ForAccessionHolder42));
 
     tester = new InProgressOrdersComponentTester(await RouterTestingHarness.create('/orders/in-progress?page=1'));
-    tester.detectChanges();
+    await tester.stable();
 
     expect(tester.noOrderMessage).toBeNull();
     expect(tester.ordersComponent).not.toBeNull();
@@ -141,16 +141,12 @@ describe('InProgressOrdersComponent', () => {
     expect(tester.accessionHolder.optionLabels).toEqual([`tous les gestionnaires d'accessions`, 'AH1', 'AH2']);
     expect(tester.accessionHolder).toHaveSelectedLabel(`tous les gestionnaires d'accessions`);
 
-    tester.accessionHolder.selectLabel('AH1');
-    await tester.stable();
-    tester.detectChanges();
+    await tester.accessionHolder.selectLabel('AH1');
 
     expect(router.url).toBe('/orders/in-progress?page=0&h=42');
     expect(tester.ordersComponent.orders()).toBe(page0ForAccessionHolder42);
 
-    tester.accessionHolder.selectLabel(`tous les gestionnaires d'accessions`);
-    await tester.stable();
-    tester.detectChanges();
+    await tester.accessionHolder.selectLabel(`tous les gestionnaires d'accessions`);
 
     expect(router.url).toBe('/orders/in-progress?page=0');
     expect(tester.ordersComponent.orders()).toBe(page0);
@@ -168,7 +164,7 @@ describe('InProgressOrdersComponent', () => {
     orderService.listInProgress.and.returnValue(of(page0));
 
     tester = new InProgressOrdersComponentTester(await RouterTestingHarness.create('/orders/in-progress'));
-    tester.detectChanges();
+    await tester.stable();
 
     expect(tester.noOrderMessage).not.toBeNull();
     expect(tester.ordersComponent).toBeNull();

@@ -2,13 +2,14 @@ import { TestBed } from '@angular/core/testing';
 
 import { ConfirmedComponent } from './confirmed.component';
 import { ComponentTester } from 'ngx-speculoos';
-import { Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { Basket } from '../basket.model';
 import { provideI18nTesting } from '../../i18n/mock-18n.spec';
 
 @Component({
   template: `<rb-confirmed [basket]="basket" />`,
-  imports: [ConfirmedComponent]
+  imports: [ConfirmedComponent],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 class TestComponent {
   basket = {
@@ -28,13 +29,13 @@ class TestComponentTester extends ComponentTester<TestComponent> {
 describe('ConfirmedComponent', () => {
   let tester: TestComponentTester;
 
-  beforeEach(() => {
+  beforeEach(async () => {
     TestBed.configureTestingModule({
       providers: [provideI18nTesting()]
     });
 
     tester = new TestComponentTester();
-    tester.detectChanges();
+    await tester.stable();
   });
 
   it('should display some text, containing the email', () => {

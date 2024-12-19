@@ -42,7 +42,7 @@ describe('CsvModalComponent', () => {
   let parser: jasmine.SpyObj<OrderCsvParserService>;
   let activeModal: jasmine.SpyObj<NgbActiveModal>;
 
-  beforeEach(() => {
+  beforeEach(async () => {
     parser = createMock(OrderCsvParserService);
     activeModal = createMock(NgbActiveModal);
 
@@ -56,7 +56,7 @@ describe('CsvModalComponent', () => {
 
     tester = new CsvModalComponentTester();
 
-    tester.detectChanges();
+    await tester.stable();
   });
 
   it('should display no error and no item initially', () => {
@@ -66,7 +66,7 @@ describe('CsvModalComponent', () => {
     expect(tester.addItemsButton.disabled).toBe(true);
   });
 
-  it('should parse and display errors', () => {
+  it('should parse and display errors', async () => {
     parser.parse.and.returnValue({
       errors: [
         {
@@ -77,7 +77,7 @@ describe('CsvModalComponent', () => {
       items: []
     });
 
-    tester.csv.fillWith('foo;"');
+    await tester.csv.fillWith('foo;"');
     expect(tester.csvErrorsAlert).not.toBeNull();
     expect(tester.csvErrors.length).toBe(1);
     expect(tester.csvErrors[0].element('th')).toHaveText('1');
@@ -86,7 +86,7 @@ describe('CsvModalComponent', () => {
     expect(tester.addItemsButton.disabled).toBe(true);
   });
 
-  it('should parse and display items', () => {
+  it('should parse and display items', async () => {
     parser.parse.and.returnValue({
       errors: [],
       items: [
@@ -109,7 +109,7 @@ describe('CsvModalComponent', () => {
       ]
     });
 
-    tester.csv.fillWith('correct"');
+    await tester.csv.fillWith('correct"');
     expect(tester.csvErrorsAlert).toBeNull();
     expect(tester.items.length).toBe(2);
     expect(tester.items[0]).toContainText('rosa rosa1');
@@ -119,7 +119,7 @@ describe('CsvModalComponent', () => {
     expect(tester.addItemsButton.disabled).toBe(false);
   });
 
-  it('should add items', () => {
+  it('should add items', async () => {
     const items: Array<OrderItemCommand> = [
       {
         accession: {
@@ -135,13 +135,13 @@ describe('CsvModalComponent', () => {
       items
     });
 
-    tester.csv.fillWith('correct"');
-    tester.addItemsButton.click();
+    await tester.csv.fillWith('correct"');
+    await tester.addItemsButton.click();
     expect(activeModal.close).toHaveBeenCalledWith(items);
   });
 
-  it('should dismiss', () => {
-    tester.dismissButton.click();
+  it('should dismiss', async () => {
+    await tester.dismissButton.click();
     expect(activeModal.dismiss).toHaveBeenCalled();
   });
 });

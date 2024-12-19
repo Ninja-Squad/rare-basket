@@ -86,7 +86,7 @@ describe('StatisticsComponent', () => {
   let statistics: OrderStatistics;
   let route: ActivatedRouteStub;
 
-  beforeEach(() => {
+  beforeEach(async () => {
     route = stubRoute();
 
     user = {
@@ -160,13 +160,13 @@ describe('StatisticsComponent', () => {
       ]
     });
 
-    TestBed.createComponent(ValidationDefaultsComponent).detectChanges();
+    await TestBed.createComponent(ValidationDefaultsComponent).whenStable();
   });
 
   describe('initialization, with global visualization user', () => {
-    it('should initialize form when no query param', () => {
+    it('should initialize form when no query param', async () => {
       tester = new StatisticsComponentTester();
-      tester.detectChanges();
+      await tester.stable();
 
       const currentYear = new Date().getFullYear();
       expect(tester.from).toHaveValue(`01/01/${currentYear}`);
@@ -177,20 +177,20 @@ describe('StatisticsComponent', () => {
       expect(tester.grcs.length).toBe(0);
       expect(tester.perimeter).toContainText('Pour tous les CRBs');
 
-      tester.editPerimeterButton.click();
+      await tester.editPerimeterButton.click();
       expect(tester.perimeter).toBeNull();
 
       expect(tester.noGlobalVisualizationRadio).not.toBeChecked();
       expect(tester.globalVisualizationRadio).toBeChecked();
       expect(tester.grcs.length).toBe(0);
 
-      tester.noGlobalVisualizationRadio.check();
+      await tester.noGlobalVisualizationRadio.check();
       expect(tester.globalVisualizationRadio).not.toBeChecked();
       expect(tester.grcs.length).toBe(3);
       tester.grcs.forEach(grc => expect(grc).not.toBeChecked());
     });
 
-    it('should initialize form when query params present', () => {
+    it('should initialize form when query params present', async () => {
       route.setQueryParams({
         from: '2019-01-01',
         to: '2020-01-01',
@@ -198,14 +198,14 @@ describe('StatisticsComponent', () => {
       });
 
       tester = new StatisticsComponentTester();
-      tester.detectChanges();
+      await tester.stable();
 
       expect(tester.from).toHaveValue(`01/01/2019`);
       expect(tester.to.value).toMatch('01/01/2020');
 
       expect(tester.perimeter).toContainText('Pour le(s) CRB(s) suivant(s)\u00a0: GRC2, GRC3');
 
-      tester.editPerimeterButton.click();
+      await tester.editPerimeterButton.click();
       expect(tester.perimeter).toBeNull();
 
       expect(tester.noGlobalVisualizationRadio).toBeChecked();
@@ -217,9 +217,9 @@ describe('StatisticsComponent', () => {
       expect(tester.grcs[2]).toBeChecked();
     });
 
-    it('should display numbers, charts and tables', () => {
+    it('should display numbers, charts and tables', async () => {
       tester = new StatisticsComponentTester();
-      tester.detectChanges();
+      await tester.stable();
 
       const currentYear = new Date().getFullYear();
       const now = new Date();
@@ -250,7 +250,7 @@ describe('StatisticsComponent', () => {
       expect(tester.orderStatusStats[0]).toContainText('24 (60 %)');
     });
 
-    it('should display charts and tables for the given parameters', () => {
+    it('should display charts and tables for the given parameters', async () => {
       route.setQueryParams({
         from: '2019-01-01',
         to: '2020-01-01',
@@ -258,7 +258,7 @@ describe('StatisticsComponent', () => {
       });
 
       tester = new StatisticsComponentTester();
-      tester.detectChanges();
+      await tester.stable();
 
       expect(tester.from).toHaveValue('01/01/2019');
       expect(tester.to).toHaveValue('01/01/2020');
@@ -272,9 +272,9 @@ describe('StatisticsComponent', () => {
       user.visualizationGrcs = [allGrcs[0], allGrcs[1]];
     });
 
-    it('should initialize form when no query param', () => {
+    it('should initialize form when no query param', async () => {
       tester = new StatisticsComponentTester();
-      tester.detectChanges();
+      await tester.stable();
 
       const currentYear = new Date().getFullYear();
       expect(tester.from).toHaveValue(`01/01/${currentYear}`);
@@ -285,7 +285,7 @@ describe('StatisticsComponent', () => {
       expect(tester.grcs.length).toBe(0);
       expect(tester.perimeter).toContainText('Pour le(s) CRB(s) suivant(s)\u00a0: GRC1, GRC2');
 
-      tester.editPerimeterButton.click();
+      await tester.editPerimeterButton.click();
       expect(tester.perimeter).toBeNull();
 
       expect(tester.noGlobalVisualizationRadio).toBeNull();
@@ -294,7 +294,7 @@ describe('StatisticsComponent', () => {
       tester.grcs.forEach(grc => expect(grc).toBeChecked());
     });
 
-    it('should initialize form when query params present', () => {
+    it('should initialize form when query params present', async () => {
       route.setQueryParams({
         from: '2019-01-01',
         to: '2020-01-01',
@@ -302,14 +302,14 @@ describe('StatisticsComponent', () => {
       });
 
       tester = new StatisticsComponentTester();
-      tester.detectChanges();
+      await tester.stable();
 
       expect(tester.from).toHaveValue(`01/01/2019`);
       expect(tester.to.value).toMatch('01/01/2020');
 
       expect(tester.perimeter).toContainText('Pour le(s) CRB(s) suivant(s)\u00a0: GRC2');
 
-      tester.editPerimeterButton.click();
+      await tester.editPerimeterButton.click();
       expect(tester.perimeter).toBeNull();
 
       expect(tester.grcs.length).toBe(2);
@@ -318,9 +318,9 @@ describe('StatisticsComponent', () => {
       expect(tester.grcs[1]).toBeChecked();
     });
 
-    it('should get statistics', () => {
+    it('should get statistics', async () => {
       tester = new StatisticsComponentTester();
-      tester.detectChanges();
+      await tester.stable();
 
       const currentYear = new Date().getFullYear();
       const now = new Date();
@@ -333,7 +333,7 @@ describe('StatisticsComponent', () => {
       });
     });
 
-    it('should display charts and tables for the given parameters', () => {
+    it('should display charts and tables for the given parameters', async () => {
       route.setQueryParams({
         from: '2019-01-01',
         to: '2020-01-01',
@@ -341,7 +341,7 @@ describe('StatisticsComponent', () => {
       });
 
       tester = new StatisticsComponentTester();
-      tester.detectChanges();
+      await tester.stable();
 
       expect(tester.from).toHaveValue('01/01/2019');
       expect(tester.to).toHaveValue('01/01/2020');
@@ -355,9 +355,9 @@ describe('StatisticsComponent', () => {
       user.visualizationGrcs = [allGrcs[0]];
     });
 
-    it('should initialize form when no query param', () => {
+    it('should initialize form when no query param', async () => {
       tester = new StatisticsComponentTester();
-      tester.detectChanges();
+      await tester.stable();
 
       const currentYear = new Date().getFullYear();
       expect(tester.from).toHaveValue(`01/01/${currentYear}`);
@@ -371,7 +371,7 @@ describe('StatisticsComponent', () => {
       expect(tester.editPerimeterButton).toBeNull();
     });
 
-    it('should initialize form when query params present', () => {
+    it('should initialize form when query params present', async () => {
       route.setQueryParams({
         from: '2019-01-01',
         to: '2020-01-01',
@@ -379,7 +379,7 @@ describe('StatisticsComponent', () => {
       });
 
       tester = new StatisticsComponentTester();
-      tester.detectChanges();
+      await tester.stable();
 
       expect(tester.from).toHaveValue(`01/01/2019`);
       expect(tester.to.value).toMatch('01/01/2020');
@@ -388,9 +388,9 @@ describe('StatisticsComponent', () => {
       expect(tester.editPerimeterButton).toBeNull();
     });
 
-    it('should get statistics', () => {
+    it('should get statistics', async () => {
       tester = new StatisticsComponentTester();
-      tester.detectChanges();
+      await tester.stable();
 
       const currentYear = new Date().getFullYear();
       const now = new Date();
@@ -403,7 +403,7 @@ describe('StatisticsComponent', () => {
       });
     });
 
-    it('should display charts and tables for the given parameters', () => {
+    it('should display charts and tables for the given parameters', async () => {
       route.setQueryParams({
         from: '2019-01-01',
         to: '2020-01-01',
@@ -411,7 +411,7 @@ describe('StatisticsComponent', () => {
       });
 
       tester = new StatisticsComponentTester();
-      tester.detectChanges();
+      await tester.stable();
 
       expect(tester.from).toHaveValue('01/01/2019');
       expect(tester.to).toHaveValue('01/01/2020');
@@ -420,17 +420,17 @@ describe('StatisticsComponent', () => {
   });
 
   describe('after first display', () => {
-    beforeEach(() => {
+    beforeEach(async () => {
       tester = new StatisticsComponentTester();
-      tester.detectChanges();
+      await tester.stable();
       router.navigate.calls.reset();
       orderService.getStatistics.calls.reset();
     });
 
-    it('should navigate and refresh', () => {
-      tester.from.fillWith('2019-01-01');
-      tester.to.fillWith('2019-02-01');
-      tester.refreshButton.click();
+    it('should navigate and refresh', async () => {
+      await tester.from.fillWith('2019-01-01');
+      await tester.to.fillWith('2019-02-01');
+      await tester.refreshButton.click();
 
       expect(router.navigate).toHaveBeenCalledWith([], {
         queryParams: { from: '2019-01-01', to: '2019-02-01' },
@@ -439,24 +439,24 @@ describe('StatisticsComponent', () => {
       expect(orderService.getStatistics).toHaveBeenCalledWith('2019-01-01', '2019-02-01', []);
     });
 
-    it('should not navigate and refresh if invalid', () => {
-      tester.from.fillWith('2019-02-01');
-      tester.to.fillWith('2019-01-31');
-      tester.refreshButton.click();
+    it('should not navigate and refresh if invalid', async () => {
+      await tester.from.fillWith('2019-02-01');
+      await tester.to.fillWith('2019-01-31');
+      await tester.refreshButton.click();
 
       expect(tester.errors.length).toBe(1);
       expect(tester.testElement).toContainText('La plage de dates est invalide');
 
-      tester.from.fillWith('');
-      tester.to.fillWith('');
-      tester.refreshButton.click();
+      await tester.from.fillWith('');
+      await tester.to.fillWith('');
+      await tester.refreshButton.click();
 
       // required errors are not displayed because it messes up the layout, but the form should be invalid
       expect(tester.componentInstance.form.invalid).toBe(true);
 
-      tester.editPerimeterButton.click();
-      tester.noGlobalVisualizationRadio.check();
-      tester.grcs.forEach(grc => grc.uncheck());
+      await tester.editPerimeterButton.click();
+      await tester.noGlobalVisualizationRadio.check();
+      tester.grcs.forEach(async grc => await grc.uncheck());
 
       expect(tester.errors.length).toBe(1);
       expect(tester.testElement).toContainText('Au moins un CRB doit être sélectionné');
@@ -467,17 +467,17 @@ describe('StatisticsComponent', () => {
   });
 
   describe('after first display', () => {
-    beforeEach(() => {
+    beforeEach(async () => {
       tester = new StatisticsComponentTester();
-      tester.detectChanges();
+      await tester.stable();
       router.navigate.calls.reset();
       orderService.getStatistics.calls.reset();
     });
 
-    it('should navigate and refresh', () => {
-      tester.from.fillWith('2019-01-01');
-      tester.to.fillWith('2019-02-01');
-      tester.refreshButton.click();
+    it('should navigate and refresh', async () => {
+      await tester.from.fillWith('2019-01-01');
+      await tester.to.fillWith('2019-02-01');
+      await tester.refreshButton.click();
 
       expect(router.navigate).toHaveBeenCalledWith([], {
         queryParams: { from: '2019-01-01', to: '2019-02-01' },
@@ -486,24 +486,24 @@ describe('StatisticsComponent', () => {
       expect(orderService.getStatistics).toHaveBeenCalledWith('2019-01-01', '2019-02-01', []);
     });
 
-    it('should not navigate and refresh if invalid', () => {
-      tester.from.fillWith('2019-02-01');
-      tester.to.fillWith('2019-01-31');
-      tester.refreshButton.click();
+    it('should not navigate and refresh if invalid', async () => {
+      await tester.from.fillWith('2019-02-01');
+      await tester.to.fillWith('2019-01-31');
+      await tester.refreshButton.click();
 
       expect(tester.errors.length).toBe(1);
       expect(tester.testElement).toContainText('La plage de dates est invalide');
 
-      tester.from.fillWith('');
-      tester.to.fillWith('');
-      tester.refreshButton.click();
+      await tester.from.fillWith('');
+      await tester.to.fillWith('');
+      await tester.refreshButton.click();
 
       // required errors are not displayed because it messes up the layout, but the form should be invalid
       expect(tester.componentInstance.form.invalid).toBe(true);
 
-      tester.editPerimeterButton.click();
-      tester.noGlobalVisualizationRadio.check();
-      tester.grcs.forEach(grc => grc.uncheck());
+      await tester.editPerimeterButton.click();
+      await tester.noGlobalVisualizationRadio.check();
+      await tester.grcs.forEach(grc => grc.uncheck());
 
       expect(tester.errors.length).toBe(1);
       expect(tester.testElement).toContainText('Au moins un CRB doit être sélectionné');
@@ -512,11 +512,11 @@ describe('StatisticsComponent', () => {
       expect(orderService.getStatistics).not.toHaveBeenCalled();
     });
 
-    it('should not display charts and tables if no order', () => {
+    it('should not display charts and tables if no order', async () => {
       statistics.createdOrderCount = 0;
       statistics.finalizedOrderCount = 0;
 
-      tester.refreshButton.click();
+      await tester.refreshButton.click();
 
       expect(tester.orderStatusStats.length).toBe(0);
       expect(tester.orderStatusChart).toBeNull();

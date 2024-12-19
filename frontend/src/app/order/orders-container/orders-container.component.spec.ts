@@ -27,7 +27,7 @@ describe('OrdersContainerComponent', () => {
   let authenticationService: jasmine.SpyObj<AuthenticationService>;
   let currentUserSubject: BehaviorSubject<User>;
 
-  beforeEach(() => {
+  beforeEach(async () => {
     currentUserSubject = new BehaviorSubject<User>({
       permissions: ['ORDER_MANAGEMENT', 'ORDER_VISUALIZATION']
     } as User);
@@ -39,20 +39,20 @@ describe('OrdersContainerComponent', () => {
     });
 
     tester = new OrdersContainerComponentTester();
-    tester.detectChanges();
+    await tester.stable();
   });
 
   it('should have a router outlet', () => {
     expect(tester.routerOutlet).toBeTruthy();
   });
 
-  it('should display tabs depending on user permissions', () => {
+  it('should display tabs depending on user permissions', async () => {
     expect(tester.tabs.length).toBe(4);
 
     currentUserSubject.next({
       permissions: ['ORDER_MANAGEMENT']
     } as User);
-    tester.detectChanges();
+    await tester.stable();
     expect(tester.tabs.length).toBe(2);
     expect(tester.tabs[0]).toContainText('En cours');
     expect(tester.tabs[1]).toContainText('Terminées');
@@ -60,7 +60,7 @@ describe('OrdersContainerComponent', () => {
     currentUserSubject.next({
       permissions: ['ORDER_VISUALIZATION']
     } as User);
-    tester.detectChanges();
+    await tester.stable();
     expect(tester.tabs.length).toBe(2);
     expect(tester.tabs[0]).toContainText('Statistiques');
     expect(tester.tabs[1]).toContainText('Export');

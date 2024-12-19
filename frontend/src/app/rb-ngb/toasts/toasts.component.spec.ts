@@ -1,4 +1,4 @@
-import { fakeAsync, TestBed, tick } from '@angular/core/testing';
+import { TestBed } from '@angular/core/testing';
 
 import { ToastsComponent } from './toasts.component';
 import { ComponentTester, createMock } from 'ngx-speculoos';
@@ -21,7 +21,7 @@ describe('ToastsComponent', () => {
   let tester: ToastsComponentTester;
   let toastsSubject: Subject<Toast>;
 
-  beforeEach(() => {
+  beforeEach(async () => {
     const toastService = createMock(ToastService);
     toastsSubject = new Subject<Toast>();
     toastService.toasts.and.returnValue(toastsSubject);
@@ -29,36 +29,39 @@ describe('ToastsComponent', () => {
     TestBed.configureTestingModule({
       providers: [provideDisabledNgbAnimation(), { provide: ToastService, useValue: toastService }]
     });
+    jasmine.clock().install();
 
     tester = new ToastsComponentTester();
-    tester.detectChanges();
+    await tester.stable();
   });
 
-  it('should display toasts and make them disappear', fakeAsync(() => {
+  afterEach(() => jasmine.clock().uninstall());
+
+  it('should display toasts and make them disappear', async () => {
     expect(tester.toasts.length).toBe(0);
 
     toastsSubject.next({ message: 'foo', type: 'error' });
-    tick(1);
-    tester.detectChanges();
+    jasmine.clock().tick(1);
+    await tester.stable();
     expect(tester.toasts.length).toBe(1);
     expect(tester.testElement).toContainText('foo');
 
-    tick(2500);
+    jasmine.clock().tick(2500);
     toastsSubject.next({ message: 'bar', type: 'success' });
-    tick(1);
-    tester.detectChanges();
+    jasmine.clock().tick(1);
+    await tester.stable();
     expect(tester.toasts.length).toBe(2);
     expect(tester.testElement).toContainText('foo');
     expect(tester.testElement).toContainText('bar');
 
-    tick(2500);
-    tester.detectChanges();
+    jasmine.clock().tick(2500);
+    await tester.stable();
     expect(tester.toasts.length).toBe(1);
     expect(tester.testElement).not.toContainText('foo');
     expect(tester.testElement).toContainText('bar');
 
-    tick(2500);
-    tester.detectChanges();
+    jasmine.clock().tick(2500);
+    await tester.stable();
     expect(tester.toasts.length).toBe(0);
-  }));
+  });
 });

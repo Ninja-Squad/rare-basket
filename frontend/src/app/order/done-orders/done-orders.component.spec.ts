@@ -130,17 +130,13 @@ describe('DoneOrdersComponent', () => {
     expect(tester.accessionHolder.optionLabels).toEqual([`tous les gestionnaires d'accessions`, 'AH1', 'AH2']);
     expect(tester.accessionHolder).toHaveSelectedLabel(`tous les gestionnaires d'accessions`);
 
-    tester.accessionHolder.selectLabel('AH1');
-    await tester.stable();
+    await tester.accessionHolder.selectLabel('AH1');
 
-    tester.detectChanges();
     expect(router.url).toBe('/orders/done?page=0&h=42');
     expect(tester.ordersComponent.orders()).toBe(page0ForAccessionHolder42);
 
-    tester.accessionHolder.selectLabel(`tous les gestionnaires d'accessions`);
+    await tester.accessionHolder.selectLabel(`tous les gestionnaires d'accessions`);
 
-    await tester.stable();
-    tester.detectChanges();
     expect(router.url).toBe('/orders/done?page=0');
     expect(tester.ordersComponent.orders()).toBe(page0);
   });

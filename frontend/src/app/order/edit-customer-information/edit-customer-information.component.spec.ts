@@ -2,7 +2,7 @@ import { TestBed } from '@angular/core/testing';
 
 import { EditCustomerInformationComponent } from './edit-customer-information.component';
 import { ComponentTester } from 'ngx-speculoos';
-import { Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { ALL_CUSTOMER_TYPES, ALL_LANGUAGES } from '../../basket/basket.model';
 import { CustomerInformationCommand } from '../order.model';
 import { ValidationDefaultsComponent } from '../../validation-defaults/validation-defaults.component';
@@ -12,7 +12,8 @@ import { provideI18nTesting } from '../../i18n/mock-18n.spec';
   template: `
     <rb-edit-customer-information [customerInformation]="customerInformation" (saved)="command = $event" (cancelled)="cancelled = true" />
   `,
-  imports: [EditCustomerInformationComponent]
+  imports: [EditCustomerInformationComponent],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 class TestComponent {
   customerInformation: CustomerInformationCommand = {
@@ -88,18 +89,18 @@ class TestComponentTester extends ComponentTester<TestComponent> {
 describe('EditCustomerComponent', () => {
   let tester: TestComponentTester;
 
-  beforeEach(() => {
+  beforeEach(async () => {
     TestBed.configureTestingModule({
       providers: [provideI18nTesting()]
     });
 
-    TestBed.createComponent(ValidationDefaultsComponent).detectChanges();
+    await TestBed.createComponent(ValidationDefaultsComponent).whenStable();
 
     tester = new TestComponentTester();
   });
 
-  it('should display a filled form', () => {
-    tester.detectChanges();
+  it('should display a filled form', async () => {
+    await tester.stable();
 
     expect(tester.name).toHaveValue('John');
     expect(tester.organization).toHaveValue('Wheat SA');
@@ -117,41 +118,41 @@ describe('EditCustomerComponent', () => {
     expect(tester.cancelButton).toHaveClass('btn-sm');
   });
 
-  it('should not save if invalid', () => {
-    tester.detectChanges();
+  it('should not save if invalid', async () => {
+    await tester.stable();
 
-    tester.name.fillWith('');
-    tester.organization.fillWith('');
-    tester.email.fillWith('');
-    tester.deliveryAddress.fillWith('');
-    tester.billingAddress.fillWith('');
-    tester.type.selectLabel('');
-    tester.language.selectLabel('');
-    tester.rationale.fillWith('');
+    await tester.name.fillWith('');
+    await tester.organization.fillWith('');
+    await tester.email.fillWith('');
+    await tester.deliveryAddress.fillWith('');
+    await tester.billingAddress.fillWith('');
+    await tester.type.selectLabel('');
+    await tester.language.selectLabel('');
+    await tester.rationale.fillWith('');
 
-    tester.saveButton.click();
+    await tester.saveButton.click();
 
     expect(tester.componentInstance.command).toBeNull();
     // name, email, delivery address, billing address, type, language are mandatory, but not organization nor rationale
     expect(tester.errors.length).toBe(6);
 
-    tester.email.fillWith('notAnEmail');
+    await tester.email.fillWith('notAnEmail');
     expect(tester.errors.length).toBe(6);
   });
 
-  it('should save', () => {
-    tester.detectChanges();
+  it('should save', async () => {
+    await tester.stable();
 
-    tester.name.fillWith('Jane');
-    tester.organization.fillWith('Wheat SAS');
-    tester.email.fillWith('jane@mail.com');
-    tester.deliveryAddress.fillWith('2, Main Street');
-    tester.billingAddress.fillWith('2, Main Street - billing service');
-    tester.type.selectLabel('Autre');
-    tester.language.selectLabel('Français');
-    tester.rationale.fillWith('foo');
+    await tester.name.fillWith('Jane');
+    await tester.organization.fillWith('Wheat SAS');
+    await tester.email.fillWith('jane@mail.com');
+    await tester.deliveryAddress.fillWith('2, Main Street');
+    await tester.billingAddress.fillWith('2, Main Street - billing service');
+    await tester.type.selectLabel('Autre');
+    await tester.language.selectLabel('Français');
+    await tester.rationale.fillWith('foo');
 
-    tester.saveButton.click();
+    await tester.saveButton.click();
 
     const expectedCommand: CustomerInformationCommand = {
       customer: {
@@ -168,27 +169,27 @@ describe('EditCustomerComponent', () => {
     expect(tester.componentInstance.command).toEqual(expectedCommand);
   });
 
-  it('should use the delivery address as the billing address', () => {
-    tester.detectChanges();
+  it('should use the delivery address as the billing address', async () => {
+    await tester.stable();
 
-    tester.name.fillWith('Jane');
-    tester.organization.fillWith('Wheat SAS');
-    tester.email.fillWith('jane@mail.com');
-    tester.deliveryAddress.fillWith('2, Main Street');
-    tester.useDeliveryAddress.check();
+    await tester.name.fillWith('Jane');
+    await tester.organization.fillWith('Wheat SAS');
+    await tester.email.fillWith('jane@mail.com');
+    await tester.deliveryAddress.fillWith('2, Main Street');
+    await tester.useDeliveryAddress.check();
     expect(tester.billingAddress.disabled).toBe(true);
-    tester.type.selectLabel('Autre');
-    tester.language.selectLabel('Français');
-    tester.rationale.fillWith('foo');
+    await tester.type.selectLabel('Autre');
+    await tester.language.selectLabel('Français');
+    await tester.rationale.fillWith('foo');
 
-    tester.saveButton.click();
+    await tester.saveButton.click();
     expect(tester.componentInstance.command.customer.billingAddress).toEqual(tester.componentInstance.command.customer.deliveryAddress);
   });
 
-  it('should cancel', () => {
-    tester.detectChanges();
+  it('should cancel', async () => {
+    await tester.stable();
 
-    tester.cancelButton.click();
+    await tester.cancelButton.click();
     expect(tester.componentInstance.cancelled).toBe(true);
   });
 });

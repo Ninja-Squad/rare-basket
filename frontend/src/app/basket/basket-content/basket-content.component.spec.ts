@@ -1,14 +1,15 @@
 import { TestBed } from '@angular/core/testing';
 
 import { BasketContentComponent } from './basket-content.component';
-import { Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { Basket } from '../basket.model';
 import { ComponentTester } from 'ngx-speculoos';
 import { provideI18nTesting } from '../../i18n/mock-18n.spec';
 
 @Component({
   template: '<rb-basket-content [basket]="basket" />',
-  imports: [BasketContentComponent]
+  imports: [BasketContentComponent],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 class TestComponent {
   basket = {
@@ -99,8 +100,9 @@ describe('BasketContentComponent', () => {
     tester = new TestComponentTester();
   });
 
-  it('should display customer information', () => {
-    tester.detectChanges();
+  it('should display customer information', async () => {
+    tester = new TestComponentTester();
+    await tester.stable();
 
     expect(tester.testElement).toContainText('John');
     expect(tester.testElement).toContainText('Boom Inc.');
@@ -112,8 +114,8 @@ describe('BasketContentComponent', () => {
     expect(tester.testElement).not.toContainText('Français');
   });
 
-  it('should display one section per accession holder basket', () => {
-    tester.detectChanges();
+  it('should display one section per accession holder basket', async () => {
+    await tester.stable();
 
     expect(tester.accessionHolderTitles.length).toBe(2);
     expect(tester.accessionHolderTitles[0]).toHaveText('GRC1 - Contact1');
@@ -121,8 +123,8 @@ describe('BasketContentComponent', () => {
     expect(tester.itemTables.length).toBe(2);
   });
 
-  it('should display basket items', () => {
-    tester.detectChanges();
+  it('should display basket items', async () => {
+    await tester.stable();
 
     expect(tester.itemTableHeadings(0).length).toBe(2);
     expect(tester.items.length).toBe(3);
@@ -135,11 +137,11 @@ describe('BasketContentComponent', () => {
     expect(tester.itemTableHeadings(0).length).toBe(2);
   });
 
-  it('should display basket items without quantity if no item has a quantity', () => {
+  it('should display basket items without quantity if no item has a quantity', async () => {
     tester.componentInstance.basket.accessionHolderBaskets.forEach(accessionHolderBasket => {
       accessionHolderBasket.items.forEach(item => (item.quantity = null));
     });
-    tester.detectChanges();
+    await tester.stable();
 
     expect(tester.itemTableHeadings(0).length).toBe(1);
     expect(tester.itemTableHeadings(1).length).toBe(1);

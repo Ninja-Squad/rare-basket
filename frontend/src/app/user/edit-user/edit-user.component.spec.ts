@@ -1,7 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 
 import { EditUserComponent } from './edit-user.component';
-import { ComponentTester, createMock, stubRoute, TestInput } from 'ngx-speculoos';
+import { ActivatedRouteStub, ComponentTester, createMock, stubRoute, TestInput } from 'ngx-speculoos';
 import { AccessionHolder, Grc, User, UserCommand } from '../../shared/user.model';
 import { UserService } from '../user.service';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -69,12 +69,14 @@ describe('EditUserComponent', () => {
   let grcService: jasmine.SpyObj<GrcService>;
   let router: Router;
   let toastService: jasmine.SpyObj<ToastService>;
+  let route: ActivatedRouteStub;
 
-  function prepare(route: ActivatedRoute) {
+  beforeEach(async () => {
     userService = createMock(UserService);
     accessionHolderService = createMock(AccessionHolderService);
     grcService = createMock(GrcService);
     toastService = createMock(ToastService);
+    route = stubRoute();
 
     TestBed.configureTestingModule({
       providers: [
@@ -90,7 +92,7 @@ describe('EditUserComponent', () => {
     router = TestBed.inject(Router);
     spyOn(router, 'navigate');
 
-    TestBed.createComponent(ValidationDefaultsComponent).detectChanges();
+    await TestBed.createComponent(ValidationDefaultsComponent).whenStable();
 
     accessionHolderService.list.and.returnValue(
       of([
@@ -133,21 +135,19 @@ describe('EditUserComponent', () => {
         }
       ] as Array<Grc>)
     );
-  }
+  });
 
   describe('in create mode', () => {
-    beforeEach(() => {
-      const route = stubRoute();
-      prepare(route);
+    beforeEach(async () => {
       tester = new EditUserComponentTester();
-      tester.detectChanges();
+      await tester.stable();
     });
 
     it('should have a title', () => {
       expect(tester.title).toContainText('Créer un utilisateur');
     });
 
-    it('should display an empty form', () => {
+    it('should display an empty form', async () => {
       expect(tester.name).toHaveValue('');
       expect(tester.orderManagement).not.toBeChecked();
       expect(tester.orderVisualization).not.toBeChecked();
@@ -158,11 +158,11 @@ describe('EditUserComponent', () => {
       expect(tester.globalVisualization).toBeNull();
       expect(tester.visualizationGrcs.length).toBe(0);
 
-      tester.orderManagement.check();
+      await tester.orderManagement.check();
 
       expect(tester.accessionHolders.length).toBe(3);
 
-      tester.orderVisualization.check();
+      await tester.orderVisualization.check();
 
       expect(tester.noGlobalVisualization).not.toBeNull();
       expect(tester.globalVisualization).not.toBeNull();
@@ -170,58 +170,58 @@ describe('EditUserComponent', () => {
       expect(tester.globalVisualization).not.toBeChecked();
       expect(tester.visualizationGrcs.length).toBe(2);
 
-      tester.globalVisualization.check();
+      await tester.globalVisualization.check();
       expect(tester.visualizationGrcs.length).toBe(0);
     });
 
-    it('should not save if error', () => {
+    it('should not save if error', async () => {
       expect(tester.errors.length).toBe(0);
 
-      tester.saveButton.click();
+      await tester.saveButton.click();
 
       expect(tester.errors.length).toBe(1);
       expect(tester.errors[0]).toContainText('Le nom est obligatoire');
-      tester.name.fillWith('Test');
+      await tester.name.fillWith('Test');
       expect(tester.componentInstance.form.valid).toBe(true);
 
-      tester.orderManagement.check();
+      await tester.orderManagement.check();
       expect(tester.componentInstance.form.valid).toBe(false);
 
       expect(tester.errors.length).toBe(1);
       expect(tester.errors[0]).toContainText(`Au moins un gestionnaire d'accessions doit être sélectionné`);
 
-      tester.orderManagement.uncheck();
+      await tester.orderManagement.uncheck();
       expect(tester.componentInstance.form.valid).toBe(true);
       expect(tester.errors.length).toBe(0);
 
-      tester.orderVisualization.check();
+      await tester.orderVisualization.check();
       expect(tester.componentInstance.form.valid).toBe(false);
       expect(tester.errors.length).toBe(1);
       expect(tester.errors[0]).toContainText(`Au moins un CRB doit être sélectionné`);
 
-      tester.globalVisualization.check();
+      await tester.globalVisualization.check();
       expect(tester.componentInstance.form.valid).toBe(true);
       expect(tester.errors.length).toBe(0);
 
-      tester.noGlobalVisualization.check();
+      await tester.noGlobalVisualization.check();
       expect(tester.componentInstance.form.valid).toBe(false);
 
-      tester.orderVisualization.uncheck();
+      await tester.orderVisualization.uncheck();
       expect(tester.componentInstance.form.valid).toBe(true);
 
       expect(userService.create).not.toHaveBeenCalled();
     });
 
-    it('should create user', () => {
-      tester.name.fillWith('Test');
-      tester.orderManagement.check();
-      tester.accessionHolders[1].check();
+    it('should create user', async () => {
+      await tester.name.fillWith('Test');
+      await tester.orderManagement.check();
+      await tester.accessionHolders[1].check();
 
-      tester.orderVisualization.check();
-      tester.visualizationGrcs[1].check();
+      await tester.orderVisualization.check();
+      await tester.visualizationGrcs[1].check();
 
       userService.create.and.returnValue(of({} as User));
-      tester.saveButton.click();
+      await tester.saveButton.click();
 
       const expectedCommand: UserCommand = {
         name: 'Test',
@@ -237,11 +237,8 @@ describe('EditUserComponent', () => {
   });
 
   describe('in update mode', () => {
-    beforeEach(() => {
-      const route = stubRoute({
-        params: { userId: '42' }
-      });
-      prepare(route);
+    beforeEach(async () => {
+      route.setParam('userId', '42');
       userService.get.and.returnValue(
         of({
           id: 42,
@@ -258,7 +255,7 @@ describe('EditUserComponent', () => {
       );
 
       tester = new EditUserComponentTester();
-      tester.detectChanges();
+      await tester.stable();
     });
 
     it('should have a title', () => {
@@ -279,14 +276,14 @@ describe('EditUserComponent', () => {
       expect(tester.administration).not.toBeChecked();
     });
 
-    it('should update user', () => {
-      tester.name.fillWith('Test2');
-      tester.orderManagement.uncheck();
-      tester.orderVisualization.uncheck();
-      tester.administration.check();
+    it('should update user', async () => {
+      await tester.name.fillWith('Test2');
+      await tester.orderManagement.uncheck();
+      await tester.orderVisualization.uncheck();
+      await tester.administration.check();
 
       userService.update.and.returnValue(of(undefined));
-      tester.saveButton.click();
+      await tester.saveButton.click();
 
       const expectedCommand: UserCommand = {
         name: 'Test2',

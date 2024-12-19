@@ -1,5 +1,5 @@
 import { FormControlValidationDirective } from './form-control-validation.directive';
-import { Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { TestBed } from '@angular/core/testing';
 import { ComponentTester } from 'ngx-speculoos';
@@ -13,7 +13,8 @@ import { ComponentTester } from 'ngx-speculoos';
       <button id="save">Save</button>
     </form>
   `,
-  imports: [ReactiveFormsModule, FormControlValidationDirective]
+  imports: [ReactiveFormsModule, FormControlValidationDirective],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 class FormComponent {
   personForm = new FormGroup({
@@ -41,25 +42,25 @@ class FormComponentTester extends ComponentTester<FormComponent> {
 describe('FormControlValidationDirective', () => {
   let tester: FormComponentTester;
 
-  beforeEach(() => {
+  beforeEach(async () => {
     TestBed.configureTestingModule({});
 
     tester = new FormComponentTester();
-    tester.detectChanges();
+    await tester.stable();
   });
 
-  it('should add the is-invalid CSS class when touched', () => {
+  it('should add the is-invalid CSS class when touched', async () => {
     expect(tester.lastName).not.toHaveClass('is-invalid');
 
-    tester.lastName.dispatchEventOfType('blur');
+    await tester.lastName.dispatchEventOfType('blur');
 
     expect(tester.lastName).toHaveClass('is-invalid');
   });
 
-  it('should add the is-invalid CSS class when enclosing form is submitted', () => {
+  it('should add the is-invalid CSS class when enclosing form is submitted', async () => {
     expect(tester.lastName).not.toHaveClass('is-invalid');
 
-    tester.save.click();
+    await tester.save.click();
 
     expect(tester.lastName).toHaveClass('is-invalid');
   });

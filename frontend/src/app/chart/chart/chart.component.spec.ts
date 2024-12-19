@@ -1,12 +1,13 @@
 import { ChartComponent } from './chart.component';
-import { Component, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
 import { ArcElement, Chart, ChartConfiguration, DoughnutController } from 'chart.js';
 import { TestBed } from '@angular/core/testing';
-import { ComponentTester, provideAutomaticChangeDetection } from 'ngx-speculoos';
+import { ComponentTester } from 'ngx-speculoos';
 
 @Component({
   template: '<rb-chart [configuration]="configuration()" />',
-  imports: [ChartComponent]
+  imports: [ChartComponent],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 class TestComponent {
   readonly configuration = signal<ChartConfiguration<'doughnut'>>({
@@ -30,9 +31,7 @@ describe('ChartComponent', () => {
   beforeEach(() => {
     Chart.register(DoughnutController, ArcElement);
 
-    TestBed.configureTestingModule({
-      providers: [provideAutomaticChangeDetection()]
-    });
+    TestBed.configureTestingModule({});
   });
 
   it('should display a chart', async () => {

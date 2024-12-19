@@ -41,7 +41,7 @@ describe('ExportOrdersComponent', () => {
   let orderService: jasmine.SpyObj<OrderService>;
   let downloadService: jasmine.SpyObj<DownloadService>;
 
-  beforeEach(() => {
+  beforeEach(async () => {
     orderService = createMock(OrderService);
     downloadService = createMock(DownloadService);
 
@@ -57,7 +57,7 @@ describe('ExportOrdersComponent', () => {
     TestBed.createComponent(ValidationDefaultsComponent).detectChanges();
 
     tester = new ExportOrdersComponentTester();
-    tester.detectChanges();
+    await tester.stable();
   });
 
   it('should display a form with pre-filled dates', () => {
@@ -66,36 +66,36 @@ describe('ExportOrdersComponent', () => {
     expect(tester.to.value).toMatch(/\d\d\/\d\d\/\d\d\d\d/);
   });
 
-  it('should do nothing if invalid', () => {
-    tester.to.fillWith('01/01/2019');
-    tester.exportButton.click();
+  it('should do nothing if invalid', async () => {
+    await tester.to.fillWith('01/01/2019');
+    await tester.exportButton.click();
 
     expect(tester.errors.length).toBe(1);
     expect(tester.testElement).toContainText('La plage de dates est invalide');
 
-    tester.to.fillWith('');
-    tester.from.fillWith('');
+    await tester.to.fillWith('');
+    await tester.from.fillWith('');
     // required errors are not displayed because it messes up the layout, but the form should be invalid
     expect(tester.componentInstance.form.invalid).toBe(true);
 
     expect(orderService.exportReport).not.toHaveBeenCalled();
   });
 
-  it('should export', () => {
-    tester.from.fillWith('01/01/2020');
-    tester.to.fillWith('01/04/2020');
+  it('should export', async () => {
+    await tester.from.fillWith('01/01/2020');
+    await tester.to.fillWith('01/04/2020');
 
     const response = new HttpResponse<Blob>();
     const responseSubject = new Subject<HttpResponse<Blob>>();
     orderService.exportReport.and.returnValue(responseSubject);
 
-    tester.exportButton.click();
+    await tester.exportButton.click();
 
     expect(tester.exportSpinner).not.toBeNull();
 
     responseSubject.next(response);
     responseSubject.complete();
-    tester.detectChanges();
+    await tester.stable();
 
     expect(tester.exportSpinner).toBeNull();
     expect(orderService.exportReport).toHaveBeenCalledWith('2020-01-01', '2020-04-01');

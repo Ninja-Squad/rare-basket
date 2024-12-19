@@ -1,4 +1,4 @@
-import { Component, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { faExclamationTriangle } from '@fortawesome/free-solid-svg-icons';
 
@@ -9,7 +9,8 @@ import { TranslateModule } from '@ngx-translate/core';
   selector: 'rb-finalization-warnings-modal',
   templateUrl: './finalization-warnings-modal.component.html',
   styleUrl: './finalization-warnings-modal.component.scss',
-  imports: [TranslateModule, FaIconComponent]
+  imports: [TranslateModule, FaIconComponent],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class FinalizationWarningsModalComponent {
   readonly activeModal = inject(NgbActiveModal);

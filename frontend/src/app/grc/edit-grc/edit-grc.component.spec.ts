@@ -1,7 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 import { ActivatedRoute, Router } from '@angular/router';
 import { of } from 'rxjs';
-import { ComponentTester, createMock, stubRoute } from 'ngx-speculoos';
+import { ActivatedRouteStub, ComponentTester, createMock, stubRoute } from 'ngx-speculoos';
 
 import { EditGrcComponent } from './edit-grc.component';
 import { ValidationDefaultsComponent } from '../../validation-defaults/validation-defaults.component';
@@ -45,8 +45,10 @@ describe('EditGrcComponent', () => {
   let grcService: jasmine.SpyObj<GrcService>;
   let router: Router;
   let toastService: jasmine.SpyObj<ToastService>;
+  let route: ActivatedRouteStub;
 
-  function prepare(route: ActivatedRoute) {
+  beforeEach(async () => {
+    route = stubRoute();
     grcService = createMock(GrcService);
     toastService = createMock(ToastService);
 
@@ -62,15 +64,13 @@ describe('EditGrcComponent', () => {
     router = TestBed.inject(Router);
     spyOn(router, 'navigate');
 
-    TestBed.createComponent(ValidationDefaultsComponent).detectChanges();
-  }
+    await TestBed.createComponent(ValidationDefaultsComponent).whenStable();
+  });
 
   describe('in create mode', () => {
-    beforeEach(() => {
-      const route = stubRoute();
-      prepare(route);
+    beforeEach(async () => {
       tester = new EditGrcComponentTester();
-      tester.detectChanges();
+      await tester.stable();
     });
 
     it('should have a title', () => {
@@ -83,10 +83,10 @@ describe('EditGrcComponent', () => {
       expect(tester.address).toHaveValue('');
     });
 
-    it('should not save if error', () => {
+    it('should not save if error', async () => {
       expect(tester.errors.length).toBe(0);
 
-      tester.saveButton.click();
+      await tester.saveButton.click();
 
       expect(tester.errors.length).toBe(3);
       expect(tester.errors[0]).toContainText('Le nom est obligatoire');
@@ -96,13 +96,13 @@ describe('EditGrcComponent', () => {
       expect(grcService.create).not.toHaveBeenCalled();
     });
 
-    it('should create a GRC', () => {
-      tester.name.fillWith('GRC1');
-      tester.institution.fillWith('INRAE');
-      tester.address.fillWith('12 Boulevard Marie Curie, 69007 LYON');
+    it('should create a GRC', async () => {
+      await tester.name.fillWith('GRC1');
+      await tester.institution.fillWith('INRAE');
+      await tester.address.fillWith('12 Boulevard Marie Curie, 69007 LYON');
 
       grcService.create.and.returnValue(of({} as Grc));
-      tester.saveButton.click();
+      await tester.saveButton.click();
 
       const expectedCommand: GrcCommand = {
         name: 'GRC1',
@@ -116,11 +116,8 @@ describe('EditGrcComponent', () => {
   });
 
   describe('in update mode', () => {
-    beforeEach(() => {
-      const route = stubRoute({
-        params: { grcId: '41' }
-      });
-      prepare(route);
+    beforeEach(async () => {
+      route.setParam('grcId', '41');
 
       grcService.get.and.returnValue(
         of({
@@ -132,7 +129,7 @@ describe('EditGrcComponent', () => {
       );
 
       tester = new EditGrcComponentTester();
-      tester.detectChanges();
+      await tester.stable();
     });
 
     it('should have a title', () => {
@@ -145,12 +142,12 @@ describe('EditGrcComponent', () => {
       expect(tester.address).toHaveValue('12 Boulevard Marie Curie, 69007 LYON');
     });
 
-    it('should update the GRC', () => {
-      tester.name.fillWith('GRC2');
-      tester.address.fillWith('13 Boulevard Marie Curie, 69007 LYON');
+    it('should update the GRC', async () => {
+      await tester.name.fillWith('GRC2');
+      await tester.address.fillWith('13 Boulevard Marie Curie, 69007 LYON');
 
       grcService.update.and.returnValue(of(undefined));
-      tester.saveButton.click();
+      await tester.saveButton.click();
 
       const expectedCommand: GrcCommand = {
         name: 'GRC2',

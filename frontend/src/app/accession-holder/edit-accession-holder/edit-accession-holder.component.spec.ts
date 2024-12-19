@@ -1,7 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 import { ActivatedRoute, Router } from '@angular/router';
 import { of } from 'rxjs';
-import { ComponentTester, createMock, stubRoute } from 'ngx-speculoos';
+import { ActivatedRouteStub, ComponentTester, createMock, stubRoute } from 'ngx-speculoos';
 
 import { EditAccessionHolderComponent } from './edit-accession-holder.component';
 import { AccessionHolderService } from '../../shared/accession-holder.service';
@@ -51,11 +51,13 @@ describe('EditAccessionHolderComponent', () => {
   let grcService: jasmine.SpyObj<GrcService>;
   let router: Router;
   let toastService: jasmine.SpyObj<ToastService>;
+  let route: ActivatedRouteStub;
 
-  function prepare(route: ActivatedRoute) {
+  beforeEach(async () => {
     accessionHolderService = createMock(AccessionHolderService);
     grcService = createMock(GrcService);
     toastService = createMock(ToastService);
+    route = stubRoute();
 
     TestBed.configureTestingModule({
       providers: [
@@ -70,7 +72,7 @@ describe('EditAccessionHolderComponent', () => {
     router = TestBed.inject(Router);
     spyOn(router, 'navigate');
 
-    TestBed.createComponent(ValidationDefaultsComponent).detectChanges();
+    await TestBed.createComponent(ValidationDefaultsComponent).whenStable();
 
     grcService.list.and.returnValue(
       of([
@@ -84,14 +86,12 @@ describe('EditAccessionHolderComponent', () => {
         }
       ] as Array<Grc>)
     );
-  }
+  });
 
   describe('in create mode', () => {
-    beforeEach(() => {
-      const route = stubRoute();
-      prepare(route);
+    beforeEach(async () => {
       tester = new EditAccessionHolderComponentTester();
-      tester.detectChanges();
+      await tester.stable();
     });
 
     it('should have a title', () => {
@@ -106,10 +106,10 @@ describe('EditAccessionHolderComponent', () => {
       expect(tester.grc.optionLabels).toEqual(['', 'GRC1', 'GRC2']);
     });
 
-    it('should not save if error', () => {
+    it('should not save if error', async () => {
       expect(tester.errors.length).toBe(0);
 
-      tester.saveButton.click();
+      await tester.saveButton.click();
 
       expect(tester.errors.length).toBe(4);
       expect(tester.errors[0]).toContainText('Le nom est obligatoire');
@@ -117,20 +117,20 @@ describe('EditAccessionHolderComponent', () => {
       expect(tester.errors[2]).toContainText('Le téléphone est obligatoire');
       expect(tester.errors[3]).toContainText('Le CRB est obligatoire');
 
-      tester.email.fillWith('bad-email');
+      await tester.email.fillWith('bad-email');
       expect(tester.errors[1]).toContainText('Le courriel doit être une adresse email valide');
 
       expect(accessionHolderService.create).not.toHaveBeenCalled();
     });
 
-    it('should create an accession holder', () => {
-      tester.name.fillWith('Cyril');
-      tester.email.fillWith('cyril@grc1.com');
-      tester.phone.fillWith('0601020304');
-      tester.grc.selectLabel('GRC1');
+    it('should create an accession holder', async () => {
+      await tester.name.fillWith('Cyril');
+      await tester.email.fillWith('cyril@grc1.com');
+      await tester.phone.fillWith('0601020304');
+      await tester.grc.selectLabel('GRC1');
 
       accessionHolderService.create.and.returnValue(of({} as AccessionHolder));
-      tester.saveButton.click();
+      await tester.saveButton.click();
 
       const expectedCommand: AccessionHolderCommand = {
         name: 'Cyril',
@@ -144,12 +144,9 @@ describe('EditAccessionHolderComponent', () => {
     });
   });
 
-  describe('in update mode', () => {
-    beforeEach(() => {
-      const route = stubRoute({
-        params: { accessionHolderId: '41' }
-      });
-      prepare(route);
+  describe('in update mode', async () => {
+    beforeEach(async () => {
+      route.setParam('accessionHolderId', '41');
       accessionHolderService.get.and.returnValue(
         of({
           id: 41,
@@ -162,7 +159,7 @@ describe('EditAccessionHolderComponent', () => {
         } as AccessionHolder)
       );
       tester = new EditAccessionHolderComponentTester();
-      tester.detectChanges();
+      await tester.stable();
     });
 
     it('should have a title', () => {
@@ -177,13 +174,13 @@ describe('EditAccessionHolderComponent', () => {
       expect(tester.grc.optionLabels).toEqual(['', 'GRC1', 'GRC2']);
     });
 
-    it('should update the accession holder', () => {
-      tester.name.fillWith('Cédric');
-      tester.email.fillWith('cedric@grc1.fr');
-      tester.grc.selectLabel('GRC1');
+    it('should update the accession holder', async () => {
+      await tester.name.fillWith('Cédric');
+      await tester.email.fillWith('cedric@grc1.fr');
+      await tester.grc.selectLabel('GRC1');
 
       accessionHolderService.update.and.returnValue(of(undefined));
-      tester.saveButton.click();
+      await tester.saveButton.click();
 
       const expectedCommand: AccessionHolderCommand = {
         name: 'Cédric',

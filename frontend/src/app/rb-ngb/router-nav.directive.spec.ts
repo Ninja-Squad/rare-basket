@@ -1,11 +1,13 @@
-import { fakeAsync, TestBed, tick } from '@angular/core/testing';
-import { Component } from '@angular/core';
-import { ComponentTester } from 'ngx-speculoos';
-import { provideRouter, Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
+import { TestBed } from '@angular/core/testing';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { RoutingTester } from 'ngx-speculoos';
+import { provideRouter, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { RouterNavDirective, RouterNavLinkDirective, RouterNavPanelDirective } from './router-nav.directive';
+import { RouterTestingHarness } from '@angular/router/testing';
 
 @Component({
-  template: ''
+  template: '',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 class PlaceholderComponent {}
 
@@ -26,15 +28,12 @@ class PlaceholderComponent {}
       <router-outlet />
     </div>
   `,
-  imports: [RouterLink, RouterLinkActive, RouterOutlet, RouterNavDirective, RouterNavPanelDirective, RouterNavLinkDirective]
+  imports: [RouterLink, RouterLinkActive, RouterOutlet, RouterNavDirective, RouterNavPanelDirective, RouterNavLinkDirective],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 class TestComponent {}
 
-class TestComponentTester extends ComponentTester<TestComponent> {
-  constructor() {
-    super(TestComponent);
-  }
-
+class TestComponentTester extends RoutingTester {
   get tabList() {
     return this.element('ul');
   }
@@ -55,22 +54,22 @@ describe('Router nav directives', () => {
     TestBed.configureTestingModule({
       providers: [
         provideRouter([
-          { path: 'foo', component: PlaceholderComponent },
-          { path: 'bar', component: PlaceholderComponent }
+          {
+            path: '',
+            component: TestComponent,
+            children: [
+              { path: 'foo', component: PlaceholderComponent },
+              { path: 'bar', component: PlaceholderComponent }
+            ]
+          }
         ])
       ]
     });
-
-    tester = new TestComponentTester();
-    TestBed.inject(Router).initialNavigation();
-
-    tester.detectChanges();
   });
 
-  it('should add class and accessibility attributes', fakeAsync(() => {
-    TestBed.inject(Router).navigate(['/foo']);
-    tick();
-    tester.detectChanges();
+  it('should add class and accessibility attributes', async () => {
+    tester = new TestComponentTester(await RouterTestingHarness.create('/foo'));
+    await tester.stable();
 
     expect(tester.tabList.attr('role')).toBe('tablist');
     expect(tester.tabList).toHaveClass('nav');
@@ -88,12 +87,10 @@ describe('Router nav directives', () => {
     expect(tester.tabPanel.attr('role')).toBe('tabpanel');
     expect(tester.tabPanel.attr('aria-labelledby')).toBe(tester.tabLinks[0].nativeElement.id);
 
-    TestBed.inject(Router).navigate(['/bar']);
-    tick();
-    tester.detectChanges();
+    await tester.harness.navigateByUrl('/bar');
 
     expect(tester.tabLinks[0].attr('aria-selected')).toBe('false');
     expect(tester.tabLinks[1].attr('aria-selected')).toBe('true');
     expect(tester.tabPanel.attr('aria-labelledby')).toBe('bar');
-  }));
+  });
 });

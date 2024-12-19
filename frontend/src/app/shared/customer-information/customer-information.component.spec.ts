@@ -1,16 +1,17 @@
 import { TestBed } from '@angular/core/testing';
-import { Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
 import { ComponentTester } from 'ngx-speculoos';
 import { Customer } from '../../basket/basket.model';
 import { CustomerInformationComponent } from './customer-information.component';
 import { provideI18nTesting } from '../../i18n/mock-18n.spec';
 
 @Component({
-  template: '<rb-customer-information [customer]="customer" [rationale]="rationale" [withLanguage]="withLanguage" />',
-  imports: [CustomerInformationComponent]
+  template: '<rb-customer-information [customer]="customer()" [rationale]="rationale()" [withLanguage]="withLanguage()" />',
+  imports: [CustomerInformationComponent],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 class TestComponent {
-  customer: Customer = {
+  readonly customer = signal<Customer>({
     name: 'John Doe',
     organization: 'Boom Inc.',
     email: 'john@mail.com',
@@ -18,10 +19,10 @@ class TestComponent {
     billingAddress: 'Av. du Centre - billing service\n75000 Paris',
     type: 'CITIZEN',
     language: 'fr'
-  };
+  });
 
-  rationale = 'Why not?';
-  withLanguage = false;
+  readonly rationale = signal('Why not?');
+  readonly withLanguage = signal(false);
 }
 
 class TestComponentTester extends ComponentTester<TestComponent> {
@@ -41,8 +42,8 @@ describe('CustomerInformationComponent', () => {
     tester = new TestComponentTester();
   });
 
-  it('should display customer information', () => {
-    tester.detectChanges();
+  it('should display customer information', async () => {
+    await tester.stable();
 
     expect(tester.testElement).toContainText('John');
     expect(tester.testElement).toContainText('Entreprise ou organisation');
@@ -54,9 +55,9 @@ describe('CustomerInformationComponent', () => {
     expect(tester.testElement).toContainText('Why not?');
     expect(tester.testElement).not.toContainText('Français');
 
-    tester.componentInstance.withLanguage = true;
-    tester.componentInstance.customer.organization = '';
-    tester.detectChanges();
+    tester.componentInstance.withLanguage.set(true);
+    tester.componentInstance.customer.update(customer => ({ ...customer, organization: '' }));
+    await tester.stable();
 
     expect(tester.testElement).toContainText('Français');
     expect(tester.testElement).not.toContainText('Entreprise ou organisation');

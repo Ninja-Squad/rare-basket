@@ -1,6 +1,6 @@
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { TestBed } from '@angular/core/testing';
-import { Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { NgbDatepicker, NgbInputDatepicker } from '@ng-bootstrap/ng-bootstrap';
 import { ComponentTester } from 'ngx-speculoos';
 import { DatepickerContainerComponent } from './datepicker-container.component';
@@ -13,7 +13,8 @@ import { provideNgbDatepickerServices } from './datepicker-providers';
       <input class="form-control" [formControl]="dateCtrl" ngbDatepicker />
     </rb-datepicker-container>
   `,
-  imports: [DatepickerContainerComponent, NgbInputDatepicker, ReactiveFormsModule]
+  imports: [DatepickerContainerComponent, NgbInputDatepicker, ReactiveFormsModule],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 class TestComponent {
   dateCtrl = new FormControl(null as string);
@@ -44,25 +45,25 @@ class TestComponentTester extends ComponentTester<TestComponent> {
 describe('DatepickerContainerComponent', () => {
   let tester: TestComponentTester;
 
-  beforeEach(() => {
+  beforeEach(async () => {
     TestBed.configureTestingModule({
       providers: [provideI18nTesting(), provideNgbDatepickerServices()]
     });
 
     tester = new TestComponentTester();
-    tester.detectChanges();
+    await tester.stable();
   });
 
-  it('should display a toggle button, an input, and toggle the datepicker', () => {
+  it('should display a toggle button, an input, and toggle the datepicker', async () => {
     expect(tester.dateInput).not.toBeNull();
     expect(tester.toggleButton).not.toBeNull();
     expect(tester.datepicker).toBeNull();
 
-    tester.toggleButton.click();
+    await tester.toggleButton.click();
 
     expect(tester.datepicker).not.toBeNull();
 
-    tester.toggleButton.click();
+    await tester.toggleButton.click();
 
     expect(tester.datepicker).toBeNull();
   });

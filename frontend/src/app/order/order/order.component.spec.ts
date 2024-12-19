@@ -179,10 +179,10 @@ describe('OrderComponent', () => {
     };
   });
 
-  it('should not display anything until order is there', () => {
+  it('should not display anything until order is there', async () => {
     orderService.get.and.returnValue(EMPTY);
     tester = new OrderComponentTester();
-    tester.detectChanges();
+    await tester.stable();
 
     expect(orderService.get).toHaveBeenCalledWith(42);
     expect(tester.title).toBeNull();
@@ -190,18 +190,18 @@ describe('OrderComponent', () => {
     expect(tester.editOrderComponent).toBeNull();
   });
 
-  it('should have a title', () => {
+  it('should have a title', async () => {
     orderService.get.and.returnValue(of(order));
     tester = new OrderComponentTester();
-    tester.detectChanges();
+    await tester.stable();
 
     expect(tester.title).toContainText('Commande n° ABCDEFGH');
   });
 
-  it('should display order and customer information', () => {
+  it('should display order and customer information', async () => {
     orderService.get.and.returnValue(of(order));
     tester = new OrderComponentTester();
-    tester.detectChanges();
+    await tester.stable();
 
     expect(tester.testElement).toContainText('pour the flower holder');
     expect(tester.testElement).toContainText('John');
@@ -214,10 +214,10 @@ describe('OrderComponent', () => {
     expect(tester.testElement).toContainText('Why not?');
   });
 
-  it('should display order items', () => {
+  it('should display order items', async () => {
     orderService.get.and.returnValue(of(order));
     tester = new OrderComponentTester();
-    tester.detectChanges();
+    await tester.stable();
 
     expect(tester.items.length).toBe(2);
     expect(tester.items[0]).toContainText('Rosa');
@@ -227,52 +227,52 @@ describe('OrderComponent', () => {
     expect(tester.editOrderComponent).toBeNull();
   });
 
-  it('should not display edit button if order is not draft', () => {
+  it('should not display edit button if order is not draft', async () => {
     orderService.get.and.returnValue(of({ ...order, status: 'CANCELLED' }));
     tester = new OrderComponentTester();
-    tester.detectChanges();
+    await tester.stable();
 
     expect(tester.editOrderButton).toBeNull();
   });
 
-  it('should edit order', () => {
+  it('should edit order', async () => {
     orderService.get.and.returnValue(of(order));
     tester = new OrderComponentTester();
-    tester.detectChanges();
+    await tester.stable();
 
-    tester.editOrderButton.click();
+    await tester.editOrderButton.click();
 
     expect(tester.items.length).toBe(0);
     expect(tester.editOrderComponent).not.toBeNull();
     expect(tester.editOrderComponent.order()).toBe(tester.componentInstance.order());
   });
 
-  it('should cancel edition', () => {
+  it('should cancel edition', async () => {
     orderService.get.and.returnValue(of(order));
     tester = new OrderComponentTester();
-    tester.detectChanges();
+    await tester.stable();
 
-    tester.editOrderButton.click();
+    await tester.editOrderButton.click();
 
     tester.editOrderComponent.cancel();
-    tester.detectChanges();
+    await tester.stable();
 
     expect(tester.items.length).toBe(2);
     expect(tester.editOrderComponent).toBeNull();
   });
 
-  it('should save and refresh', () => {
+  it('should save and refresh', async () => {
     const newOrder = { ...order };
     orderService.get.and.returnValues(of(order), of(newOrder));
     tester = new OrderComponentTester();
-    tester.detectChanges();
+    await tester.stable();
 
-    tester.editOrderButton.click();
+    await tester.editOrderButton.click();
 
     orderService.update.and.returnValue(of(undefined));
     const command = {} as OrderCommand;
     tester.editOrderComponent.saved.emit(command);
-    tester.detectChanges();
+    await tester.stable();
 
     expect(orderService.update).toHaveBeenCalledWith(order.id, command);
     expect(tester.componentInstance.order()).toBe(newOrder);
@@ -280,16 +280,16 @@ describe('OrderComponent', () => {
     expect(tester.editOrderComponent).toBeNull();
   });
 
-  it('should not have a finalize order button when status is not DRAFT', () => {
+  it('should not have a finalize order button when status is not DRAFT', async () => {
     order.status = 'CANCELLED';
     orderService.get.and.returnValue(of(order));
     tester = new OrderComponentTester();
-    tester.detectChanges();
+    await tester.stable();
 
     expect(tester.finalizeOrderButton).toBeNull();
   });
 
-  it('should finalize order after confirmation if no warning', () => {
+  it('should finalize order after confirmation if no warning', async () => {
     order.items.forEach(item => (item.unit = 'bags'));
     order.documents.push({
       id: 54,
@@ -306,9 +306,9 @@ describe('OrderComponent', () => {
     orderService.finalize.and.returnValue(of(undefined));
     orderService.get.and.returnValues(of(order), of(newOrder));
     tester = new OrderComponentTester();
-    tester.detectChanges();
+    await tester.stable();
 
-    tester.finalizeOrderButton.click();
+    await tester.finalizeOrderButton.click();
 
     expect(confirmationService.confirm).toHaveBeenCalled();
     expect(orderService.finalize).toHaveBeenCalledWith(tester.componentInstance.order()!.id);
@@ -316,19 +316,19 @@ describe('OrderComponent', () => {
     expect(tester.componentInstance.order()).toBe(newOrder);
   });
 
-  it('should finalize order after confirmation with warnings', () => {
+  it('should finalize order after confirmation with warnings', async () => {
     order.items[0].quantity = null;
 
     const newOrder: DetailedOrder = { ...order, status: 'FINALIZED' };
     orderService.finalize.and.returnValue(of(undefined));
     orderService.get.and.returnValues(of(order), of(newOrder));
     tester = new OrderComponentTester();
-    tester.detectChanges();
+    await tester.stable();
 
     const warningsComponent = createMock(FinalizationWarningsModalComponent);
     modalService.mockClosedModal(warningsComponent);
 
-    tester.finalizeOrderButton.click();
+    await tester.finalizeOrderButton.click();
 
     expect(warningsComponent.init).toHaveBeenCalledWith([
       `La commande n'a pas d'ATM (accord de transfert de matériel)`,
@@ -341,25 +341,25 @@ describe('OrderComponent', () => {
     expect(tester.componentInstance.order()).toBe(newOrder);
   });
 
-  it('should not have a cancel order button when status is not DRAFT', () => {
+  it('should not have a cancel order button when status is not DRAFT', async () => {
     order.status = 'CANCELLED';
     orderService.get.and.returnValue(of(order));
     tester = new OrderComponentTester();
-    tester.detectChanges();
+    await tester.stable();
 
     expect(tester.cancelOrderButton).toBeNull();
   });
 
-  it('should cancel order after confirmation', () => {
+  it('should cancel order after confirmation', async () => {
     confirmationService.confirm.and.returnValue(of(undefined));
     const newOrder: DetailedOrder = { ...order, status: 'CANCELLED' };
 
     orderService.cancel.and.returnValue(of(undefined));
     orderService.get.and.returnValues(of(order), of(newOrder));
     tester = new OrderComponentTester();
-    tester.detectChanges();
+    await tester.stable();
 
-    tester.cancelOrderButton.click();
+    await tester.cancelOrderButton.click();
 
     expect(confirmationService.confirm).toHaveBeenCalled();
     expect(orderService.cancel).toHaveBeenCalledWith(tester.componentInstance.order()!.id);
@@ -367,10 +367,10 @@ describe('OrderComponent', () => {
     expect(tester.componentInstance.order()).toBe(newOrder);
   });
 
-  it('should display documents', () => {
+  it('should display documents', async () => {
     orderService.get.and.returnValue(of(order));
     tester = new OrderComponentTester();
-    tester.detectChanges();
+    await tester.stable();
 
     expect(tester.documents.length).toBe(1);
     expect(tester.documents[0]).toContainText('mail.txt');
@@ -386,22 +386,22 @@ describe('OrderComponent', () => {
     expect(tester.testElement).not.toContainText('Aucun document');
   });
 
-  it('should not display document delete buttons and add button if not DRAFT', () => {
+  it('should not display document delete buttons and add button if not DRAFT', async () => {
     order.status = 'FINALIZED';
     orderService.get.and.returnValue(of(order));
     tester = new OrderComponentTester();
-    tester.detectChanges();
+    await tester.stable();
 
     expect(tester.deleteDocumentButtons.length).toBe(0);
     expect(tester.addDocumentButton).toBeNull();
   });
 
-  it('should disable buttons when editing', () => {
+  it('should disable buttons when editing', async () => {
     orderService.get.and.returnValue(of(order));
     tester = new OrderComponentTester();
-    tester.detectChanges();
+    await tester.stable();
 
-    tester.editOrderButton.click();
+    await tester.editOrderButton.click();
 
     expect(tester.finalizeOrderButton.disabled).toBe(true);
     expect(tester.cancelOrderButton.disabled).toBe(true);
@@ -409,28 +409,28 @@ describe('OrderComponent', () => {
     expect(tester.addDocumentButton.disabled).toBe(true);
   });
 
-  it('should disable buttons when adding document', () => {
+  it('should disable buttons when adding document', async () => {
     orderService.get.and.returnValue(of(order));
     tester = new OrderComponentTester();
-    tester.detectChanges();
+    await tester.stable();
 
-    tester.addDocumentButton.click();
+    await tester.addDocumentButton.click();
 
     expect(tester.editOrderButton.disabled).toBe(true);
     expect(tester.cancelOrderButton.disabled).toBe(true);
     expect(tester.deleteDocumentButtons[0].disabled).toBe(true);
   });
 
-  it('should delete document after confirmation', () => {
+  it('should delete document after confirmation', async () => {
     confirmationService.confirm.and.returnValue(of(undefined));
     const newOrder: DetailedOrder = { ...order, documents: [] };
 
     orderService.deleteDocument.and.returnValue(of(undefined));
     orderService.get.and.returnValues(of(order), of(newOrder));
     tester = new OrderComponentTester();
-    tester.detectChanges();
+    await tester.stable();
 
-    tester.deleteDocumentButtons[0].click();
+    await tester.deleteDocumentButtons[0].click();
 
     expect(confirmationService.confirm).toHaveBeenCalled();
     expect(orderService.deleteDocument).toHaveBeenCalledWith(tester.componentInstance.order()!.id, 543);
@@ -438,12 +438,12 @@ describe('OrderComponent', () => {
     expect(tester.testElement).toContainText('Aucun document');
   });
 
-  it('should add document', () => {
+  it('should add document', async () => {
     orderService.get.and.returnValue(of(order));
     tester = new OrderComponentTester();
-    tester.detectChanges();
+    await tester.stable();
 
-    tester.addDocumentButton.click();
+    await tester.addDocumentButton.click();
 
     expect(tester.addDocumentButton).toBeNull();
     expect(tester.editDocumentComponent).not.toBeNull();
@@ -451,33 +451,33 @@ describe('OrderComponent', () => {
     expect(tester.editDocumentComponent.order()).toBe(order);
   });
 
-  it('should cancel document addition', () => {
+  it('should cancel document addition', async () => {
     orderService.get.and.returnValue(of(order));
     tester = new OrderComponentTester();
-    tester.detectChanges();
+    await tester.stable();
 
-    tester.addDocumentButton.click();
+    await tester.addDocumentButton.click();
 
     tester.editDocumentComponent.cancel();
-    tester.detectChanges();
+    await tester.stable();
 
     expect(tester.addDocumentButton).not.toBeNull();
     expect(tester.editDocumentComponent).toBeNull();
   });
 
-  it('should create new document and refresh', () => {
+  it('should create new document and refresh', async () => {
     const newOrder = { ...order, documents: [order.documents[0], { ...order.documents[0], id: 765 }] };
     orderService.get.and.returnValues(of(order), of(newOrder));
     tester = new OrderComponentTester();
-    tester.detectChanges();
+    await tester.stable();
 
-    tester.addDocumentButton.click();
+    await tester.addDocumentButton.click();
 
     const progressSubject = new Subject<HttpEvent<Document>>();
     orderService.addDocument.and.returnValue(progressSubject.asObservable());
     const command = {} as DocumentCommand;
     tester.editDocumentComponent.saved.emit(command);
-    tester.detectChanges();
+    await tester.stable();
 
     expect(orderService.addDocument).toHaveBeenCalledWith(order.id, command);
 
@@ -494,26 +494,26 @@ describe('OrderComponent', () => {
     const event3 = new HttpResponse<Document>();
 
     progressSubject.next(event1);
-    tester.detectChanges();
+    await tester.stable();
     expect(tester.editDocumentComponent.uploadProgress()).toBe(0.5);
 
     progressSubject.next(event2);
-    tester.detectChanges();
+    await tester.stable();
     expect(tester.editDocumentComponent.uploadProgress()).toBe(1);
 
     progressSubject.next(event3);
     progressSubject.complete();
-    tester.detectChanges();
+    await tester.stable();
 
     expect(tester.componentInstance.order()).toBe(newOrder);
     expect(tester.documents.length).toBe(2);
     expect(tester.editDocumentComponent).toBeNull();
   });
 
-  it('should download file', () => {
+  it('should download file', async () => {
     orderService.get.and.returnValue(of(order));
     tester = new OrderComponentTester();
-    tester.detectChanges();
+    await tester.stable();
 
     expect(tester.downloadSpinner(0)).toBeNull();
 
@@ -521,70 +521,70 @@ describe('OrderComponent', () => {
     const responseSubject = new Subject<HttpResponse<Blob>>();
     orderService.downloadDocument.and.returnValue(responseSubject);
 
-    tester.downloadDocumentButtons[0].click();
+    await tester.downloadDocumentButtons[0].click();
 
     expect(tester.downloadSpinner(0)).not.toBeNull();
 
     responseSubject.next(response);
     responseSubject.complete();
-    tester.detectChanges();
+    await tester.stable();
 
     expect(tester.downloadSpinner(0)).toBeNull();
     expect(downloadService.download).toHaveBeenCalledWith(response, order.documents[0].originalFileName);
   });
 
-  it('should not have a delivery form button when status is not FINALIZED', () => {
+  it('should not have a delivery form button when status is not FINALIZED', async () => {
     orderService.get.and.returnValue(of(order));
     order.status = 'DRAFT';
     order.documents[0].onDeliveryForm = true;
     tester = new OrderComponentTester();
-    tester.detectChanges();
+    await tester.stable();
 
     expect(tester.deliveryFormButton).toBeNull();
     expect(tester.completeDeliveryFormButton).toBeNull();
 
     order.status = 'CANCELLED';
-    tester.detectChanges();
+    await tester.stable();
 
     expect(tester.deliveryFormButton).toBeNull();
     expect(tester.completeDeliveryFormButton).toBeNull();
   });
 
-  it('should download delivery form', () => {
+  it('should download delivery form', async () => {
     orderService.get.and.returnValue(of(order));
     order.status = 'FINALIZED';
     tester = new OrderComponentTester();
-    tester.detectChanges();
+    await tester.stable();
 
     const response = new HttpResponse<Blob>();
     orderService.downloadDeliveryForm.and.returnValue(of(response));
 
-    tester.deliveryFormButton.click();
+    await tester.deliveryFormButton.click();
 
     expect(orderService.downloadDeliveryForm).toHaveBeenCalledWith(42, { withDocuments: false });
     expect(downloadService.download).toHaveBeenCalledWith(response, 'bon-de-livraison-42.pdf');
   });
 
-  it('should not have complete delivery form button if no document is attached', () => {
+  it('should not have complete delivery form button if no document is attached', async () => {
     orderService.get.and.returnValue(of(order));
     order.status = 'FINALIZED';
     tester = new OrderComponentTester();
-    tester.detectChanges();
+    await tester.stable();
 
     expect(tester.completeDeliveryFormButton).toBeNull();
   });
 
-  it('should download complete delivery form', () => {
+  it('should download complete delivery form', async () => {
     orderService.get.and.returnValue(of(order));
     order.status = 'FINALIZED';
     order.documents[0].onDeliveryForm = true;
     tester = new OrderComponentTester();
-    tester.detectChanges();
+    await tester.stable();
 
     const deliveryFormResponse = new HttpResponse<Blob>();
     orderService.downloadDeliveryForm.and.returnValue(of(deliveryFormResponse));
 
-    tester.completeDeliveryFormButton.click();
+    await tester.completeDeliveryFormButton.click();
 
     expect(orderService.downloadDeliveryForm).toHaveBeenCalledWith(42, { withDocuments: true });
     expect(downloadService.download).toHaveBeenCalledWith(deliveryFormResponse, 'bon-de-livraison-42.pdf');

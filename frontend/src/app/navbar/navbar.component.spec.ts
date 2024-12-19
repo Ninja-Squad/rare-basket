@@ -47,7 +47,7 @@ describe('NavbarComponent', () => {
   let authenticationService: jasmine.SpyObj<AuthenticationService>;
   let userSubject: Subject<User>;
 
-  beforeEach(() => {
+  beforeEach(async () => {
     userSubject = new Subject<User | null>();
     authenticationService = createMock(AuthenticationService);
     authenticationService.getCurrentUser.and.returnValue(userSubject);
@@ -57,10 +57,10 @@ describe('NavbarComponent', () => {
     });
 
     tester = new NavbarComponentTester();
-    tester.detectChanges();
+    await tester.stable();
   });
 
-  it('should display elements depending on user presence and permissions', () => {
+  it('should display elements depending on user presence and permissions', async () => {
     expect(tester.user).toBeNull();
     expect(tester.orders).toBeNull();
     expect(tester.users).toBeNull();
@@ -69,7 +69,7 @@ describe('NavbarComponent', () => {
     expect(tester.login).toBeNull();
 
     userSubject.next({ name: 'JB', permissions: ['ORDER_MANAGEMENT'] } as User);
-    tester.detectChanges();
+    await tester.stable();
 
     expect(tester.user).toContainText('JB');
     expect(tester.orders).not.toBeNull();
@@ -80,7 +80,7 @@ describe('NavbarComponent', () => {
     expect(tester.login).toBeNull();
 
     userSubject.next(null);
-    tester.detectChanges();
+    await tester.stable();
 
     expect(tester.user).toBeNull();
     expect(tester.orders).toBeNull();
@@ -91,7 +91,7 @@ describe('NavbarComponent', () => {
     expect(tester.login).not.toBeNull();
 
     userSubject.next({ name: 'JB', permissions: [] } as User);
-    tester.detectChanges();
+    await tester.stable();
 
     expect(tester.user).toContainText('JB');
     expect(tester.orders).toBeNull();
@@ -102,7 +102,7 @@ describe('NavbarComponent', () => {
     expect(tester.login).toBeNull();
 
     userSubject.next({ name: 'JB', permissions: ['ADMINISTRATION'] } as User);
-    tester.detectChanges();
+    await tester.stable();
 
     expect(tester.user).toContainText('JB');
     expect(tester.orders).toBeNull();
@@ -113,7 +113,7 @@ describe('NavbarComponent', () => {
     expect(tester.login).toBeNull();
 
     userSubject.next({ name: 'JB', permissions: ['ORDER_VISUALIZATION'] } as User);
-    tester.detectChanges();
+    await tester.stable();
 
     expect(tester.user).toContainText('JB');
     expect(tester.orders).not.toBeNull();
@@ -124,19 +124,19 @@ describe('NavbarComponent', () => {
     expect(tester.login).toBeNull();
   });
 
-  it('should login', () => {
+  it('should login', async () => {
     userSubject.next(null);
-    tester.detectChanges();
+    await tester.stable();
 
-    tester.login.click();
+    await tester.login.click();
     expect(authenticationService.login).toHaveBeenCalled();
   });
 
-  it('should logout', () => {
+  it('should logout', async () => {
     userSubject.next({ name: 'JB', permissions: [] } as User);
-    tester.detectChanges();
+    await tester.stable();
 
-    tester.logout.click();
+    await tester.logout.click();
     expect(authenticationService.logout).toHaveBeenCalled();
   });
 });
