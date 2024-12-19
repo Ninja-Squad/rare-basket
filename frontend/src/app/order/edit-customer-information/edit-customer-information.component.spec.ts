@@ -2,7 +2,7 @@ import { TestBed } from '@angular/core/testing';
 
 import { EditCustomerInformationComponent } from './edit-customer-information.component';
 import { ComponentTester } from 'ngx-speculoos';
-import { Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { ALL_CUSTOMER_TYPES, ALL_LANGUAGES } from '../../basket/basket.model';
 import { CustomerInformationCommand } from '../order.model';
 import { ValidationDefaultsComponent } from '../../validation-defaults/validation-defaults.component';
@@ -12,7 +12,8 @@ import { provideI18nTesting } from '../../i18n/mock-18n.spec';
   template: `
     <rb-edit-customer-information [customerInformation]="customerInformation" (saved)="command = $event" (cancelled)="cancelled = true" />
   `,
-  imports: [EditCustomerInformationComponent]
+  imports: [EditCustomerInformationComponent],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 class TestComponent {
   customerInformation: CustomerInformationCommand = {

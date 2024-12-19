@@ -1,14 +1,15 @@
 import { TestBed } from '@angular/core/testing';
 
 import { BasketContentComponent } from './basket-content.component';
-import { Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { Basket } from '../basket.model';
 import { ComponentTester } from 'ngx-speculoos';
 import { provideI18nTesting } from '../../i18n/mock-18n.spec';
 
 @Component({
   template: '<rb-basket-content [basket]="basket" />',
-  imports: [BasketContentComponent]
+  imports: [BasketContentComponent],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 class TestComponent {
   basket = {

@@ -1,7 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 
 import { OrdersComponent } from './orders.component';
-import { Component, LOCALE_ID } from '@angular/core';
+import { ChangeDetectionStrategy, Component, LOCALE_ID } from '@angular/core';
 import { Order } from '../order.model';
 import { Page } from '../../shared/page.model';
 import { ComponentTester } from 'ngx-speculoos';
@@ -11,7 +11,8 @@ import { provideRouter } from '@angular/router';
 
 @Component({
   template: `<rb-orders [orders]="orders" />`,
-  imports: [OrdersComponent]
+  imports: [OrdersComponent],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 class TestComponent {
   orders: Page<Order> = {

@@ -1,7 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 
 import { EditDocumentComponent } from './edit-document.component';
-import { Component, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
 import { ALL_DOCUMENT_TYPES, DetailedOrder, Document, DocumentCommand } from '../order.model';
 import { ComponentTester } from 'ngx-speculoos';
 import { NgbProgressbar } from '@ng-bootstrap/ng-bootstrap';
@@ -12,7 +12,8 @@ import { provideRouter } from '@angular/router';
 
 @Component({
   template: '<rb-edit-document [order]="order()" [uploadProgress]="progress()" (saved)="saved = $event" (cancelled)="cancelled = true" />',
-  imports: [EditDocumentComponent]
+  imports: [EditDocumentComponent],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 class TestComponent {
   order = signal({

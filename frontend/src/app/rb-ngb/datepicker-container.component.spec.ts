@@ -1,6 +1,6 @@
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { TestBed } from '@angular/core/testing';
-import { Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { NgbDatepicker, NgbInputDatepicker } from '@ng-bootstrap/ng-bootstrap';
 import { ComponentTester } from 'ngx-speculoos';
 import { DatepickerContainerComponent } from './datepicker-container.component';
@@ -13,7 +13,8 @@ import { provideNgbDatepickerServices } from './datepicker-providers';
       <input class="form-control" [formControl]="dateCtrl" ngbDatepicker />
     </rb-datepicker-container>
   `,
-  imports: [DatepickerContainerComponent, NgbInputDatepicker, ReactiveFormsModule]
+  imports: [DatepickerContainerComponent, NgbInputDatepicker, ReactiveFormsModule],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 class TestComponent {
   dateCtrl = new FormControl(null as string);

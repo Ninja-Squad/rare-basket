@@ -2,13 +2,14 @@ import { TestBed } from '@angular/core/testing';
 
 import { ConfirmedComponent } from './confirmed.component';
 import { ComponentTester } from 'ngx-speculoos';
-import { Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { Basket } from '../basket.model';
 import { provideI18nTesting } from '../../i18n/mock-18n.spec';
 
 @Component({
   template: `<rb-confirmed [basket]="basket" />`,
-  imports: [ConfirmedComponent]
+  imports: [ConfirmedComponent],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 class TestComponent {
   basket = {

@@ -2,7 +2,7 @@ import { TestBed } from '@angular/core/testing';
 
 import { EditBasketComponent } from './edit-basket.component';
 import { ComponentTester, createMock, TestButton } from 'ngx-speculoos';
-import { Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { Basket, BasketCommand } from '../basket.model';
 import { ValidationDefaultsComponent } from '../../validation-defaults/validation-defaults.component';
 import { ConfirmationService } from '../../shared/confirmation.service';
@@ -13,7 +13,8 @@ import { provideI18nTesting } from '../../i18n/mock-18n.spec';
   template: `@if (basket) {
     <rb-edit-basket [basket]="basket" (basketSaved)="savedCommand = $event" />
   }`,
-  imports: [EditBasketComponent]
+  imports: [EditBasketComponent],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 class TestComponent {
   basket: Basket;

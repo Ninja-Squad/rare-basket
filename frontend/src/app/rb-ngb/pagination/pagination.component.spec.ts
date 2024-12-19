@@ -2,7 +2,7 @@ import { TestBed } from '@angular/core/testing';
 
 import { PaginationComponent } from './pagination.component';
 import { NgbPagination } from '@ng-bootstrap/ng-bootstrap';
-import { Component, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
 import { ComponentTester, RoutingTester } from 'ngx-speculoos';
 import { provideRouter, Routes } from '@angular/router';
 import { Page } from '../../shared/page.model';
@@ -12,7 +12,8 @@ import { RouterTestingHarness } from '@angular/router/testing';
   template: `@if (page(); as page) {
     <rb-pagination [page]="page" (pageChanged)="pageChanged($event)" [navigate]="navigate()" />
   }`,
-  imports: [PaginationComponent]
+  imports: [PaginationComponent],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 class TestComponent {
   page = signal<Page<string> | undefined>(undefined);
