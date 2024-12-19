@@ -47,6 +47,6 @@ export class GrcsComponent {
         switchMap(() => this.grcService.delete(grc.id)),
         tap(() => this.toastService.success('grc.grcs.deleted', { name: grc.name }))
       )
-      .subscribe(grcs => this.refresh.next());
+      .subscribe(() => this.refresh.next());
   }
 }
