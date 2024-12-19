@@ -1,11 +1,12 @@
 import { TestBed } from '@angular/core/testing';
-import { Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 
 import { ModalOptions, ModalService } from './modal.service';
 
 @Component({
-  template: 'Hello'
+  template: 'Hello',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 class TestModalComponent {}
 
@@ -65,7 +66,7 @@ describe('ModalService', () => {
     // close the modal by resolving the promise
     try {
       await promise;
-    } catch (e) {
+    } catch (_) {
       // ignore
     }
 
@@ -91,7 +92,7 @@ describe('ModalService', () => {
     // close the modal by resolving the promise
     try {
       await promise;
-    } catch (e) {
+    } catch (_) {
       // ignore
     }
 

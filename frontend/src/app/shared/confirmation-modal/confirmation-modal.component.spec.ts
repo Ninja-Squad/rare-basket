@@ -72,9 +72,7 @@ describe('ConfirmationModalComponent and ConfirmationService', () => {
   });
 
   function confirm(options: ConfirmationOptions): Observable<void> {
-    const result = confirmationService.confirm(options);
-    tester.stable();
-    return result;
+    return confirmationService.confirm(options);
   }
 
   it('should display a modal dialog when confirming and use default title', async () => {

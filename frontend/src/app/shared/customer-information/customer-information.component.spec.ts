@@ -11,7 +11,7 @@ import { provideI18nTesting } from '../../i18n/mock-18n.spec';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 class TestComponent {
-  customer = signal<Customer>({
+  readonly customer = signal<Customer>({
     name: 'John Doe',
     organization: 'Boom Inc.',
     email: 'john@mail.com',
@@ -21,8 +21,8 @@ class TestComponent {
     language: 'fr'
   });
 
-  rationale = signal('Why not?');
-  withLanguage = signal(false);
+  readonly rationale = signal('Why not?');
+  readonly withLanguage = signal(false);
 }
 
 class TestComponentTester extends ComponentTester<TestComponent> {

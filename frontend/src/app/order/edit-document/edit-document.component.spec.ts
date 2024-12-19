@@ -16,10 +16,10 @@ import { provideRouter } from '@angular/router';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 class TestComponent {
-  order = signal({
+  readonly order = signal({
     documents: []
   } as DetailedOrder);
-  progress = signal<number | null>(null);
+  readonly progress = signal<number | null>(null);
   cancelled = false;
   saved: DocumentCommand = null;
 }
