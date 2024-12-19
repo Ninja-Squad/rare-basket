@@ -50,16 +50,16 @@ describe('GrcsComponent', () => {
     });
   });
 
-  it('should not display anything until grcs are available', () => {
+  it('should not display anything until grcs are available', async () => {
     grcService.list.and.returnValue(EMPTY);
     tester = new GrcsComponentTester();
-    tester.detectChanges();
+    await tester.stable();
 
     expect(tester.grcs.length).toBe(0);
     expect(tester.createLink).toBeNull();
   });
 
-  it('should display grcs', () => {
+  it('should display grcs', async () => {
     const grcs: Array<Grc> = [
       {
         id: 432,
@@ -77,7 +77,7 @@ describe('GrcsComponent', () => {
 
     grcService.list.and.returnValue(of(grcs));
     tester = new GrcsComponentTester();
-    tester.detectChanges();
+    await tester.stable();
 
     expect(tester.grcs.length).toBe(2);
     expect(tester.grcs[0]).toContainText('GRC1');
@@ -87,7 +87,7 @@ describe('GrcsComponent', () => {
     expect(tester.createLink).not.toBeNull();
   });
 
-  it('should delete after confirmation and reload', () => {
+  it('should delete after confirmation and reload', async () => {
     const grcs: Array<Grc> = [
       {
         id: 432,
@@ -105,12 +105,12 @@ describe('GrcsComponent', () => {
 
     grcService.list.and.returnValues(of(grcs), of([grcs[1]]));
     tester = new GrcsComponentTester();
-    tester.detectChanges();
+    await tester.stable();
 
     confirmationService.confirm.and.returnValue(of(undefined));
     grcService.delete.and.returnValue(of(undefined));
 
-    tester.deleteButtons[0].click();
+    await tester.deleteButtons[0].click();
 
     expect(tester.grcs.length).toBe(1);
     expect(grcService.delete).toHaveBeenCalledWith(432);

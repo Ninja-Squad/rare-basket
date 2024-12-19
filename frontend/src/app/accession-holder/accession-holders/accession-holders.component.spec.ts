@@ -50,16 +50,16 @@ describe('AccessionHoldersComponent', () => {
     });
   });
 
-  it('should not display anything until accession holders are available', () => {
+  it('should not display anything until accession holders are available', async () => {
     accessionHolderService.list.and.returnValue(EMPTY);
     tester = new AccessionHoldersComponentTester();
-    tester.detectChanges();
+    await tester.stable();
 
     expect(tester.accessionHolders.length).toBe(0);
     expect(tester.createLink).toBeNull();
   });
 
-  it('should display accession holders', () => {
+  it('should display accession holders', async () => {
     const accessionHolders: Array<AccessionHolder> = [
       {
         id: 1,
@@ -89,7 +89,7 @@ describe('AccessionHoldersComponent', () => {
 
     accessionHolderService.list.and.returnValue(of(accessionHolders));
     tester = new AccessionHoldersComponentTester();
-    tester.detectChanges();
+    await tester.stable();
 
     expect(tester.accessionHolders.length).toBe(2);
     expect(tester.accessionHolders[0]).toContainText('Holder1');
@@ -101,7 +101,7 @@ describe('AccessionHoldersComponent', () => {
     expect(tester.createLink).not.toBeNull();
   });
 
-  it('should delete after confirmation and reload', () => {
+  it('should delete after confirmation and reload', async () => {
     const accessionHolders: Array<AccessionHolder> = [
       {
         id: 1,
@@ -131,12 +131,12 @@ describe('AccessionHoldersComponent', () => {
 
     accessionHolderService.list.and.returnValues(of(accessionHolders), of([accessionHolders[1]]));
     tester = new AccessionHoldersComponentTester();
-    tester.detectChanges();
+    await tester.stable();
 
     confirmationService.confirm.and.returnValue(of(undefined));
     accessionHolderService.delete.and.returnValue(of(undefined));
 
-    tester.deleteButtons[0].click();
+    await tester.deleteButtons[0].click();
 
     expect(tester.accessionHolders.length).toBe(1);
     expect(accessionHolderService.delete).toHaveBeenCalledWith(1);

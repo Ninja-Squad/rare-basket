@@ -76,13 +76,13 @@ class TestComponentTester extends ComponentTester<TestComponent> {
 describe('OrdersComponent', () => {
   let tester: TestComponentTester;
 
-  beforeEach(() => {
+  beforeEach(async () => {
     TestBed.configureTestingModule({
       providers: [provideRouter([]), provideI18nTesting(), { provide: LOCALE_ID, useValue: 'fr' }]
     });
 
     tester = new TestComponentTester();
-    tester.detectChanges();
+    await tester.stable();
   });
 
   it('should have a pagination', () => {

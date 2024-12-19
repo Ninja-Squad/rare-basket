@@ -55,7 +55,7 @@ describe('BasketComponent', () => {
     let basket: Basket;
     let savedBasket: Basket;
 
-    beforeEach(() => {
+    beforeEach(async () => {
       basket = {
         reference: 'ABCDEFGH',
         status: 'DRAFT',
@@ -73,7 +73,7 @@ describe('BasketComponent', () => {
 
       basketService.get.and.returnValues(of(basket), of(savedBasket));
       tester = new BasketComponentTester();
-      tester.detectChanges();
+      await tester.stable();
     });
 
     it('should have a title', () => {
@@ -88,13 +88,13 @@ describe('BasketComponent', () => {
       expect(tester.confirmedComponent).toBeNull();
     });
 
-    it('should save basket when edit component emits', () => {
+    it('should save basket when edit component emits', async () => {
       const command = {} as BasketCommand;
 
       basketService.save.and.returnValue(of(undefined));
 
       tester.editBasketComponent.basketSaved.emit(command);
-      tester.detectChanges();
+      await tester.stable();
 
       expect(basketService.save).toHaveBeenCalledWith('ABCDEFGH', command);
       expect(tester.componentInstance.basket()).toBe(savedBasket);
@@ -104,11 +104,11 @@ describe('BasketComponent', () => {
     });
   });
 
-  describe('with a saved basket', () => {
+  describe('with a saved basket', async () => {
     let basket: Basket;
     let confirmedBasket: Basket;
 
-    beforeEach(() => {
+    beforeEach(async () => {
       basket = {
         reference: 'ABCDEFGH',
         status: 'SAVED',
@@ -130,7 +130,7 @@ describe('BasketComponent', () => {
       basketService.get.and.returnValues(of(basket), of(confirmedBasket));
 
       tester = new BasketComponentTester();
-      tester.detectChanges();
+      await tester.stable();
     });
 
     it('should have an edit confirmation component', () => {
@@ -142,11 +142,11 @@ describe('BasketComponent', () => {
       expect(tester.editConfirmationComponent.basket()).toBe(basket);
     });
 
-    it('should confirm when edit confirmation component emits', () => {
+    it('should confirm when edit confirmation component emits', async () => {
       basketService.confirm.and.returnValue(of(undefined));
 
       tester.editConfirmationComponent.basketConfirmed.emit('CODE');
-      tester.detectChanges();
+      await tester.stable();
 
       expect(basketService.confirm).toHaveBeenCalledWith('ABCDEFGH', 'CODE');
       expect(tester.componentInstance.basket()).toBe(confirmedBasket);
@@ -155,9 +155,9 @@ describe('BasketComponent', () => {
       expect(tester.confirmedComponent.basket()).toBe(confirmedBasket);
     });
 
-    it('should refresh when edit confirmation component asks to', () => {
+    it('should refresh when edit confirmation component asks to', async () => {
       tester.editConfirmationComponent.refreshRequested.emit(undefined);
-      tester.detectChanges();
+      await tester.stable();
 
       expect(tester.componentInstance.basket()).toBe(confirmedBasket);
     });

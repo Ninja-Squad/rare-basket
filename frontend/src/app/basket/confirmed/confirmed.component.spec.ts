@@ -28,13 +28,13 @@ class TestComponentTester extends ComponentTester<TestComponent> {
 describe('ConfirmedComponent', () => {
   let tester: TestComponentTester;
 
-  beforeEach(() => {
+  beforeEach(async () => {
     TestBed.configureTestingModule({
       providers: [provideI18nTesting()]
     });
 
     tester = new TestComponentTester();
-    tester.detectChanges();
+    await tester.stable();
   });
 
   it('should display some text, containing the email', () => {

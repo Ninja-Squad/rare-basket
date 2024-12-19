@@ -1,7 +1,7 @@
-import { TestBed, waitForAsync } from '@angular/core/testing';
+import { TestBed } from '@angular/core/testing';
 
 import { AuthenticationService } from './authentication.service';
-import { of } from 'rxjs';
+import { firstValueFrom, of } from 'rxjs';
 import { RouterStateSnapshot } from '@angular/router';
 import { createMock } from 'ngx-speculoos';
 import { authenticationGuard } from './authentication.guard';
@@ -19,16 +19,16 @@ describe('AuthenticationGuard', () => {
     state = { url: '/foo' } as RouterStateSnapshot;
   });
 
-  it('should route if authenticated', waitForAsync(() => {
+  it('should route if authenticated', async () => {
     authenticationService.isAuthenticated.and.returnValue(of(true));
-    TestBed.runInInjectionContext(() => authenticationGuard(null, state)).subscribe(value => expect(value).toBe(true));
-  }));
+    const guardResult = await firstValueFrom(TestBed.runInInjectionContext(() => authenticationGuard(null, state)));
+    expect(guardResult).toBeTrue();
+  });
 
-  it('should login if not authenticated', waitForAsync(() => {
+  it('should login if not authenticated', async () => {
     authenticationService.isAuthenticated.and.returnValue(of(false));
-    TestBed.runInInjectionContext(() => authenticationGuard(null, state)).subscribe(value => {
-      expect(value).toBe(false);
-      expect(authenticationService.login).toHaveBeenCalledWith(state.url);
-    });
-  }));
+    const guardResult = await firstValueFrom(TestBed.runInInjectionContext(() => authenticationGuard(null, state)));
+    expect(guardResult).toBeFalse();
+    expect(authenticationService.login).toHaveBeenCalledWith(state.url);
+  });
 });

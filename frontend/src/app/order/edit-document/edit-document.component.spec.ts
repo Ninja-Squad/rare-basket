@@ -1,7 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 
 import { EditDocumentComponent } from './edit-document.component';
-import { Component } from '@angular/core';
+import { Component, signal } from '@angular/core';
 import { ALL_DOCUMENT_TYPES, DetailedOrder, Document, DocumentCommand } from '../order.model';
 import { ComponentTester } from 'ngx-speculoos';
 import { NgbProgressbar } from '@ng-bootstrap/ng-bootstrap';
@@ -11,14 +11,14 @@ import { provideI18nTesting } from '../../i18n/mock-18n.spec';
 import { provideRouter } from '@angular/router';
 
 @Component({
-  template: '<rb-edit-document [order]="order" [uploadProgress]="progress" (saved)="saved = $event" (cancelled)="cancelled = true" />',
+  template: '<rb-edit-document [order]="order()" [uploadProgress]="progress()" (saved)="saved = $event" (cancelled)="cancelled = true" />',
   imports: [EditDocumentComponent]
 })
 class TestComponent {
-  order = {
+  order = signal({
     documents: []
-  } as DetailedOrder;
-  progress: number | null = null;
+  } as DetailedOrder);
+  progress = signal<number | null>(null);
   cancelled = false;
   saved: DocumentCommand = null;
 }
@@ -68,7 +68,7 @@ class TestComponentTester extends ComponentTester<TestComponent> {
 describe('EditDocumentComponent', () => {
   let tester: TestComponentTester;
 
-  beforeEach(() => {
+  beforeEach(async () => {
     TestBed.configureTestingModule({
       providers: [provideRouter([]), provideI18nTesting()]
     });
@@ -76,7 +76,7 @@ describe('EditDocumentComponent', () => {
     TestBed.createComponent(ValidationDefaultsComponent).detectChanges();
 
     tester = new TestComponentTester();
-    tester.detectChanges();
+    await tester.stable();
   });
 
   it('should display an empty form', () => {
@@ -91,34 +91,34 @@ describe('EditDocumentComponent', () => {
     expect(tester.progressBar).toBeNull();
   });
 
-  it('should filter out unique document types if they are present in the order', () => {
+  it('should filter out unique document types if they are present in the order', async () => {
     expect(tester.type.optionLabels.length).toBe(ALL_DOCUMENT_TYPES.length + 1);
     expect(tester.type.optionLabels).toContain('Facture');
 
-    tester.componentInstance.order = {
-      ...tester.componentInstance.order,
+    tester.componentInstance.order.update(order => ({
+      ...order,
       documents: [
         {
           type: 'INVOICE'
         } as Document
       ]
-    };
-    tester.detectChanges();
+    }));
+    await tester.stable();
 
     expect(tester.type.optionLabels.length).toBe(ALL_DOCUMENT_TYPES.length);
     expect(tester.type.optionLabels).not.toContain('Facture');
   });
 
-  it('should validate', () => {
-    tester.saveButton.click();
+  it('should validate', async () => {
+    await tester.saveButton.click();
 
     expect(tester.componentInstance.saved).toBeNull();
     expect(tester.errors.length).toBe(2); // type, file
 
-    tester.type.selectLabel('Autre');
+    await tester.type.selectLabel('Autre');
     expect(tester.errors.length).toBe(2); // description, file
 
-    tester.type.selectLabel('Facture');
+    await tester.type.selectLabel('Facture');
     expect(tester.errors.length).toBe(1); // file
 
     let mockFile = { name: 'foo.exe', size: 11 * 1024 * 1024 };
@@ -127,7 +127,7 @@ describe('EditDocumentComponent', () => {
       item: (index: number) => [selectedFile][index] ?? null
     } as unknown as FileList;
     tester.editDocumentComponent.fileChanged(fileList);
-    tester.detectChanges();
+    await tester.stable();
 
     expect(tester.testElement).toContainText(`Le fichier doit avoir l'une des extensions suivantes\u00a0: .pdf, .txt, .eml, .pst, .ost`);
     expect(tester.errors.length).toBe(1); // file invalid
@@ -139,15 +139,15 @@ describe('EditDocumentComponent', () => {
     } as unknown as FileList;
 
     tester.editDocumentComponent.fileChanged(fileList);
-    tester.detectChanges();
+    await tester.stable();
 
     expect(tester.testElement).toContainText('Le fichier est trop volumineux. Il ne doit pas dépasser 10\u00a0MB');
     expect(tester.errors.length).toBe(1); // file size invalid
   });
 
-  it('should disable everything and display progress bar when uploading', () => {
-    tester.componentInstance.progress = 0.1;
-    tester.detectChanges();
+  it('should disable everything and display progress bar when uploading', async () => {
+    tester.componentInstance.progress.set(0.1);
+    await tester.stable();
 
     [tester.type, tester.description, tester.file, tester.onDeliveryForm, tester.saveButton].forEach(e => expect(e.disabled).toBe(true));
 
@@ -156,32 +156,32 @@ describe('EditDocumentComponent', () => {
     expect(tester.progressBar.animated).toBe(false);
     expect(tester.progressBar.striped).toBe(false);
 
-    tester.componentInstance.progress = 1;
-    tester.detectChanges();
+    tester.componentInstance.progress.set(1);
+    await tester.stable();
 
     expect(tester.progressBar.getPercentValue()).toBe(100);
     expect(tester.progressBar.animated).toBe(true);
     expect(tester.progressBar.striped).toBe(true);
 
-    tester.componentInstance.progress = null;
-    tester.detectChanges();
+    tester.componentInstance.progress.set(null);
+    await tester.stable();
 
     [tester.type, tester.description, tester.file, tester.saveButton].forEach(e => expect(e.disabled).toBe(false));
   });
 
-  it('should save', () => {
-    tester.type.selectLabel('Autre');
-    tester.description.fillWith('desc');
-    tester.onDeliveryForm.check();
+  it('should save', async () => {
+    await tester.type.selectLabel('Autre');
+    await tester.description.fillWith('desc');
+    await tester.onDeliveryForm.check();
 
     const selectedFile = { name: 'foo.txt', size: 100 } as File;
     const fileList = {
       item: (index: number) => [selectedFile][index] ?? null
     } as unknown as FileList;
     tester.editDocumentComponent.fileChanged(fileList);
-    tester.detectChanges();
+    await tester.stable();
 
-    tester.saveButton.click();
+    await tester.saveButton.click();
     const expectedCommand: DocumentCommand = {
       file: selectedFile,
       document: {
@@ -193,38 +193,38 @@ describe('EditDocumentComponent', () => {
     expect(tester.componentInstance.saved).toEqual(expectedCommand);
   });
 
-  it('should cancel', () => {
-    tester.cancelButton.click();
+  it('should cancel', async () => {
+    await tester.cancelButton.click();
     expect(tester.componentInstance.cancelled).toBe(true);
   });
 
-  it('should drag and drop file on input', () => {
-    tester.file.dispatchEvent(new DragEvent('dragenter'));
+  it('should drag and drop file on input', async () => {
+    await tester.file.dispatchEvent(new DragEvent('dragenter'));
     expect(tester.file).toHaveClass('highlighted');
 
-    tester.file.dispatchEvent(new DragEvent('dragexit'));
+    await tester.file.dispatchEvent(new DragEvent('dragexit'));
     expect(tester.file).not.toHaveClass('highlighted');
 
-    tester.file.dispatchEvent(new DragEvent('dragenter'));
+    await tester.file.dispatchEvent(new DragEvent('dragenter'));
     expect(tester.file).toHaveClass('highlighted');
 
-    tester.file.dispatchEvent(new DragEvent('dragleave'));
+    await tester.file.dispatchEvent(new DragEvent('dragleave'));
     expect(tester.file).not.toHaveClass('highlighted');
 
     // quite hard to test drop event
   });
 
-  it('should change on delivery form value depending on document type unless dirty', () => {
-    tester.type.selectValue('MTA');
+  it('should change on delivery form value depending on document type unless dirty', async () => {
+    await tester.type.selectValue('MTA');
     expect(tester.onDeliveryForm).toBeChecked();
 
-    tester.type.selectLabel('Courriel');
+    await tester.type.selectLabel('Courriel');
     expect(tester.onDeliveryForm).not.toBeChecked();
 
-    tester.onDeliveryForm.check();
-    tester.onDeliveryForm.uncheck();
+    await tester.onDeliveryForm.check();
+    await tester.onDeliveryForm.uncheck();
 
-    tester.type.selectValue('MTA');
+    await tester.type.selectValue('MTA');
     expect(tester.onDeliveryForm).not.toBeChecked();
   });
 });
