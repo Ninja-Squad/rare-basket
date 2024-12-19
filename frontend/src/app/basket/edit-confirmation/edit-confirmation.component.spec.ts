@@ -1,27 +1,31 @@
 import { TestBed } from '@angular/core/testing';
 
 import { EditConfirmationComponent } from './edit-confirmation.component';
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
 import { Basket } from '../basket.model';
 import { ComponentTester, TestButton } from 'ngx-speculoos';
 import { provideI18nTesting } from '../../i18n/mock-18n.spec';
 
 @Component({
   template: `
-    <rb-edit-confirmation [basket]="basket" (basketConfirmed)="confirmationCode = $event" (refreshRequested)="refreshRequested = true" />
+    <rb-edit-confirmation
+      [basket]="basket()"
+      (basketConfirmed)="confirmationCode.set($event)"
+      (refreshRequested)="refreshRequested.set(true)"
+    />
   `,
   imports: [EditConfirmationComponent],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 class TestComponent {
-  basket = {
+  readonly basket = signal<Basket>({
     customer: {
       email: 'john@mail.com'
     },
     accessionHolderBaskets: []
-  } as Basket;
-  confirmationCode: string = null;
-  refreshRequested = false;
+  } as Basket);
+  readonly confirmationCode = signal<string | null>(null);
+  readonly refreshRequested = signal(false);
 }
 
 class TestComponentTester extends ComponentTester<TestComponent> {
@@ -62,13 +66,13 @@ describe('EditConfirmationComponent', () => {
 
   it('should emit when info refresh link clicked', async () => {
     await tester.infoRefreshLink.click();
-    expect(tester.componentInstance.refreshRequested).toBe(true);
+    expect(tester.componentInstance.refreshRequested()).toBe(true);
   });
 
   it('should emit when confirming', async () => {
     await tester.confirmationCode.fillWith('ZYXWVUTS');
     expect(tester.confirmButton.disabled).toBe(false);
     await tester.confirmButton.click();
-    expect(tester.componentInstance.confirmationCode).toBe('ZYXWVUTS');
+    expect(tester.componentInstance.confirmationCode()).toBe('ZYXWVUTS');
   });
 });

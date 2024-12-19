@@ -2,24 +2,66 @@ import { TestBed } from '@angular/core/testing';
 
 import { EditBasketComponent } from './edit-basket.component';
 import { ComponentTester, createMock, TestButton } from 'ngx-speculoos';
-import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { Basket, BasketCommand } from '../basket.model';
+import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
+import { AccessionHolderBasket, Basket, BasketCommand, BasketItem } from '../basket.model';
 import { ValidationDefaultsComponent } from '../../validation-defaults/validation-defaults.component';
 import { ConfirmationService } from '../../shared/confirmation.service';
 import { of } from 'rxjs';
 import { provideI18nTesting } from '../../i18n/mock-18n.spec';
 
 @Component({
-  template: `@if (basket) {
-    <rb-edit-basket [basket]="basket" (basketSaved)="savedCommand = $event" />
+  template: `@if (basket(); as basket) {
+    <rb-edit-basket [basket]="basket" (basketSaved)="savedCommand.set($event)" />
   }`,
   imports: [EditBasketComponent],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 class TestComponent {
-  basket: Basket;
-  savedCommand: BasketCommand = null;
+  readonly basket = signal<Basket | null>(null);
+  readonly savedCommand = signal<BasketCommand | null>(null);
 }
+
+const itemRosa: BasketItem = {
+  id: 1,
+  accession: {
+    name: 'Rosa',
+    identifier: 'rosa1'
+  },
+  quantity: null,
+  unit: null
+};
+
+const itemVioletta: BasketItem = {
+  id: 2,
+  accession: {
+    name: 'Violetta',
+    identifier: 'violetta1'
+  },
+  quantity: null,
+  unit: null
+};
+
+const itemBacteria: BasketItem = {
+  id: 3,
+  accession: {
+    name: 'Bacteria',
+    identifier: 'bacteria1'
+  },
+  quantity: null,
+  unit: null
+};
+
+const grc1: AccessionHolderBasket = {
+  grcName: 'GRC1',
+  accessionHolderName: 'Contact1',
+  items: [itemRosa, itemVioletta]
+};
+
+const grc2: AccessionHolderBasket = {
+  grcName: 'GRC2',
+  accessionHolderName: 'Contact2',
+  items: [itemBacteria]
+};
 
 class TestComponentTester extends ComponentTester<TestComponent> {
   constructor() {
@@ -109,54 +151,14 @@ describe('EditBasketComponent', () => {
 
   describe('with an empty draft basket', () => {
     beforeEach(() => {
-      tester.componentInstance.basket = {
+      tester.componentInstance.basket.set({
         id: 42,
         reference: 'ABCDEFGH',
         customer: null,
         rationale: null,
         status: 'DRAFT',
-        accessionHolderBaskets: [
-          {
-            grcName: 'GRC1',
-            accessionHolderName: 'Contact1',
-            items: [
-              {
-                id: 1,
-                accession: {
-                  name: 'Rosa',
-                  identifier: 'rosa1'
-                },
-                quantity: null,
-                unit: null
-              },
-              {
-                id: 2,
-                accession: {
-                  name: 'Violetta',
-                  identifier: 'violetta1'
-                },
-                quantity: null,
-                unit: null
-              }
-            ]
-          },
-          {
-            grcName: 'GRC2',
-            accessionHolderName: 'Contact2',
-            items: [
-              {
-                id: 3,
-                accession: {
-                  name: 'Bacteria',
-                  identifier: 'bacteria1'
-                },
-                quantity: null,
-                unit: null
-              }
-            ]
-          }
-        ]
-      };
+        accessionHolderBaskets: [grc1, grc2]
+      });
     });
 
     it('should display an empty form', async () => {
@@ -186,8 +188,21 @@ describe('EditBasketComponent', () => {
     });
 
     it('should display quantities if at least one is set', async () => {
-      tester.componentInstance.basket.accessionHolderBaskets[0].items[0].quantity = 10;
-      tester.componentInstance.basket.accessionHolderBaskets[0].items[0].unit = 'bags';
+      const itemRosaWith10Bags: BasketItem = {
+        ...itemRosa,
+        quantity: 10,
+        unit: 'bags'
+      };
+
+      const grc1WithRosa10Bags: AccessionHolderBasket = {
+        ...grc1,
+        items: [itemRosaWith10Bags, itemVioletta]
+      };
+
+      tester.componentInstance.basket.update(basket => ({
+        ...basket!,
+        accessionHolderBaskets: [grc1WithRosa10Bags, grc2]
+      }));
       await tester.stable();
 
       expect(tester.accessionsHeadings(0).length).toBe(3);
@@ -202,7 +217,7 @@ describe('EditBasketComponent', () => {
       await tester.stable();
 
       await tester.saveButton.click();
-      expect(tester.componentInstance.savedCommand).toBeNull();
+      expect(tester.componentInstance.savedCommand()).toBeNull();
       expect(tester.errors.length).toBe(6);
       expect(tester.testElement).toContainText('Le nom est obligatoire');
       expect(tester.testElement).toContainText(`L'adresse courriel est obligatoire`);
@@ -213,8 +228,21 @@ describe('EditBasketComponent', () => {
     });
 
     it('should save', async () => {
-      tester.componentInstance.basket.accessionHolderBaskets[0].items[0].quantity = 10;
-      tester.componentInstance.basket.accessionHolderBaskets[0].items[0].unit = 'bags';
+      const itemRosaWith10Bags: BasketItem = {
+        ...itemRosa,
+        quantity: 10,
+        unit: 'bags'
+      };
+
+      const grc1WithRosa10Bags: AccessionHolderBasket = {
+        ...grc1,
+        items: [itemRosaWith10Bags, itemVioletta]
+      };
+
+      tester.componentInstance.basket.update(basket => ({
+        ...basket!,
+        accessionHolderBaskets: [grc1WithRosa10Bags, grc2]
+      }));
       await tester.stable();
 
       await tester.customerName.fillWith('John');
@@ -268,7 +296,7 @@ describe('EditBasketComponent', () => {
         ],
         complete: true
       };
-      expect(tester.componentInstance.savedCommand).toEqual(expectedCommand);
+      expect(tester.componentInstance.savedCommand()).toEqual(expectedCommand);
     });
 
     it('should use the delivery address as the billing address', async () => {
@@ -286,13 +314,26 @@ describe('EditBasketComponent', () => {
 
       await tester.saveButton.click();
       expect(tester.errors.length).toBe(0);
-      expect(tester.componentInstance.savedCommand.customer.billingAddress).toEqual(
-        tester.componentInstance.savedCommand.customer.deliveryAddress
+      expect(tester.componentInstance.savedCommand().customer.billingAddress).toEqual(
+        tester.componentInstance.savedCommand().customer.deliveryAddress
       );
     });
 
     it('should remove accession after confirmation and make last one removal disabled', async () => {
-      tester.componentInstance.basket.accessionHolderBaskets[0].items[0].quantity = 10;
+      const itemRosaWith10: BasketItem = {
+        ...itemRosa,
+        quantity: 10
+      };
+
+      const grc1WithRosa10: AccessionHolderBasket = {
+        ...grc1,
+        items: [itemRosaWith10, itemVioletta]
+      };
+
+      tester.componentInstance.basket.update(basket => ({
+        ...basket!,
+        accessionHolderBaskets: [grc1WithRosa10, grc2]
+      }));
       await tester.stable();
 
       confirmationService.confirm.and.returnValue(of(undefined));
@@ -318,7 +359,7 @@ describe('EditBasketComponent', () => {
 
   describe('with a non-empty draft basket', () => {
     beforeEach(async () => {
-      tester.componentInstance.basket = {
+      tester.componentInstance.basket.set({
         id: 42,
         reference: 'ABCDEFGH',
         customer: {
@@ -349,7 +390,7 @@ describe('EditBasketComponent', () => {
             ]
           }
         ]
-      };
+      });
 
       await tester.stable();
     });

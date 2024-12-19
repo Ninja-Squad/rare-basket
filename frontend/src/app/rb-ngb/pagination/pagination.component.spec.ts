@@ -19,10 +19,10 @@ class TestComponent {
   readonly page = signal<Page<string> | undefined>(undefined);
   readonly navigate = signal(false);
 
-  newPage: number | null = null;
+  readonly newPage = signal<number | null>(null);
 
   pageChanged(newPage: number) {
-    this.newPage = newPage;
+    this.newPage.set(newPage);
   }
 }
 
@@ -88,7 +88,7 @@ describe('PaginationComponent', () => {
 
       await tester.firstPageLink.click();
 
-      expect(tester.componentInstance.newPage).toBe(0);
+      expect(tester.componentInstance.newPage()).toBe(0);
     });
   });
 
@@ -116,7 +116,7 @@ describe('PaginationComponent', () => {
       await tester.firstPageLink.click();
 
       expect(tester.url).toBe('/foo');
-      expect(tester.testComponent.newPage).toBe(0);
+      expect(tester.testComponent.newPage()).toBe(0);
     });
 
     it('should navigate if navigate is true', async () => {
@@ -127,7 +127,7 @@ describe('PaginationComponent', () => {
       await tester.firstPageLink.click();
 
       expect(tester.url).toBe('/foo?page=0');
-      expect(tester.testComponent.newPage).toBe(0);
+      expect(tester.testComponent.newPage()).toBe(0);
     });
   });
 });

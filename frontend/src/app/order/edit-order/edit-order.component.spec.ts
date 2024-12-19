@@ -1,7 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 
 import { EditOrderComponent } from './edit-order.component';
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
 import { Order, OrderCommand, OrderItemCommand } from '../order.model';
 import { ComponentTester, TestButton } from 'ngx-speculoos';
 import { ValidationDefaultsComponent } from '../../validation-defaults/validation-defaults.component';
@@ -10,13 +10,13 @@ import { CsvModalComponent } from '../csv-modal/csv-modal.component';
 import { provideI18nTesting } from '../../i18n/mock-18n.spec';
 
 @Component({
-  template: '<rb-edit-order [order]="order" (cancelled)="cancelled = true" (saved)="saved = $event" />',
+  template: '<rb-edit-order [order]="order" (cancelled)="cancelled.set(true)" (saved)="saved.set($event)" />',
   imports: [EditOrderComponent],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 class TestComponent {
-  cancelled = false;
-  saved: OrderCommand = null;
+  readonly cancelled = signal(false);
+  readonly saved = signal<OrderCommand | null>(null);
 
   order = {
     items: [
@@ -151,14 +151,14 @@ describe('EditOrderComponent', () => {
     await tester.quantity(0).fillWith('0');
     await tester.saveButton.click();
 
-    expect(tester.componentInstance.saved).toBeNull();
+    expect(tester.componentInstance.saved()).toBeNull();
     expect(tester.errors.length).toBe(3);
   });
 
   it('should cancel', async () => {
     await tester.stable();
     await tester.cancelButton.click();
-    expect(tester.componentInstance.cancelled).toBe(true);
+    expect(tester.componentInstance.cancelled()).toBe(true);
   });
 
   it('should save', async () => {
@@ -171,7 +171,7 @@ describe('EditOrderComponent', () => {
 
     await tester.saveButton.click();
 
-    expect(tester.componentInstance.saved).toEqual({
+    expect(tester.componentInstance.saved()).toEqual({
       items: [
         {
           accession: {

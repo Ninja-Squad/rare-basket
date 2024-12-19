@@ -26,7 +26,7 @@ export interface Customer {
   language: Language;
 }
 
-interface BasketItem {
+export interface BasketItem {
   id: number;
   accession: Accession;
   quantity: number | null;

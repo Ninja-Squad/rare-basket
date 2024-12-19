@@ -11,7 +11,8 @@ import { provideI18nTesting } from '../../i18n/mock-18n.spec';
 import { provideRouter } from '@angular/router';
 
 @Component({
-  template: '<rb-edit-document [order]="order()" [uploadProgress]="progress()" (saved)="saved = $event" (cancelled)="cancelled = true" />',
+  template:
+    '<rb-edit-document [order]="order()" [uploadProgress]="progress()" (saved)="saved.set($event)" (cancelled)="cancelled.set(true)" />',
   imports: [EditDocumentComponent],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
@@ -20,8 +21,8 @@ class TestComponent {
     documents: []
   } as DetailedOrder);
   readonly progress = signal<number | null>(null);
-  cancelled = false;
-  saved: DocumentCommand = null;
+  readonly cancelled = signal(false);
+  readonly saved = signal<DocumentCommand | null>(null);
 }
 
 class TestComponentTester extends ComponentTester<TestComponent> {
@@ -113,7 +114,7 @@ describe('EditDocumentComponent', () => {
   it('should validate', async () => {
     await tester.saveButton.click();
 
-    expect(tester.componentInstance.saved).toBeNull();
+    expect(tester.componentInstance.saved()).toBeNull();
     expect(tester.errors.length).toBe(2); // type, file
 
     await tester.type.selectLabel('Autre');
@@ -191,12 +192,12 @@ describe('EditDocumentComponent', () => {
         onDeliveryForm: true
       }
     };
-    expect(tester.componentInstance.saved).toEqual(expectedCommand);
+    expect(tester.componentInstance.saved()).toEqual(expectedCommand);
   });
 
   it('should cancel', async () => {
     await tester.cancelButton.click();
-    expect(tester.componentInstance.cancelled).toBe(true);
+    expect(tester.componentInstance.cancelled()).toBe(true);
   });
 
   it('should drag and drop file on input', async () => {

@@ -2,7 +2,7 @@ import { TestBed } from '@angular/core/testing';
 
 import { EditCustomerInformationComponent } from './edit-customer-information.component';
 import { ComponentTester } from 'ngx-speculoos';
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
 import { ALL_CUSTOMER_TYPES, ALL_LANGUAGES } from '../../basket/basket.model';
 import { CustomerInformationCommand } from '../order.model';
 import { ValidationDefaultsComponent } from '../../validation-defaults/validation-defaults.component';
@@ -10,7 +10,11 @@ import { provideI18nTesting } from '../../i18n/mock-18n.spec';
 
 @Component({
   template: `
-    <rb-edit-customer-information [customerInformation]="customerInformation" (saved)="command = $event" (cancelled)="cancelled = true" />
+    <rb-edit-customer-information
+      [customerInformation]="customerInformation"
+      (saved)="command.set($event)"
+      (cancelled)="cancelled.set(true)"
+    />
   `,
   imports: [EditCustomerInformationComponent],
   changeDetection: ChangeDetectionStrategy.OnPush
@@ -28,8 +32,8 @@ class TestComponent {
     },
     rationale: 'The rationale'
   };
-  command: CustomerInformationCommand | null = null;
-  cancelled = false;
+  readonly command = signal<CustomerInformationCommand | null>(null);
+  readonly cancelled = signal(false);
 }
 
 class TestComponentTester extends ComponentTester<TestComponent> {
@@ -132,7 +136,7 @@ describe('EditCustomerComponent', () => {
 
     await tester.saveButton.click();
 
-    expect(tester.componentInstance.command).toBeNull();
+    expect(tester.componentInstance.command()).toBeNull();
     // name, email, delivery address, billing address, type, language are mandatory, but not organization nor rationale
     expect(tester.errors.length).toBe(6);
 
@@ -166,7 +170,7 @@ describe('EditCustomerComponent', () => {
       },
       rationale: 'foo'
     };
-    expect(tester.componentInstance.command).toEqual(expectedCommand);
+    expect(tester.componentInstance.command()).toEqual(expectedCommand);
   });
 
   it('should use the delivery address as the billing address', async () => {
@@ -183,13 +187,13 @@ describe('EditCustomerComponent', () => {
     await tester.rationale.fillWith('foo');
 
     await tester.saveButton.click();
-    expect(tester.componentInstance.command.customer.billingAddress).toEqual(tester.componentInstance.command.customer.deliveryAddress);
+    expect(tester.componentInstance.command().customer.billingAddress).toEqual(tester.componentInstance.command().customer.deliveryAddress);
   });
 
   it('should cancel', async () => {
     await tester.stable();
 
     await tester.cancelButton.click();
-    expect(tester.componentInstance.cancelled).toBe(true);
+    expect(tester.componentInstance.cancelled()).toBe(true);
   });
 });
