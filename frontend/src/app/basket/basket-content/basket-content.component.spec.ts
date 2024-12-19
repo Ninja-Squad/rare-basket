@@ -101,7 +101,6 @@ describe('BasketContentComponent', () => {
   });
 
   it('should display customer information', async () => {
-    tester = new TestComponentTester();
     await tester.stable();
 
     expect(tester.testElement).toContainText('John');
