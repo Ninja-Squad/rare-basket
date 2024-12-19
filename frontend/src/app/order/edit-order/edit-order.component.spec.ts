@@ -103,8 +103,8 @@ describe('EditOrderComponent', () => {
     tester = new TestComponentTester();
   });
 
-  it('should display a filled form', () => {
-    tester.detectChanges();
+  it('should display a filled form', async () => {
+    await tester.stable();
     expect(tester.items.length).toBe(2);
 
     expect(tester.name(0)).toHaveValue('rosa');
@@ -120,9 +120,9 @@ describe('EditOrderComponent', () => {
     expect(tester.deleteButton(1).disabled).toBe(false);
   });
 
-  it('should add an item', () => {
-    tester.detectChanges();
-    tester.addItemButton.click();
+  it('should add an item', async () => {
+    await tester.stable();
+    await tester.addItemButton.click();
 
     expect(tester.items.length).toBe(3);
     expect(tester.name(2)).toHaveValue('');
@@ -131,9 +131,9 @@ describe('EditOrderComponent', () => {
     expect(tester.unit(2)).toHaveValue('');
   });
 
-  it('should delete an item', () => {
-    tester.detectChanges();
-    tester.deleteButton(0).click();
+  it('should delete an item', async () => {
+    await tester.stable();
+    await tester.deleteButton(0).click();
 
     expect(tester.items.length).toBe(1);
     expect(tester.name(0)).toHaveValue('violetta');
@@ -143,32 +143,32 @@ describe('EditOrderComponent', () => {
     expect(tester.deleteButton(0).disabled).toBe(true); // last item: not deletable
   });
 
-  it('should validate', () => {
-    tester.detectChanges();
-    tester.name(0).fillWith('');
-    tester.identifier(0).fillWith('');
-    tester.quantity(0).fillWith('0');
-    tester.saveButton.click();
+  it('should validate', async () => {
+    await tester.stable();
+    await tester.name(0).fillWith('');
+    await tester.identifier(0).fillWith('');
+    await tester.quantity(0).fillWith('0');
+    await tester.saveButton.click();
 
     expect(tester.componentInstance.saved).toBeNull();
     expect(tester.errors.length).toBe(3);
   });
 
-  it('should cancel', () => {
-    tester.detectChanges();
-    tester.cancelButton.click();
+  it('should cancel', async () => {
+    await tester.stable();
+    await tester.cancelButton.click();
     expect(tester.componentInstance.cancelled).toBe(true);
   });
 
-  it('should save', () => {
-    tester.detectChanges();
-    tester.deleteButton(0).click();
-    tester.name(0).fillWith('VIOLETTA');
-    tester.addItemButton.click();
-    tester.name(1).fillWith('bacteria');
-    tester.identifier(1).fillWith('bacteria1');
+  it('should save', async () => {
+    await tester.stable();
+    await tester.deleteButton(0).click();
+    await tester.name(0).fillWith('VIOLETTA');
+    await tester.addItemButton.click();
+    await tester.name(1).fillWith('bacteria');
+    await tester.identifier(1).fillWith('bacteria1');
 
-    tester.saveButton.click();
+    await tester.saveButton.click();
 
     expect(tester.componentInstance.saved).toEqual({
       items: [
@@ -192,9 +192,9 @@ describe('EditOrderComponent', () => {
     });
   });
 
-  it('should add a first item if order does not have any', () => {
+  it('should add a first item if order does not have any', async () => {
     tester.componentInstance.order.items = [];
-    tester.detectChanges();
+    await tester.stable();
 
     expect(tester.items.length).toBe(1);
 
@@ -204,7 +204,7 @@ describe('EditOrderComponent', () => {
     expect(tester.unit(0)).toHaveValue('');
   });
 
-  it('should open a CSV modal and add the entered items', () => {
+  it('should open a CSV modal and add the entered items', async () => {
     const enteredItems: Array<OrderItemCommand> = [
       {
         accession: { name: 'rosa', identifier: 'rosa2' },
@@ -221,9 +221,9 @@ describe('EditOrderComponent', () => {
     const modalService: MockModalService<CsvModalComponent> = TestBed.inject(MockModalService);
     modalService.mockClosedModal(null, enteredItems);
 
-    tester.detectChanges();
+    await tester.stable();
 
-    tester.csvButton.click();
+    await tester.csvButton.click();
 
     expect(tester.items.length).toBe(4);
     expect(tester.name(2)).toHaveValue('rosa');
@@ -237,7 +237,7 @@ describe('EditOrderComponent', () => {
     expect(tester.unit(3)).toHaveValue('pièces');
   });
 
-  it('should open a CSV modal and remove the last blank item before adding the entered items', () => {
+  it('should open a CSV modal and remove the last blank item before adding the entered items', async () => {
     const enteredItems: Array<OrderItemCommand> = [
       {
         accession: { name: 'rosa', identifier: 'rosa2' },
@@ -249,10 +249,10 @@ describe('EditOrderComponent', () => {
     const modalService: MockModalService<CsvModalComponent> = TestBed.inject(MockModalService);
     modalService.mockClosedModal(null, enteredItems);
 
-    tester.detectChanges();
+    await tester.stable();
 
-    tester.addItemButton.click(); // add a new blank item
-    tester.csvButton.click();
+    await tester.addItemButton.click(); // add a new blank item
+    await tester.csvButton.click();
 
     expect(tester.items.length).toBe(3);
     expect(tester.name(2)).toHaveValue('rosa');

@@ -30,7 +30,7 @@ describe('AppComponent', () => {
   let tester: AppComponentTester;
   let authenticationService: jasmine.SpyObj<AuthenticationService>;
 
-  beforeEach(() => {
+  beforeEach(async () => {
     authenticationService = createMock(AuthenticationService);
     authenticationService.getCurrentUser.and.returnValue(of(null));
 
@@ -39,7 +39,7 @@ describe('AppComponent', () => {
     });
 
     tester = new AppComponentTester();
-    tester.detectChanges();
+    await tester.stable();
   });
 
   it('should initialize auth', () => {

@@ -27,7 +27,7 @@ describe('FinalizationWarningsModalComponent', () => {
   let tester: FinalizationWarningsModalComponentTester;
   let activeModal: jasmine.SpyObj<NgbActiveModal>;
 
-  beforeEach(() => {
+  beforeEach(async () => {
     activeModal = createMock(NgbActiveModal);
 
     TestBed.configureTestingModule({
@@ -36,7 +36,7 @@ describe('FinalizationWarningsModalComponent', () => {
 
     tester = new FinalizationWarningsModalComponentTester();
     tester.componentInstance.init(['foo', 'bar']);
-    tester.detectChanges();
+    await tester.stable();
   });
 
   it('should display messages', () => {
@@ -45,13 +45,13 @@ describe('FinalizationWarningsModalComponent', () => {
     expect(tester.messages[1]).toHaveText('bar');
   });
 
-  it('should close when clicking yes', () => {
-    tester.yesButton.click();
+  it('should close when clicking yes', async () => {
+    await tester.yesButton.click();
     expect(activeModal.close).toHaveBeenCalled();
   });
 
-  it('should dismiss when clicking no', () => {
-    tester.noButton.click();
+  it('should dismiss when clicking no', async () => {
+    await tester.noButton.click();
     expect(activeModal.dismiss).toHaveBeenCalled();
   });
 });

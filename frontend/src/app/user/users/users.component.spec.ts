@@ -60,17 +60,17 @@ describe('UsersComponent', () => {
     });
   });
 
-  it('should not display anything until users are available', () => {
+  it('should not display anything until users are available', async () => {
     userService.list.and.returnValue(EMPTY);
     tester = new UsersComponentTester();
-    tester.detectChanges();
+    await tester.stable();
 
     expect(tester.users.length).toBe(0);
     expect(tester.paginationComponent).toBeNull();
     expect(tester.createLink).toBeNull();
   });
 
-  it('should display users', () => {
+  it('should display users', async () => {
     const users: Page<User> = {
       totalPages: 2,
       totalElements: 22,
@@ -92,7 +92,7 @@ describe('UsersComponent', () => {
 
     userService.list.and.returnValue(of(users));
     tester = new UsersComponentTester();
-    tester.detectChanges();
+    await tester.stable();
 
     expect(tester.users.length).toBe(2);
     expect(tester.users[0]).toContainText('admin');
@@ -103,7 +103,7 @@ describe('UsersComponent', () => {
     expect(tester.createLink).not.toBeNull();
   });
 
-  it('should delete after confirmation and reload', () => {
+  it('should delete after confirmation and reload', async () => {
     const users: Page<User> = {
       totalPages: 2,
       totalElements: 22,
@@ -125,12 +125,12 @@ describe('UsersComponent', () => {
 
     userService.list.and.returnValues(of(users), of({ ...users, totalElements: 21, content: [users.content[1]] }));
     tester = new UsersComponentTester();
-    tester.detectChanges();
+    await tester.stable();
 
     confirmationService.confirm.and.returnValue(of(undefined));
     userService.delete.and.returnValue(of(undefined));
 
-    tester.deleteButtons[0].click();
+    await tester.deleteButtons[0].click();
 
     expect(tester.users.length).toBe(1);
     expect(userService.delete).toHaveBeenCalledWith(1);

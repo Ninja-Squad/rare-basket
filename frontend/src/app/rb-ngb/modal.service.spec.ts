@@ -1,4 +1,4 @@
-import { fakeAsync, TestBed, tick } from '@angular/core/testing';
+import { TestBed } from '@angular/core/testing';
 import { Component } from '@angular/core';
 import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 
@@ -20,7 +20,7 @@ describe('ModalService', () => {
     modalService = TestBed.inject(ModalService);
   });
 
-  it('should create a modal instance', fakeAsync(() => {
+  it('should create a modal instance', () => {
     spyOn(ngbModal, 'open').and.returnValue({
       componentInstance: fakeModalComponent,
       result: Promise.resolve()
@@ -30,12 +30,13 @@ describe('ModalService', () => {
 
     expect(ngbModal.open).toHaveBeenCalledWith(TestModalComponent, undefined);
     expect(modal.componentInstance).toBe(fakeModalComponent);
-  }));
+  });
 
-  it('should emit on close', fakeAsync(() => {
+  it('should emit on close', async () => {
+    const promise = Promise.resolve();
     spyOn(ngbModal, 'open').and.returnValue({
       componentInstance: fakeModalComponent,
-      result: Promise.resolve()
+      result: promise
     } as NgbModalRef);
 
     const modal = modalService.open(TestModalComponent);
@@ -44,16 +45,17 @@ describe('ModalService', () => {
     modal.result.subscribe(() => (closed = true));
 
     // close the modal by resolving the promise
-    tick();
+    await promise;
 
     expect(closed).toBe(true);
-  }));
+  });
 
-  it('should emit EMPTY on cancel', fakeAsync(() => {
+  it('should emit EMPTY on cancel', async () => {
+    const promise = Promise.reject();
     spyOn(ngbModal, 'open').and.returnValue({
       componentInstance: fakeModalComponent,
-      result: Promise.reject()
-    } as NgbModalRef);
+      result: promise
+    } as unknown as NgbModalRef);
 
     const modal = modalService.open(TestModalComponent);
 
@@ -61,16 +63,21 @@ describe('ModalService', () => {
     modal.result.subscribe(() => (closed = true));
 
     // close the modal by resolving the promise
-    tick();
+    try {
+      await promise;
+    } catch (e) {
+      // ignore
+    }
 
     expect(closed).toBe(false);
-  }));
+  });
 
-  it('should throw error on cancel if options says so', fakeAsync(() => {
+  it('should throw error on cancel if options says so', async () => {
+    const promise = Promise.reject();
     spyOn(ngbModal, 'open').and.returnValue({
       componentInstance: fakeModalComponent,
-      result: Promise.reject()
-    } as NgbModalRef);
+      result: promise
+    } as unknown as NgbModalRef);
 
     const options: ModalOptions = { errorOnClose: true };
     const modal = modalService.open(TestModalComponent, options);
@@ -82,8 +89,12 @@ describe('ModalService', () => {
     modal.result.subscribe({ error: () => (hasError = true) });
 
     // close the modal by resolving the promise
-    tick();
+    try {
+      await promise;
+    } catch (e) {
+      // ignore
+    }
 
     expect(hasError).toBe(true);
-  }));
+  });
 });

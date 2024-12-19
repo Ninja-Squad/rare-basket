@@ -8,8 +8,8 @@ import { provideDisabledNgbAnimation } from '../../rb-ngb/disable-animations';
 class ModalComponentTester {
   constructor(private fixture: ComponentFixture<unknown>) {}
 
-  detectChanges() {
-    this.fixture.detectChanges();
+  async stable() {
+    await this.fixture.whenStable();
   }
 
   get modalWindow(): HTMLElement {
@@ -28,14 +28,14 @@ class ModalComponentTester {
     return document.querySelector('.modal-title');
   }
 
-  yes() {
+  async yes() {
     (document.querySelector('#yes-button') as HTMLButtonElement).click();
-    this.detectChanges();
+    await this.stable();
   }
 
-  no() {
+  async no() {
     (document.querySelector('#no-button') as HTMLButtonElement).click();
-    this.detectChanges();
+    await this.stable();
   }
 }
 
@@ -51,14 +51,14 @@ describe('ConfirmationModalComponent and ConfirmationService', () => {
   let tester: ModalComponentTester;
   let confirmationService: ConfirmationService;
 
-  beforeEach(() => {
+  beforeEach(async () => {
     TestBed.configureTestingModule({
       providers: [provideI18nTesting(), provideDisabledNgbAnimation()]
     });
 
     confirmationService = TestBed.inject(ConfirmationService);
     tester = new ModalComponentTester(TestBed.createComponent(TestComponent));
-    tester.detectChanges();
+    await tester.stable();
   });
 
   afterEach(() => {
@@ -72,43 +72,55 @@ describe('ConfirmationModalComponent and ConfirmationService', () => {
 
   function confirm(options: ConfirmationOptions): Observable<void> {
     const result = confirmationService.confirm(options);
-    tester.detectChanges();
+    tester.stable();
     return result;
   }
 
-  it('should display a modal dialog when confirming and use default title', () => {
+  it('should display a modal dialog when confirming and use default title', async () => {
     confirm({ messageKey: 'basket.edit-basket.confirm-accession-deletion' });
+    await tester.stable();
     expect(tester.modalWindow).toBeTruthy();
     expect(tester.modalTitle.textContent).toBe('Confirmation');
     expect(tester.modalBody.textContent).toContain('Voulez-vous vraiment supprimer cette accession de votre commande\u00a0?');
   });
 
-  it('should honor the titleKey option', () => {
+  it('should honor the titleKey option', async () => {
     confirm({ messageKey: 'basket.edit-basket.confirm-accession-deletion', titleKey: 'basket.edit-basket.email' });
+    await tester.stable();
     expect(tester.modalTitle.textContent).toBe('Votre adresse courriel');
   });
 
-  it('should emit when confirming', (done: DoneFn) => {
-    confirm({ messageKey: 'basket.edit-basket.confirm-accession-deletion' }).subscribe(() => done());
-    tester.yes();
+  it('should emit when confirming', async () => {
+    let nexted = false;
+    confirm({ messageKey: 'basket.edit-basket.confirm-accession-deletion' }).subscribe(() => (nexted = true));
+    await tester.stable();
+    await tester.yes();
 
     expect(tester.modalWindow).toBeFalsy();
+    expect(nexted).toBeTrue();
   });
 
-  it('should error when not confirming and errorOnClose is true', (done: DoneFn) => {
-    confirm({ messageKey: 'basket.edit-basket.confirm-accession-deletion', errorOnClose: true }).subscribe({ error: () => done() });
-    tester.no();
-
-    expect(tester.modalWindow).toBeFalsy();
-  });
-
-  it('should do nothing when not confirming and errorOnClose is not set', (done: DoneFn) => {
-    confirm({ messageKey: 'basket.edit-basket.confirm-accession-deletion' }).subscribe({
-      error: () => fail(),
-      complete: () => done()
+  it('should error when not confirming and errorOnClose is true', async () => {
+    let errored = false;
+    confirm({ messageKey: 'basket.edit-basket.confirm-accession-deletion', errorOnClose: true }).subscribe({
+      error: () => (errored = true)
     });
-    tester.no();
+    await tester.stable();
+    await tester.no();
 
     expect(tester.modalWindow).toBeFalsy();
+    expect(errored).toBeTrue();
+  });
+
+  it('should do nothing when not confirming and errorOnClose is not set', async () => {
+    let completed = false;
+    confirm({ messageKey: 'basket.edit-basket.confirm-accession-deletion' }).subscribe({
+      complete: () => (completed = true)
+    });
+    await tester.stable();
+    await tester.no();
+
+    expect(tester.modalWindow).toBeFalsy();
+    expect(completed).toBeTrue();
   });
 });

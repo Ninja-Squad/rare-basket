@@ -38,24 +38,24 @@ describe('BasketConfirmationComponent', () => {
     });
   });
 
-  it('should confirm and redirect if successful', () => {
+  it('should confirm and redirect if successful', async () => {
     basketService.confirm.and.returnValue(of(undefined));
     const router = TestBed.inject(Router);
     spyOn(router, 'navigate');
     tester = new BasketConfirmationComponentTester();
-    tester.detectChanges();
+    await tester.stable();
 
     expect(tester.alert).toBeNull();
     expect(basketService.confirm).toHaveBeenCalledWith('ABCDEFGH', 'XYXWVUTS');
     expect(router.navigate).toHaveBeenCalledWith(['/baskets', 'ABCDEFGH']);
   });
 
-  it('should confirm and display an alert is unsuccessful', () => {
+  it('should confirm and display an alert is unsuccessful', async () => {
     basketService.confirm.and.returnValue(throwError(() => undefined));
     const router = TestBed.inject(Router);
     spyOn(router, 'navigate');
     tester = new BasketConfirmationComponentTester();
-    tester.detectChanges();
+    await tester.stable();
 
     expect(basketService.confirm).toHaveBeenCalledWith('ABCDEFGH', 'XYXWVUTS');
     expect(router.navigate).not.toHaveBeenCalled();
