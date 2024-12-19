@@ -50,7 +50,7 @@ tasks {
         args.set(listOf("lint"))
         dependsOn(prepare)
         inputs.dir("src")
-        inputs.file(".eslintrc.json")
+        inputs.file("eslint.config.js")
         inputs.file(".prettierrc")
         outputs.file(layout.buildDirectory.file("eslint-result.txt"))
     }

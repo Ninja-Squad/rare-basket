@@ -1,5 +1,5 @@
 import { HttpInterceptorFn, HttpStatusCode } from '@angular/common/http';
-import { tap } from 'rxjs/operators';
+import { tap } from 'rxjs';
 import { ToastService } from './toast.service';
 import { inject } from '@angular/core';
 

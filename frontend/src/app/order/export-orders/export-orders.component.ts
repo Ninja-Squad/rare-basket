@@ -3,7 +3,7 @@ import { NonNullableFormBuilder, ReactiveFormsModule, Validators } from '@angula
 import { formatDate } from '@angular/common';
 import { OrderService } from '../order.service';
 import { DownloadService } from '../../shared/download.service';
-import { finalize } from 'rxjs/operators';
+import { finalize } from 'rxjs';
 import { faSpinner } from '@fortawesome/free-solid-svg-icons';
 import { validDateRange } from '../../shared/validators';
 import { ValidationErrorsComponent } from 'ngx-valdemort';

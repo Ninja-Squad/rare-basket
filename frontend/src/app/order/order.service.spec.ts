@@ -4,7 +4,7 @@ import { OrderService } from './order.service';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { CustomerInformationCommand, Document, DocumentCommand, Order, OrderCommand, OrderStatistics } from './order.model';
 import { Page } from '../shared/page.model';
-import { filter } from 'rxjs/operators';
+import { filter } from 'rxjs';
 import { HttpEventType, HttpResponse, provideHttpClient } from '@angular/common/http';
 
 describe('OrderService', () => {

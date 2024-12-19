@@ -15,13 +15,12 @@ import {
   faTrash,
   faWindowClose
 } from '@fortawesome/free-solid-svg-icons';
-import { filter, finalize, switchMap, tap } from 'rxjs/operators';
 import { ConfirmationService } from '../../shared/confirmation.service';
 import { HttpEventType } from '@angular/common/http';
 import { DownloadService } from '../../shared/download.service';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { FinalizationWarningsModalComponent } from '../finalization-warnings-modal/finalization-warnings-modal.component';
-import { map, Observable, startWith, Subject } from 'rxjs';
+import { filter, finalize, map, Observable, startWith, Subject, switchMap, tap } from 'rxjs';
 import { ModalService } from '../../rb-ngb/modal.service';
 import { ToastService } from '../../shared/toast.service';
 import { DocumentTypeEnumPipe } from '../document-type-enum.pipe';
@@ -88,7 +87,7 @@ export class OrderComponent {
   readonly statusChanged = signal(false);
   readonly downloadingDeliveryForm = signal(false);
 
-  private downloadingDocumentIds = signal<Array<number>>([]);
+  private readonly downloadingDocumentIds = signal<Array<number>>([]);
 
   readonly refresh = new Subject<void>();
 

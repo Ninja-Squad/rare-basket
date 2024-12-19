@@ -43,7 +43,7 @@ export class EditDocumentComponent {
     onDeliveryForm: false
   });
 
-  fileInput = viewChild.required<ElementRef<HTMLInputElement>>('fileInput');
+  readonly fileInput = viewChild.required<ElementRef<HTMLInputElement>>('fileInput');
 
   readonly order = input.required<DetailedOrder>();
   readonly uploadProgress = input.required<number | null>();

@@ -1,7 +1,6 @@
 import { inject, Injectable } from '@angular/core';
 import { OidcSecurityService } from 'angular-auth-oidc-client';
-import { Observable, of, ReplaySubject } from 'rxjs';
-import { map, switchMap } from 'rxjs/operators';
+import { map, Observable, of, ReplaySubject, switchMap } from 'rxjs';
 import { Router } from '@angular/router';
 import { WINDOW } from './window.service';
 import { HttpClient } from '@angular/common/http';

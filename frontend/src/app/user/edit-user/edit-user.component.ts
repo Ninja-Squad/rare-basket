@@ -3,7 +3,7 @@ import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { AccessionHolder, Grc, Permission, User, UserCommand } from '../../shared/user.model';
 import { AbstractControl, FormControl, NonNullableFormBuilder, ReactiveFormsModule, ValidationErrors, Validators } from '@angular/forms';
 import { UserService } from '../user.service';
-import { combineLatest, map, Observable, of } from 'rxjs';
+import { combineLatest, map, Observable, of, tap } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { AccessionHolderService } from '../../shared/accession-holder.service';
 import { GrcService } from '../../shared/grc.service';
@@ -13,7 +13,6 @@ import { ValidationErrorDirective, ValidationErrorsComponent } from 'ngx-valdemo
 import { FormControlValidationDirective } from '../../shared/form-control-validation.directive';
 import { TranslateModule } from '@ngx-translate/core';
 import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
-import { tap } from 'rxjs/operators';
 
 interface GrcOptionGroup {
   name: string;
@@ -218,11 +217,8 @@ export class EditUserComponent {
   }
 
   private extractSelectedIds(recordValue: Partial<Record<string, boolean>>): Array<number> {
-    return (
-      Object.entries(recordValue)
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        .filter(([_, selected]) => selected)
-        .map(([idAsString]) => parseInt(idAsString))
-    );
+    return Object.entries(recordValue)
+      .filter(([_, selected]) => selected)
+      .map(([idAsString]) => parseInt(idAsString));
   }
 }

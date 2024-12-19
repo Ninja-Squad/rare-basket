@@ -1,10 +1,10 @@
 import { NgbDateStruct } from '@ng-bootstrap/ng-bootstrap';
 
-export function toInteger(value: any): number {
+export function toInteger(value: unknown): number {
   return parseInt(`${value}`, 10);
 }
 
-export function isNumber(value: any): value is number {
+export function isNumber(value: unknown): value is number {
   return !isNaN(toInteger(value));
 }
 

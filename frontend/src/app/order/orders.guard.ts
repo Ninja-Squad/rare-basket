@@ -1,7 +1,6 @@
 import { inject } from '@angular/core';
 import { Router, UrlTree } from '@angular/router';
-import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { map, Observable } from 'rxjs';
 import { AuthenticationService } from '../shared/authentication.service';
 
 export function ordersGuard(): Observable<UrlTree> {

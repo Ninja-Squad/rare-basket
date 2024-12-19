@@ -85,11 +85,13 @@ export class EditBasketComponent implements OnInit {
   readonly deleteIcon = faTrash;
   readonly saveIcon = faCheck;
 
-  quantityDisplayed = computed(() =>
+  readonly quantityDisplayed = computed(() =>
     this.accessionHolderBaskets().some(accessionHolderBasket => accessionHolderBasket.items.some(item => !!item.quantity))
   );
-  deleteItemDisabled = computed(() => this.accessionHolderBaskets().length === 1 && this.accessionHolderBaskets()[0].items.length === 1);
-  saveForbidden = signal(false);
+  readonly deleteItemDisabled = computed(
+    () => this.accessionHolderBaskets().length === 1 && this.accessionHolderBaskets()[0].items.length === 1
+  );
+  readonly saveForbidden = signal(false);
 
   constructor() {
     this.useDeliveryAddressControl.valueChanges

@@ -28,7 +28,7 @@ export class EditGrcComponent {
   private router = inject(Router);
   private toastService = inject(ToastService);
 
-  vm: Signal<ViewModel | undefined>;
+  readonly vm: Signal<ViewModel | undefined>;
   form = inject(NonNullableFormBuilder).group({
     name: ['', Validators.required],
     institution: ['', Validators.required],

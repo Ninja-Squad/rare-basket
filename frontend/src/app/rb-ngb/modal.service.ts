@@ -1,7 +1,6 @@
 import { Injectable, TemplateRef, Type, inject } from '@angular/core';
 import { NgbModal, NgbModalOptions, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
-import { EMPTY, from, throwError } from 'rxjs';
-import { catchError } from 'rxjs/operators';
+import { catchError, EMPTY, from, throwError } from 'rxjs';
 
 /**
  * The options that are passed when opening a modal.
@@ -41,7 +40,7 @@ export class ModalService {
    * If `errorOnClose` is true, then canceling the modal makes the returned observable emit an error.
    * Otherwise, the observable just doesn't emit anything and completes.
    */
-  open<T>(modalComponent: Type<T> | TemplateRef<any>, options?: ModalOptions): Modal<T> {
+  open<T>(modalComponent: Type<T> | TemplateRef<unknown>, options?: ModalOptions): Modal<T> {
     return new Modal(this.ngbModal.open(modalComponent, options), options?.errorOnClose ?? false);
   }
 }

@@ -9,7 +9,7 @@ import { ComponentTester, provideAutomaticChangeDetection } from 'ngx-speculoos'
   imports: [ChartComponent]
 })
 class TestComponent {
-  configuration = signal<ChartConfiguration<'doughnut'>>({
+  readonly configuration = signal<ChartConfiguration<'doughnut'>>({
     type: 'doughnut',
     data: {
       datasets: [

@@ -27,4 +27,6 @@ bootstrapApplication(AppComponent, {
     provideI18n(),
     provideNgbDatepickerServices()
   ]
-}).catch(err => console.error(err));
+})
+  // eslint-disable-next-line no-console
+  .catch(err => console.error(err));

@@ -22,7 +22,8 @@ export class CustomSecurityStorage extends AbstractSecurityStorage {
     super();
   }
 
-  read(key: string): any {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  override read(key: string): any {
     const item = localStorage.getItem(key);
     if (!item) {
       return null;
@@ -31,16 +32,16 @@ export class CustomSecurityStorage extends AbstractSecurityStorage {
     return JSON.parse(item);
   }
 
-  write(key: string, value: any): void {
-    value = value || null;
+  override write(key: string, value: unknown): void {
+    value = value ?? null;
     localStorage.setItem(key, JSON.stringify(value));
   }
 
-  remove(key: string): void {
+  override remove(key: string): void {
     localStorage.removeItem(key);
   }
 
-  clear() {
+  override clear() {
     // apparently, only read and write are actually used, and always with the same key: the config ID
     // to be safe, let's at least removed that key
     localStorage.removeItem(CONFIG_ID);

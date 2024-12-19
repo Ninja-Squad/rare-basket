@@ -16,7 +16,7 @@ import { delay } from 'rxjs';
 export class ToastsComponent {
   private toastService = inject(ToastService);
 
-  toasts = signal<Array<Toast>>([]);
+  readonly toasts = signal<Array<Toast>>([]);
 
   constructor() {
     this.toastService

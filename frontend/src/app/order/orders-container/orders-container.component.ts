@@ -22,7 +22,7 @@ import { toSignal } from '@angular/core/rxjs-interop';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class OrdersContainerComponent {
-  private user = toSignal(inject(AuthenticationService).getCurrentUser());
+  private readonly user = toSignal(inject(AuthenticationService).getCurrentUser());
 
   hasPermission(permission: Permission): boolean {
     const user = this.user();

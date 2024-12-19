@@ -2,14 +2,13 @@ import { ChangeDetectionStrategy, Component, inject, Signal } from '@angular/cor
 import { AccessionHolder } from '../../shared/user.model';
 import { faPlus, faStoreAlt, faTrash } from '@fortawesome/free-solid-svg-icons';
 import { AccessionHolderService } from '../../shared/accession-holder.service';
-import { switchMap, tap } from 'rxjs/operators';
 import { ConfirmationService } from '../../shared/confirmation.service';
 import { ToastService } from '../../shared/toast.service';
 import { RouterLink } from '@angular/router';
 import { FaIconComponent } from '@fortawesome/angular-fontawesome';
 
 import { TranslateModule } from '@ngx-translate/core';
-import { startWith, Subject } from 'rxjs';
+import { startWith, Subject, switchMap, tap } from 'rxjs';
 import { toSignal } from '@angular/core/rxjs-interop';
 
 @Component({

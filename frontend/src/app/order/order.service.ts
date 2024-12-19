@@ -33,7 +33,7 @@ export class OrderService {
   }
 
   private listOrders(page: number, accessionHolderId: number | null, statuses: Array<OrderStatus>) {
-    const params: { [key: string]: string | number | Array<string> } = { status: statuses, page };
+    const params: Record<string, string | number | Array<string>> = { status: statuses, page };
     if (accessionHolderId != null) {
       params.accessionHolderId = accessionHolderId;
     }

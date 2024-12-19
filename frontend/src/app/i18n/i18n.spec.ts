@@ -2,6 +2,7 @@ import FR_TRANSLATIONS from './fr.json';
 import EN_TRANSLATIONS from './en.json';
 
 describe('i18n', () => {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   function checkObject(reference: any, other: any, prefix: string, otherLanguage: string) {
     const referenceKeys = Object.keys(reference);
     const otherKeys = Object.keys(other);

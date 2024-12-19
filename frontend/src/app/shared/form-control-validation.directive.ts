@@ -23,6 +23,7 @@ export class FormControlValidationDirective {
     return (
       this.ngControl &&
       this.ngControl.invalid &&
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       this.config.shouldDisplayErrors(this.ngControl.control!, (this.ngControl as any).formDirective)
     );
   }

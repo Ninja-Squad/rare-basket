@@ -18,7 +18,7 @@ import { TranslateModule } from '@ngx-translate/core';
 export class BasketContentComponent {
   readonly basket = input.required<Basket>();
 
-  quantityDisplayed = computed(() =>
+  readonly quantityDisplayed = computed(() =>
     this.basket().accessionHolderBaskets.some(accessionHolderBasket => accessionHolderBasket.items.some(item => !!item.quantity))
   );
 }

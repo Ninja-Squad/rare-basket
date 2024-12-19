@@ -17,9 +17,9 @@ import { EMPTY, of, throwError } from 'rxjs';
  */
 @Injectable()
 export class MockModalService<T> {
-  private modal: Modal<T>;
+  private modal!: Modal<T>;
 
-  mockClosedModal(componentInstance: T, value: any = '') {
+  mockClosedModal(componentInstance: T, value: unknown = '') {
     this.modal = {
       componentInstance,
       result: of(value)

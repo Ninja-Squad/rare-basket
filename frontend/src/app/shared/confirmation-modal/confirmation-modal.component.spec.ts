@@ -6,7 +6,7 @@ import { provideI18nTesting } from '../../i18n/mock-18n.spec';
 import { provideDisabledNgbAnimation } from '../../rb-ngb/disable-animations';
 
 class ModalComponentTester {
-  constructor(private fixture: ComponentFixture<any>) {}
+  constructor(private fixture: ComponentFixture<unknown>) {}
 
   detectChanges() {
     this.fixture.detectChanges();

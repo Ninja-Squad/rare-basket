@@ -4,14 +4,13 @@ import { NonNullableFormBuilder, ReactiveFormsModule, Validators } from '@angula
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { AccessionHolderService } from '../../shared/accession-holder.service';
 import { GrcService } from '../../shared/grc.service';
-import { combineLatest, map, Observable, of } from 'rxjs';
+import { combineLatest, map, Observable, of, tap } from 'rxjs';
 import { ToastService } from '../../shared/toast.service';
 
 import { ValidationErrorsComponent } from 'ngx-valdemort';
 import { FormControlValidationDirective } from '../../shared/form-control-validation.directive';
 import { TranslateModule } from '@ngx-translate/core';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { tap } from 'rxjs/operators';
 
 interface ViewModel {
   mode: 'create' | 'update';
@@ -32,7 +31,7 @@ export class EditAccessionHolderComponent {
   private router = inject(Router);
   private toastService = inject(ToastService);
 
-  vm: Signal<ViewModel | undefined>;
+  readonly vm: Signal<ViewModel | undefined>;
   form = inject(NonNullableFormBuilder).group({
     name: ['', Validators.required],
     email: ['', [Validators.required, Validators.email]],
