@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ConfirmationOptions, ConfirmationService } from '../confirmation.service';
-import { Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { Observable } from 'rxjs';
 import { provideI18nTesting } from '../../i18n/mock-18n.spec';
 import { provideDisabledNgbAnimation } from '../../rb-ngb/disable-animations';
@@ -43,7 +43,8 @@ class ModalComponentTester {
  * A test component just to be able to create a fixture to detect changes
  */
 @Component({
-  template: ''
+  template: '',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 class TestComponent {}
 

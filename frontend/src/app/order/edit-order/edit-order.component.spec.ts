@@ -1,7 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 
 import { EditOrderComponent } from './edit-order.component';
-import { Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { Order, OrderCommand, OrderItemCommand } from '../order.model';
 import { ComponentTester, TestButton } from 'ngx-speculoos';
 import { ValidationDefaultsComponent } from '../../validation-defaults/validation-defaults.component';
@@ -11,7 +11,8 @@ import { provideI18nTesting } from '../../i18n/mock-18n.spec';
 
 @Component({
   template: '<rb-edit-order [order]="order" (cancelled)="cancelled = true" (saved)="saved = $event" />',
-  imports: [EditOrderComponent]
+  imports: [EditOrderComponent],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 class TestComponent {
   cancelled = false;

@@ -1,7 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 
 import { EditConfirmationComponent } from './edit-confirmation.component';
-import { Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { Basket } from '../basket.model';
 import { ComponentTester, TestButton } from 'ngx-speculoos';
 import { provideI18nTesting } from '../../i18n/mock-18n.spec';
@@ -10,7 +10,8 @@ import { provideI18nTesting } from '../../i18n/mock-18n.spec';
   template: `
     <rb-edit-confirmation [basket]="basket" (basketConfirmed)="confirmationCode = $event" (refreshRequested)="refreshRequested = true" />
   `,
-  imports: [EditConfirmationComponent]
+  imports: [EditConfirmationComponent],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 class TestComponent {
   basket = {

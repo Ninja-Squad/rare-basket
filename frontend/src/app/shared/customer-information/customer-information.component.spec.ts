@@ -1,5 +1,5 @@
 import { TestBed } from '@angular/core/testing';
-import { Component, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
 import { ComponentTester } from 'ngx-speculoos';
 import { Customer } from '../../basket/basket.model';
 import { CustomerInformationComponent } from './customer-information.component';
@@ -7,7 +7,8 @@ import { provideI18nTesting } from '../../i18n/mock-18n.spec';
 
 @Component({
   template: '<rb-customer-information [customer]="customer()" [rationale]="rationale()" [withLanguage]="withLanguage()" />',
-  imports: [CustomerInformationComponent]
+  imports: [CustomerInformationComponent],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 class TestComponent {
   customer = signal<Customer>({

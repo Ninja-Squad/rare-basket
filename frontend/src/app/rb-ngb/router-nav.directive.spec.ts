@@ -1,5 +1,5 @@
 import { TestBed } from '@angular/core/testing';
-import { Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { RoutingTester } from 'ngx-speculoos';
 import { provideRouter, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { RouterNavDirective, RouterNavLinkDirective, RouterNavPanelDirective } from './router-nav.directive';
@@ -27,7 +27,8 @@ class PlaceholderComponent {}
       <router-outlet />
     </div>
   `,
-  imports: [RouterLink, RouterLinkActive, RouterOutlet, RouterNavDirective, RouterNavPanelDirective, RouterNavLinkDirective]
+  imports: [RouterLink, RouterLinkActive, RouterOutlet, RouterNavDirective, RouterNavPanelDirective, RouterNavLinkDirective],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 class TestComponent {}
 
