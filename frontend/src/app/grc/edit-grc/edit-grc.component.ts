@@ -23,13 +23,13 @@ interface ViewModel {
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class EditGrcComponent {
-  private route = inject(ActivatedRoute);
-  private grcService = inject(GrcService);
-  private router = inject(Router);
-  private toastService = inject(ToastService);
+  private readonly route = inject(ActivatedRoute);
+  private readonly grcService = inject(GrcService);
+  private readonly router = inject(Router);
+  private readonly toastService = inject(ToastService);
 
   readonly vm: Signal<ViewModel | undefined>;
-  form = inject(NonNullableFormBuilder).group({
+  readonly form = inject(NonNullableFormBuilder).group({
     name: ['', Validators.required],
     institution: ['', Validators.required],
     address: ['', Validators.required]

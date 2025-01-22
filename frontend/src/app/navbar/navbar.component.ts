@@ -29,7 +29,7 @@ type ViewModel = { status: 'unknown' | 'absent' } | { status: 'present'; user: U
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class NavbarComponent {
-  private authenticationService = inject(AuthenticationService);
+  private readonly authenticationService = inject(AuthenticationService);
 
   readonly collapsed = signal(true);
   readonly vm: Signal<ViewModel>;

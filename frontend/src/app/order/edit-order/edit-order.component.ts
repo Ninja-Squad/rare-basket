@@ -36,8 +36,8 @@ interface ItemFormValue {
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class EditOrderComponent implements OnInit {
-  private modalService = inject(ModalService);
-  private destroyRef = inject(DestroyRef);
+  private readonly modalService = inject(ModalService);
+  private readonly destroyRef = inject(DestroyRef);
 
   readonly order = input.required<Order>();
 
@@ -46,7 +46,7 @@ export class EditOrderComponent implements OnInit {
 
   readonly nameInputs = viewChildren<ElementRef<HTMLInputElement>>('name');
 
-  private fb = inject(NonNullableFormBuilder);
+  private readonly fb = inject(NonNullableFormBuilder);
   readonly itemGroups = this.fb.array<
     FormGroup<{
       name: FormControl<string>;

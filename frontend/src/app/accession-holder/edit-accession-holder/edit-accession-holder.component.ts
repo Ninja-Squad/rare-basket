@@ -26,13 +26,13 @@ interface ViewModel {
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class EditAccessionHolderComponent {
-  private route = inject(ActivatedRoute);
-  private accessionHolderService = inject(AccessionHolderService);
-  private router = inject(Router);
-  private toastService = inject(ToastService);
+  private readonly route = inject(ActivatedRoute);
+  private readonly accessionHolderService = inject(AccessionHolderService);
+  private readonly router = inject(Router);
+  private readonly toastService = inject(ToastService);
 
   readonly vm: Signal<ViewModel | undefined>;
-  form = inject(NonNullableFormBuilder).group({
+  readonly form = inject(NonNullableFormBuilder).group({
     name: ['', Validators.required],
     email: ['', [Validators.required, Validators.email]],
     phone: ['', Validators.required],

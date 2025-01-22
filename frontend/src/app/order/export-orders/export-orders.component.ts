@@ -29,8 +29,8 @@ import { TranslateModule } from '@ngx-translate/core';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ExportOrdersComponent {
-  private orderService = inject(OrderService);
-  private downloadService = inject(DownloadService);
+  private readonly orderService = inject(OrderService);
+  private readonly downloadService = inject(DownloadService);
 
   readonly form = inject(NonNullableFormBuilder).group(
     {

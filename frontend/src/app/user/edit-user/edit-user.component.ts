@@ -47,10 +47,10 @@ interface ViewModel {
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class EditUserComponent {
-  private userService = inject(UserService);
-  private router = inject(Router);
-  private fb = inject(NonNullableFormBuilder);
-  private toastService = inject(ToastService);
+  private readonly userService = inject(UserService);
+  private readonly router = inject(Router);
+  private readonly fb = inject(NonNullableFormBuilder);
+  private readonly toastService = inject(ToastService);
 
   readonly vm: Signal<ViewModel | undefined>;
   readonly form = this.fb.group({
@@ -67,7 +67,7 @@ export class EditUserComponent {
     const vm = this.vm();
     return vm ? this.toGrcOptionGroups(vm.accessionHolders) : [];
   });
-  keycloakUrl = `${environment.keycloakUrl}${environment.usersRealmPath}`;
+  readonly keycloakUrl = `${environment.keycloakUrl}${environment.usersRealmPath}`;
 
   constructor() {
     this.form.controls.orderManagement.valueChanges.pipe(takeUntilDestroyed()).subscribe(orderManagementSelected => {

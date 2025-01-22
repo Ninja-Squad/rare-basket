@@ -20,19 +20,19 @@ import { FaIconComponent } from '@fortawesome/angular-fontawesome';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class BasketConfirmationComponent {
-  private route = inject(ActivatedRoute);
-  private basketService = inject(BasketService);
-  private router = inject(Router);
+  private readonly route = inject(ActivatedRoute);
+  private readonly basketService = inject(BasketService);
+  private readonly router = inject(Router);
 
-  basketReference: string | null = null;
+  readonly basketReference = signal<string | null>(null);
   readonly errorIcon = faExclamationCircle;
   readonly confirmationFailed = signal(false);
 
   constructor() {
-    this.basketReference = this.route.snapshot.paramMap.get('reference')!;
+    this.basketReference.set(this.route.snapshot.paramMap.get('reference')!);
     const confirmationCode = this.route.snapshot.queryParamMap.get('code')!;
-    this.basketService.confirm(this.basketReference, confirmationCode).subscribe({
-      next: () => this.router.navigate(['/baskets', this.basketReference]),
+    this.basketService.confirm(this.basketReference()!, confirmationCode).subscribe({
+      next: () => this.router.navigate(['/baskets', this.basketReference()]),
       error: () => this.confirmationFailed.set(true)
     });
   }

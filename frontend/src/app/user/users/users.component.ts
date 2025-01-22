@@ -20,10 +20,10 @@ import { toSignal } from '@angular/core/rxjs-interop';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class UsersComponent {
-  private userService = inject(UserService);
-  private translateService = inject(TranslateService);
-  private confirmationService = inject(ConfirmationService);
-  private toastService = inject(ToastService);
+  private readonly userService = inject(UserService);
+  private readonly translateService = inject(TranslateService);
+  private readonly confirmationService = inject(ConfirmationService);
+  private readonly toastService = inject(ToastService);
 
   readonly users: Signal<Page<User> | undefined>;
 

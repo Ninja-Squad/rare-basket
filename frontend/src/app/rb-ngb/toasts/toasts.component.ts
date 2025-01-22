@@ -14,7 +14,7 @@ import { delay } from 'rxjs';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ToastsComponent {
-  private toastService = inject(ToastService);
+  private readonly toastService = inject(ToastService);
 
   readonly toasts = signal<Array<Toast>>([]);
 

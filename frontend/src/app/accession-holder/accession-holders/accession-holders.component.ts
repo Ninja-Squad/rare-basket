@@ -19,9 +19,9 @@ import { toSignal } from '@angular/core/rxjs-interop';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AccessionHoldersComponent {
-  private accessionHolderService = inject(AccessionHolderService);
-  private confirmationService = inject(ConfirmationService);
-  private toastService = inject(ToastService);
+  private readonly accessionHolderService = inject(AccessionHolderService);
+  private readonly confirmationService = inject(ConfirmationService);
+  private readonly toastService = inject(ToastService);
 
   readonly accessionHolders: Signal<Array<AccessionHolder> | undefined>;
   readonly refresh = new Subject<void>();

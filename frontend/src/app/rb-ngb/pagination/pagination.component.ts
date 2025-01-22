@@ -16,7 +16,7 @@ export class PaginationComponent {
 
   readonly navigate = input(false);
 
-  private router = inject(Router, { optional: true });
+  private readonly router = inject(Router, { optional: true });
 
   onPageChanged($event: number) {
     const newPage = $event - 1;

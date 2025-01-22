@@ -19,9 +19,9 @@ import { toSignal } from '@angular/core/rxjs-interop';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class GrcsComponent {
-  private grcService = inject(GrcService);
-  private confirmationService = inject(ConfirmationService);
-  private toastService = inject(ToastService);
+  private readonly grcService = inject(GrcService);
+  private readonly confirmationService = inject(ConfirmationService);
+  private readonly toastService = inject(ToastService);
 
   readonly refresh = new Subject<void>();
   readonly grcs: Signal<Array<Grc> | undefined>;

@@ -54,8 +54,8 @@ import { CustomerTypeEnumPipe } from '../../shared/customer-type-enum.pipe';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class EditBasketComponent implements OnInit {
-  private destroyRef = inject(DestroyRef);
-  private confirmationService = inject(ConfirmationService);
+  private readonly destroyRef = inject(DestroyRef);
+  private readonly confirmationService = inject(ConfirmationService);
 
   readonly basket = input.required<Basket>();
   readonly accessionHolderBaskets = linkedSignal<Array<AccessionHolderBasket>>(() => this.basket().accessionHolderBaskets);
@@ -65,8 +65,8 @@ export class EditBasketComponent implements OnInit {
   readonly gdprDetailsUrl = environment.gdprDetailsUrl;
   readonly customerTypes = ALL_CUSTOMER_TYPES;
 
-  private fb = inject(NonNullableFormBuilder);
-  private language: Language = inject(LOCALE_ID) as Language;
+  private readonly fb = inject(NonNullableFormBuilder);
+  private readonly language: Language = inject(LOCALE_ID) as Language;
   readonly form = this.fb.group({
     customer: this.fb.group({
       name: [null as string | null, Validators.required],

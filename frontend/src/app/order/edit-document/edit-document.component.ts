@@ -37,7 +37,7 @@ const maxFileSize = 10 * 1024 * 1024; // 10 MB
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class EditDocumentComponent {
-  form = inject(NonNullableFormBuilder).group({
+  readonly form = inject(NonNullableFormBuilder).group({
     type: [null as DocumentType | null, Validators.required],
     description: '',
     onDeliveryForm: false

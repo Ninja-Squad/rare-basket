@@ -32,11 +32,11 @@ import { first, map, startWith, tap } from 'rxjs';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class CreateOrderComponent {
-  private orderService = inject(OrderService);
-  private router = inject(Router);
-  private toastService = inject(ToastService);
+  private readonly orderService = inject(OrderService);
+  private readonly router = inject(Router);
+  private readonly toastService = inject(ToastService);
 
-  private fb = inject(NonNullableFormBuilder);
+  private readonly fb = inject(NonNullableFormBuilder);
   readonly form = this.fb.group({
     accessionHolder: [null as AccessionHolder | null, Validators.required],
     customer: this.fb.group({

@@ -33,7 +33,7 @@ export class EditCustomerInformationComponent implements OnInit {
   readonly saved = output<CustomerInformationCommand>();
   readonly cancelled = output<void>();
 
-  private fb = inject(NonNullableFormBuilder);
+  private readonly fb = inject(NonNullableFormBuilder);
   readonly form = this.fb.group({
     customer: this.fb.group({
       name: [null as string | null, Validators.required],

@@ -25,7 +25,7 @@ import { FaIconComponent } from '@fortawesome/angular-fontawesome';
 })
 export class DatepickerContainerComponent {
   readonly datePicker = contentChild.required(NgbInputDatepicker);
-  dateIcon = faCalendarAlt;
+  readonly dateIcon = faCalendarAlt;
 
   toggle() {
     this.datePicker().toggle();

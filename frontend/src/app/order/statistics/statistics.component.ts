@@ -66,12 +66,12 @@ interface StatsParams {
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class StatisticsComponent {
-  private router = inject(Router);
-  private route = inject(ActivatedRoute);
-  private orderService = inject(OrderService);
-  private translateService = inject(TranslateService);
+  private readonly router = inject(Router);
+  private readonly route = inject(ActivatedRoute);
+  private readonly orderService = inject(OrderService);
+  private readonly translateService = inject(TranslateService);
 
-  private fb = inject(NonNullableFormBuilder);
+  private readonly fb = inject(NonNullableFormBuilder);
   readonly grcsFormArray = this.fb.array<FormGroup<{ grc: FormControl<Grc>; selected: FormControl<boolean> }>>([], atLeastOneSelection);
   readonly form = this.fb.group(
     {
@@ -98,7 +98,7 @@ export class StatisticsComponent {
   readonly perimeterEdited = signal(false);
   readonly refreshed = signal(false);
 
-  private locale = inject(LOCALE_ID);
+  private readonly locale = inject(LOCALE_ID);
 
   constructor() {
     const authenticationService = inject(AuthenticationService);

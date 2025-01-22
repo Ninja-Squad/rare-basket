@@ -19,7 +19,7 @@ type ViewModel = { status: 'unknown' | 'absent' } | { status: 'present'; user: U
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class HomeComponent {
-  private authenticationService = inject(AuthenticationService);
+  private readonly authenticationService = inject(AuthenticationService);
   readonly vm = toSignal(
     this.authenticationService.getCurrentUser().pipe(map((user): ViewModel => (user ? { status: 'present', user } : { status: 'absent' }))),
     { initialValue: { status: 'unknown' as const } }

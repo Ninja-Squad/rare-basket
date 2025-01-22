@@ -58,12 +58,12 @@ import { toSignal } from '@angular/core/rxjs-interop';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class OrderComponent {
-  private orderService = inject(OrderService);
-  private confirmationService = inject(ConfirmationService);
-  private downloadService = inject(DownloadService);
-  private translateService = inject(TranslateService);
-  private modalService = inject(ModalService);
-  private toastService = inject(ToastService);
+  private readonly orderService = inject(OrderService);
+  private readonly confirmationService = inject(ConfirmationService);
+  private readonly downloadService = inject(DownloadService);
+  private readonly translateService = inject(TranslateService);
+  private readonly modalService = inject(ModalService);
+  private readonly toastService = inject(ToastService);
 
   readonly order: Signal<DetailedOrder | undefined>;
 

@@ -17,10 +17,10 @@ import { startWith, Subject, switchMap } from 'rxjs';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class BasketComponent {
-  private route = inject(ActivatedRoute);
-  private basketService = inject(BasketService);
+  private readonly route = inject(ActivatedRoute);
+  private readonly basketService = inject(BasketService);
 
-  private refreshSubject = new Subject<void>();
+  private readonly refreshSubject = new Subject<void>();
   readonly basket: Signal<Basket | undefined>;
 
   constructor() {

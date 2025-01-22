@@ -8,7 +8,7 @@ import { Chart, ChartConfiguration } from 'chart.js';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ChartComponent {
-  private zone = inject(NgZone);
+  private readonly zone = inject(NgZone);
 
   readonly configuration = input.required<ChartConfiguration<'doughnut', Array<number>>>();
   readonly canvas = viewChild.required<ElementRef<HTMLCanvasElement>>('canvas');

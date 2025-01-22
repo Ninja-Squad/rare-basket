@@ -17,7 +17,7 @@ import { map } from 'rxjs';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class CsvModalComponent {
-  private modal = inject(NgbActiveModal);
+  private readonly modal = inject(NgbActiveModal);
 
   readonly form = inject(NonNullableFormBuilder).group({
     csv: ''
