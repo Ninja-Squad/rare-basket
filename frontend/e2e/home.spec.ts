@@ -9,5 +9,11 @@ test.describe('Home', () => {
     // back to the home page
     await expect(page.locator('h2')).toHaveText('Welcome admin');
     await expect(page.locator('#orders-link')).toHaveText('Orders');
+
+    // reload the page
+    await page.reload();
+
+    // we should still be logged in
+    await expect(page.locator('h2')).toHaveText('Welcome admin');
   });
 });
