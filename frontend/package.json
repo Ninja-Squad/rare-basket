@@ -10,7 +10,7 @@
     "lint": "pnpx mkdirp build && ng lint > build/eslint-result.txt",
     "format": "prettier --write \"{src,e2e}/**/*.+(ts|js|json|html|scss)\"",
     "e2e": "pnpm playwright test",
-    "postinstall": "pnpx playwright install",
+    "postinstall": "pnpm exec playwright install",
     "knip": "pnpx knip --fix-type exports,types --exclude dependencies,unlisted,files,binaries --tags=knipignore"
   },
   "private": true,
