@@ -1,14 +1,17 @@
 import com.github.gradle.node.pnpm.task.PnpmInstallTask
 import com.github.gradle.node.pnpm.task.PnpmTask
+import frontend.versionsFromPackageJson
 
 plugins {
     base
     id("com.github.node-gradle.node") version "7.1.0"
 }
 
+val versions = versionsFromPackageJson(file("package.json"))
+
 node {
-    version.set("20.12.2")
-    npmVersion.set("10.5.0")
+    version.set(versions.node)
+    pnpmVersion.set(versions.pnpm)
     download.set(true)
 }
 
