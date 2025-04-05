@@ -33,7 +33,7 @@
     "@ngx-translate/core": "16.0.4",
     "@popperjs/core": "2.11.8",
     "angular-auth-oidc-client": "19.0.0",
-    "bootstrap": "5.3.3",
+    "bootstrap": "5.3.5",
     "chart.js": "4.4.8",
     "ngx-valdemort": "13.0.0",
     "papaparse": "5.5.2",
@@ -45,12 +45,12 @@
     "@angular-devkit/build-angular": "19.2.6",
     "@angular/cli": "19.2.6",
     "@angular/compiler-cli": "19.2.5",
-    "@eslint/js": "9.23.0",
+    "@eslint/js": "9.24.0",
     "@playwright/test": "1.51.1",
     "@types/jasmine": "5.1.7",
     "@types/papaparse": "5.3.15",
     "angular-eslint": "19.3.0",
-    "eslint": "9.23.0",
+    "eslint": "9.24.0",
     "eslint-config-prettier": "10.1.1",
     "eslint-plugin-prettier": "5.2.6",
     "jasmine-core": "5.6.0",
@@ -62,7 +62,7 @@
     "karma-jasmine-html-reporter": "2.1.0",
     "ngx-speculoos": "13.1.0",
     "prettier": "3.5.3",
-    "typescript": "5.8.2",
+    "typescript": "5.8.3",
     "typescript-eslint": "8.29.0"
   }
 }
