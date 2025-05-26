@@ -24,6 +24,13 @@ java {
 
 repositories {
     mavenCentral()
+    maven {
+        url = uri("https://repo.spring.io/milestone")
+    }
+}
+
+flyway {
+    cleanDisabled = false
 }
 
 tasks {
@@ -75,7 +82,7 @@ tasks {
 dependencyManagement {
     imports {
         mavenBom("org.keycloak.bom:keycloak-adapter-bom:25.0.6")
-        mavenBom("org.springframework.cloud:spring-cloud-dependencies:2024.0.1")
+        mavenBom("org.springframework.cloud:spring-cloud-dependencies:2025.0.0-RC1")
     }
 }
 
