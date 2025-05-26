@@ -7,6 +7,7 @@ buildscript {
 
     dependencies {
         classpath("org.postgresql:postgresql:42.7.5")
+        classpath("org.flywaydb:flyway-database-postgresql:11.8.2")
     }
 }
 
@@ -63,15 +64,15 @@ tasks {
     // disable default tasks added by flyway plugin
     matching { it.name.startsWith("flyway") }.forEach { it.enabled = false }
 
-    val flywayCleanApp by creating(FlywayCleanTask::class) {
+    val flywayCleanApp by registering(FlywayCleanTask::class) {
         url = "jdbc:postgresql://localhost:5432/rarebasket"
     }
-    val flywayCleanTest by creating(FlywayCleanTask::class) {
+    val flywayCleanTest by registering(FlywayCleanTask::class) {
         url = "jdbc:postgresql://localhost:5432/rarebasket_test"
     }
 
     listOf(flywayCleanApp, flywayCleanTest).forEach {
-        it.apply {
+        it.configure {
             user = "rarebasket"
             password = "rarebasket"
             (this as DefaultTask).group = "Database"
