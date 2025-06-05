@@ -69,43 +69,43 @@ class TestComponentTester extends ComponentTester<TestComponent> {
   }
 
   get customerName() {
-    return this.input('#name');
+    return this.input('#name')!;
   }
 
   get customerOrganization() {
-    return this.input('#organization');
+    return this.input('#organization')!;
   }
 
   get customerEmail() {
-    return this.input('#email');
+    return this.input('#email')!;
   }
 
   get customerDeliveryAddress() {
-    return this.textarea('#delivery-address');
+    return this.textarea('#delivery-address')!;
   }
 
   get customerBillingAddress() {
-    return this.textarea('#billing-address');
+    return this.textarea('#billing-address')!;
   }
 
   get useDeliveryAddress() {
-    return this.input('#use-delivery-address');
+    return this.input('#use-delivery-address')!;
   }
 
   get customerType() {
-    return this.select('#type');
+    return this.select('#type')!;
   }
 
   get rationale() {
-    return this.textarea('#rationale');
+    return this.textarea('#rationale')!;
   }
 
   get gdprAgreement() {
-    return this.input('#gdpr-agreement');
+    return this.input('#gdpr-agreement')!;
   }
 
   get saveButton() {
-    return this.button('#save');
+    return this.button('#save')!;
   }
 
   get errors() {
@@ -314,8 +314,8 @@ describe('EditBasketComponent', () => {
 
       await tester.saveButton.click();
       expect(tester.errors.length).toBe(0);
-      expect(tester.componentInstance.savedCommand().customer.billingAddress).toEqual(
-        tester.componentInstance.savedCommand().customer.deliveryAddress
+      expect(tester.componentInstance.savedCommand()!.customer.billingAddress).toEqual(
+        tester.componentInstance.savedCommand()!.customer.deliveryAddress
       );
     });
 

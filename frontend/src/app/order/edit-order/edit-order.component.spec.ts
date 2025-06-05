@@ -3,7 +3,7 @@ import { TestBed } from '@angular/core/testing';
 import { EditOrderComponent } from './edit-order.component';
 import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
 import { Order, OrderCommand, OrderItemCommand } from '../order.model';
-import { ComponentTester, TestButton } from 'ngx-speculoos';
+import { ComponentTester, createMock, TestButton } from 'ngx-speculoos';
 import { ValidationDefaultsComponent } from '../../validation-defaults/validation-defaults.component';
 import { MockModalService, provideModalTesting } from '../../rb-ngb/mock-modal.service.spec';
 import { CsvModalComponent } from '../csv-modal/csv-modal.component';
@@ -71,19 +71,19 @@ class TestComponentTester extends ComponentTester<TestComponent> {
   }
 
   get addItemButton() {
-    return this.button('#add-item-button');
+    return this.button('#add-item-button')!;
   }
 
   get csvButton() {
-    return this.button('#csv-button');
+    return this.button('#csv-button')!;
   }
 
   get saveButton() {
-    return this.button('#save-button');
+    return this.button('#save-button')!;
   }
 
   get cancelButton() {
-    return this.button('#cancel-button');
+    return this.button('#cancel-button')!;
   }
 
   get errors() {
@@ -146,9 +146,9 @@ describe('EditOrderComponent', () => {
 
   it('should validate', async () => {
     await tester.stable();
-    await tester.name(0).fillWith('');
-    await tester.identifier(0).fillWith('');
-    await tester.quantity(0).fillWith('0');
+    await tester.name(0)!.fillWith('');
+    await tester.identifier(0)!.fillWith('');
+    await tester.quantity(0)!.fillWith('0');
     await tester.saveButton.click();
 
     expect(tester.componentInstance.saved()).toBeNull();
@@ -164,10 +164,10 @@ describe('EditOrderComponent', () => {
   it('should save', async () => {
     await tester.stable();
     await tester.deleteButton(0).click();
-    await tester.name(0).fillWith('VIOLETTA');
+    await tester.name(0)!.fillWith('VIOLETTA');
     await tester.addItemButton.click();
-    await tester.name(1).fillWith('bacteria');
-    await tester.identifier(1).fillWith('bacteria1');
+    await tester.name(1)!.fillWith('bacteria');
+    await tester.identifier(1)!.fillWith('bacteria1');
 
     await tester.saveButton.click();
 
@@ -220,7 +220,7 @@ describe('EditOrderComponent', () => {
     ];
 
     const modalService: MockModalService<CsvModalComponent> = TestBed.inject(MockModalService);
-    modalService.mockClosedModal(null, enteredItems);
+    modalService.mockClosedModal(createMock(CsvModalComponent), enteredItems);
 
     await tester.stable();
 
@@ -248,7 +248,7 @@ describe('EditOrderComponent', () => {
     ];
 
     const modalService: MockModalService<CsvModalComponent> = TestBed.inject(MockModalService);
-    modalService.mockClosedModal(null, enteredItems);
+    modalService.mockClosedModal(createMock(CsvModalComponent), enteredItems);
 
     await tester.stable();
 

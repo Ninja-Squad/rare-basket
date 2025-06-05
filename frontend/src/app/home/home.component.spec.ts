@@ -4,7 +4,7 @@ import { HomeComponent } from './home.component';
 import { ComponentTester, createMock } from 'ngx-speculoos';
 import { AuthenticationService } from '../shared/authentication.service';
 import { Subject } from 'rxjs';
-import { User } from '../shared/user.model';
+import { Permission, User } from '../shared/user.model';
 import { provideI18nTesting } from '../i18n/mock-18n.spec';
 import { provideRouter } from '@angular/router';
 
@@ -29,10 +29,10 @@ class HomeComponentTester extends ComponentTester<HomeComponent> {
 describe('HomeComponent', () => {
   let tester: HomeComponentTester;
   let authenticationService: jasmine.SpyObj<AuthenticationService>;
-  let userSubject: Subject<User>;
+  let userSubject: Subject<User | null>;
 
   beforeEach(async () => {
-    userSubject = new Subject<User>();
+    userSubject = new Subject<User | null>();
     authenticationService = createMock(AuthenticationService);
     authenticationService.getCurrentUser.and.returnValue(userSubject);
 
@@ -56,7 +56,7 @@ describe('HomeComponent', () => {
     expect(tester.ordersLink).toBeNull();
 
     // we now know that the user is authenticated
-    userSubject.next({ name: 'John', permissions: [] } as User);
+    userSubject.next({ name: 'John', permissions: [] as Array<Permission> } as User);
     await tester.stable();
     expect(tester.card).toContainText('Bienvenue John');
     expect(tester.loginButton).toBeNull();
@@ -76,7 +76,7 @@ describe('HomeComponent', () => {
     // we now know that the user is not authenticated
     userSubject.next(null);
     await tester.stable();
-    await tester.loginButton.click();
+    await tester.loginButton!.click();
     expect(authenticationService.login).toHaveBeenCalled();
   });
 });

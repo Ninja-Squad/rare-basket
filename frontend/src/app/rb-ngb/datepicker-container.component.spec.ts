@@ -17,7 +17,7 @@ import { provideNgbDatepickerServices } from './datepicker-providers';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 class TestComponent {
-  dateCtrl = new FormControl(null as string);
+  dateCtrl = new FormControl(null as string | null);
 }
 
 class TestComponentTester extends ComponentTester<TestComponent> {
@@ -26,19 +26,19 @@ class TestComponentTester extends ComponentTester<TestComponent> {
   }
 
   get dateInput() {
-    return this.input('input');
+    return this.input('input')!;
   }
 
   get toggleButton() {
-    return this.button('button.btn-outline-secondary');
+    return this.button('button.btn-outline-secondary')!;
   }
 
   get datepicker() {
-    return this.element(NgbDatepicker);
+    return this.element(NgbDatepicker)!;
   }
 
   get container() {
-    return this.element(DatepickerContainerComponent);
+    return this.element(DatepickerContainerComponent)!;
   }
 }
 

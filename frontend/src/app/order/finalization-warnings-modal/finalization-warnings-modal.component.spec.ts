@@ -11,11 +11,11 @@ class FinalizationWarningsModalComponentTester extends ComponentTester<Finalizat
   }
 
   get yesButton() {
-    return this.button('#yes-button');
+    return this.button('#yes-button')!;
   }
 
   get noButton() {
-    return this.button('#no-button');
+    return this.button('#no-button')!;
   }
 
   get messages() {

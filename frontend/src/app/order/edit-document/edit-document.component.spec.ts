@@ -18,7 +18,7 @@ import { provideRouter } from '@angular/router';
 })
 class TestComponent {
   readonly order = signal({
-    documents: []
+    documents: [] as Array<Document>
   } as DetailedOrder);
   readonly progress = signal<number | null>(null);
   readonly cancelled = signal(false);
@@ -31,23 +31,23 @@ class TestComponentTester extends ComponentTester<TestComponent> {
   }
 
   get editDocumentComponent(): EditDocumentComponent {
-    return this.component(EditDocumentComponent);
+    return this.component(EditDocumentComponent)!;
   }
 
   get type() {
-    return this.select('#document-type');
+    return this.select('#document-type')!;
   }
 
   get description() {
-    return this.input('#document-description');
+    return this.input('#document-description')!;
   }
 
   get file() {
-    return this.input('#document-file');
+    return this.input('#document-file')!;
   }
 
   get onDeliveryForm() {
-    return this.input('#on-delivery-form');
+    return this.input('#on-delivery-form')!;
   }
 
   get errors() {
@@ -55,11 +55,11 @@ class TestComponentTester extends ComponentTester<TestComponent> {
   }
 
   get saveButton() {
-    return this.button('#document-save-button');
+    return this.button('#document-save-button')!;
   }
 
   get cancelButton() {
-    return this.button('#document-cancel-button');
+    return this.button('#document-cancel-button')!;
   }
 
   get progressBar(): NgbProgressbar | null {
@@ -154,16 +154,16 @@ describe('EditDocumentComponent', () => {
     [tester.type, tester.description, tester.file, tester.onDeliveryForm, tester.saveButton].forEach(e => expect(e.disabled).toBe(true));
 
     expect(tester.progressBar).not.toBeNull();
-    expect(tester.progressBar.getPercentValue()).toBe(10);
-    expect(tester.progressBar.animated).toBe(false);
-    expect(tester.progressBar.striped).toBe(false);
+    expect(tester.progressBar!.getPercentValue()).toBe(10);
+    expect(tester.progressBar!.animated).toBe(false);
+    expect(tester.progressBar!.striped).toBe(false);
 
     tester.componentInstance.progress.set(1);
     await tester.stable();
 
-    expect(tester.progressBar.getPercentValue()).toBe(100);
-    expect(tester.progressBar.animated).toBe(true);
-    expect(tester.progressBar.striped).toBe(true);
+    expect(tester.progressBar!.getPercentValue()).toBe(100);
+    expect(tester.progressBar!.animated).toBe(true);
+    expect(tester.progressBar!.striped).toBe(true);
 
     tester.componentInstance.progress.set(null);
     await tester.stable();

@@ -2,8 +2,8 @@ import { TestBed } from '@angular/core/testing';
 
 import { EditConfirmationComponent } from './edit-confirmation.component';
 import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
-import { Basket } from '../basket.model';
-import { ComponentTester, TestButton } from 'ngx-speculoos';
+import { AccessionHolderBasket, Basket } from '../basket.model';
+import { ComponentTester } from 'ngx-speculoos';
 import { provideI18nTesting } from '../../i18n/mock-18n.spec';
 
 @Component({
@@ -22,7 +22,7 @@ class TestComponent {
     customer: {
       email: 'john@mail.com'
     },
-    accessionHolderBaskets: []
+    accessionHolderBaskets: [] as Array<AccessionHolderBasket>
   } as Basket);
   readonly confirmationCode = signal<string | null>(null);
   readonly refreshRequested = signal(false);
@@ -34,15 +34,15 @@ class TestComponentTester extends ComponentTester<TestComponent> {
   }
 
   get infoRefreshLink() {
-    return this.element<HTMLAnchorElement>('#info-refresh-link');
+    return this.element<HTMLAnchorElement>('#info-refresh-link')!;
   }
 
   get confirmationCode() {
-    return this.input('#confirmation-code');
+    return this.input('#confirmation-code')!;
   }
 
-  get confirmButton(): TestButton {
-    return this.button('#confirm-button');
+  get confirmButton() {
+    return this.button('#confirm-button')!;
   }
 }
 

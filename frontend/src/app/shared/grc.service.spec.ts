@@ -20,7 +20,7 @@ describe('GrcService', () => {
   afterEach(() => http.verify());
 
   it('should list grcs', () => {
-    let actual: Array<Grc> = null;
+    let actual: Array<Grc> | undefined;
 
     service.list().subscribe(grcs => (actual = grcs));
 
@@ -30,7 +30,7 @@ describe('GrcService', () => {
   });
 
   it('should get', () => {
-    let actual: Grc = null;
+    let actual: Grc | undefined;
 
     service.get(42).subscribe(grc => (actual = grc));
 
@@ -40,7 +40,7 @@ describe('GrcService', () => {
   });
 
   it('should create', () => {
-    let actual: Grc = null;
+    let actual: Grc | undefined;
 
     const command = { name: 'foo' } as GrcCommand;
     service.create(command).subscribe(grc => (actual = grc));

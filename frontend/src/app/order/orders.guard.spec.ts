@@ -23,17 +23,17 @@ describe('ordersGuard', () => {
   });
 
   it('should redirect to in progress orders if user has permission ORDER_MANAGEMENT', () => {
-    let result: UrlTree = null;
+    let result: UrlTree | undefined;
     TestBed.runInInjectionContext(() => ordersGuard()).subscribe(r => (result = r));
-    expect(result.toString()).toBe('/orders/in-progress');
+    expect(result!.toString()).toBe('/orders/in-progress');
   });
 
   it('should redirect to statistics if user does not have permission ORDER_MANAGEMENT', () => {
     currentUserSubject.next({
       permissions: ['ORDER_VISUALIZATION']
     } as User);
-    let result: UrlTree = null;
+    let result: UrlTree | undefined;
     TestBed.runInInjectionContext(() => ordersGuard()).subscribe(r => (result = r));
-    expect(result.toString()).toBe('/orders/stats');
+    expect(result!.toString()).toBe('/orders/stats');
   });
 });

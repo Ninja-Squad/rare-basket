@@ -137,19 +137,19 @@ describe('InProgressOrdersComponent', () => {
 
     expect(tester.noOrderMessage).toBeNull();
     expect(tester.ordersComponent).not.toBeNull();
-    expect(tester.ordersComponent.orders()).toBe(page1);
-    expect(tester.accessionHolder.optionLabels).toEqual([`tous les gestionnaires d'accessions`, 'AH1', 'AH2']);
+    expect(tester.ordersComponent!.orders()).toBe(page1);
+    expect(tester.accessionHolder!.optionLabels).toEqual([`tous les gestionnaires d'accessions`, 'AH1', 'AH2']);
     expect(tester.accessionHolder).toHaveSelectedLabel(`tous les gestionnaires d'accessions`);
 
-    await tester.accessionHolder.selectLabel('AH1');
+    await tester.accessionHolder!.selectLabel('AH1');
 
     expect(router.url).toBe('/orders/in-progress?page=0&h=42');
-    expect(tester.ordersComponent.orders()).toBe(page0ForAccessionHolder42);
+    expect(tester.ordersComponent!.orders()).toBe(page0ForAccessionHolder42);
 
-    await tester.accessionHolder.selectLabel(`tous les gestionnaires d'accessions`);
+    await tester.accessionHolder!.selectLabel(`tous les gestionnaires d'accessions`);
 
     expect(router.url).toBe('/orders/in-progress?page=0');
-    expect(tester.ordersComponent.orders()).toBe(page0);
+    expect(tester.ordersComponent!.orders()).toBe(page0);
   });
 
   it('should display a no order message if there is no order', async () => {

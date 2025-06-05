@@ -17,23 +17,23 @@ class EditAccessionHolderComponentTester extends ComponentTester<EditAccessionHo
   }
 
   get title() {
-    return this.element('h1');
+    return this.element('h1')!;
   }
 
   get name() {
-    return this.input('#name');
+    return this.input('#name')!;
   }
 
   get email() {
-    return this.input('#email');
+    return this.input('#email')!;
   }
 
   get phone() {
-    return this.input('#phone');
+    return this.input('#phone')!;
   }
 
   get grc() {
-    return this.select('#grc');
+    return this.select('#grc')!;
   }
 
   get errors() {
@@ -41,7 +41,7 @@ class EditAccessionHolderComponentTester extends ComponentTester<EditAccessionHo
   }
 
   get saveButton() {
-    return this.button('#save-button');
+    return this.button('#save-button')!;
   }
 }
 

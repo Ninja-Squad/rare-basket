@@ -38,7 +38,7 @@ describe('ChartComponent', () => {
     const tester = new ComponentTester(TestComponent);
     await tester.change();
 
-    const canvas: HTMLCanvasElement = tester.element('canvas').nativeElement;
+    const canvas: HTMLCanvasElement = tester.element('canvas')!.nativeElement;
     expect(canvas.toDataURL().length).toBeGreaterThan(0);
     const chartComponent: ChartComponent = tester.component(ChartComponent);
     expect(chartComponent.configuration()).toBe(tester.componentInstance.configuration());
@@ -48,7 +48,7 @@ describe('ChartComponent', () => {
     const tester = new ComponentTester(TestComponent);
     await tester.change();
 
-    const canvas: HTMLCanvasElement = tester.element('canvas').nativeElement;
+    const canvas: HTMLCanvasElement = tester.element('canvas')!.nativeElement;
     const firstImage = canvas.toDataURL();
     const chartComponent: ChartComponent = tester.component(ChartComponent);
 

@@ -18,23 +18,23 @@ class EditUserComponentTester extends ComponentTester<EditUserComponent> {
   }
 
   get title() {
-    return this.element('h1');
+    return this.element('h1')!;
   }
 
   get name() {
-    return this.input('#name');
+    return this.input('#name')!;
   }
 
   get orderManagement() {
-    return this.input('#order-management');
+    return this.input('#order-management')!;
   }
 
   get orderVisualization() {
-    return this.input('#order-visualization');
+    return this.input('#order-visualization')!;
   }
 
   get administration() {
-    return this.input('#administration');
+    return this.input('#administration')!;
   }
 
   get accessionHolders() {
@@ -42,11 +42,11 @@ class EditUserComponentTester extends ComponentTester<EditUserComponent> {
   }
 
   get noGlobalVisualization() {
-    return this.input('#no-global-visualization');
+    return this.input('#no-global-visualization')!;
   }
 
   get globalVisualization() {
-    return this.input('#global-visualization');
+    return this.input('#global-visualization')!;
   }
 
   get visualizationGrcs() {
@@ -58,7 +58,7 @@ class EditUserComponentTester extends ComponentTester<EditUserComponent> {
   }
 
   get saveButton() {
-    return this.button('#save-button');
+    return this.button('#save-button')!;
   }
 }
 

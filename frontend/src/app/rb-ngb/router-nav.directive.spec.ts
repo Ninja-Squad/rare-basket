@@ -35,7 +35,7 @@ class TestComponent {}
 
 class TestComponentTester extends RoutingTester {
   get tabList() {
-    return this.element('ul');
+    return this.element('ul')!;
   }
 
   get tabLinks() {
@@ -43,7 +43,7 @@ class TestComponentTester extends RoutingTester {
   }
 
   get tabPanel() {
-    return this.element('div');
+    return this.element('div')!;
   }
 }
 

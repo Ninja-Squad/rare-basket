@@ -35,7 +35,7 @@ export class OrderService {
   private listOrders(page: number, accessionHolderId: number | null, statuses: Array<OrderStatus>) {
     const params: Record<string, string | number | Array<string>> = { status: statuses, page };
     if (accessionHolderId != null) {
-      params.accessionHolderId = accessionHolderId;
+      params['accessionHolderId'] = accessionHolderId;
     }
     return this.http.get<Page<Order>>('api/orders', { params });
   }

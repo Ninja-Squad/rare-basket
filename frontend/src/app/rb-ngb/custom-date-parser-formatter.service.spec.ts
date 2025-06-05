@@ -1,4 +1,5 @@
 import { CustomDateParserFormatterService } from './custom-date-parser-formatter.service';
+import { NgbDateStruct } from '@ng-bootstrap/ng-bootstrap';
 
 describe('FrenchDateParserFormatterService', () => {
   let pf: CustomDateParserFormatterService;
@@ -9,8 +10,8 @@ describe('FrenchDateParserFormatterService', () => {
 
   describe('parsing', () => {
     it('should parse null undefined and empty string as null', () => {
-      expect(pf.parse(null)).toBeNull();
-      expect(pf.parse(undefined)).toBeNull();
+      expect(pf.parse(null as unknown as string)).toBeNull();
+      expect(pf.parse(undefined as unknown as string)).toBeNull();
       expect(pf.parse('')).toBeNull();
       expect(pf.parse('   ')).toBeNull();
     });
@@ -28,14 +29,14 @@ describe('FrenchDateParserFormatterService', () => {
     });
 
     it('should do its best parsing incomplete dates', () => {
-      expect(pf.parse('5/2011')).toEqual({ year: 2011, month: 5, day: null });
+      expect(pf.parse('5/2011')).toEqual({ year: 2011, month: 5, day: null as unknown as number });
     });
   });
 
   describe('formatting', () => {
     it('should format null and undefined as an empty string', () => {
-      expect(pf.format(null)).toBe('');
-      expect(pf.format(undefined)).toBe('');
+      expect(pf.format(null as unknown as NgbDateStruct)).toBe('');
+      expect(pf.format(undefined as unknown as NgbDateStruct)).toBe('');
     });
 
     it('should format a valid date', () => {
@@ -47,8 +48,8 @@ describe('FrenchDateParserFormatterService', () => {
     });
 
     it('should try its best with invalid dates', () => {
-      expect(pf.format({ year: 2016, month: NaN, day: undefined })).toBe('//2016');
-      expect(pf.format({ year: 2016, month: null, day: 0 })).toBe('00//2016');
+      expect(pf.format({ year: 2016, month: NaN, day: undefined as unknown as number })).toBe('//2016');
+      expect(pf.format({ year: 2016, month: null as unknown as number, day: 0 })).toBe('00//2016');
     });
   });
 });

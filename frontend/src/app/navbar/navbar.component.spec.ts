@@ -4,7 +4,7 @@ import { NavbarComponent } from './navbar.component';
 import { ComponentTester, createMock } from 'ngx-speculoos';
 import { AuthenticationService } from '../shared/authentication.service';
 import { Subject } from 'rxjs';
-import { User } from '../shared/user.model';
+import { Permission, User } from '../shared/user.model';
 import { provideI18nTesting } from '../i18n/mock-18n.spec';
 import { provideRouter } from '@angular/router';
 
@@ -45,7 +45,7 @@ class NavbarComponentTester extends ComponentTester<NavbarComponent> {
 describe('NavbarComponent', () => {
   let tester: NavbarComponentTester;
   let authenticationService: jasmine.SpyObj<AuthenticationService>;
-  let userSubject: Subject<User>;
+  let userSubject: Subject<User | null>;
 
   beforeEach(async () => {
     userSubject = new Subject<User | null>();
@@ -90,7 +90,7 @@ describe('NavbarComponent', () => {
     expect(tester.logout).toBeNull();
     expect(tester.login).not.toBeNull();
 
-    userSubject.next({ name: 'JB', permissions: [] } as User);
+    userSubject.next({ name: 'JB', permissions: [] as Array<Permission> } as User);
     await tester.stable();
 
     expect(tester.user).toContainText('JB');
@@ -128,15 +128,15 @@ describe('NavbarComponent', () => {
     userSubject.next(null);
     await tester.stable();
 
-    await tester.login.click();
+    await tester.login!.click();
     expect(authenticationService.login).toHaveBeenCalled();
   });
 
   it('should logout', async () => {
-    userSubject.next({ name: 'JB', permissions: [] } as User);
+    userSubject.next({ name: 'JB', permissions: [] as Array<Permission> } as User);
     await tester.stable();
 
-    await tester.logout.click();
+    await tester.logout!.click();
     expect(authenticationService.logout).toHaveBeenCalled();
   });
 });
