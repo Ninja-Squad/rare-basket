@@ -12,19 +12,19 @@ class ModalComponentTester {
     await this.fixture.whenStable();
   }
 
-  get modalWindow(): HTMLElement {
+  get modalWindow(): HTMLElement | null {
     return document.querySelector('ngb-modal-window');
   }
 
-  get modalBackdrop(): HTMLElement {
+  get modalBackdrop(): HTMLElement | null {
     return document.querySelector('ngb-modal-backdrop');
   }
 
-  get modalBody(): HTMLElement {
+  get modalBody(): HTMLElement | null {
     return document.querySelector('.modal-body');
   }
 
-  get modalTitle(): HTMLElement {
+  get modalTitle(): HTMLElement | null {
     return document.querySelector('.modal-title');
   }
 
@@ -64,10 +64,10 @@ describe('ConfirmationModalComponent and ConfirmationService', () => {
 
   afterEach(() => {
     if (tester.modalWindow) {
-      tester.modalWindow.parentElement.removeChild(tester.modalWindow);
+      tester.modalWindow.parentElement!.removeChild(tester.modalWindow);
     }
     if (tester.modalBackdrop) {
-      tester.modalBackdrop.parentElement.removeChild(tester.modalBackdrop);
+      tester.modalBackdrop.parentElement!.removeChild(tester.modalBackdrop);
     }
   });
 
@@ -79,14 +79,14 @@ describe('ConfirmationModalComponent and ConfirmationService', () => {
     confirm({ messageKey: 'basket.edit-basket.confirm-accession-deletion' });
     await tester.stable();
     expect(tester.modalWindow).toBeTruthy();
-    expect(tester.modalTitle.textContent).toBe('Confirmation');
-    expect(tester.modalBody.textContent).toContain('Voulez-vous vraiment supprimer cette accession de votre commande\u00a0?');
+    expect(tester.modalTitle?.textContent).toBe('Confirmation');
+    expect(tester.modalBody?.textContent).toContain('Voulez-vous vraiment supprimer cette accession de votre commande\u00a0?');
   });
 
   it('should honor the titleKey option', async () => {
     confirm({ messageKey: 'basket.edit-basket.confirm-accession-deletion', titleKey: 'basket.edit-basket.email' });
     await tester.stable();
-    expect(tester.modalTitle.textContent).toBe('Votre adresse courriel');
+    expect(tester.modalTitle?.textContent).toBe('Votre adresse courriel');
   });
 
   it('should emit when confirming', async () => {

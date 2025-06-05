@@ -31,11 +31,11 @@ class FormComponentTester extends ComponentTester<FormComponent> {
   }
 
   get lastName() {
-    return this.input('#lastName');
+    return this.input('#lastName')!;
   }
 
   get save() {
-    return this.button('#save');
+    return this.button('#save')!;
   }
 }
 

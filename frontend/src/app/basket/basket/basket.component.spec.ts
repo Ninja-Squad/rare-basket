@@ -4,7 +4,7 @@ import { BasketComponent } from './basket.component';
 import { ComponentTester, createMock, stubRoute } from 'ngx-speculoos';
 import { EditBasketComponent } from '../edit-basket/edit-basket.component';
 import { ActivatedRoute } from '@angular/router';
-import { Basket, BasketCommand } from '../basket.model';
+import { AccessionHolderBasket, Basket, BasketCommand } from '../basket.model';
 import { BasketService } from '../basket.service';
 import { of } from 'rxjs';
 import { EditConfirmationComponent } from '../edit-confirmation/edit-confirmation.component';
@@ -59,7 +59,7 @@ describe('BasketComponent', () => {
       basket = {
         reference: 'ABCDEFGH',
         status: 'DRAFT',
-        accessionHolderBaskets: []
+        accessionHolderBaskets: [] as Array<AccessionHolderBasket>
       } as Basket;
 
       savedBasket = {
@@ -68,7 +68,7 @@ describe('BasketComponent', () => {
         customer: {
           email: 'john@mail.com'
         },
-        accessionHolderBaskets: []
+        accessionHolderBaskets: [] as Array<AccessionHolderBasket>
       } as Basket;
 
       basketService.get.and.returnValues(of(basket), of(savedBasket));
@@ -115,7 +115,7 @@ describe('BasketComponent', () => {
         customer: {
           email: 'john@mail.com'
         },
-        accessionHolderBaskets: []
+        accessionHolderBaskets: [] as Array<AccessionHolderBasket>
       } as Basket;
 
       confirmedBasket = {
@@ -124,7 +124,7 @@ describe('BasketComponent', () => {
         customer: {
           email: 'john@mail.com'
         },
-        accessionHolderBaskets: []
+        accessionHolderBaskets: [] as Array<AccessionHolderBasket>
       } as Basket;
 
       basketService.get.and.returnValues(of(basket), of(confirmedBasket));

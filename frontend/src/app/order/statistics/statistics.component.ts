@@ -162,7 +162,7 @@ export class StatisticsComponent {
       to: statsParams.to
     };
     if (statsParams.grcIds.length > 0) {
-      queryParams.grcs = statsParams.grcIds;
+      queryParams['grcs'] = statsParams.grcIds;
     }
 
     this.router.navigate([], {

@@ -3,7 +3,7 @@ import { TestBed } from '@angular/core/testing';
 import { ConfirmedComponent } from './confirmed.component';
 import { ComponentTester } from 'ngx-speculoos';
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { Basket } from '../basket.model';
+import { AccessionHolderBasket, Basket } from '../basket.model';
 import { provideI18nTesting } from '../../i18n/mock-18n.spec';
 
 @Component({
@@ -16,7 +16,7 @@ class TestComponent {
     customer: {
       email: 'john@mail.com'
     },
-    accessionHolderBaskets: []
+    accessionHolderBaskets: [] as Array<AccessionHolderBasket>
   } as Basket;
 }
 

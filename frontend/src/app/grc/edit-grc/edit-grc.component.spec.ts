@@ -20,15 +20,15 @@ class EditGrcComponentTester extends ComponentTester<EditGrcComponent> {
   }
 
   get name() {
-    return this.input('#name');
+    return this.input('#name')!;
   }
 
   get institution() {
-    return this.input('#institution');
+    return this.input('#institution')!;
   }
 
   get address() {
-    return this.textarea('#address');
+    return this.textarea('#address')!;
   }
 
   get errors() {
@@ -36,7 +36,7 @@ class EditGrcComponentTester extends ComponentTester<EditGrcComponent> {
   }
 
   get saveButton() {
-    return this.button('#save-button');
+    return this.button('#save-button')!;
   }
 }
 

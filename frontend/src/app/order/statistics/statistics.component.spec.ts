@@ -20,15 +20,15 @@ class StatisticsComponentTester extends ComponentTester<StatisticsComponent> {
   }
 
   get from() {
-    return this.input('#from');
+    return this.input('#from')!;
   }
 
   get to() {
-    return this.input('#to');
+    return this.input('#to')!;
   }
 
   get perimeter() {
-    return this.element('#perimeter');
+    return this.element('#perimeter')!;
   }
 
   get editPerimeterButton() {
@@ -48,7 +48,7 @@ class StatisticsComponentTester extends ComponentTester<StatisticsComponent> {
   }
 
   get refreshButton() {
-    return this.button('#refresh-button');
+    return this.button('#refresh-button')!;
   }
 
   get numbers() {
@@ -91,7 +91,7 @@ describe('StatisticsComponent', () => {
 
     user = {
       globalVisualization: true,
-      visualizationGrcs: []
+      visualizationGrcs: [] as Array<Grc>
     } as User;
 
     allGrcs = [
@@ -177,14 +177,14 @@ describe('StatisticsComponent', () => {
       expect(tester.grcs.length).toBe(0);
       expect(tester.perimeter).toContainText('Pour tous les CRBs');
 
-      await tester.editPerimeterButton.click();
+      await tester.editPerimeterButton!.click();
       expect(tester.perimeter).toBeNull();
 
       expect(tester.noGlobalVisualizationRadio).not.toBeChecked();
       expect(tester.globalVisualizationRadio).toBeChecked();
       expect(tester.grcs.length).toBe(0);
 
-      await tester.noGlobalVisualizationRadio.check();
+      await tester.noGlobalVisualizationRadio!.check();
       expect(tester.globalVisualizationRadio).not.toBeChecked();
       expect(tester.grcs.length).toBe(3);
       tester.grcs.forEach(grc => expect(grc).not.toBeChecked());
@@ -205,7 +205,7 @@ describe('StatisticsComponent', () => {
 
       expect(tester.perimeter).toContainText('Pour le(s) CRB(s) suivant(s)\u00a0: GRC2, GRC3');
 
-      await tester.editPerimeterButton.click();
+      await tester.editPerimeterButton!.click();
       expect(tester.perimeter).toBeNull();
 
       expect(tester.noGlobalVisualizationRadio).toBeChecked();
@@ -285,7 +285,7 @@ describe('StatisticsComponent', () => {
       expect(tester.grcs.length).toBe(0);
       expect(tester.perimeter).toContainText('Pour le(s) CRB(s) suivant(s)\u00a0: GRC1, GRC2');
 
-      await tester.editPerimeterButton.click();
+      await tester.editPerimeterButton!.click();
       expect(tester.perimeter).toBeNull();
 
       expect(tester.noGlobalVisualizationRadio).toBeNull();
@@ -309,7 +309,7 @@ describe('StatisticsComponent', () => {
 
       expect(tester.perimeter).toContainText('Pour le(s) CRB(s) suivant(s)\u00a0: GRC2');
 
-      await tester.editPerimeterButton.click();
+      await tester.editPerimeterButton!.click();
       expect(tester.perimeter).toBeNull();
 
       expect(tester.grcs.length).toBe(2);
@@ -454,8 +454,8 @@ describe('StatisticsComponent', () => {
       // required errors are not displayed because it messes up the layout, but the form should be invalid
       expect(tester.componentInstance.form.invalid).toBe(true);
 
-      await tester.editPerimeterButton.click();
-      await tester.noGlobalVisualizationRadio.check();
+      await tester.editPerimeterButton!.click();
+      await tester.noGlobalVisualizationRadio!.check();
       tester.grcs.forEach(async grc => await grc.uncheck());
 
       expect(tester.errors.length).toBe(1);
@@ -501,8 +501,8 @@ describe('StatisticsComponent', () => {
       // required errors are not displayed because it messes up the layout, but the form should be invalid
       expect(tester.componentInstance.form.invalid).toBe(true);
 
-      await tester.editPerimeterButton.click();
-      await tester.noGlobalVisualizationRadio.check();
+      await tester.editPerimeterButton!.click();
+      await tester.noGlobalVisualizationRadio!.check();
       await tester.grcs.forEach(grc => grc.uncheck());
 
       expect(tester.errors.length).toBe(1);

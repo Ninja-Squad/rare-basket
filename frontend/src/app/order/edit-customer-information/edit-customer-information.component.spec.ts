@@ -42,47 +42,47 @@ class TestComponentTester extends ComponentTester<TestComponent> {
   }
 
   get name() {
-    return this.input('#name');
+    return this.input('#name')!;
   }
 
   get organization() {
-    return this.input('#organization');
+    return this.input('#organization')!;
   }
 
   get email() {
-    return this.input('#email');
+    return this.input('#email')!;
   }
 
   get deliveryAddress() {
-    return this.textarea('#delivery-address');
+    return this.textarea('#delivery-address')!;
   }
 
   get billingAddress() {
-    return this.textarea('#billing-address');
+    return this.textarea('#billing-address')!;
   }
 
   get useDeliveryAddress() {
-    return this.input('#use-delivery-address');
+    return this.input('#use-delivery-address')!;
   }
 
   get type() {
-    return this.select('#type');
+    return this.select('#type')!;
   }
 
   get language() {
-    return this.select('#language');
+    return this.select('#language')!;
   }
 
   get rationale() {
-    return this.textarea('#rationale');
+    return this.textarea('#rationale')!;
   }
 
   get saveButton() {
-    return this.button('#save-button');
+    return this.button('#save-button')!;
   }
 
   get cancelButton() {
-    return this.button('#cancel-button');
+    return this.button('#cancel-button')!;
   }
 
   get errors() {
@@ -187,7 +187,9 @@ describe('EditCustomerComponent', () => {
     await tester.rationale.fillWith('foo');
 
     await tester.saveButton.click();
-    expect(tester.componentInstance.command().customer.billingAddress).toEqual(tester.componentInstance.command().customer.deliveryAddress);
+    expect(tester.componentInstance.command()!.customer.billingAddress).toEqual(
+      tester.componentInstance.command()!.customer.deliveryAddress
+    );
   });
 
   it('should cancel', async () => {

@@ -86,7 +86,7 @@ describe('PaginationComponent', () => {
       await tester.stable();
       expect(tester.ngbPagination.page).toBe(2);
 
-      await tester.firstPageLink.click();
+      await tester.firstPageLink!.click();
 
       expect(tester.componentInstance.newPage()).toBe(0);
     });
@@ -113,7 +113,7 @@ describe('PaginationComponent', () => {
     it('should not navigate if navigate is false', async () => {
       await tester.stable();
 
-      await tester.firstPageLink.click();
+      await tester.firstPageLink!.click();
 
       expect(tester.url).toBe('/foo');
       expect(tester.testComponent.newPage()).toBe(0);
@@ -124,7 +124,7 @@ describe('PaginationComponent', () => {
 
       await tester.stable();
 
-      await tester.firstPageLink.click();
+      await tester.firstPageLink!.click();
 
       expect(tester.url).toBe('/foo?page=0');
       expect(tester.testComponent.newPage()).toBe(0);

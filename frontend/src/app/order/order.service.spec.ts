@@ -22,7 +22,7 @@ describe('OrderService', () => {
   afterEach(() => http.verify());
 
   it('should get an order', () => {
-    let actualOrder: Order = null;
+    let actualOrder: Order | undefined;
 
     service.get(42).subscribe(order => (actualOrder = order));
 
@@ -32,7 +32,7 @@ describe('OrderService', () => {
   });
 
   it('should list in progress orders', () => {
-    let actualOrders: Page<Order> = null;
+    let actualOrders: Page<Order> | undefined;
 
     service.listInProgress(0, null).subscribe(orders => (actualOrders = orders));
 
@@ -42,7 +42,7 @@ describe('OrderService', () => {
   });
 
   it('should list in progress orders for specfic accession holder', () => {
-    let actualOrders: Page<Order> = null;
+    let actualOrders: Page<Order> | undefined;
 
     service.listInProgress(0, 42).subscribe(orders => (actualOrders = orders));
 
@@ -52,7 +52,7 @@ describe('OrderService', () => {
   });
 
   it('should list done orders', () => {
-    let actualOrders: Page<Order> = null;
+    let actualOrders: Page<Order> | undefined;
 
     service.listDone(0, null).subscribe(orders => (actualOrders = orders));
 
@@ -74,7 +74,7 @@ describe('OrderService', () => {
   });
 
   it('should add a document', async () => {
-    let actual: Document = null;
+    let actual: Document | null | undefined;
 
     const command: DocumentCommand = {
       file: { name: 'foo.txt' } as File,
@@ -113,7 +113,7 @@ describe('OrderService', () => {
   });
 
   it('should download a document', () => {
-    let actual: Blob = null;
+    let actual: Blob | null | undefined;
     service.downloadDocument(42, 54).subscribe(response => (actual = response.body));
 
     const expected = new Blob();
@@ -122,7 +122,7 @@ describe('OrderService', () => {
   });
 
   it('should download delivery form', () => {
-    let actual: Blob = null;
+    let actual: Blob | null | undefined;
     service.downloadDeliveryForm(42).subscribe(response => (actual = response.body));
 
     const expected = new Blob();
@@ -131,7 +131,7 @@ describe('OrderService', () => {
   });
 
   it('should download delivery form with attached documents', () => {
-    let actual: Blob = null;
+    let actual: Blob | null | undefined;
     service.downloadDeliveryForm(42, { withDocuments: true }).subscribe(response => (actual = response.body));
 
     const expected = new Blob();
@@ -148,7 +148,7 @@ describe('OrderService', () => {
   });
 
   it('should export a report', () => {
-    let actual: Blob = null;
+    let actual: Blob | null | undefined;
     service.exportReport('2020-01-01', '2021-01-01').subscribe(response => (actual = response.body));
 
     const expected = new Blob();
@@ -157,7 +157,7 @@ describe('OrderService', () => {
   });
 
   it('should get statistics', () => {
-    let actual: OrderStatistics = null;
+    let actual: OrderStatistics | undefined;
     service.getStatistics('2020-01-01', '2021-01-01', [1, 2]).subscribe(stats => (actual = stats));
 
     const expected = {} as OrderStatistics;

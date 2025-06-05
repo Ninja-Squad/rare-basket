@@ -22,8 +22,8 @@ class DoneOrdersComponentTester extends RoutingTester {
     return this.select('#accession-holder');
   }
 
-  get ordersComponent(): OrdersComponent | null {
-    return this.component(OrdersComponent);
+  get ordersComponent() {
+    return this.component(OrdersComponent)!;
   }
 }
 
@@ -127,15 +127,15 @@ describe('DoneOrdersComponent', () => {
 
     expect(tester.ordersComponent).not.toBeNull();
     expect(tester.ordersComponent.orders()).toBe(page1);
-    expect(tester.accessionHolder.optionLabels).toEqual([`tous les gestionnaires d'accessions`, 'AH1', 'AH2']);
+    expect(tester.accessionHolder!.optionLabels).toEqual([`tous les gestionnaires d'accessions`, 'AH1', 'AH2']);
     expect(tester.accessionHolder).toHaveSelectedLabel(`tous les gestionnaires d'accessions`);
 
-    await tester.accessionHolder.selectLabel('AH1');
+    await tester.accessionHolder!.selectLabel('AH1');
 
     expect(router.url).toBe('/orders/done?page=0&h=42');
     expect(tester.ordersComponent.orders()).toBe(page0ForAccessionHolder42);
 
-    await tester.accessionHolder.selectLabel(`tous les gestionnaires d'accessions`);
+    await tester.accessionHolder!.selectLabel(`tous les gestionnaires d'accessions`);
 
     expect(router.url).toBe('/orders/done?page=0');
     expect(tester.ordersComponent.orders()).toBe(page0);

@@ -16,15 +16,15 @@ class ExportOrdersComponentTester extends ComponentTester<ExportOrdersComponent>
   }
 
   get from() {
-    return this.input('#from');
+    return this.input('#from')!;
   }
 
   get to() {
-    return this.input('#to');
+    return this.input('#to')!;
   }
 
   get exportButton() {
-    return this.button('#export-button');
+    return this.button('#export-button')!;
   }
 
   get exportSpinner() {

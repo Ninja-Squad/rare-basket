@@ -13,7 +13,7 @@ class CsvModalComponentTester extends ComponentTester<CsvModalComponent> {
   }
 
   get csv() {
-    return this.textarea('textarea');
+    return this.textarea('textarea')!;
   }
 
   get csvErrorsAlert() {
@@ -29,11 +29,11 @@ class CsvModalComponentTester extends ComponentTester<CsvModalComponent> {
   }
 
   get addItemsButton() {
-    return this.button('#add-items-button');
+    return this.button('#add-items-button')!;
   }
 
   get dismissButton() {
-    return this.button('#dismiss-button');
+    return this.button('#dismiss-button')!;
   }
 }
 

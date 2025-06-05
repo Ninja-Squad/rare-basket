@@ -20,7 +20,7 @@ describe('BasketService', () => {
   afterEach(() => http.verify());
 
   it('get a basket', () => {
-    let actualBasket: Basket = null;
+    let actualBasket: Basket | undefined;
 
     service.get('ref1').subscribe(basket => (actualBasket = basket));
 

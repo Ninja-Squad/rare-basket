@@ -31,7 +31,7 @@ describe('authenticationInterceptor', () => {
   });
 
   it('should not do anything if not authenticated', () => {
-    oidcSecurityService.getAccessToken.and.returnValue(of(null));
+    oidcSecurityService.getAccessToken.and.returnValue(of(null as unknown as string));
     httpClient.get('api/foo').subscribe();
 
     const testRequest = httpTestingController.expectOne('api/foo');

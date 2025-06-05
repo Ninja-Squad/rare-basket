@@ -240,11 +240,11 @@ describe('OrderComponent', () => {
     tester = new OrderComponentTester();
     await tester.stable();
 
-    await tester.editOrderButton.click();
+    await tester.editOrderButton!.click();
 
     expect(tester.items.length).toBe(0);
     expect(tester.editOrderComponent).not.toBeNull();
-    expect(tester.editOrderComponent.order()).toBe(tester.componentInstance.order());
+    expect(tester.editOrderComponent!.order()).toBe(tester.componentInstance.order()!);
   });
 
   it('should cancel edition', async () => {
@@ -252,9 +252,9 @@ describe('OrderComponent', () => {
     tester = new OrderComponentTester();
     await tester.stable();
 
-    await tester.editOrderButton.click();
+    await tester.editOrderButton!.click();
 
-    tester.editOrderComponent.cancel();
+    tester.editOrderComponent!.cancel();
     await tester.stable();
 
     expect(tester.items.length).toBe(2);
@@ -267,11 +267,11 @@ describe('OrderComponent', () => {
     tester = new OrderComponentTester();
     await tester.stable();
 
-    await tester.editOrderButton.click();
+    await tester.editOrderButton!.click();
 
     orderService.update.and.returnValue(of(undefined));
     const command = {} as OrderCommand;
-    tester.editOrderComponent.saved.emit(command);
+    tester.editOrderComponent!.saved.emit(command);
     await tester.stable();
 
     expect(orderService.update).toHaveBeenCalledWith(order.id, command);
@@ -308,7 +308,7 @@ describe('OrderComponent', () => {
     tester = new OrderComponentTester();
     await tester.stable();
 
-    await tester.finalizeOrderButton.click();
+    await tester.finalizeOrderButton!.click();
 
     expect(confirmationService.confirm).toHaveBeenCalled();
     expect(orderService.finalize).toHaveBeenCalledWith(tester.componentInstance.order()!.id);
@@ -328,7 +328,7 @@ describe('OrderComponent', () => {
     const warningsComponent = createMock(FinalizationWarningsModalComponent);
     modalService.mockClosedModal(warningsComponent);
 
-    await tester.finalizeOrderButton.click();
+    await tester.finalizeOrderButton!.click();
 
     expect(warningsComponent.init).toHaveBeenCalledWith([
       `La commande n'a pas d'ATM (accord de transfert de matériel)`,
@@ -359,7 +359,7 @@ describe('OrderComponent', () => {
     tester = new OrderComponentTester();
     await tester.stable();
 
-    await tester.cancelOrderButton.click();
+    await tester.cancelOrderButton!.click();
 
     expect(confirmationService.confirm).toHaveBeenCalled();
     expect(orderService.cancel).toHaveBeenCalledWith(tester.componentInstance.order()!.id);
@@ -381,7 +381,7 @@ describe('OrderComponent', () => {
     expect(tester.addDocumentButton).not.toBeNull();
     expect(tester.editDocumentComponent).toBeNull();
     expect(tester.deleteDocumentButtons[0].disabled).toBe(false);
-    expect(tester.addDocumentButton.disabled).toBe(false);
+    expect(tester.addDocumentButton!.disabled).toBe(false);
 
     expect(tester.testElement).not.toContainText('Aucun document');
   });
@@ -401,12 +401,12 @@ describe('OrderComponent', () => {
     tester = new OrderComponentTester();
     await tester.stable();
 
-    await tester.editOrderButton.click();
+    await tester.editOrderButton!.click();
 
-    expect(tester.finalizeOrderButton.disabled).toBe(true);
-    expect(tester.cancelOrderButton.disabled).toBe(true);
+    expect(tester.finalizeOrderButton!.disabled).toBe(true);
+    expect(tester.cancelOrderButton!.disabled).toBe(true);
     expect(tester.deleteDocumentButtons[0].disabled).toBe(true);
-    expect(tester.addDocumentButton.disabled).toBe(true);
+    expect(tester.addDocumentButton!.disabled).toBe(true);
   });
 
   it('should disable buttons when adding document', async () => {
@@ -414,10 +414,10 @@ describe('OrderComponent', () => {
     tester = new OrderComponentTester();
     await tester.stable();
 
-    await tester.addDocumentButton.click();
+    await tester.addDocumentButton!.click();
 
-    expect(tester.editOrderButton.disabled).toBe(true);
-    expect(tester.cancelOrderButton.disabled).toBe(true);
+    expect(tester.editOrderButton!.disabled).toBe(true);
+    expect(tester.cancelOrderButton!.disabled).toBe(true);
     expect(tester.deleteDocumentButtons[0].disabled).toBe(true);
   });
 
@@ -443,12 +443,12 @@ describe('OrderComponent', () => {
     tester = new OrderComponentTester();
     await tester.stable();
 
-    await tester.addDocumentButton.click();
+    await tester.addDocumentButton!.click();
 
     expect(tester.addDocumentButton).toBeNull();
     expect(tester.editDocumentComponent).not.toBeNull();
-    expect(tester.editDocumentComponent.uploadProgress()).toBeNull();
-    expect(tester.editDocumentComponent.order()).toBe(order);
+    expect(tester.editDocumentComponent!.uploadProgress()).toBeNull();
+    expect(tester.editDocumentComponent!.order()).toBe(order);
   });
 
   it('should cancel document addition', async () => {
@@ -456,9 +456,9 @@ describe('OrderComponent', () => {
     tester = new OrderComponentTester();
     await tester.stable();
 
-    await tester.addDocumentButton.click();
+    await tester.addDocumentButton!.click();
 
-    tester.editDocumentComponent.cancel();
+    tester.editDocumentComponent!.cancel();
     await tester.stable();
 
     expect(tester.addDocumentButton).not.toBeNull();
@@ -471,12 +471,12 @@ describe('OrderComponent', () => {
     tester = new OrderComponentTester();
     await tester.stable();
 
-    await tester.addDocumentButton.click();
+    await tester.addDocumentButton!.click();
 
     const progressSubject = new Subject<HttpEvent<Document>>();
     orderService.addDocument.and.returnValue(progressSubject.asObservable());
     const command = {} as DocumentCommand;
-    tester.editDocumentComponent.saved.emit(command);
+    tester.editDocumentComponent!.saved.emit(command);
     await tester.stable();
 
     expect(orderService.addDocument).toHaveBeenCalledWith(order.id, command);
@@ -495,11 +495,11 @@ describe('OrderComponent', () => {
 
     progressSubject.next(event1);
     await tester.stable();
-    expect(tester.editDocumentComponent.uploadProgress()).toBe(0.5);
+    expect(tester.editDocumentComponent!.uploadProgress()).toBe(0.5);
 
     progressSubject.next(event2);
     await tester.stable();
-    expect(tester.editDocumentComponent.uploadProgress()).toBe(1);
+    expect(tester.editDocumentComponent!.uploadProgress()).toBe(1);
 
     progressSubject.next(event3);
     progressSubject.complete();
@@ -559,7 +559,7 @@ describe('OrderComponent', () => {
     const response = new HttpResponse<Blob>();
     orderService.downloadDeliveryForm.and.returnValue(of(response));
 
-    await tester.deliveryFormButton.click();
+    await tester.deliveryFormButton!.click();
 
     expect(orderService.downloadDeliveryForm).toHaveBeenCalledWith(42, { withDocuments: false });
     expect(downloadService.download).toHaveBeenCalledWith(response, 'bon-de-livraison-42.pdf');
@@ -584,7 +584,7 @@ describe('OrderComponent', () => {
     const deliveryFormResponse = new HttpResponse<Blob>();
     orderService.downloadDeliveryForm.and.returnValue(of(deliveryFormResponse));
 
-    await tester.completeDeliveryFormButton.click();
+    await tester.completeDeliveryFormButton!.click();
 
     expect(orderService.downloadDeliveryForm).toHaveBeenCalledWith(42, { withDocuments: true });
     expect(downloadService.download).toHaveBeenCalledWith(deliveryFormResponse, 'bon-de-livraison-42.pdf');

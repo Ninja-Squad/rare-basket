@@ -20,7 +20,7 @@ describe('AccessionHolderService', () => {
   afterEach(() => http.verify());
 
   it('should list accession holders', () => {
-    let actual: Array<AccessionHolder> = null;
+    let actual: Array<AccessionHolder> | undefined;
 
     service.list().subscribe(accessionHolders => (actual = accessionHolders));
 
@@ -30,7 +30,7 @@ describe('AccessionHolderService', () => {
   });
 
   it('should get', () => {
-    let actual: AccessionHolder = null;
+    let actual: AccessionHolder | undefined;
 
     service.get(42).subscribe(accessionHolder => (actual = accessionHolder));
 
@@ -40,7 +40,7 @@ describe('AccessionHolderService', () => {
   });
 
   it('should create', () => {
-    let actual: AccessionHolder = null;
+    let actual: AccessionHolder | undefined;
 
     const command = { name: 'foo' } as AccessionHolderCommand;
     service.create(command).subscribe(accessionHolder => (actual = accessionHolder));
