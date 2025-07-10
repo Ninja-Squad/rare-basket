@@ -7,7 +7,7 @@
     <button
       class="navbar-toggler"
       type="button"
-      [attr.aria-expanded]="!collapsed"
+      [attr.aria-expanded]="!collapsed()"
       [attr.aria-label]="'navbar.toggle' | translate"
       (click)="collapsed.set(!collapsed())"
     >
