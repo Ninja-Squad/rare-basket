@@ -1,5 +1,11 @@
-import { importProvidersFrom, inject, LOCALE_ID, provideEnvironmentInitializer } from '@angular/core';
-import { MissingTranslationHandler, MissingTranslationHandlerParams, TranslateModule, TranslateService } from '@ngx-translate/core';
+import { inject, LOCALE_ID, provideEnvironmentInitializer } from '@angular/core';
+import {
+  MissingTranslationHandler,
+  MissingTranslationHandlerParams,
+  provideMissingTranslationHandler,
+  provideTranslateService,
+  TranslateService
+} from '@ngx-translate/core';
 import FR_TRANSLATIONS from './fr.json';
 import localeFr from '@angular/common/locales/fr';
 import { registerLocaleData } from '@angular/common';
@@ -7,7 +13,7 @@ import { registerLocaleData } from '@angular/common';
 registerLocaleData(localeFr);
 
 class CustomMissingTranslationHandler implements MissingTranslationHandler {
-  handle(params: MissingTranslationHandlerParams) {
+  handle(params: MissingTranslationHandlerParams): string {
     throw new Error(`Missing translation for key ${params.key}`);
   }
 }
@@ -18,12 +24,9 @@ class CustomMissingTranslationHandler implements MissingTranslationHandler {
  */
 export const provideI18nTesting = () => {
   return [
-    importProvidersFrom([
-      TranslateModule.forRoot({
-        useDefaultLang: false,
-        missingTranslationHandler: { provide: MissingTranslationHandler, useClass: CustomMissingTranslationHandler }
-      })
-    ]),
+    provideTranslateService({
+      missingTranslationHandler: provideMissingTranslationHandler(CustomMissingTranslationHandler)
+    }),
     { provide: LOCALE_ID, useValue: 'fr' },
     provideEnvironmentInitializer(() => {
       const translateService = inject(TranslateService);

@@ -1,5 +1,5 @@
-import { importProvidersFrom, inject, LOCALE_ID, provideEnvironmentInitializer } from '@angular/core';
-import { TranslateLoader, TranslateModule, TranslateService } from '@ngx-translate/core';
+import { inject, LOCALE_ID, provideEnvironmentInitializer } from '@angular/core';
+import { provideTranslateLoader, provideTranslateService, TranslateService } from '@ngx-translate/core';
 import { ModuleTranslateLoader } from './module-translate-loader';
 import { registerLocaleData } from '@angular/common';
 import localeFr from '@angular/common/locales/fr';
@@ -9,9 +9,9 @@ registerLocaleData(localeFr);
 /**
  * This function gets the language of the browser,
  * and the result is used as the default language of the application.
- * As we only load the French and English locale date,
+ * As we only load the French and English locale data,
  * we use 'fr' if the locale is 'fr-FR' for example,
- * otherwise we use 'en'.
+ * otherwise we use 'en' as fallback.
  */
 function getBrowserLanguage() {
   if (navigator.language && navigator.language.startsWith('fr')) {
@@ -26,19 +26,14 @@ function getBrowserLanguage() {
  */
 export const provideI18n = () => {
   return [
-    importProvidersFrom(
-      TranslateModule.forRoot({
-        loader: {
-          provide: TranslateLoader,
-          useClass: ModuleTranslateLoader
-        }
-      })
-    ),
+    provideTranslateService({
+      loader: provideTranslateLoader(ModuleTranslateLoader)
+    }),
     { provide: LOCALE_ID, useValue: getBrowserLanguage() },
     provideEnvironmentInitializer(() => {
       const translateService = inject(TranslateService);
       // this language will be used as a fallback when a translation isn't found in the current language
-      translateService.setDefaultLang('en');
+      translateService.setFallbackLang('en');
       // the lang to use, if the lang isn't available, it will use the current loader to get them
       const locale = inject(LOCALE_ID);
       translateService.use(locale);
