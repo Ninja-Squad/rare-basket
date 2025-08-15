@@ -32,7 +32,7 @@ build-docker:
 test:
  stage: test
  services:
-  - name: postgres:17.5-alpine
+  - name: postgres:17.6-alpine
     alias: postgres
  tags:
   - openstack
