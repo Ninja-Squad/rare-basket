@@ -6,7 +6,7 @@ stages:
  - deploy-beta
  - deploy-production
 
-image: $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG
+image: alpine:latest
 
 # Disable the Gradle daemon for Continuous Integration servers as correctness
 # is usually a priority over speed in CI environments. Using a fresh
@@ -16,26 +16,16 @@ variables:
  POSTGRES_HOST_AUTH_METHOD: trust
  APP_NAME: rare-basket
 
-build-docker:
-  stage: pre-test
-  tags:
-    - openstack
-  image:
-    name: gcr.io/kaniko-project/executor:debug
-    entrypoint: [""]
-  script:
-    - mkdir -p /kaniko/.docker
-    - echo "{\"auths\":{\"$CI_REGISTRY\":{\"auth\":\"$(echo -n ${CI_REGISTRY_USER}:${CI_REGISTRY_PASSWORD} | base64)\"}}}" > /kaniko/.docker/config.json
-    - /kaniko/executor --cache --cache-copy-layers --context $CI_PROJECT_DIR --destination ${CI_REGISTRY_IMAGE}:${CI_COMMIT_REF_SLUG}
-  allow_failure: true
-
 test:
  stage: test
+ image: cimg/openjdk:17.0-browsers
  services:
   - name: postgres:17.6-alpine
     alias: postgres
  tags:
   - openstack
+ before_script:
+  - sudo apt-get update && sudo apt-get install -y postgresql-client
  script:
   # create the test db before running the tests
   - psql -h postgres -U postgres -f backend/database/setup/setup.sql
@@ -54,6 +44,8 @@ test:
  tags:
   - openstack
  retry: 1
+ before_script:
+  - apk update && apk add openssh
  script:
   # SSH initialization
   - eval $(ssh-agent -s)
