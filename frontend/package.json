@@ -14,18 +14,18 @@
     "knip": "pnpx knip --fix-type exports,types --exclude dependencies,unlisted,files,binaries --tags=knipignore"
   },
   "private": true,
-  "packageManager": "pnpm@10.15.0",
+  "packageManager": "pnpm@10.15.1",
   "engines": {
-    "node": "22.18.0"
+    "node": "22.19.0"
   },
   "dependencies": {
-    "@angular/common": "20.2.2",
-    "@angular/compiler": "20.2.2",
-    "@angular/core": "20.2.2",
-    "@angular/forms": "20.2.2",
-    "@angular/localize": "20.2.2",
-    "@angular/platform-browser": "20.2.2",
-    "@angular/router": "20.2.2",
+    "@angular/common": "20.2.3",
+    "@angular/compiler": "20.2.3",
+    "@angular/core": "20.2.3",
+    "@angular/forms": "20.2.3",
+    "@angular/localize": "20.2.3",
+    "@angular/platform-browser": "20.2.3",
+    "@angular/router": "20.2.3",
     "@fortawesome/angular-fontawesome": "3.0.0",
     "@fortawesome/free-solid-svg-icons": "7.0.0",
     "@ng-bootstrap/ng-bootstrap": "19.0.1",
@@ -42,7 +42,7 @@
   "devDependencies": {
     "@angular/build": "20.2.1",
     "@angular/cli": "20.2.1",
-    "@angular/compiler-cli": "20.2.2",
+    "@angular/compiler-cli": "20.2.3",
     "@eslint/js": "9.34.0",
     "@playwright/test": "1.55.0",
     "@types/jasmine": "5.1.9",
@@ -51,7 +51,7 @@
     "eslint": "9.34.0",
     "eslint-config-prettier": "10.1.8",
     "eslint-plugin-prettier": "5.5.4",
-    "jasmine-core": "5.9.0",
+    "jasmine-core": "5.10.0",
     "jasmine-spec-reporter": "7.0.0",
     "karma": "6.4.4",
     "karma-chrome-launcher": "3.2.0",
