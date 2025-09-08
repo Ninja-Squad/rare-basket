@@ -31,7 +31,7 @@
     "@ng-bootstrap/ng-bootstrap": "19.0.1",
     "@ngx-translate/core": "17.0.0",
     "@popperjs/core": "2.11.8",
-    "angular-auth-oidc-client": "19.0.2",
+    "angular-auth-oidc-client": "20.0.0",
     "bootstrap": "5.3.8",
     "chart.js": "4.5.0",
     "ngx-valdemort": "14.0.0",
