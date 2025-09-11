@@ -22,10 +22,15 @@ test:
  services:
   - name: postgres:17.6-alpine
     alias: postgres
+ variables:
+  STORE_DIR: "$CI_PROJECT_DIR/.pnpm-store"
+  PNPM_HOME: "$CI_PROJECT_DIR/.pnpm"
  tags:
   - openstack
  before_script:
   - sudo apt-get update && sudo apt-get install -y postgresql-client
+  - mkdir -p $STORE_DIR $PNPM_HOME
+  - chmod -R 755 $STORE_DIR $PNPM_HOME
  script:
   # create the test db before running the tests
   - psql -h postgres -U postgres -f backend/database/setup/setup.sql
