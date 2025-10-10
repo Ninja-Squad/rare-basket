@@ -14,7 +14,7 @@
     "knip": "pnpx knip --fix-type exports,types --exclude dependencies,unlisted,files,binaries --tags=knipignore"
   },
   "private": true,
-  "packageManager": "pnpm@10.18.1",
+  "packageManager": "pnpm@10.18.2",
   "engines": {
     "node": "22.20.0"
   },
