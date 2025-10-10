@@ -7,7 +7,7 @@ buildscript {
 
     dependencies {
         classpath("org.postgresql:postgresql:42.7.8")
-        classpath("org.flywaydb:flyway-database-postgresql:11.13.3")
+        classpath("org.flywaydb:flyway-database-postgresql:11.14.0")
     }
 }
 
