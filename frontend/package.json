@@ -16,7 +16,7 @@
   "private": true,
   "packageManager": "pnpm@10.20.0",
   "engines": {
-    "node": "22.21.1"
+    "node": "24.11.0"
   },
   "dependencies": {
     "@angular/common": "20.3.9",
