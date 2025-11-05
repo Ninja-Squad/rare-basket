@@ -85,8 +85,8 @@ importers:
         specifier: 5.1.12
         version: 5.1.12
       '@types/papaparse':
-        specifier: 5.3.16
-        version: 5.3.16
+        specifier: 5.5.0
+        version: 5.5.0
       angular-eslint:
         specifier: 20.5.1
         version: 20.5.1(chokidar@4.0.3)(eslint@9.39.1)(typescript-eslint@8.46.3(eslint@9.39.1)(typescript@5.8.3))(typescript@5.8.3)
@@ -1389,8 +1389,8 @@ packages:
   '@types/node@24.9.1':
     resolution: {integrity: sha512-QoiaXANRkSXK6p0Duvt56W208du4P9Uye9hWLWgGMDTEoKPhuenzNcC4vGUmrNkiOKTlIrBoyNQYNpSwfEZXSg==}
 
-  '@types/papaparse@5.3.16':
-    resolution: {integrity: sha512-T3VuKMC2H0lgsjI9buTB3uuKj3EMD2eap1MOuEQuBQ44EnDx/IkGhU6EwiTf9zG3za4SKlmwKAImdDKdNnCsXg==}
+  '@types/papaparse@5.5.0':
+    resolution: {integrity: sha512-GVs5iMQmUr54BAZYYkByv8zPofFxmyxUpISPb2oh8sayR3+1zbxasrOvoKiHJ/nnoq/uULuPsu1Lze1EkagVFg==}
 
   '@typescript-eslint/eslint-plugin@8.46.3':
     resolution: {integrity: sha512-sbaQ27XBUopBkRiuY/P9sWGOWUW4rl8fDoHIUmLpZd8uldsTyB4/Zg6bWTegPoTLnKj9Hqgn3QD6cjPNB32Odw==}
@@ -4698,7 +4698,7 @@ snapshots:
     dependencies:
       undici-types: 7.16.0
 
-  '@types/papaparse@5.3.16':
+  '@types/papaparse@5.5.0':
     dependencies:
       '@types/node': 24.9.1
 
