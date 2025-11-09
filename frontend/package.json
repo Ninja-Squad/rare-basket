@@ -47,7 +47,7 @@
     "@playwright/test": "1.56.1",
     "@types/jasmine": "5.1.12",
     "@types/papaparse": "5.5.0",
-    "angular-eslint": "20.5.1",
+    "angular-eslint": "20.5.2",
     "eslint": "9.39.1",
     "eslint-config-prettier": "10.1.8",
     "eslint-plugin-prettier": "5.5.4",
