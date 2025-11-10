@@ -14,7 +14,7 @@
     "knip": "pnpx knip --fix-type exports,types --exclude dependencies,unlisted,files,binaries --tags=knipignore"
   },
   "private": true,
-  "packageManager": "pnpm@10.20.0",
+  "packageManager": "pnpm@10.21.0",
   "engines": {
     "node": "24.11.0"
   },
@@ -47,7 +47,7 @@
     "@playwright/test": "1.56.1",
     "@types/jasmine": "5.1.12",
     "@types/papaparse": "5.5.0",
-    "angular-eslint": "20.5.2",
+    "angular-eslint": "20.6.0",
     "eslint": "9.39.1",
     "eslint-config-prettier": "10.1.8",
     "eslint-plugin-prettier": "5.5.4",
