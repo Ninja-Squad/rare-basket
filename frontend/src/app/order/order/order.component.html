@@ -58,14 +58,24 @@
                 <table class="table table-sm mb-0">
                   <thead class="table-light">
                     <tr>
-                      <th translate="order.order.accession-heading"></th>
+                      <th translate="order.order.name-heading"></th>
+                      <th translate="order.order.accession-number-heading"></th>
+                      <th translate="order.order.taxon-heading"></th>
                       <th translate="order.order.quantity-heading"></th>
                     </tr>
                   </thead>
                   <tbody>
                     @for (item of order.items; track item.id) {
                       <tr class="order-item">
-                        <td><rb-accession [accession]="item.accession" /></td>
+                        <td>
+                          @if (item.accession.url) {
+                            <a target="accession-detail" [href]="item.accession.url"><rb-accession [accession]="item.accession" /></a>
+                          } @else {
+                            <rb-accession [accession]="item.accession" />
+                          }
+                        </td>
+                        <td>{{ item.accession.accessionNumber }}</td>
+                        <td>{{ item.accession.taxon }}</td>
                         <td>{{ item.quantity | number }} {{ item.unit }}</td>
                       </tr>
                     }

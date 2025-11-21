@@ -150,7 +150,10 @@ describe('OrderComponent', () => {
           id: 1,
           accession: {
             name: 'Rosa',
-            identifier: 'rosa1'
+            identifier: 'rosa1',
+            accessionNumber: null,
+            taxon: 'rosaTaxon',
+            url: 'https://rosa.com'
           },
           quantity: 1234,
           unit: 'bags'
@@ -159,7 +162,10 @@ describe('OrderComponent', () => {
           id: 2,
           accession: {
             name: 'Violetta',
-            identifier: 'violetta1'
+            identifier: 'violetta1',
+            accessionNumber: 'violettaNumber',
+            taxon: 'violettaTaxon',
+            url: 'https://violetta.com'
           },
           quantity: 5,
           unit: null

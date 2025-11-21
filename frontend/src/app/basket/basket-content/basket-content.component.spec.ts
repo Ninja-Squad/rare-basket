@@ -32,7 +32,10 @@ class TestComponent {
             id: 1,
             accession: {
               name: 'Rosa',
-              identifier: 'rosa1'
+              identifier: 'rosa1',
+              accessionNumber: null,
+              taxon: 'rosaTaxon',
+              url: 'https://rosa.com'
             },
             quantity: 1234,
             unit: 'bags'
@@ -41,7 +44,10 @@ class TestComponent {
             id: 2,
             accession: {
               name: 'Violetta',
-              identifier: 'violetta1'
+              identifier: 'violetta1',
+              accessionNumber: 'violettaNumber',
+              taxon: 'violettaTaxon',
+              url: 'https://violetta.com'
             },
             quantity: 5,
             unit: null
@@ -56,7 +62,10 @@ class TestComponent {
             id: 3,
             accession: {
               name: 'Bacteria',
-              identifier: 'bacteria1'
+              identifier: 'bacteria1',
+              accessionNumber: null,
+              taxon: 'bacteriaTaxon',
+              url: 'https://bacteria.com'
             },
             quantity: null,
             unit: null
@@ -125,15 +134,16 @@ describe('BasketContentComponent', () => {
   it('should display basket items', async () => {
     await tester.stable();
 
-    expect(tester.itemTableHeadings(0).length).toBe(2);
+    expect(tester.itemTableHeadings(0).length).toBe(4);
     expect(tester.items.length).toBe(3);
     expect(tester.items[0]).toContainText('Rosa');
-    expect(tester.items[0]).toContainText('rosa1');
+    expect(tester.items[0]).toContainText('rosaTaxon');
     expect(tester.items[0]).toContainText('1 234 bags');
     expect(tester.items[1]).toContainText('Violetta');
-    expect(tester.items[1]).toContainText('violetta1');
+    expect(tester.items[1]).toContainText('violettaNumber');
+    expect(tester.items[1]).toContainText('violettaTaxon');
 
-    expect(tester.itemTableHeadings(0).length).toBe(2);
+    expect(tester.itemTableHeadings(0).length).toBe(4);
   });
 
   it('should display basket items without quantity if no item has a quantity', async () => {
@@ -142,7 +152,17 @@ describe('BasketContentComponent', () => {
     });
     await tester.stable();
 
-    expect(tester.itemTableHeadings(0).length).toBe(1);
-    expect(tester.itemTableHeadings(1).length).toBe(1);
+    expect(tester.itemTableHeadings(0).length).toBe(3);
+    expect(tester.itemTableHeadings(1).length).toBe(3);
+  });
+
+  it('should display basket items without accession number if no item has one', async () => {
+    tester.componentInstance.basket.accessionHolderBaskets.forEach(accessionHolderBasket => {
+      accessionHolderBasket.items.forEach(item => (item.accession.accessionNumber = null));
+    });
+    await tester.stable();
+
+    expect(tester.itemTableHeadings(0).length).toBe(3);
+    expect(tester.itemTableHeadings(1).length).toBe(3);
   });
 });

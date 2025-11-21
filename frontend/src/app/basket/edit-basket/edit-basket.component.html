@@ -3,7 +3,7 @@
 <div class="content">
   <form [formGroup]="form" (ngSubmit)="save()">
     <div class="row">
-      <div class="col-sm">
+      <div class="col-lg-4">
         <h2 translate="basket.edit-basket.personal-information"></h2>
         <div formGroupName="customer">
           <div class="mb-3">
@@ -60,52 +60,62 @@
           </small>
         </div>
       </div>
-      <div class="col-sm">
+      <div class="col-lg-8">
         <h2 translate="basket.edit-basket.ordered-accessions"></h2>
 
         @for (accessionHolderBasket of accessionHolderBaskets(); track accessionHolderBasket; let accessionHolderBasketIndex = $index) {
           <div>
             <h3>{{ accessionHolderBasket.grcName }} - {{ accessionHolderBasket.accessionHolderName }}</h3>
 
-            <table class="table table-sm">
-              <thead class="table-light">
-                <tr>
-                  <th translate="basket.edit-basket.accession-heading"></th>
-                  @if (quantityDisplayed()) {
-                    <th translate="basket.edit-basket.quantity-heading" style="width: 25%"></th>
-                  }
-                  <th style="width: 20%"><span class="visually-hidden" translate="basket.edit-basket.actions-heading"></span></th>
-                </tr>
-              </thead>
-              <tbody>
-                @for (item of accessionHolderBasket.items; track item.id; let itemIndex = $index) {
-                  <tr class="accession">
-                    <td><rb-accession [accession]="item.accession" /></td>
-                    @if (quantityDisplayed()) {
-                      <td>{{ item.quantity | number }} {{ item.unit }}</td>
+            <div class="table-responsive-md">
+              <table class="table table-sm">
+                <thead class="table-light">
+                  <tr>
+                    <th translate="basket.edit-basket.name-heading"></th>
+                    @if (accessionNumberDisplayed()) {
+                      <th translate="basket.edit-basket.accession-number-heading"></th>
                     }
-                    <td class="text-end">
-                      <button
-                        [disabled]="deleteItemDisabled()"
-                        type="button"
-                        class="btn btn-outline-danger py-0 delete-btn"
-                        (click)="deleteItemAt(accessionHolderBasketIndex, itemIndex)"
-                      >
-                        <fa-icon [icon]="deleteIcon" />
-                        <span
-                          class="visually-hidden"
-                          translate="basket.edit-basket.delete-accession"
-                          [translateParams]="{
-                            name: item.accession.name,
-                            identifier: item.accession.identifier
-                          }"
-                        ></span>
-                      </button>
-                    </td>
+                    <th translate="basket.edit-basket.taxon-heading"></th>
+                    @if (quantityDisplayed()) {
+                      <th translate="basket.edit-basket.quantity-heading"></th>
+                    }
+                    <th><span class="visually-hidden" translate="basket.edit-basket.actions-heading"></span></th>
                   </tr>
-                }
-              </tbody>
-            </table>
+                </thead>
+                <tbody>
+                  @for (item of accessionHolderBasket.items; track item.id; let itemIndex = $index) {
+                    <tr class="accession">
+                      <td><rb-accession [accession]="item.accession" /></td>
+                      @if (accessionNumberDisplayed()) {
+                        <td>{{ item.accession.accessionNumber }}</td>
+                      }
+                      <td>{{ item.accession.taxon }}</td>
+                      @if (quantityDisplayed()) {
+                        <td>{{ item.quantity | number }} {{ item.unit }}</td>
+                      }
+                      <td class="text-end">
+                        <button
+                          [disabled]="deleteItemDisabled()"
+                          type="button"
+                          class="btn btn-outline-danger py-0 delete-btn"
+                          (click)="deleteItemAt(accessionHolderBasketIndex, itemIndex)"
+                        >
+                          <fa-icon [icon]="deleteIcon" />
+                          <span
+                            class="visually-hidden"
+                            translate="basket.edit-basket.delete-accession"
+                            [translateParams]="{
+                              name: item.accession.name,
+                              identifier: item.accession.identifier
+                            }"
+                          ></span>
+                        </button>
+                      </td>
+                    </tr>
+                  }
+                </tbody>
+              </table>
+            </div>
           </div>
         }
       </div>

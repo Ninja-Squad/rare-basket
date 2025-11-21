@@ -59,6 +59,7 @@ class OrderCsvExporterTest {
                 Instant.parse("2020-03-10T00:00:00Z"),
                 "rosa",
                 "rosa1",
+                "rosaTaxon",
                 10,
                 "bags"
             ),
@@ -75,6 +76,7 @@ class OrderCsvExporterTest {
                 Instant.parse("2020-03-11T00:00:00Z"),
                 "violetta",
                 "vio;letta1",
+                "violettaTaxon",
                 null,
                 null
             )
@@ -102,8 +104,8 @@ class OrderCsvExporterTest {
             List<String> rows = stream.collect(Collectors.toList());
             assertThat(rows).hasSize(3);
             // the second cell is the email, and is thus hashed
-            assertThat(rows.get(1)).isEqualTo("AZERTYUI;01502e14bf754aeee2ac;FARMER;FRENCH;2020-03-01T00:00:00Z;GRC1;acc1;FINALIZED;2020-03-10T00:00:00Z;0;1;0;1;0;0;rosa;rosa1;10;bags");
-            assertThat(rows.get(2)).isEqualTo("POIUYTRE;b62e07f08723f8ab8f1c;CITIZEN;ENGLISH;2020-03-02T00:00:00Z;GRC2;acc2;CANCELLED;2020-03-11T00:00:00Z;0;0;0;0;0;0;violetta;\"vio;letta1\";;");
+            assertThat(rows.get(1)).isEqualTo("AZERTYUI;01502e14bf754aeee2ac;FARMER;FRENCH;2020-03-01T00:00:00Z;GRC1;acc1;FINALIZED;2020-03-10T00:00:00Z;0;1;0;1;0;0;rosa;rosa1;rosaTaxon;10;bags");
+            assertThat(rows.get(2)).isEqualTo("POIUYTRE;b62e07f08723f8ab8f1c;CITIZEN;ENGLISH;2020-03-02T00:00:00Z;GRC2;acc2;CANCELLED;2020-03-11T00:00:00Z;0;0;0;0;0;0;violetta;\"vio;letta1\";violettaTaxon;;");
         }
     }
 
@@ -124,8 +126,8 @@ class OrderCsvExporterTest {
             List<String> rows = stream.collect(Collectors.toList());
             assertThat(rows).hasSize(3);
             // the second cell is the email, and is thus hashed
-            assertThat(rows.get(1)).isEqualTo("AZERTYUI;01502e14bf754aeee2ac;FARMER;FRENCH;2020-03-01T00:00:00Z;GRC1;acc1;FINALIZED;2020-03-10T00:00:00Z;0;1;0;1;0;0;rosa;rosa1;10;bags");
-            assertThat(rows.get(2)).isEqualTo("POIUYTRE;b62e07f08723f8ab8f1c;CITIZEN;ENGLISH;2020-03-02T00:00:00Z;GRC2;acc2;CANCELLED;2020-03-11T00:00:00Z;0;0;0;0;0;0;violetta;\"vio;letta1\";;");
+            assertThat(rows.get(1)).isEqualTo("AZERTYUI;01502e14bf754aeee2ac;FARMER;FRENCH;2020-03-01T00:00:00Z;GRC1;acc1;FINALIZED;2020-03-10T00:00:00Z;0;1;0;1;0;0;rosa;rosa1;rosaTaxon;10;bags");
+            assertThat(rows.get(2)).isEqualTo("POIUYTRE;b62e07f08723f8ab8f1c;CITIZEN;ENGLISH;2020-03-02T00:00:00Z;GRC2;acc2;CANCELLED;2020-03-11T00:00:00Z;0;0;0;0;0;0;violetta;\"vio;letta1\";violettaTaxon;;");
         }
     }
 }

@@ -24,7 +24,10 @@ class TestComponent {
         id: 34,
         accession: {
           name: 'rosa',
-          identifier: 'rosa1'
+          identifier: 'rosa1',
+          accessionNumber: 'rosaNumber',
+          taxon: 'rosaTaxon',
+          url: 'https://rosa.com'
         },
         quantity: null
       },
@@ -32,7 +35,10 @@ class TestComponent {
         id: 35,
         accession: {
           name: 'violetta',
-          identifier: 'violetta1'
+          identifier: null,
+          accessionNumber: null,
+          taxon: 'violettaTaxon',
+          url: null
         },
         quantity: 12,
         unit: 'bags'
@@ -54,8 +60,12 @@ class TestComponentTester extends ComponentTester<TestComponent> {
     return this.input(`#name-${index}`);
   }
 
-  identifier(index: number) {
-    return this.input(`#identifier-${index}`);
+  accessionNumber(index: number) {
+    return this.input(`#accession-number-${index}`);
+  }
+
+  taxon(index: number) {
+    return this.input(`#taxon-${index}`);
   }
 
   quantity(index: number) {
@@ -109,13 +119,15 @@ describe('EditOrderComponent', () => {
     expect(tester.items.length).toBe(2);
 
     expect(tester.name(0)).toHaveValue('rosa');
-    expect(tester.identifier(0)).toHaveValue('rosa1');
+    expect(tester.accessionNumber(0)).toHaveValue('rosaNumber');
+    expect(tester.taxon(0)).toHaveValue('rosaTaxon');
     expect(tester.quantity(0)).toHaveValue('');
     expect(tester.unit(0)).toHaveValue('');
     expect(tester.deleteButton(1).disabled).toBe(false);
 
     expect(tester.name(1)).toHaveValue('violetta');
-    expect(tester.identifier(1)).toHaveValue('violetta1');
+    expect(tester.accessionNumber(1)).toHaveValue('');
+    expect(tester.taxon(1)).toHaveValue('violettaTaxon');
     expect(tester.quantity(1)).toHaveValue('12');
     expect(tester.unit(1)).toHaveValue('bags');
     expect(tester.deleteButton(1).disabled).toBe(false);
@@ -127,7 +139,8 @@ describe('EditOrderComponent', () => {
 
     expect(tester.items.length).toBe(3);
     expect(tester.name(2)).toHaveValue('');
-    expect(tester.identifier(2)).toHaveValue('');
+    expect(tester.accessionNumber(2)).toHaveValue('');
+    expect(tester.taxon(2)).toHaveValue('');
     expect(tester.quantity(2)).toHaveValue('');
     expect(tester.unit(2)).toHaveValue('');
   });
@@ -138,7 +151,8 @@ describe('EditOrderComponent', () => {
 
     expect(tester.items.length).toBe(1);
     expect(tester.name(0)).toHaveValue('violetta');
-    expect(tester.identifier(0)).toHaveValue('violetta1');
+    expect(tester.accessionNumber(0)).toHaveValue('');
+    expect(tester.taxon(0)).toHaveValue('violettaTaxon');
     expect(tester.quantity(0)).toHaveValue('12');
     expect(tester.unit(0)).toHaveValue('bags');
     expect(tester.deleteButton(0).disabled).toBe(true); // last item: not deletable
@@ -147,7 +161,8 @@ describe('EditOrderComponent', () => {
   it('should validate', async () => {
     await tester.stable();
     await tester.name(0)!.fillWith('');
-    await tester.identifier(0)!.fillWith('');
+    await tester.accessionNumber(0)!.fillWith('');
+    await tester.taxon(0)!.fillWith('');
     await tester.quantity(0)!.fillWith('0');
     await tester.saveButton.click();
 
@@ -163,11 +178,13 @@ describe('EditOrderComponent', () => {
 
   it('should save', async () => {
     await tester.stable();
-    await tester.deleteButton(0).click();
-    await tester.name(0)!.fillWith('VIOLETTA');
+    await tester.deleteButton(1).click();
+    await tester.name(0)!.fillWith('ROSA');
+    await tester.quantity(0)!.fillWith('10');
+    await tester.unit(0)!.fillWith('pieces');
     await tester.addItemButton.click();
     await tester.name(1)!.fillWith('bacteria');
-    await tester.identifier(1)!.fillWith('bacteria1');
+    await tester.taxon(1)!.fillWith('bacteriaTaxon');
 
     await tester.saveButton.click();
 
@@ -175,16 +192,22 @@ describe('EditOrderComponent', () => {
       items: [
         {
           accession: {
-            name: 'VIOLETTA',
-            identifier: 'violetta1'
+            name: 'ROSA',
+            identifier: 'rosa1',
+            accessionNumber: 'rosaNumber',
+            taxon: 'rosaTaxon',
+            url: 'https://rosa.com'
           },
-          quantity: 12,
-          unit: 'bags'
+          quantity: 10,
+          unit: 'pieces'
         },
         {
           accession: {
             name: 'bacteria',
-            identifier: 'bacteria1'
+            identifier: null,
+            accessionNumber: null,
+            taxon: 'bacteriaTaxon',
+            url: null
           },
           quantity: null,
           unit: null
@@ -200,7 +223,8 @@ describe('EditOrderComponent', () => {
     expect(tester.items.length).toBe(1);
 
     expect(tester.name(0)).toHaveValue('');
-    expect(tester.identifier(0)).toHaveValue('');
+    expect(tester.accessionNumber(0)).toHaveValue('');
+    expect(tester.taxon(0)).toHaveValue('');
     expect(tester.quantity(0)).toHaveValue('');
     expect(tester.unit(0)).toHaveValue('');
   });
@@ -208,12 +232,12 @@ describe('EditOrderComponent', () => {
   it('should open a CSV modal and add the entered items', async () => {
     const enteredItems: Array<OrderItemCommand> = [
       {
-        accession: { name: 'rosa', identifier: 'rosa2' },
+        accession: { name: 'rosa', identifier: null, accessionNumber: 'rosa2', taxon: 'rosa2Taxon', url: null },
         quantity: null,
         unit: null
       },
       {
-        accession: { name: 'bolet', identifier: 'bolet1' },
+        accession: { name: 'bolet', identifier: null, accessionNumber: 'bolet1', taxon: 'boletTaxon', url: null },
         quantity: 5,
         unit: 'pièces'
       }
@@ -228,12 +252,14 @@ describe('EditOrderComponent', () => {
 
     expect(tester.items.length).toBe(4);
     expect(tester.name(2)).toHaveValue('rosa');
-    expect(tester.identifier(2)).toHaveValue('rosa2');
+    expect(tester.accessionNumber(2)).toHaveValue('rosa2');
+    expect(tester.taxon(2)).toHaveValue('rosa2Taxon');
     expect(tester.quantity(2)).toHaveValue('');
     expect(tester.unit(2)).toHaveValue('');
 
     expect(tester.name(3)).toHaveValue('bolet');
-    expect(tester.identifier(3)).toHaveValue('bolet1');
+    expect(tester.accessionNumber(3)).toHaveValue('bolet1');
+    expect(tester.taxon(3)).toHaveValue('boletTaxon');
     expect(tester.quantity(3)).toHaveValue('5');
     expect(tester.unit(3)).toHaveValue('pièces');
   });
@@ -241,7 +267,13 @@ describe('EditOrderComponent', () => {
   it('should open a CSV modal and remove the last blank item before adding the entered items', async () => {
     const enteredItems: Array<OrderItemCommand> = [
       {
-        accession: { name: 'rosa', identifier: 'rosa2' },
+        accession: {
+          name: 'rosa',
+          identifier: 'rosa2',
+          accessionNumber: null,
+          taxon: 'rosa2Taxon',
+          url: 'https://rosa2.com'
+        },
         quantity: null,
         unit: null
       }
