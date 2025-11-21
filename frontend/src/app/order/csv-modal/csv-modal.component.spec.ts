@@ -92,16 +92,22 @@ describe('CsvModalComponent', () => {
       items: [
         {
           accession: {
-            name: 'rosa',
-            identifier: 'rosa1'
+            name: 'rosaName',
+            identifier: null,
+            accessionNumber: 'rosa1',
+            taxon: 'rosaTaxon',
+            url: null
           },
           quantity: null,
           unit: null
         },
         {
           accession: {
-            name: 'violetta',
-            identifier: 'violetta1'
+            name: 'violettaName',
+            identifier: null,
+            accessionNumber: 'violetta1',
+            taxon: 'violettaTaxon',
+            url: null
           },
           quantity: 1000,
           unit: 'graines'
@@ -112,8 +118,12 @@ describe('CsvModalComponent', () => {
     await tester.csv.fillWith('correct"');
     expect(tester.csvErrorsAlert).toBeNull();
     expect(tester.items.length).toBe(2);
-    expect(tester.items[0]).toContainText('rosa rosa1');
-    expect(tester.items[1]).toContainText('violetta violetta1');
+    expect(tester.items[0]).toContainText('rosaName');
+    expect(tester.items[0]).toContainText('rosa1');
+    expect(tester.items[0]).toContainText('rosaTaxon');
+    expect(tester.items[1]).toContainText('violettaName');
+    expect(tester.items[1]).toContainText('violetta1');
+    expect(tester.items[1]).toContainText('violettaTaxon');
     expect(tester.items[1]).toContainText('1 000 graines');
 
     expect(tester.addItemsButton.disabled).toBe(false);
@@ -124,7 +134,10 @@ describe('CsvModalComponent', () => {
       {
         accession: {
           name: 'rosa',
-          identifier: 'rosa1'
+          identifier: null,
+          accessionNumber: 'rosa1',
+          taxon: 'rosaTaxon',
+          url: null
         },
         quantity: null,
         unit: null

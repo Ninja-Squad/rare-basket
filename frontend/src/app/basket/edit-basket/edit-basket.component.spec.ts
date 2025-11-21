@@ -25,7 +25,10 @@ const itemRosa: BasketItem = {
   id: 1,
   accession: {
     name: 'Rosa',
-    identifier: 'rosa1'
+    identifier: 'rosa1',
+    accessionNumber: null,
+    taxon: 'rosaTaxon',
+    url: 'https://rosa.com'
   },
   quantity: null,
   unit: null
@@ -35,7 +38,10 @@ const itemVioletta: BasketItem = {
   id: 2,
   accession: {
     name: 'Violetta',
-    identifier: 'violetta1'
+    identifier: 'violetta1',
+    accessionNumber: 'violettaNumber',
+    taxon: 'violettaTaxon',
+    url: 'https://violetta.com'
   },
   quantity: null,
   unit: null
@@ -45,7 +51,10 @@ const itemBacteria: BasketItem = {
   id: 3,
   accession: {
     name: 'Bacteria',
-    identifier: 'bacteria1'
+    identifier: 'bacteria1',
+    accessionNumber: null,
+    taxon: 'bacteriaTaxon',
+    url: 'https://bacteria.com'
   },
   quantity: null,
   unit: null
@@ -175,15 +184,18 @@ describe('EditBasketComponent', () => {
       expect(tester.accessionsHolderTitles[0]).toHaveText('GRC1 - Contact1');
       expect(tester.accessionsHolderTitles[1]).toHaveText('GRC2 - Contact2');
       expect(tester.accessionsTables.length).toBe(2);
-      expect(tester.accessionsHeadings(0).length).toBe(2);
-      expect(tester.accessionsHeadings(1).length).toBe(2);
-      expect(tester.accessionsHeadings(0)[0]).toHaveText('Accession');
-      expect(tester.accessionsHeadings(0)[1]).toHaveText('Actions');
+      expect(tester.accessionsHeadings(0).length).toBe(4);
+      expect(tester.accessionsHeadings(1).length).toBe(4);
+      expect(tester.accessionsHeadings(0)[0]).toHaveText('Nom');
+      expect(tester.accessionsHeadings(0)[1]).toHaveText(`N° d'accession`);
+      expect(tester.accessionsHeadings(0)[2]).toHaveText('Taxon');
+      expect(tester.accessionsHeadings(0)[3]).toHaveText('Actions');
       expect(tester.accessions.length).toBe(3);
       expect(tester.accessions[0]).toContainText('Rosa');
-      expect(tester.accessions[0]).toContainText('rosa1');
+      expect(tester.accessions[0]).toContainText('rosaTaxon');
       expect(tester.accessions[1]).toContainText('Violetta');
-      expect(tester.accessions[1]).toContainText('violetta1');
+      expect(tester.accessions[1]).toContainText('violettaNumber');
+      expect(tester.accessions[1]).toContainText('violettaTaxon');
       expect(tester.gdprAgreement).not.toBeChecked();
     });
 
@@ -205,12 +217,27 @@ describe('EditBasketComponent', () => {
       }));
       await tester.stable();
 
-      expect(tester.accessionsHeadings(0).length).toBe(3);
-      expect(tester.accessionsHeadings(1).length).toBe(3);
-      expect(tester.accessionsHeadings(0)[0]).toHaveText('Accession');
-      expect(tester.accessionsHeadings(0)[1]).toHaveText('Quantité');
-      expect(tester.accessionsHeadings(0)[2]).toHaveText('Actions');
+      expect(tester.accessionsHeadings(0).length).toBe(5);
+      expect(tester.accessionsHeadings(1).length).toBe(5);
+      expect(tester.accessionsHeadings(0)[0]).toHaveText('Nom');
+      expect(tester.accessionsHeadings(0)[1]).toHaveText(`N° d'accession`);
+      expect(tester.accessionsHeadings(0)[2]).toHaveText('Taxon');
+      expect(tester.accessionsHeadings(0)[3]).toHaveText('Quantité');
+      expect(tester.accessionsHeadings(0)[4]).toHaveText('Actions');
       expect(tester.accessions[0]).toContainText('10 bags');
+    });
+
+    it('should display accession numbers if at least one is set', async () => {
+      await tester.stable();
+
+      expect(tester.accessionsHeadings(0).length).toBe(4);
+      expect(tester.accessionsHeadings(0)[1]).toContainText(`N° d'accession`);
+
+      confirmationService.confirm.and.returnValue(of(undefined));
+      await tester.accessionDeleteButtons[1].click();
+
+      expect(tester.accessionsHeadings(0).length).toBe(3);
+      expect(tester.accessionsHeadings(0)[1]).toContainText(`Taxon`);
     });
 
     it('should validate and not save', async () => {
@@ -270,26 +297,17 @@ describe('EditBasketComponent', () => {
         rationale: 'Because',
         items: [
           {
-            accession: {
-              name: 'Rosa',
-              identifier: 'rosa1'
-            },
+            accession: itemRosa.accession,
             quantity: 10,
             unit: 'bags'
           },
           {
-            accession: {
-              name: 'Violetta',
-              identifier: 'violetta1'
-            },
+            accession: itemVioletta.accession,
             quantity: null,
             unit: null
           },
           {
-            accession: {
-              name: 'Bacteria',
-              identifier: 'bacteria1'
-            },
+            accession: itemBacteria.accession,
             quantity: null,
             unit: null
           }
@@ -345,7 +363,7 @@ describe('EditBasketComponent', () => {
       expect(tester.accessionsTables.length).toBe(2);
       expect(tester.accessions.length).toBe(2);
       expect(tester.accessions[0]).toContainText('Violetta');
-      expect(tester.accessionsHeadings(0).length).toBe(2); // because there is no accession with a quantity anymore
+      expect(tester.accessionsHeadings(0).length).toBe(4); // because there is no accession with a quantity anymore
 
       // delete first of 2 items
       await tester.accessionDeleteButtons[0].click();
@@ -380,10 +398,7 @@ describe('EditBasketComponent', () => {
             items: [
               {
                 id: 1,
-                accession: {
-                  name: 'Rosa',
-                  identifier: 'rosa1'
-                },
+                accession: itemRosa.accession,
                 quantity: null,
                 unit: null
               }

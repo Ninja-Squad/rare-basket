@@ -69,30 +69,33 @@ public interface OrderDao extends JpaRepository<Order, Long>, CustomOrderDao {
 }
 
 class ReportQueries {
-    private static final String BEGINNING = "select new fr.inra.urgi.rarebasket.dao.ReportingOrder(" +
-        " o.id," +
-        " basket.reference," +
-        " basket.customer.email," +
-        " basket.customer.type," +
-        " basket.customer.language," +
-        " basket.confirmationInstant," +
-        " grc.name," +
-        " accessionHolder.name," +
-        " o.status," +
-        " o.closingInstant," +
-        " orderItem.accession.name," +
-        " orderItem.accession.identifier," +
-        " orderItem.quantity," +
-        " orderItem.unit" +
-        ")" +
-        " from Order o" +
-        " left join o.items orderItem" +
-        " join o.basket basket" +
-        " join o.accessionHolder accessionHolder" +
-        " join accessionHolder.grc grc" +
-        " where o.status <> fr.inra.urgi.rarebasket.domain.OrderStatus.DRAFT" +
-        " and o.closingInstant >= :fromInstant" +
-        " and o.closingInstant < :toInstant";
+    private static final String BEGINNING = """
+        select new fr.inra.urgi.rarebasket.dao.ReportingOrder(
+         o.id,
+         basket.reference,
+         basket.customer.email,
+         basket.customer.type,
+         basket.customer.language,
+         basket.confirmationInstant,
+         grc.name,
+         accessionHolder.name,
+         o.status,
+         o.closingInstant,
+         orderItem.accession.name,
+         orderItem.accession.accessionNumber,
+         orderItem.accession.taxon,
+         orderItem.quantity,
+         orderItem.unit
+        )
+         from Order o
+         left join o.items orderItem
+         join o.basket basket
+         join o.accessionHolder accessionHolder
+         join accessionHolder.grc grc
+         where o.status <> fr.inra.urgi.rarebasket.domain.OrderStatus.DRAFT
+         and o.closingInstant >= :fromInstant
+         and o.closingInstant < :toInstant
+         """;
     private static final String END =
         " order by o.closingInstant, o.id, orderItem.accession.name, orderItem.accession.identifier";
 

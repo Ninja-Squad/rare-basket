@@ -1,11 +1,11 @@
-<div class="row">
-  <div class="col-sm">
+<div class="row g-3">
+  <div class="col-lg-4">
     <h2 translate="basket.basket-content.information"></h2>
     @if (basket().customer) {
       <rb-customer-information [customer]="basket().customer!" [rationale]="basket().rationale" />
     }
   </div>
-  <div class="col-sm">
+  <div class="col-lg-8">
     <h2 translate="basket.basket-content.ordered-accessions"></h2>
 
     @for (accessionHolderBasket of basket().accessionHolderBaskets; track accessionHolderBasket) {
@@ -16,9 +16,13 @@
           <table class="table table-sm mb-0">
             <thead class="table-light">
               <tr>
-                <th translate="basket.basket-content.accession-heading"></th>
+                <th translate="basket.basket-content.name-heading"></th>
+                @if (accessionNumberDisplayed()) {
+                  <th translate="basket.basket-content.accession-number-heading"></th>
+                }
+                <th translate="basket.basket-content.taxon-heading"></th>
                 @if (quantityDisplayed()) {
-                  <th translate="basket.basket-content.quantity-heading" style="width: 25%"></th>
+                  <th translate="basket.basket-content.quantity-heading"></th>
                 }
               </tr>
             </thead>
@@ -26,6 +30,10 @@
               @for (item of accessionHolderBasket.items; track item.id) {
                 <tr class="basket-item">
                   <td><rb-accession [accession]="item.accession" /></td>
+                  @if (accessionNumberDisplayed()) {
+                    <td>{{ item.accession.accessionNumber }}</td>
+                  }
+                  <td>{{ item.accession.taxon }}</td>
                   @if (quantityDisplayed()) {
                     <td>{{ item.quantity | number }} {{ item.unit }}</td>
                   }
