@@ -126,8 +126,8 @@ class OrderControllerTest {
         order = new Order(42L);
         order.setBasket(basket);
         order.setStatus(OrderStatus.DRAFT);
-        order.addItem(new OrderItem(421L, new Accession("rosa", "rosa1"), 10, "bags"));
-        order.addItem(new OrderItem(422L, new Accession("violetta", "violetta1"), null, null));
+        order.addItem(new OrderItem(421L, new Accession("rosa", "rosa1", null, "rosa-taxon", "https://rosa.com"), 10, "bags"));
+        order.addItem(new OrderItem(422L, new Accession("violetta", "violetta1", null, "violetta-taxon", "https://violetta.com"), null, null));
         order.setAccessionHolder(accessionHolder);
 
         document = new Document(54L);
@@ -256,7 +256,7 @@ class OrderControllerTest {
 
     @Test
     void shouldUpdate() throws Exception {
-        OrderItemCommandDTO newItem = new OrderItemCommandDTO(new Accession("bacteria", "bacteria1"), 34, "seeds");
+        OrderItemCommandDTO newItem = new OrderItemCommandDTO(new Accession("bacteria", "bacteria1", "bacteriaNumber", "bacteriaTaxon", "https://bacteria.com"), 34, "seeds");
         OrderCommandDTO command = new OrderCommandDTO(
             Set.of(newItem)
         );
@@ -274,7 +274,7 @@ class OrderControllerTest {
     void shouldThrowWhenUpdatingNonDraftOrder() throws Exception {
         order.setStatus(OrderStatus.FINALIZED);
         OrderCommandDTO command = new OrderCommandDTO(
-            Set.of(new OrderItemCommandDTO(new Accession("rosa", "rosa1"), 34, null))
+            Set.of(new OrderItemCommandDTO(new Accession("rosa", "rosa1", null, "rosa-taxon", "https://rosa.com"), 34, null))
         );
         mockMvc.perform(put("/api/orders/{id}", order.getId())
                             .contentType(MediaType.APPLICATION_JSON)
