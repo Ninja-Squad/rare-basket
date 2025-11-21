@@ -49,8 +49,8 @@ class DeliveryFormGeneratorTest {
         basket.setConfirmationInstant(Instant.now().minus(10, ChronoUnit.DAYS));
         order.setBasket(basket);
 
-        order.addItem(new OrderItem(1L, new Accession("rosa", "rosa1"), 12, "bags"));
-        order.addItem(new OrderItem(1L, new Accession("violetta", "violetta1"), 10, null));
+        order.addItem(new OrderItem(1L, new Accession("rosa", "rosa1", null, "rosa-taxon", "https://rosa.com"), 12, "bags"));
+        order.addItem(new OrderItem(1L, new Accession("violetta", "violetta1", null, "violetta-taxon", "https://violetta.com"), 10, null));
 
         Document document = new Document();
         document.setType(DocumentType.MTA);;
