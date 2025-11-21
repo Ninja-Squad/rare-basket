@@ -8,7 +8,8 @@ import {
   DestroyRef,
   ChangeDetectionStrategy,
   viewChildren,
-  afterNextRender
+  afterNextRender,
+  ChangeDetectorRef
 } from '@angular/core';
 import { Order, OrderCommand, OrderItemCommand } from '../order.model';
 import { FormControl, FormGroup, NonNullableFormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
@@ -20,10 +21,14 @@ import { ValidationErrorsComponent } from 'ngx-valdemort';
 import { FormControlValidationDirective } from '../../shared/form-control-validation.directive';
 import { TranslateModule } from '@ngx-translate/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { Accession } from '../../basket/basket.model';
 
 interface ItemFormValue {
   name: string;
-  identifier: string;
+  identifier: string | null;
+  accessionNumber: string | null;
+  taxon: string | null;
+  url: string | null;
   quantity: number | null;
   unit: string | null;
 }
@@ -38,6 +43,7 @@ interface ItemFormValue {
 export class EditOrderComponent implements OnInit {
   private readonly modalService = inject(ModalService);
   private readonly destroyRef = inject(DestroyRef);
+  private readonly cdRef = inject(ChangeDetectorRef);
 
   readonly order = input.required<Order>();
 
@@ -50,7 +56,10 @@ export class EditOrderComponent implements OnInit {
   readonly itemGroups = this.fb.array<
     FormGroup<{
       name: FormControl<string>;
-      identifier: FormControl<string>;
+      identifier: FormControl<string | null>;
+      accessionNumber: FormControl<string | null>;
+      taxon: FormControl<string | null>;
+      url: FormControl<string | null>;
       quantity: FormControl<number | null>;
       unit: FormControl<string | null>;
     }>
@@ -70,9 +79,7 @@ export class EditOrderComponent implements OnInit {
 
   ngOnInit() {
     this.order().items.forEach(orderItem =>
-      this.itemGroups.push(
-        this.createItemGroup(orderItem.accession.name, orderItem.accession.identifier, orderItem.quantity, orderItem.unit)
-      )
+      this.itemGroups.push(this.createItemGroup(orderItem.accession, orderItem.quantity, orderItem.unit))
     );
 
     // add item right away if there is none
@@ -90,7 +97,10 @@ export class EditOrderComponent implements OnInit {
       items: this.form.getRawValue().items.map(item => ({
         accession: {
           name: item.name,
-          identifier: item.identifier
+          identifier: item.identifier,
+          accessionNumber: item.accessionNumber || null,
+          taxon: item.taxon,
+          url: item.url
         },
         quantity: item.quantity,
         unit: item.unit
@@ -101,7 +111,19 @@ export class EditOrderComponent implements OnInit {
   }
 
   addItem() {
-    this.itemGroups.push(this.createItemGroup('', '', null, null));
+    this.itemGroups.push(
+      this.createItemGroup(
+        {
+          name: '',
+          identifier: null,
+          accessionNumber: '',
+          taxon: '',
+          url: null
+        },
+        null,
+        null
+      )
+    );
   }
 
   delete(index: number) {
@@ -112,10 +134,13 @@ export class EditOrderComponent implements OnInit {
     this.cancelled.emit(undefined);
   }
 
-  private createItemGroup(name: string, identifier: string, quantity: number | null, unit: string | null) {
+  private createItemGroup(accession: Accession, quantity: number | null, unit: string | null) {
     return this.fb.group({
-      name: [name, Validators.required],
-      identifier: [identifier, Validators.required],
+      name: [accession.name, Validators.required],
+      identifier: [accession.identifier],
+      accessionNumber: [accession.accessionNumber],
+      taxon: [accession.taxon, Validators.required],
+      url: [accession.url],
       quantity: [quantity, Validators.min(1)],
       unit
     });
@@ -123,25 +148,27 @@ export class EditOrderComponent implements OnInit {
 
   openCsvModal() {
     this.modalService
-      .open(CsvModalComponent)
+      .open(CsvModalComponent, { size: 'lg' })
       .result.pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe((items: Array<OrderItemCommand>) => {
         // if the last item is blank, remove it. This happens, for example, when we create an order
         // from scratch, and immediately open this component with an empty order item
         if (this.itemGroups.length > 0) {
           const lastIndex = this.itemGroups.length - 1;
-          const lastItemValue = this.itemGroups.controls[lastIndex].value;
+          const lastItemValue = this.itemGroups.controls[lastIndex].getRawValue();
           if (this.isBlank(lastItemValue)) {
             this.delete(lastIndex);
           }
         }
         items.forEach(item => {
-          this.itemGroups.push(this.createItemGroup(item.accession.name, item.accession.identifier, item.quantity, item.unit));
+          this.itemGroups.push(this.createItemGroup(item.accession, item.quantity, item.unit));
         });
+        // this shouldn't be necessary, but it is actually
+        this.cdRef.markForCheck();
       });
   }
 
-  private isBlank(value: Partial<ItemFormValue>) {
-    return !value.name?.trim() && !value.identifier?.trim() && !value.quantity && !value.unit?.trim();
+  private isBlank(value: ItemFormValue) {
+    return !value.name?.trim() && !value.accessionNumber?.trim() && !value.taxon?.trim() && value.quantity == null && !value.unit?.trim();
   }
 }

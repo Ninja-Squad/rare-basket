@@ -75,7 +75,8 @@ public class OrderCsvExporter {
             headerList.add(messageSource.getMessage("document-type." + documentType.name(), null, Locale.FRENCH));
         }
         headerList.add("Nom accession");
-        headerList.add("Identifiant accession");
+        headerList.add("N° d'accession");
+        headerList.add("Taxon");
         headerList.add("Quantité");
         headerList.add("Unité");
 
@@ -126,7 +127,7 @@ public class OrderCsvExporter {
 
             reportingOrders.forEachOrdered(reportingOrder -> {
                 try {
-                    if (orderIds.size() == 100 && !orderIds.contains(reportingOrder.getOrderId())) {
+                    if (orderIds.size() == 100 && !orderIds.contains(reportingOrder.orderId())) {
                         addDocumentTypes(rowBuilders, orderIds);
                         write(rowBuilders, listWriter);
                         rowBuilders.clear();
@@ -134,7 +135,7 @@ public class OrderCsvExporter {
                     }
 
                     rowBuilders.add(new RowBuilder(reportingOrder));
-                    orderIds.add(reportingOrder.getOrderId());
+                    orderIds.add(reportingOrder.orderId());
 
                 } catch (IOException e) {
                     throw new UncheckedIOException(e);
@@ -179,7 +180,7 @@ public class OrderCsvExporter {
         }
 
         private Long getOrderId() {
-            return this.order.getOrderId();
+            return this.order.orderId();
         }
 
         public void setDocumentTypes(Set<DocumentType> documentTypes) {
@@ -188,22 +189,23 @@ public class OrderCsvExporter {
 
         public Object[] build() {
             List<Object> list = new ArrayList<>(header.length);
-            list.add(order.getBasketReference());
-            list.add(hash(order.getCustomerEmail()));
-            list.add(order.getCustomerType().name());
-            list.add(order.getCustomerLanguage().name());
-            list.add(order.getBasketConfirmationInstant());
-            list.add(order.getGrcName());
-            list.add(order.getAccessionHolderName());
-            list.add(order.getStatus());
-            list.add(order.getFinalizationInstant());
+            list.add(order.basketReference());
+            list.add(hash(order.customerEmail()));
+            list.add(order.customerType().name());
+            list.add(order.customerLanguage().name());
+            list.add(order.basketConfirmationInstant());
+            list.add(order.grcName());
+            list.add(order.accessionHolderName());
+            list.add(order.status());
+            list.add(order.finalizationInstant());
             for (DocumentType documentType : DocumentType.values()) {
                 list.add(documentTypes.contains(documentType) ? 1 : 0);
             }
-            list.add(order.getAccessionName());
-            list.add(order.getAccessionIdentifier());
-            list.add(order.getAccessionQuantity());
-            list.add(order.getAccessionUnit());
+            list.add(order.accessionName());
+            list.add(order.accessionNumber());
+            list.add(order.accessionTaxon());
+            list.add(order.accessionQuantity());
+            list.add(order.accessionUnit());
             return list.toArray();
         }
 

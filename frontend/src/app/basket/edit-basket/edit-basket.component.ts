@@ -88,6 +88,9 @@ export class EditBasketComponent implements OnInit {
   readonly quantityDisplayed = computed(() =>
     this.accessionHolderBaskets().some(accessionHolderBasket => accessionHolderBasket.items.some(item => !!item.quantity))
   );
+  readonly accessionNumberDisplayed = computed(() =>
+    this.accessionHolderBaskets().some(accessionHolderBasket => accessionHolderBasket.items.some(item => !!item.accession.accessionNumber))
+  );
   readonly deleteItemDisabled = computed(
     () => this.accessionHolderBaskets().length === 1 && this.accessionHolderBaskets()[0].items.length === 1
   );

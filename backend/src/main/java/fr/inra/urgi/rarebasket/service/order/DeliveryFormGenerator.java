@@ -6,6 +6,7 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.stream.Collectors;
@@ -27,6 +28,7 @@ import com.itextpdf.layout.properties.TextAlignment;
 import com.itextpdf.layout.properties.UnitValue;
 import com.itextpdf.layout.properties.VerticalAlignment;
 import fr.inra.urgi.rarebasket.config.Constants;
+import fr.inra.urgi.rarebasket.domain.Accession;
 import fr.inra.urgi.rarebasket.domain.DocumentType;
 import fr.inra.urgi.rarebasket.domain.Order;
 import fr.inra.urgi.rarebasket.domain.OrderItem;
@@ -87,29 +89,30 @@ public class DeliveryFormGenerator {
     }
 
     private Cell createLeftHeaderCell(Order order) {
+        Locale locale = order.getBasket().getCustomer().getLanguage().getLocale();
         return new Cell().setBorder(Border.NO_BORDER)
-            .add(
+                         .add(
                 new Paragraph(
                     messageSource.getMessage("delivery-form.supplier",
                                              null,
-                                             order.getBasket().getCustomer().getLanguage().getLocale())
+                                             locale)
                 )
                     .setFontSize(14F)
                     .simulateBold()
                     .setMarginBottom(6F)
             )
-            .add(
+                         .add(
                 new Paragraph(
                 order.getAccessionHolder().getGrc().getName()
                     + " – "
                     + order.getAccessionHolder().getGrc().getInstitution()
                 )
             )
-            .add(new Paragraph(order.getAccessionHolder().getName()))
-            .add(new Paragraph(order.getAccessionHolder().getGrc().getAddress()))
-            .add(new Paragraph(order.getAccessionHolder().getEmail()))
-            .add(new Paragraph(order.getAccessionHolder().getPhone()))
-            .add(
+                         .add(new Paragraph(order.getAccessionHolder().getName()))
+                         .add(new Paragraph(order.getAccessionHolder().getGrc().getAddress()))
+                         .add(new Paragraph(order.getAccessionHolder().getEmail()))
+                         .add(new Paragraph(order.getAccessionHolder().getPhone()))
+                         .add(
                 new Div()
                     .setWidth(42 * ONE_MILLIMETER)
                     .setHeight(42 * ONE_MILLIMETER)
@@ -226,25 +229,70 @@ public class DeliveryFormGenerator {
 
     private Table createAccessionTable(Order order) {
         Table table = new Table(new UnitValue[]{
-            UnitValue.createPercentValue(75),
+            UnitValue.createPercentValue(25),
+            UnitValue.createPercentValue(25),
+            UnitValue.createPercentValue(25),
             UnitValue.createPercentValue(25),
             })
             .useAllAvailableWidth();
+
+        Locale locale = order.getBasket().getCustomer().getLanguage().getLocale();
+        table.addCell(
+            createAccessionHeadingCell()
+                .add(new Paragraph(messageSource.getMessage("delivery-form.name-heading", null, locale)))
+                .setPaddingRight(6F)
+        );
+        table.addCell(
+            createAccessionHeadingCell()
+                .add(new Paragraph(messageSource.getMessage("delivery-form.accession-number-heading", null, locale)))
+                .setPaddingRight(6F)
+        );
+        table.addCell(
+            createAccessionHeadingCell()
+                .add(new Paragraph(messageSource.getMessage("delivery-form.taxon-heading", null, locale)))
+                .setPaddingRight(6F)
+        );
+        table.addCell(
+            createAccessionHeadingCell()
+                .add(new Paragraph(messageSource.getMessage("delivery-form.quantity-heading", null, locale)))
+        );
 
         order.getItems()
              .stream()
              .sorted(Comparator.comparing(OrderItem::getAccession))
              .forEach(orderItem -> {
+                 Accession accession = orderItem.getAccession();
+                 Paragraph accessionName = new Paragraph()
+                     .add(accession.getName());
+                 if (StringUtils.hasText(accession.getIdentifier()) && !StringUtils.hasText(accession.getTaxon())) {
+                     accessionName = accessionName
+                         .add(" ")
+                         .add(new Text(accession.getIdentifier())
+                                  .setFontSize(10F)
+                                  .setFontColor(ColorConstants.GRAY)
+                         );
+                 }
+
+                 table.addCell(
+                     createAccessionCell()
+                         .add(accessionName)
+                         .setPaddingRight(6F)
+                 );
                  table.addCell(
                      createAccessionCell()
                          .add(
-                             new Paragraph()
-                                 .add(orderItem.getAccession().getName())
-                                 .add(" ")
-                                 .add(new Text(orderItem.getAccession().getIdentifier())
-                                          .setFontSize(10F)
-                                          .setFontColor(ColorConstants.GRAY)
-                                 )
+                             new Paragraph(
+                                 accession.getAccessionNumber() == null ? "" : accession.getAccessionNumber()
+                             )
+                         )
+                         .setPaddingRight(6F)
+                 );
+                 table.addCell(
+                     createAccessionCell()
+                         .add(
+                             new Paragraph(
+                                 accession.getTaxon() == null ? "" : accession.getTaxon()
+                             )
                          )
                          .setPaddingRight(6F)
                  );
@@ -260,6 +308,10 @@ public class DeliveryFormGenerator {
              });
 
         return table;
+    }
+
+    private Cell createAccessionHeadingCell() {
+        return createAccessionCell().simulateBold();
     }
 
     private Cell createAccessionCell() {

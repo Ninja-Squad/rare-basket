@@ -10,39 +10,42 @@ describe('OrderCsvParserService', () => {
   });
 
   it('should fail if parsing error', () => {
-    const input = `rosa;rosa1\nvioletta;"violetta1`;
+    const input = `rosa;;rosaTaxon\nvioletta;;"violetta1`;
     expect(service.parse(input)).toEqual({
       items: [],
       errors: [{ row: 1, key: 'order.order-csv-parser.MissingQuotes' }]
     });
   });
 
-  it('should fail if only one field', () => {
-    const input = `rosa;rosa1;10\nvioletta;violetta1\nfoo`;
+  it('should fail if only one field or two fields', () => {
+    const input = `rosa;rosaNumber;rosaTaxon;10\nvioletta;violettaNumber;violettaTaxon\nfoo\nbar;baz`;
     expect(service.parse(input)).toEqual({
       items: [],
-      errors: [{ row: 2, key: 'order.order-csv-parser.name-and-identifier-required' }]
+      errors: [
+        { row: 2, key: 'order.order-csv-parser.name-number-and-taxon-required' },
+        { row: 3, key: 'order.order-csv-parser.name-number-and-taxon-required' }
+      ]
     });
   });
 
   it('should fail if blank name', () => {
-    const input = `rosa;rosa1;10\n;violetta1`;
+    const input = `rosa;rosaNumber;rosaTaxon;10\n;violettaNumber;violettaTaxon`;
     expect(service.parse(input)).toEqual({
       items: [],
       errors: [{ row: 1, key: 'order.order-csv-parser.name-required' }]
     });
   });
 
-  it('should fail if blank identifier', () => {
-    const input = `rosa;rosa1;10\nvioletta; ;10`;
+  it('should fail if blank taxon', () => {
+    const input = `rosa;;rosaTaxon10\nvioletta;; ;10`;
     expect(service.parse(input)).toEqual({
       items: [],
-      errors: [{ row: 1, key: 'order.order-csv-parser.identifier-required' }]
+      errors: [{ row: 1, key: 'order.order-csv-parser.taxon-required' }]
     });
   });
 
   it('should fail if invalid quantity', () => {
-    const input = `rosa;rosa1;10\nvioletta;violetta1;10abcd`;
+    const input = `rosa;rosaNumber;rosaTaxon;10\nvioletta;violettaNumber;violettaTaxon;10abcd`;
     expect(service.parse(input)).toEqual({
       items: [],
       errors: [{ row: 1, key: 'order.order-csv-parser.invalid-quantity' }]
@@ -50,21 +53,21 @@ describe('OrderCsvParserService', () => {
   });
 
   it('should succeed with semi-colons', () => {
-    const input = `rosa;rosa1\nvioletta;violetta1;10\nbolet;bolet1;5;pièces;ignored`;
+    const input = `rosa;rosaNumber;rosaTaxon\nvioletta;;violettaTaxon;10\nbolet;;boletTaxon;5;pièces;ignored`;
     expect(service.parse(input)).toEqual({
       items: [
         {
-          accession: { name: 'rosa', identifier: 'rosa1' },
+          accession: { name: 'rosa', accessionNumber: 'rosaNumber', taxon: 'rosaTaxon', identifier: null, url: null },
           quantity: null,
           unit: null
         },
         {
-          accession: { name: 'violetta', identifier: 'violetta1' },
+          accession: { name: 'violetta', accessionNumber: null, taxon: 'violettaTaxon', identifier: null, url: null },
           quantity: 10,
           unit: null
         },
         {
-          accession: { name: 'bolet', identifier: 'bolet1' },
+          accession: { name: 'bolet', accessionNumber: null, taxon: 'boletTaxon', identifier: null, url: null },
           quantity: 5,
           unit: 'pièces'
         }
@@ -74,21 +77,21 @@ describe('OrderCsvParserService', () => {
   });
 
   it('should succeed with commas', () => {
-    const input = `rosa,rosa1\nvioletta,violetta1,10\nbolet,bolet1,5,pièces,ignored`;
+    const input = `rosa,rosaNumber,rosaTaxon\nvioletta,,violettaTaxon,10\nbolet,,boletTaxon,5,pièces,ignored`;
     expect(service.parse(input)).toEqual({
       items: [
         {
-          accession: { name: 'rosa', identifier: 'rosa1' },
+          accession: { name: 'rosa', accessionNumber: 'rosaNumber', taxon: 'rosaTaxon', identifier: null, url: null },
           quantity: null,
           unit: null
         },
         {
-          accession: { name: 'violetta', identifier: 'violetta1' },
+          accession: { name: 'violetta', accessionNumber: null, taxon: 'violettaTaxon', identifier: null, url: null },
           quantity: 10,
           unit: null
         },
         {
-          accession: { name: 'bolet', identifier: 'bolet1' },
+          accession: { name: 'bolet', accessionNumber: null, taxon: 'boletTaxon', identifier: null, url: null },
           quantity: 5,
           unit: 'pièces'
         }
@@ -98,21 +101,21 @@ describe('OrderCsvParserService', () => {
   });
 
   it('should succeed with tabs', () => {
-    const input = `rosa\trosa1\nvioletta\tvioletta1\t10\nbolet\tbolet1\t5\tpièces\tignored`;
+    const input = `rosa\trosaNumber\trosaTaxon\nvioletta\t\tviolettaTaxon\t10\nbolet\t\tboletTaxon\t5\tpièces\tignored`;
     expect(service.parse(input)).toEqual({
       items: [
         {
-          accession: { name: 'rosa', identifier: 'rosa1' },
+          accession: { name: 'rosa', accessionNumber: 'rosaNumber', taxon: 'rosaTaxon', identifier: null, url: null },
           quantity: null,
           unit: null
         },
         {
-          accession: { name: 'violetta', identifier: 'violetta1' },
+          accession: { name: 'violetta', accessionNumber: null, taxon: 'violettaTaxon', identifier: null, url: null },
           quantity: 10,
           unit: null
         },
         {
-          accession: { name: 'bolet', identifier: 'bolet1' },
+          accession: { name: 'bolet', accessionNumber: null, taxon: 'boletTaxon', identifier: null, url: null },
           quantity: 5,
           unit: 'pièces'
         }
@@ -122,16 +125,16 @@ describe('OrderCsvParserService', () => {
   });
 
   it('should ignore empty lines', () => {
-    const input = `rosa;rosa1\nvioletta;violetta1\n\n`;
+    const input = `rosa;;rosaTaxon\nvioletta;;violettaTaxon\n\n`;
     expect(service.parse(input)).toEqual({
       items: [
         {
-          accession: { name: 'rosa', identifier: 'rosa1' },
+          accession: { name: 'rosa', accessionNumber: null, taxon: 'rosaTaxon', identifier: null, url: null },
           quantity: null,
           unit: null
         },
         {
-          accession: { name: 'violetta', identifier: 'violetta1' },
+          accession: { name: 'violetta', accessionNumber: null, taxon: 'violettaTaxon', identifier: null, url: null },
           quantity: null,
           unit: null
         }

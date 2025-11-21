@@ -13,7 +13,10 @@ export type CustomerType = (typeof ALL_CUSTOMER_TYPES)[number];
 
 export interface Accession {
   name: string;
-  identifier: string;
+  identifier: string | null;
+  accessionNumber: string | null;
+  taxon: string | null;
+  url: string | null;
 }
 
 export interface Customer {
