@@ -45,22 +45,16 @@
     "@angular/compiler-cli": "21.0.0",
     "@eslint/js": "9.39.1",
     "@playwright/test": "1.56.1",
-    "@types/jasmine": "5.1.13",
     "@types/papaparse": "5.5.0",
+    "@vitest/browser-playwright": "4.0.12",
     "angular-eslint": "20.6.0",
     "eslint": "9.39.1",
     "eslint-config-prettier": "10.1.8",
     "eslint-plugin-prettier": "5.5.4",
-    "jasmine-core": "5.12.1",
-    "jasmine-spec-reporter": "7.0.0",
-    "karma": "6.4.4",
-    "karma-chrome-launcher": "3.2.0",
-    "karma-coverage": "2.2.1",
-    "karma-jasmine": "5.1.0",
-    "karma-jasmine-html-reporter": "2.1.0",
     "ngx-speculoos": "14.0.0",
     "prettier": "3.6.2",
     "typescript": "5.9.3",
-    "typescript-eslint": "8.47.0"
+    "typescript-eslint": "8.47.0",
+    "vitest": "4.0.12"
   }
 }

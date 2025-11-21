@@ -94,28 +94,9 @@
           "builder": "@angular/build:extract-i18n"
         },
         "test": {
-          "builder": "@angular/build:karma",
+          "builder": "@angular/build:unit-test",
           "options": {
-            "main": "src/test.ts",
-            "polyfills": [
-              "@angular/localize/init"
-            ],
-            "tsConfig": "tsconfig.spec.json",
-            "browsers": "ChromeHeadless",
-            "assets": [
-              {
-                "glob": "**/*",
-                "input": "public"
-              }
-            ],
-            "styles": [
-              "src/styles.scss"
-            ],
-            "stylePreprocessorOptions": {
-              "sass": {
-                "silenceDeprecations": ["import", "color-functions", "global-builtin"]
-              }
-            }
+            "browsers": ["ChromiumHeadless"]
           }
         },
         "lint": {
