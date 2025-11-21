@@ -45,8 +45,8 @@ class BasketDaoTest extends BaseDaoTest {
 
         Operation basketItems =
             insertInto("basket_item")
-                .columns("id", "accession_name", "accession_identifier", "basket_id", "accession_holder_id")
-                .values(1L, "rosa", "rosa1", 1L, 1L)
+                .columns("id", "accession_name", "accession_identifier", "accession_number", "accession_taxon", "accession_url", "basket_id", "accession_holder_id")
+                .values(1L, "rosa", "rosa1", "rosaNumber", "rosaTaxon", "https://rosa.com", 1L, 1L)
                 .build();
 
         executeIfNecessary(Operations.sequenceOf(grcs, accessionHolders, baskets, basketItems));
@@ -65,6 +65,6 @@ class BasketDaoTest extends BaseDaoTest {
         Basket basket = basketDao.findById(1L).get();
         BasketItem item = basket.getItems().iterator().next();
 
-        assertThat(item.getAccession()).isEqualTo(new Accession("rosa", "rosa1"));
+        assertThat(item.getAccession()).isEqualTo(new Accession("rosa", "rosa1", "rosaNumber", "rosaTaxon", "https://rosa.com"));
     }
 }
