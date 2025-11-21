@@ -1,1 +1,5 @@
-{{ accession().name }} <small class="text-body-secondary" style="word-break: break-word">{{ accession().identifier }}</small>
+@let accession = this.accession();
+{{ accession.name }}
+@if (accession.identifier && !accession.taxon) {
+  <small class="text-body-secondary" style="word-break: break-word">{{ accession.identifier }}</small>
+}

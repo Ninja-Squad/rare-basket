@@ -16,17 +16,27 @@
                 />
                 <val-errors controlName="name" [label]="'order.edit-order.name-error-label' | translate" />
               </div>
-              <div class="col-lg-4">
-                <label class="visually-hidden" [for]="'identifier-' + $index" translate="order.edit-order.name"></label>
+              <div class="col-lg-3">
+                <label class="visually-hidden" [for]="'accession-number-' + $index" translate="order.edit-order.accession-number"></label>
                 <input
-                  formControlName="identifier"
+                  formControlName="accessionNumber"
                   class="form-control form-control-sm"
-                  [id]="'identifier-' + $index"
-                  [placeholder]="'order.edit-order.identifier' | translate"
+                  [id]="'accession-number-' + $index"
+                  [placeholder]="'order.edit-order.accession-number' | translate"
                 />
-                <val-errors controlName="identifier" [label]="'order.edit-order.identifier-error-label' | translate" />
+                <val-errors controlName="accessionNumber" [label]="'order.edit-order.accession-number-error-label' | translate" />
               </div>
-              <div class="col-lg-2">
+              <div class="col-lg-3">
+                <label class="visually-hidden" [for]="'taxon-' + $index" translate="order.edit-order.taxon"></label>
+                <input
+                  formControlName="taxon"
+                  class="form-control form-control-sm"
+                  [id]="'taxon-' + $index"
+                  [placeholder]="'order.edit-order.taxon' | translate"
+                />
+                <val-errors controlName="taxon" [label]="'order.edit-order.taxon-error-label' | translate" />
+              </div>
+              <div class="col-lg-1">
                 <label class="visually-hidden" [for]="'quantity-' + $index" translate="order.edit-order.quantity"></label>
                 <input
                   formControlName="quantity"
@@ -38,7 +48,7 @@
                 />
                 <val-errors controlName="quantity" [label]="'order.edit-order.quantity-error-label' | translate" />
               </div>
-              <div class="col-lg-3">
+              <div class="col-lg-2">
                 <label class="visually-hidden" [for]="'unit-' + $index" translate="order.edit-order.unit"></label>
                 <input
                   formControlName="unit"

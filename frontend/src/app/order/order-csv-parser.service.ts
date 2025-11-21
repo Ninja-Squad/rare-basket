@@ -47,24 +47,24 @@ export class OrderCsvParserService {
     let quantity: number | null = null;
     let unit: string | null = null;
 
-    if (row.length < 2) {
-      errors.push(this.error('name-and-identifier-required', index));
+    if (row.length < 3) {
+      errors.push(this.error('name-number-and-taxon-required', index));
     } else {
-      accession = { name: row[0].trim(), identifier: row[1].trim() };
+      accession = { name: row[0].trim(), accessionNumber: row[1].trim() || null, taxon: row[2].trim(), identifier: null, url: null };
       if (!accession.name) {
         errors.push(this.error('name-required', index));
       }
-      if (!accession.identifier) {
-        errors.push(this.error('identifier-required', index));
+      if (!accession.taxon) {
+        errors.push(this.error('taxon-required', index));
       }
-      if (row.length > 2 && row[2].trim()) {
-        const q = Number(row[2].trim().replace(',', '.'));
+      if (row.length > 3 && row[3].trim()) {
+        const q = Number(row[3].trim().replace(',', '.'));
         if (isNaN(q) || q <= 0) {
           errors.push(this.error('invalid-quantity', index));
         } else {
           quantity = q;
         }
-        unit = row.length > 3 ? row[3] : null;
+        unit = row.length > 4 ? row[4].trim() || null : null;
       }
     }
 

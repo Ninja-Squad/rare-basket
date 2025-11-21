@@ -21,4 +21,10 @@ export class BasketContentComponent {
   readonly quantityDisplayed = computed(() =>
     this.basket().accessionHolderBaskets.some(accessionHolderBasket => accessionHolderBasket.items.some(item => !!item.quantity))
   );
+
+  readonly accessionNumberDisplayed = computed(() =>
+    this.basket().accessionHolderBaskets.some(accessionHolderBasket =>
+      accessionHolderBasket.items.some(item => !!item.accession.accessionNumber)
+    )
+  );
 }
