@@ -53,6 +53,10 @@ import org.springframework.test.web.servlet.MockMvc;
 @ActiveProfiles("test")
 class BasketControllerTest {
 
+    private static final Accession ROSA = new Accession("rosa", "rosa1", null, "rosa-taxon", "https://rosa.com");
+    private static final Accession VIOLETTA = new Accession("violetta", "violetta1", null, "violetta-taxon", "https://violetta.com");
+    private static final Accession AMANITA = new Accession("amanita", "amanita1", "amanita-number", "amanita-taxon", "https://amanita.com");
+
     @MockitoBean
     private BasketDao mockBasketDao;
 
@@ -113,14 +117,14 @@ class BasketControllerTest {
         basket.setRationale("why not?");
 
         rosa = new BasketItem(5L);
-        rosa.setAccession(new Accession("rosa", "rosa1"));
+        rosa.setAccession(ROSA);
         rosa.setQuantity(2);
         rosa.setUnit("bags");
         rosa.setAccessionHolder(john);
         basket.addItem(rosa);
 
         violetta = new BasketItem(3L);
-        violetta.setAccession(new Accession("violetta", "violetta1"));
+        violetta.setAccession(VIOLETTA);
         violetta.setQuantity(null);
         violetta.setAccessionHolder(alice);
         basket.addItem(violetta);
@@ -137,7 +141,7 @@ class BasketControllerTest {
     @Test
     void shouldNotCreateBasketWithItemWithUnknownAccessionHolderName() throws Exception {
         BasketCommandDTO command = new BasketCommandDTO(
-            List.of(new BasketItemCommandDTO(new Accession("rosa", "rosa1"), "unknownName"))
+            List.of(new BasketItemCommandDTO(ROSA, "unknownName"))
         );
         checkBadRequestWhenCreating(command);
     }
@@ -150,12 +154,12 @@ class BasketControllerTest {
         checkBadRequestWhenCreating(command);
 
         command = new BasketCommandDTO(
-            List.of(new BasketItemCommandDTO(new Accession("  ", "rosa1"), john.getName()))
+            List.of(new BasketItemCommandDTO(new Accession("  ", "rosa1", null, "rosa-taxon", "https://rosa.com"), john.getName()))
         );
         checkBadRequestWhenCreating(command);
 
         command = new BasketCommandDTO(
-            List.of(new BasketItemCommandDTO(new Accession("rosa", " "), john.getName()))
+            List.of(new BasketItemCommandDTO(new Accession("rosa", null, null, "rosa-taxon", "not-a-url"), john.getName()))
         );
         checkBadRequestWhenCreating(command);
     }
@@ -174,7 +178,7 @@ class BasketControllerTest {
             );
 
         BasketCommandDTO command = new BasketCommandDTO(
-            List.of(new BasketItemCommandDTO(new Accession("rosa", "rosa1"), john.getName())),
+            List.of(new BasketItemCommandDTO(ROSA, john.getName())),
             customer,
             "rationale",
             false
@@ -185,7 +189,7 @@ class BasketControllerTest {
     @Test
     void shouldNotCreateBasketWithInvalidQuantity() throws Exception {
         BasketCommandDTO command = new BasketCommandDTO(
-            List.of(new BasketItemCommandDTO(new Accession("rosa", "rosa1"), john.getName(), 0, null))
+            List.of(new BasketItemCommandDTO(ROSA, john.getName(), 0, null))
         );
         checkBadRequestWhenCreating(command);
     }
@@ -266,7 +270,7 @@ class BasketControllerTest {
         );
         for (CustomerCommandDTO customer : invalidCustomers) {
             BasketCommandDTO command = new BasketCommandDTO(
-                List.of(new BasketItemCommandDTO(new Accession("rosa", "rosa1"), john.getName())),
+                List.of(new BasketItemCommandDTO(ROSA, john.getName())),
                 customer,
                 "rationale",
                 true
@@ -279,9 +283,9 @@ class BasketControllerTest {
     void shouldCreateADraftBasket() throws Exception {
         BasketCommandDTO command = new BasketCommandDTO(
             List.of(
-                new BasketItemCommandDTO(new Accession("rosa", "rosa1"), john.getName()),
-                new BasketItemCommandDTO(new Accession("violetta", "violetta1"), john.getName()),
-                new BasketItemCommandDTO(new Accession("amanita", "amanita1"), alice.getName())
+                new BasketItemCommandDTO(ROSA, john.getName()),
+                new BasketItemCommandDTO(VIOLETTA, john.getName()),
+                new BasketItemCommandDTO(AMANITA, alice.getName())
             )
         );
 
@@ -304,9 +308,9 @@ class BasketControllerTest {
         assertThat(savedBasket.getItems())
             .extracting(BasketItem::getAccession, BasketItem::getAccessionHolder, BasketItem::getBasket)
             .containsOnly(
-                tuple(new Accession("rosa", "rosa1"), john, savedBasket),
-                tuple(new Accession("violetta", "violetta1"), john, savedBasket),
-                tuple(new Accession("amanita", "amanita1"), alice, savedBasket)
+                tuple(ROSA, john, savedBasket),
+                tuple(VIOLETTA, john, savedBasket),
+                tuple(AMANITA, alice, savedBasket)
             );
 
         verify(mockEventPublisher, never()).publish(any());
@@ -316,9 +320,9 @@ class BasketControllerTest {
     void shouldCreateACompleteBasket() throws Exception {
         BasketCommandDTO command = new BasketCommandDTO(
             List.of(
-                new BasketItemCommandDTO(new Accession("rosa", "rosa1"), john.getName(), 1, "bags"),
-                new BasketItemCommandDTO(new Accession("violetta", "violetta1"), john.getName(), 2, "seeds"),
-                new BasketItemCommandDTO(new Accession("amanita", "amanita1"), alice.getName(), 3, null)
+                new BasketItemCommandDTO(ROSA, john.getName(), 1, "bags"),
+                new BasketItemCommandDTO(VIOLETTA, john.getName(), 2, "seeds"),
+                new BasketItemCommandDTO(AMANITA, alice.getName(), 3, null)
             ),
             new CustomerCommandDTO(
                 "Jack",
@@ -352,9 +356,9 @@ class BasketControllerTest {
         assertThat(savedBasket.getItems())
             .extracting(BasketItem::getAccession, BasketItem::getAccessionHolder, BasketItem::getQuantity, BasketItem::getUnit, BasketItem::getBasket)
             .containsOnly(
-                tuple(new Accession("rosa", "rosa1"), john, 1, "bags", savedBasket),
-                tuple(new Accession("violetta", "violetta1"), john, 2, "seeds", savedBasket),
-                tuple(new Accession("amanita", "amanita1"), alice, 3, null, savedBasket)
+                tuple(ROSA, john, 1, "bags", savedBasket),
+                tuple(VIOLETTA, john, 2, "seeds", savedBasket),
+                tuple(AMANITA, alice, 3, null, savedBasket)
             );
         assertThat(savedBasket.getStatus()).isEqualTo(BasketStatus.SAVED);
         assertThat(savedBasket.getCustomer()).isEqualTo(new Customer(command.getCustomer().getName(),
@@ -402,7 +406,7 @@ class BasketControllerTest {
         basket.setStatus(BasketStatus.SAVED);
 
         BasketCommandDTO command = new BasketCommandDTO(
-            List.of(new BasketItemCommandDTO(new Accession("rosa", "rosa1"), 5))
+            List.of(new BasketItemCommandDTO(ROSA, 5))
         );
         checkBadRequestWhenUpdating(command);
     }
@@ -410,7 +414,7 @@ class BasketControllerTest {
     @Test
     void shouldNotUpdateADraftBasketWithAccessionHolderNames() throws Exception {
         BasketCommandDTO command = new BasketCommandDTO(
-            List.of(new BasketItemCommandDTO(new Accession("rosa", "rosa1"), "john"))
+            List.of(new BasketItemCommandDTO(ROSA, "john"))
         );
         checkBadRequestWhenUpdating(command);
     }
