@@ -1,7 +1,8 @@
+import { beforeEach, describe, expect, it, type MockedObject, vi } from 'vitest';
 import { TestBed } from '@angular/core/testing';
 
 import { OrderComponent } from './order.component';
-import { ComponentTester, createMock, stubRoute, TestButton } from 'ngx-speculoos';
+import { ComponentTester, stubRoute, TestButton } from 'ngx-speculoos';
 import { ActivatedRoute } from '@angular/router';
 import { OrderService } from '../order.service';
 import { EMPTY, of, Subject } from 'rxjs';
@@ -13,10 +14,11 @@ import { ConfirmationService } from '../../shared/confirmation.service';
 import { EditDocumentComponent } from '../edit-document/edit-document.component';
 import { HttpEvent, HttpEventType, HttpProgressEvent, HttpResponse } from '@angular/common/http';
 import { DownloadService } from '../../shared/download.service';
-import { MockModalService, provideModalTesting } from '../../rb-ngb/mock-modal.service.spec';
+import { MockModalService, provideModalTesting } from '../../rb-ngb/mock-modal.service';
 import { FinalizationWarningsModalComponent } from '../finalization-warnings-modal/finalization-warnings-modal.component';
 import { ToastService } from '../../shared/toast.service';
-import { provideI18nTesting } from '../../i18n/mock-18n.spec';
+import { provideI18nTesting } from '../../i18n/mock-18n';
+import { createMock } from '../../../mock';
 
 class OrderComponentTester extends ComponentTester<OrderComponent> {
   constructor() {
@@ -82,11 +84,11 @@ class OrderComponentTester extends ComponentTester<OrderComponent> {
 
 describe('OrderComponent', () => {
   let tester: OrderComponentTester;
-  let orderService: jasmine.SpyObj<OrderService>;
-  let confirmationService: jasmine.SpyObj<ConfirmationService>;
-  let downloadService: jasmine.SpyObj<DownloadService>;
+  let orderService: MockedObject<OrderService>;
+  let confirmationService: MockedObject<ConfirmationService>;
+  let downloadService: MockedObject<DownloadService>;
   let modalService: MockModalService<FinalizationWarningsModalComponent>;
-  let toastService: jasmine.SpyObj<ToastService>;
+  let toastService: MockedObject<ToastService>;
 
   let order: DetailedOrder;
 
@@ -95,16 +97,16 @@ describe('OrderComponent', () => {
       params: { orderId: 42 }
     });
 
-    orderService = jasmine.createSpyObj<OrderService>('OrderService', [
-      'get',
-      'update',
-      'finalize',
-      'cancel',
-      'deleteDocument',
-      'addDocument',
-      'downloadDocument',
-      'downloadDeliveryForm'
-    ]);
+    orderService = {
+      get: vi.fn(),
+      update: vi.fn(),
+      finalize: vi.fn(),
+      cancel: vi.fn(),
+      deleteDocument: vi.fn(),
+      addDocument: vi.fn(),
+      downloadDocument: vi.fn(),
+      downloadDeliveryForm: vi.fn()
+    } as MockedObject<OrderService>;
     confirmationService = createMock(ConfirmationService);
     downloadService = createMock(DownloadService);
     toastService = createMock(ToastService);
@@ -180,7 +182,7 @@ describe('OrderComponent', () => {
   });
 
   it('should not display anything until order is there', async () => {
-    orderService.get.and.returnValue(EMPTY);
+    orderService.get.mockReturnValue(EMPTY);
     tester = new OrderComponentTester();
     await tester.stable();
 
@@ -191,7 +193,7 @@ describe('OrderComponent', () => {
   });
 
   it('should have a title', async () => {
-    orderService.get.and.returnValue(of(order));
+    orderService.get.mockReturnValue(of(order));
     tester = new OrderComponentTester();
     await tester.stable();
 
@@ -199,7 +201,7 @@ describe('OrderComponent', () => {
   });
 
   it('should display order and customer information', async () => {
-    orderService.get.and.returnValue(of(order));
+    orderService.get.mockReturnValue(of(order));
     tester = new OrderComponentTester();
     await tester.stable();
 
@@ -215,7 +217,7 @@ describe('OrderComponent', () => {
   });
 
   it('should display order items', async () => {
-    orderService.get.and.returnValue(of(order));
+    orderService.get.mockReturnValue(of(order));
     tester = new OrderComponentTester();
     await tester.stable();
 
@@ -228,7 +230,7 @@ describe('OrderComponent', () => {
   });
 
   it('should not display edit button if order is not draft', async () => {
-    orderService.get.and.returnValue(of({ ...order, status: 'CANCELLED' }));
+    orderService.get.mockReturnValue(of({ ...order, status: 'CANCELLED' }));
     tester = new OrderComponentTester();
     await tester.stable();
 
@@ -236,7 +238,7 @@ describe('OrderComponent', () => {
   });
 
   it('should edit order', async () => {
-    orderService.get.and.returnValue(of(order));
+    orderService.get.mockReturnValue(of(order));
     tester = new OrderComponentTester();
     await tester.stable();
 
@@ -248,7 +250,7 @@ describe('OrderComponent', () => {
   });
 
   it('should cancel edition', async () => {
-    orderService.get.and.returnValue(of(order));
+    orderService.get.mockReturnValue(of(order));
     tester = new OrderComponentTester();
     await tester.stable();
 
@@ -263,13 +265,13 @@ describe('OrderComponent', () => {
 
   it('should save and refresh', async () => {
     const newOrder = { ...order };
-    orderService.get.and.returnValues(of(order), of(newOrder));
+    orderService.get.mockReturnValueOnce(of(order)).mockReturnValueOnce(of(newOrder));
     tester = new OrderComponentTester();
     await tester.stable();
 
     await tester.editOrderButton!.click();
 
-    orderService.update.and.returnValue(of(undefined));
+    orderService.update.mockReturnValue(of(undefined));
     const command = {} as OrderCommand;
     tester.editOrderComponent!.saved.emit(command);
     await tester.stable();
@@ -282,7 +284,7 @@ describe('OrderComponent', () => {
 
   it('should not have a finalize order button when status is not DRAFT', async () => {
     order.status = 'CANCELLED';
-    orderService.get.and.returnValue(of(order));
+    orderService.get.mockReturnValue(of(order));
     tester = new OrderComponentTester();
     await tester.stable();
 
@@ -300,11 +302,11 @@ describe('OrderComponent', () => {
       type: 'SANITARY_PASSPORT'
     } as Document);
 
-    confirmationService.confirm.and.returnValue(of(undefined));
+    confirmationService.confirm.mockReturnValue(of(undefined));
     const newOrder: DetailedOrder = { ...order, status: 'FINALIZED' };
 
-    orderService.finalize.and.returnValue(of(undefined));
-    orderService.get.and.returnValues(of(order), of(newOrder));
+    orderService.finalize.mockReturnValue(of(undefined));
+    orderService.get.mockReturnValueOnce(of(order)).mockReturnValueOnce(of(newOrder));
     tester = new OrderComponentTester();
     await tester.stable();
 
@@ -320,8 +322,8 @@ describe('OrderComponent', () => {
     order.items[0].quantity = null;
 
     const newOrder: DetailedOrder = { ...order, status: 'FINALIZED' };
-    orderService.finalize.and.returnValue(of(undefined));
-    orderService.get.and.returnValues(of(order), of(newOrder));
+    orderService.finalize.mockReturnValue(of(undefined));
+    orderService.get.mockReturnValueOnce(of(order)).mockReturnValueOnce(of(newOrder));
     tester = new OrderComponentTester();
     await tester.stable();
 
@@ -343,7 +345,7 @@ describe('OrderComponent', () => {
 
   it('should not have a cancel order button when status is not DRAFT', async () => {
     order.status = 'CANCELLED';
-    orderService.get.and.returnValue(of(order));
+    orderService.get.mockReturnValue(of(order));
     tester = new OrderComponentTester();
     await tester.stable();
 
@@ -351,11 +353,11 @@ describe('OrderComponent', () => {
   });
 
   it('should cancel order after confirmation', async () => {
-    confirmationService.confirm.and.returnValue(of(undefined));
+    confirmationService.confirm.mockReturnValue(of(undefined));
     const newOrder: DetailedOrder = { ...order, status: 'CANCELLED' };
 
-    orderService.cancel.and.returnValue(of(undefined));
-    orderService.get.and.returnValues(of(order), of(newOrder));
+    orderService.cancel.mockReturnValue(of(undefined));
+    orderService.get.mockReturnValueOnce(of(order)).mockReturnValueOnce(of(newOrder));
     tester = new OrderComponentTester();
     await tester.stable();
 
@@ -368,7 +370,7 @@ describe('OrderComponent', () => {
   });
 
   it('should display documents', async () => {
-    orderService.get.and.returnValue(of(order));
+    orderService.get.mockReturnValue(of(order));
     tester = new OrderComponentTester();
     await tester.stable();
 
@@ -388,7 +390,7 @@ describe('OrderComponent', () => {
 
   it('should not display document delete buttons and add button if not DRAFT', async () => {
     order.status = 'FINALIZED';
-    orderService.get.and.returnValue(of(order));
+    orderService.get.mockReturnValue(of(order));
     tester = new OrderComponentTester();
     await tester.stable();
 
@@ -397,7 +399,7 @@ describe('OrderComponent', () => {
   });
 
   it('should disable buttons when editing', async () => {
-    orderService.get.and.returnValue(of(order));
+    orderService.get.mockReturnValue(of(order));
     tester = new OrderComponentTester();
     await tester.stable();
 
@@ -410,7 +412,7 @@ describe('OrderComponent', () => {
   });
 
   it('should disable buttons when adding document', async () => {
-    orderService.get.and.returnValue(of(order));
+    orderService.get.mockReturnValue(of(order));
     tester = new OrderComponentTester();
     await tester.stable();
 
@@ -422,11 +424,11 @@ describe('OrderComponent', () => {
   });
 
   it('should delete document after confirmation', async () => {
-    confirmationService.confirm.and.returnValue(of(undefined));
+    confirmationService.confirm.mockReturnValue(of(undefined));
     const newOrder: DetailedOrder = { ...order, documents: [] };
 
-    orderService.deleteDocument.and.returnValue(of(undefined));
-    orderService.get.and.returnValues(of(order), of(newOrder));
+    orderService.deleteDocument.mockReturnValue(of(undefined));
+    orderService.get.mockReturnValueOnce(of(order)).mockReturnValueOnce(of(newOrder));
     tester = new OrderComponentTester();
     await tester.stable();
 
@@ -439,7 +441,7 @@ describe('OrderComponent', () => {
   });
 
   it('should add document', async () => {
-    orderService.get.and.returnValue(of(order));
+    orderService.get.mockReturnValue(of(order));
     tester = new OrderComponentTester();
     await tester.stable();
 
@@ -452,7 +454,7 @@ describe('OrderComponent', () => {
   });
 
   it('should cancel document addition', async () => {
-    orderService.get.and.returnValue(of(order));
+    orderService.get.mockReturnValue(of(order));
     tester = new OrderComponentTester();
     await tester.stable();
 
@@ -467,14 +469,14 @@ describe('OrderComponent', () => {
 
   it('should create new document and refresh', async () => {
     const newOrder = { ...order, documents: [order.documents[0], { ...order.documents[0], id: 765 }] };
-    orderService.get.and.returnValues(of(order), of(newOrder));
+    orderService.get.mockReturnValueOnce(of(order)).mockReturnValueOnce(of(newOrder));
     tester = new OrderComponentTester();
     await tester.stable();
 
     await tester.addDocumentButton!.click();
 
     const progressSubject = new Subject<HttpEvent<Document>>();
-    orderService.addDocument.and.returnValue(progressSubject.asObservable());
+    orderService.addDocument.mockReturnValue(progressSubject.asObservable());
     const command = {} as DocumentCommand;
     tester.editDocumentComponent!.saved.emit(command);
     await tester.stable();
@@ -511,7 +513,7 @@ describe('OrderComponent', () => {
   });
 
   it('should download file', async () => {
-    orderService.get.and.returnValue(of(order));
+    orderService.get.mockReturnValue(of(order));
     tester = new OrderComponentTester();
     await tester.stable();
 
@@ -519,7 +521,7 @@ describe('OrderComponent', () => {
 
     const response = new HttpResponse<Blob>();
     const responseSubject = new Subject<HttpResponse<Blob>>();
-    orderService.downloadDocument.and.returnValue(responseSubject);
+    orderService.downloadDocument.mockReturnValue(responseSubject);
 
     await tester.downloadDocumentButtons[0].click();
 
@@ -534,7 +536,7 @@ describe('OrderComponent', () => {
   });
 
   it('should not have a delivery form button when status is not FINALIZED', async () => {
-    orderService.get.and.returnValue(of(order));
+    orderService.get.mockReturnValue(of(order));
     order.status = 'DRAFT';
     order.documents[0].onDeliveryForm = true;
     tester = new OrderComponentTester();
@@ -551,13 +553,13 @@ describe('OrderComponent', () => {
   });
 
   it('should download delivery form', async () => {
-    orderService.get.and.returnValue(of(order));
+    orderService.get.mockReturnValue(of(order));
     order.status = 'FINALIZED';
     tester = new OrderComponentTester();
     await tester.stable();
 
     const response = new HttpResponse<Blob>();
-    orderService.downloadDeliveryForm.and.returnValue(of(response));
+    orderService.downloadDeliveryForm.mockReturnValue(of(response));
 
     await tester.deliveryFormButton!.click();
 
@@ -566,7 +568,7 @@ describe('OrderComponent', () => {
   });
 
   it('should not have complete delivery form button if no document is attached', async () => {
-    orderService.get.and.returnValue(of(order));
+    orderService.get.mockReturnValue(of(order));
     order.status = 'FINALIZED';
     tester = new OrderComponentTester();
     await tester.stable();
@@ -575,14 +577,14 @@ describe('OrderComponent', () => {
   });
 
   it('should download complete delivery form', async () => {
-    orderService.get.and.returnValue(of(order));
+    orderService.get.mockReturnValue(of(order));
     order.status = 'FINALIZED';
     order.documents[0].onDeliveryForm = true;
     tester = new OrderComponentTester();
     await tester.stable();
 
     const deliveryFormResponse = new HttpResponse<Blob>();
-    orderService.downloadDeliveryForm.and.returnValue(of(deliveryFormResponse));
+    orderService.downloadDeliveryForm.mockReturnValue(of(deliveryFormResponse));
 
     await tester.completeDeliveryFormButton!.click();
 

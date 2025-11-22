@@ -1,16 +1,18 @@
+import { beforeEach, describe, expect, it, type MockedObject, vi } from 'vitest';
 import { TestBed } from '@angular/core/testing';
 
 import { CreateOrderComponent } from './create-order.component';
-import { ComponentTester, createMock } from 'ngx-speculoos';
+import { ComponentTester } from 'ngx-speculoos';
 import { OrderService } from '../order.service';
 import { Router } from '@angular/router';
 import { DetailedOrder, OrderCreationCommand } from '../order.model';
 import { of } from 'rxjs';
 import { ToastService } from '../../shared/toast.service';
-import { provideI18nTesting } from '../../i18n/mock-18n.spec';
+import { provideI18nTesting } from '../../i18n/mock-18n';
 import { AuthenticationService } from '../../shared/authentication.service';
 import { ValidationDefaultsComponent } from '../../validation-defaults/validation-defaults.component';
 import { User } from '../../shared/user.model';
+import { createMock } from '../../../mock';
 
 class CreateOrderComponentTester extends ComponentTester<CreateOrderComponent> {
   constructor() {
@@ -72,10 +74,10 @@ class CreateOrderComponentTester extends ComponentTester<CreateOrderComponent> {
 
 describe('CreateOrderComponent', () => {
   let tester: CreateOrderComponentTester;
-  let authenticationService: jasmine.SpyObj<AuthenticationService>;
-  let orderService: jasmine.SpyObj<OrderService>;
+  let authenticationService: MockedObject<AuthenticationService>;
+  let orderService: MockedObject<OrderService>;
   let router: Router;
-  let toastService: jasmine.SpyObj<ToastService>;
+  let toastService: MockedObject<ToastService>;
 
   beforeEach(async () => {
     authenticationService = createMock(AuthenticationService);
@@ -94,7 +96,7 @@ describe('CreateOrderComponent', () => {
     await TestBed.createComponent(ValidationDefaultsComponent).whenStable();
 
     router = TestBed.inject(Router);
-    spyOn(router, 'navigate');
+    vi.spyOn(router, 'navigate');
   });
 
   describe('when current user has only one accession holder', () => {
@@ -102,7 +104,7 @@ describe('CreateOrderComponent', () => {
       const user: User = {
         accessionHolders: [{ id: 1, name: 'AH1', grc: { name: 'GRC1' } }]
       } as User;
-      authenticationService.getCurrentUser.and.returnValue(of(user));
+      authenticationService.getCurrentUser.mockReturnValue(of(user));
       tester = new CreateOrderComponentTester();
       await tester.stable();
     });
@@ -121,7 +123,7 @@ describe('CreateOrderComponent', () => {
           { id: 2, name: 'AH2', grc: { name: 'GRC2' } }
         ]
       } as User;
-      authenticationService.getCurrentUser.and.returnValue(of(user));
+      authenticationService.getCurrentUser.mockReturnValue(of(user));
       tester = new CreateOrderComponentTester();
       await tester.stable();
     });
@@ -161,7 +163,7 @@ describe('CreateOrderComponent', () => {
       await tester.language.selectLabel('Français');
       await tester.rationale.fillWith('foo');
 
-      orderService.createOrder.and.returnValue(of({ id: 42 } as DetailedOrder));
+      orderService.createOrder.mockReturnValue(of({ id: 42 } as DetailedOrder));
 
       await tester.saveButton.click();
 
@@ -197,7 +199,7 @@ describe('CreateOrderComponent', () => {
       await tester.language.selectLabel('Français');
       await tester.rationale.fillWith('foo');
 
-      orderService.createOrder.and.returnValue(of({ id: 42 } as DetailedOrder));
+      orderService.createOrder.mockReturnValue(of({ id: 42 } as DetailedOrder));
       await tester.saveButton.click();
 
       const expectedCommand: OrderCreationCommand = {

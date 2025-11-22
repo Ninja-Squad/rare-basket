@@ -1,8 +1,10 @@
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { TestBed } from '@angular/core/testing';
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 
 import { ModalOptions, ModalService } from './modal.service';
+import { createMock } from '../../mock';
 
 @Component({
   template: 'Hello',
@@ -13,7 +15,7 @@ class TestModalComponent {}
 describe('ModalService', () => {
   let ngbModal: NgbModal;
   let modalService: ModalService;
-  const fakeModalComponent = jasmine.createSpyObj<TestModalComponent>(['']);
+  const fakeModalComponent = createMock(TestModalComponent);
 
   beforeEach(() => {
     TestBed.configureTestingModule({});
@@ -22,7 +24,7 @@ describe('ModalService', () => {
   });
 
   it('should create a modal instance', () => {
-    spyOn(ngbModal, 'open').and.returnValue({
+    vi.spyOn(ngbModal, 'open').mockReturnValue({
       componentInstance: fakeModalComponent,
       result: Promise.resolve()
     } as NgbModalRef);
@@ -35,7 +37,7 @@ describe('ModalService', () => {
 
   it('should emit on close', async () => {
     const promise = Promise.resolve();
-    spyOn(ngbModal, 'open').and.returnValue({
+    vi.spyOn(ngbModal, 'open').mockReturnValue({
       componentInstance: fakeModalComponent,
       result: promise
     } as NgbModalRef);
@@ -53,7 +55,7 @@ describe('ModalService', () => {
 
   it('should emit EMPTY on cancel', async () => {
     const promise = Promise.reject();
-    spyOn(ngbModal, 'open').and.returnValue({
+    vi.spyOn(ngbModal, 'open').mockReturnValue({
       componentInstance: fakeModalComponent,
       result: promise
     } as unknown as NgbModalRef);
@@ -75,7 +77,7 @@ describe('ModalService', () => {
 
   it('should throw error on cancel if options says so', async () => {
     const promise = Promise.reject();
-    spyOn(ngbModal, 'open').and.returnValue({
+    vi.spyOn(ngbModal, 'open').mockReturnValue({
       componentInstance: fakeModalComponent,
       result: promise
     } as unknown as NgbModalRef);

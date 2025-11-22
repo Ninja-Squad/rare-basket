@@ -1,10 +1,11 @@
+import { beforeEach, describe, expect, it } from 'vitest';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { TestBed } from '@angular/core/testing';
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { NgbDatepicker, NgbInputDatepicker } from '@ng-bootstrap/ng-bootstrap';
 import { ComponentTester } from 'ngx-speculoos';
 import { DatepickerContainerComponent } from './datepicker-container.component';
-import { provideI18nTesting } from '../i18n/mock-18n.spec';
+import { provideI18nTesting } from '../i18n/mock-18n';
 import { provideNgbDatepickerServices } from './datepicker-providers';
 
 @Component({
@@ -69,7 +70,7 @@ describe('DatepickerContainerComponent', () => {
   });
 
   it('should have the input-group class in addition to its original class', () => {
-    expect(tester.container).toHaveClass('input-group');
-    expect(tester.container).toHaveClass('foo');
+    expect(tester.container.nativeElement.classList.contains('input-group')).toBe(true);
+    expect(tester.container.nativeElement.classList.contains('foo')).toBe(true);
   });
 });

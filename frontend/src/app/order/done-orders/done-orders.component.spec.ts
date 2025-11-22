@@ -1,6 +1,7 @@
+import { beforeEach, describe, expect, it, type MockedObject } from 'vitest';
 import { TestBed } from '@angular/core/testing';
 
-import { createMock, RoutingTester } from 'ngx-speculoos';
+import { RoutingTester } from 'ngx-speculoos';
 import { OrdersComponent } from '../orders/orders.component';
 import { provideRouter, Router } from '@angular/router';
 import { EMPTY, of } from 'rxjs';
@@ -8,10 +9,11 @@ import { OrderService } from '../order.service';
 import { Order } from '../order.model';
 import { Page } from '../../shared/page.model';
 import { DoneOrdersComponent } from './done-orders.component';
-import { provideI18nTesting } from '../../i18n/mock-18n.spec';
+import { provideI18nTesting } from '../../i18n/mock-18n';
 import { AuthenticationService } from '../../shared/authentication.service';
 import { User } from '../../shared/user.model';
 import { RouterTestingHarness } from '@angular/router/testing';
+import { createMock } from '../../../mock';
 
 class DoneOrdersComponentTester extends RoutingTester {
   constructor(harness: RouterTestingHarness) {
@@ -29,14 +31,14 @@ class DoneOrdersComponentTester extends RoutingTester {
 
 describe('DoneOrdersComponent', () => {
   let tester: DoneOrdersComponentTester;
-  let orderService: jasmine.SpyObj<OrderService>;
-  let authenticationService: jasmine.SpyObj<AuthenticationService>;
+  let orderService: MockedObject<OrderService>;
+  let authenticationService: MockedObject<AuthenticationService>;
   let router: Router;
 
   beforeEach(async () => {
     orderService = createMock(OrderService);
     authenticationService = createMock(AuthenticationService);
-    authenticationService.getCurrentUser.and.returnValue(
+    authenticationService.getCurrentUser.mockReturnValue(
       of({
         accessionHolders: [
           {
@@ -64,7 +66,7 @@ describe('DoneOrdersComponent', () => {
   });
 
   it('should not display anything until orders are present', async () => {
-    orderService.listDone.and.returnValue(EMPTY);
+    orderService.listDone.mockReturnValue(EMPTY);
     tester = new DoneOrdersComponentTester(await RouterTestingHarness.create('/orders/done'));
 
     expect(tester.ordersComponent).toBeNull();
@@ -72,7 +74,7 @@ describe('DoneOrdersComponent', () => {
   });
 
   it('should not display accession holder if only one accessible', async () => {
-    authenticationService.getCurrentUser.and.returnValue(
+    authenticationService.getCurrentUser.mockReturnValue(
       of({
         accessionHolders: [
           {
@@ -89,7 +91,7 @@ describe('DoneOrdersComponent', () => {
       size: 20,
       totalPages: 1
     } as Page<Order>;
-    orderService.listDone.and.returnValue(of(page0));
+    orderService.listDone.mockReturnValue(of(page0));
     tester = new DoneOrdersComponentTester(await RouterTestingHarness.create('/orders/done'));
 
     expect(tester.accessionHolder).toBeNull();
@@ -119,9 +121,18 @@ describe('DoneOrdersComponent', () => {
       totalPages: 1
     } as Page<Order>;
 
-    orderService.listDone.withArgs(0, null).and.returnValue(of(page0));
-    orderService.listDone.withArgs(1, null).and.returnValue(of(page1));
-    orderService.listDone.withArgs(0, 42).and.returnValue(of(page0ForAccessionHolder42));
+    orderService.listDone.mockImplementation((page, accessionHolderId) => {
+      if (page === 0 && accessionHolderId === null) {
+        return of(page0);
+      }
+      if (page === 1 && accessionHolderId === null) {
+        return of(page1);
+      }
+      if (page === 0 && accessionHolderId === 42) {
+        return of(page0ForAccessionHolder42);
+      }
+      throw new Error('Unexpected arguments');
+    });
 
     tester = new DoneOrdersComponentTester(await RouterTestingHarness.create('/orders/done?page=1'));
 

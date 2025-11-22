@@ -1,12 +1,14 @@
+import { beforeEach, describe, expect, it, type MockedObject } from 'vitest';
 import { TestBed } from '@angular/core/testing';
 
 import { NavbarComponent } from './navbar.component';
-import { ComponentTester, createMock } from 'ngx-speculoos';
+import { ComponentTester } from 'ngx-speculoos';
 import { AuthenticationService } from '../shared/authentication.service';
 import { Subject } from 'rxjs';
 import { Permission, User } from '../shared/user.model';
-import { provideI18nTesting } from '../i18n/mock-18n.spec';
+import { provideI18nTesting } from '../i18n/mock-18n';
 import { provideRouter } from '@angular/router';
+import { createMock } from '../../mock';
 
 class NavbarComponentTester extends ComponentTester<NavbarComponent> {
   constructor() {
@@ -44,13 +46,13 @@ class NavbarComponentTester extends ComponentTester<NavbarComponent> {
 
 describe('NavbarComponent', () => {
   let tester: NavbarComponentTester;
-  let authenticationService: jasmine.SpyObj<AuthenticationService>;
+  let authenticationService: MockedObject<AuthenticationService>;
   let userSubject: Subject<User | null>;
 
   beforeEach(async () => {
     userSubject = new Subject<User | null>();
     authenticationService = createMock(AuthenticationService);
-    authenticationService.getCurrentUser.and.returnValue(userSubject);
+    authenticationService.getCurrentUser.mockReturnValue(userSubject);
 
     TestBed.configureTestingModule({
       providers: [provideRouter([]), provideI18nTesting(), { provide: AuthenticationService, useValue: authenticationService }]

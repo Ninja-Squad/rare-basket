@@ -1,11 +1,13 @@
+import { beforeEach, describe, expect, it, type MockedObject, vi } from 'vitest';
 import { TestBed } from '@angular/core/testing';
 
 import { BasketConfirmationComponent } from './basket-confirmation.component';
-import { ComponentTester, createMock, stubRoute } from 'ngx-speculoos';
+import { ComponentTester, stubRoute } from 'ngx-speculoos';
 import { ActivatedRoute, Router } from '@angular/router';
 import { BasketService } from '../basket.service';
 import { of, throwError } from 'rxjs';
-import { provideI18nTesting } from '../../i18n/mock-18n.spec';
+import { provideI18nTesting } from '../../i18n/mock-18n';
+import { createMock } from '../../../mock';
 
 class BasketConfirmationComponentTester extends ComponentTester<BasketConfirmationComponent> {
   constructor() {
@@ -19,7 +21,7 @@ class BasketConfirmationComponentTester extends ComponentTester<BasketConfirmati
 
 describe('BasketConfirmationComponent', () => {
   let tester: BasketConfirmationComponentTester;
-  let basketService: jasmine.SpyObj<BasketService>;
+  let basketService: MockedObject<BasketService>;
 
   beforeEach(() => {
     const route = stubRoute({
@@ -39,9 +41,9 @@ describe('BasketConfirmationComponent', () => {
   });
 
   it('should confirm and redirect if successful', async () => {
-    basketService.confirm.and.returnValue(of(undefined));
+    basketService.confirm.mockReturnValue(of(undefined));
     const router = TestBed.inject(Router);
-    spyOn(router, 'navigate');
+    vi.spyOn(router, 'navigate');
     tester = new BasketConfirmationComponentTester();
     await tester.stable();
 
@@ -51,9 +53,9 @@ describe('BasketConfirmationComponent', () => {
   });
 
   it('should confirm and display an alert is unsuccessful', async () => {
-    basketService.confirm.and.returnValue(throwError(() => undefined));
+    basketService.confirm.mockReturnValue(throwError(() => undefined));
     const router = TestBed.inject(Router);
-    spyOn(router, 'navigate');
+    vi.spyOn(router, 'navigate');
     tester = new BasketConfirmationComponentTester();
     await tester.stable();
 

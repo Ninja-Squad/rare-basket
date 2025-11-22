@@ -1,9 +1,10 @@
+import { expect } from 'vitest';
 /**
  * Utility to test an enum pipe
  */
 import { BaseEnumPipe } from './base-enum-pipe';
 import { TestBed } from '@angular/core/testing';
-import { provideI18nTesting } from '../i18n/mock-18n.spec';
+import { provideI18nTesting } from '../i18n/mock-18n';
 
 export function testEnumPipe<T extends string, E extends BaseEnumPipe<T>>(
   clazz: new () => E,

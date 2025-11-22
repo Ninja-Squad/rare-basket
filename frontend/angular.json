@@ -96,7 +96,11 @@
         "test": {
           "builder": "@angular/build:unit-test",
           "options": {
-            "browsers": ["ChromiumHeadless"]
+            "browsers": ["ChromiumHeadless"],
+            "setupFiles": [
+              "src/matchers.ts"
+            ],
+            "runnerConfig": true
           }
         },
         "lint": {

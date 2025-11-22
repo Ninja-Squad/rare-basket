@@ -1,14 +1,16 @@
+import { beforeEach, describe, expect, it, type MockedObject } from 'vitest';
 import { TestBed } from '@angular/core/testing';
 
-import { ComponentTester, createMock, TestButton } from 'ngx-speculoos';
+import { ComponentTester, TestButton } from 'ngx-speculoos';
 import { EMPTY, of } from 'rxjs';
 import { AccessionHolder } from '../../shared/user.model';
 import { ConfirmationService } from '../../shared/confirmation.service';
 import { AccessionHoldersComponent } from './accession-holders.component';
 import { AccessionHolderService } from '../../shared/accession-holder.service';
 import { ToastService } from '../../shared/toast.service';
-import { provideI18nTesting } from '../../i18n/mock-18n.spec';
+import { provideI18nTesting } from '../../i18n/mock-18n';
 import { provideRouter } from '@angular/router';
+import { createMock } from '../../../mock';
 
 class AccessionHoldersComponentTester extends ComponentTester<AccessionHoldersComponent> {
   constructor() {
@@ -30,9 +32,9 @@ class AccessionHoldersComponentTester extends ComponentTester<AccessionHoldersCo
 
 describe('AccessionHoldersComponent', () => {
   let tester: AccessionHoldersComponentTester;
-  let accessionHolderService: jasmine.SpyObj<AccessionHolderService>;
-  let confirmationService: jasmine.SpyObj<ConfirmationService>;
-  let toastService: jasmine.SpyObj<ToastService>;
+  let accessionHolderService: MockedObject<AccessionHolderService>;
+  let confirmationService: MockedObject<ConfirmationService>;
+  let toastService: MockedObject<ToastService>;
 
   beforeEach(() => {
     accessionHolderService = createMock(AccessionHolderService);
@@ -51,7 +53,7 @@ describe('AccessionHoldersComponent', () => {
   });
 
   it('should not display anything until accession holders are available', async () => {
-    accessionHolderService.list.and.returnValue(EMPTY);
+    accessionHolderService.list.mockReturnValue(EMPTY);
     tester = new AccessionHoldersComponentTester();
     await tester.stable();
 
@@ -87,7 +89,7 @@ describe('AccessionHoldersComponent', () => {
       }
     ];
 
-    accessionHolderService.list.and.returnValue(of(accessionHolders));
+    accessionHolderService.list.mockReturnValue(of(accessionHolders));
     tester = new AccessionHoldersComponentTester();
     await tester.stable();
 
@@ -129,12 +131,12 @@ describe('AccessionHoldersComponent', () => {
       }
     ];
 
-    accessionHolderService.list.and.returnValues(of(accessionHolders), of([accessionHolders[1]]));
+    accessionHolderService.list.mockReturnValueOnce(of(accessionHolders)).mockReturnValueOnce(of([accessionHolders[1]]));
     tester = new AccessionHoldersComponentTester();
     await tester.stable();
 
-    confirmationService.confirm.and.returnValue(of(undefined));
-    accessionHolderService.delete.and.returnValue(of(undefined));
+    confirmationService.confirm.mockReturnValue(of(undefined));
+    accessionHolderService.delete.mockReturnValue(of(undefined));
 
     await tester.deleteButtons[0].click();
 

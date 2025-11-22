@@ -1,3 +1,4 @@
+import { beforeEach, describe, expect, it } from 'vitest';
 import { TestBed } from '@angular/core/testing';
 
 import { EditCustomerInformationComponent } from './edit-customer-information.component';
@@ -6,7 +7,7 @@ import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
 import { ALL_CUSTOMER_TYPES, ALL_LANGUAGES } from '../../basket/basket.model';
 import { CustomerInformationCommand } from '../order.model';
 import { ValidationDefaultsComponent } from '../../validation-defaults/validation-defaults.component';
-import { provideI18nTesting } from '../../i18n/mock-18n.spec';
+import { provideI18nTesting } from '../../i18n/mock-18n';
 
 @Component({
   template: `
@@ -118,8 +119,8 @@ describe('EditCustomerComponent', () => {
     expect(tester.language).toHaveSelectedLabel('Anglais');
     expect(tester.rationale).toHaveValue('The rationale');
 
-    expect(tester.saveButton).toHaveClass('btn-sm');
-    expect(tester.cancelButton).toHaveClass('btn-sm');
+    expect(tester.saveButton.nativeElement.classList.contains('btn-sm')).toBe(true);
+    expect(tester.cancelButton.nativeElement.classList.contains('btn-sm')).toBe(true);
   });
 
   it('should not save if invalid', async () => {

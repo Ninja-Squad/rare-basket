@@ -1,3 +1,4 @@
+import { beforeEach, describe, expect, it } from 'vitest';
 import { FormControlValidationDirective } from './form-control-validation.directive';
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
@@ -50,18 +51,18 @@ describe('FormControlValidationDirective', () => {
   });
 
   it('should add the is-invalid CSS class when touched', async () => {
-    expect(tester.lastName).not.toHaveClass('is-invalid');
+    expect(tester.lastName.nativeElement.classList.contains('is-invalid')).toBe(false);
 
     await tester.lastName.dispatchEventOfType('blur');
 
-    expect(tester.lastName).toHaveClass('is-invalid');
+    expect(tester.lastName.nativeElement.classList.contains('is-invalid')).toBe(true);
   });
 
   it('should add the is-invalid CSS class when enclosing form is submitted', async () => {
-    expect(tester.lastName).not.toHaveClass('is-invalid');
+    expect(tester.lastName.nativeElement.classList.contains('is-invalid')).toBe(false);
 
     await tester.save.click();
 
-    expect(tester.lastName).toHaveClass('is-invalid');
+    expect(tester.lastName.nativeElement.classList.contains('is-invalid')).toBe(true);
   });
 });

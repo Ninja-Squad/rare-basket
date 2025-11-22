@@ -1,3 +1,4 @@
+import { beforeEach, describe, expect, it } from 'vitest';
 import { TestBed } from '@angular/core/testing';
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { RoutingTester } from 'ngx-speculoos';
@@ -72,15 +73,15 @@ describe('Router nav directives', () => {
     await tester.stable();
 
     expect(tester.tabList.attr('role')).toBe('tablist');
-    expect(tester.tabList).toHaveClass('nav');
+    expect(tester.tabList.nativeElement.classList.contains('nav')).toBe(true);
 
     expect(tester.tabLinks[0].attr('role')).toBe('tab');
-    expect(tester.tabLinks[0]).toHaveClass('nav-link');
+    expect(tester.tabLinks[0].nativeElement.classList.contains('nav-link')).toBe(true);
     expect(tester.tabLinks[0].nativeElement.id).toBeTruthy();
     expect(tester.tabLinks[0].attr('aria-selected')).toBe('true');
 
     expect(tester.tabLinks[1].attr('role')).toBe('tab');
-    expect(tester.tabLinks[1]).toHaveClass('nav-link');
+    expect(tester.tabLinks[1].nativeElement.classList.contains('nav-link')).toBe(true);
     expect(tester.tabLinks[1].nativeElement.id).toBe('bar');
     expect(tester.tabLinks[1].attr('aria-selected')).toBe('false');
 

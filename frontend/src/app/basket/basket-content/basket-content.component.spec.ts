@@ -1,10 +1,11 @@
+import { beforeEach, describe, expect, it } from 'vitest';
 import { TestBed } from '@angular/core/testing';
 
 import { BasketContentComponent } from './basket-content.component';
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { Basket } from '../basket.model';
 import { ComponentTester } from 'ngx-speculoos';
-import { provideI18nTesting } from '../../i18n/mock-18n.spec';
+import { provideI18nTesting } from '../../i18n/mock-18n';
 
 @Component({
   template: '<rb-basket-content [basket]="basket" />',

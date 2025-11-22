@@ -1,14 +1,16 @@
+import { beforeEach, describe, expect, it, type MockedObject, vi } from 'vitest';
 import { TestBed } from '@angular/core/testing';
 import { ActivatedRoute, Router } from '@angular/router';
 import { of } from 'rxjs';
-import { ActivatedRouteStub, ComponentTester, createMock, stubRoute } from 'ngx-speculoos';
+import { ActivatedRouteStub, ComponentTester, stubRoute } from 'ngx-speculoos';
 
 import { EditGrcComponent } from './edit-grc.component';
 import { ValidationDefaultsComponent } from '../../validation-defaults/validation-defaults.component';
 import { Grc, GrcCommand } from '../../shared/user.model';
 import { GrcService } from '../../shared/grc.service';
 import { ToastService } from '../../shared/toast.service';
-import { provideI18nTesting } from '../../i18n/mock-18n.spec';
+import { provideI18nTesting } from '../../i18n/mock-18n';
+import { createMock } from '../../../mock';
 
 class EditGrcComponentTester extends ComponentTester<EditGrcComponent> {
   constructor() {
@@ -42,9 +44,9 @@ class EditGrcComponentTester extends ComponentTester<EditGrcComponent> {
 
 describe('EditGrcComponent', () => {
   let tester: EditGrcComponentTester;
-  let grcService: jasmine.SpyObj<GrcService>;
+  let grcService: MockedObject<GrcService>;
   let router: Router;
-  let toastService: jasmine.SpyObj<ToastService>;
+  let toastService: MockedObject<ToastService>;
   let route: ActivatedRouteStub;
 
   beforeEach(async () => {
@@ -62,7 +64,7 @@ describe('EditGrcComponent', () => {
     });
 
     router = TestBed.inject(Router);
-    spyOn(router, 'navigate');
+    vi.spyOn(router, 'navigate');
 
     await TestBed.createComponent(ValidationDefaultsComponent).whenStable();
   });
@@ -101,7 +103,7 @@ describe('EditGrcComponent', () => {
       await tester.institution.fillWith('INRAE');
       await tester.address.fillWith('12 Boulevard Marie Curie, 69007 LYON');
 
-      grcService.create.and.returnValue(of({} as Grc));
+      grcService.create.mockReturnValue(of({} as Grc));
       await tester.saveButton.click();
 
       const expectedCommand: GrcCommand = {
@@ -119,7 +121,7 @@ describe('EditGrcComponent', () => {
     beforeEach(async () => {
       route.setParam('grcId', '41');
 
-      grcService.get.and.returnValue(
+      grcService.get.mockReturnValue(
         of({
           id: 41,
           name: 'GRC1',
@@ -146,7 +148,7 @@ describe('EditGrcComponent', () => {
       await tester.name.fillWith('GRC2');
       await tester.address.fillWith('13 Boulevard Marie Curie, 69007 LYON');
 
-      grcService.update.and.returnValue(of(undefined));
+      grcService.update.mockReturnValue(of(undefined));
       await tester.saveButton.click();
 
       const expectedCommand: GrcCommand = {

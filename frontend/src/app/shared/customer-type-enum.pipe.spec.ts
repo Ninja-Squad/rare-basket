@@ -1,5 +1,6 @@
+import { describe, it } from 'vitest';
 import { CustomerTypeEnumPipe } from './customer-type-enum.pipe';
-import { testEnumPipe } from './base-enum-pipe.spec';
+import { testEnumPipe } from './base-enum-pipe-test';
 
 describe('CustomerTypeEnumPipe', () => {
   it('should translate customer types', () => {

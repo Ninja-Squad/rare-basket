@@ -1,7 +1,8 @@
+import { beforeEach, describe, expect, it, type MockedObject, vi } from 'vitest';
 import { TestBed } from '@angular/core/testing';
 
 import { EditUserComponent } from './edit-user.component';
-import { ActivatedRouteStub, ComponentTester, createMock, stubRoute, TestInput } from 'ngx-speculoos';
+import { ActivatedRouteStub, ComponentTester, stubRoute, TestInput } from 'ngx-speculoos';
 import { AccessionHolder, Grc, User, UserCommand } from '../../shared/user.model';
 import { UserService } from '../user.service';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -10,7 +11,8 @@ import { of } from 'rxjs';
 import { AccessionHolderService } from '../../shared/accession-holder.service';
 import { GrcService } from '../../shared/grc.service';
 import { ToastService } from '../../shared/toast.service';
-import { provideI18nTesting } from '../../i18n/mock-18n.spec';
+import { provideI18nTesting } from '../../i18n/mock-18n';
+import { createMock } from '../../../mock';
 
 class EditUserComponentTester extends ComponentTester<EditUserComponent> {
   constructor() {
@@ -64,11 +66,11 @@ class EditUserComponentTester extends ComponentTester<EditUserComponent> {
 
 describe('EditUserComponent', () => {
   let tester: EditUserComponentTester;
-  let userService: jasmine.SpyObj<UserService>;
-  let accessionHolderService: jasmine.SpyObj<AccessionHolderService>;
-  let grcService: jasmine.SpyObj<GrcService>;
+  let userService: MockedObject<UserService>;
+  let accessionHolderService: MockedObject<AccessionHolderService>;
+  let grcService: MockedObject<GrcService>;
   let router: Router;
-  let toastService: jasmine.SpyObj<ToastService>;
+  let toastService: MockedObject<ToastService>;
   let route: ActivatedRouteStub;
 
   beforeEach(async () => {
@@ -90,11 +92,11 @@ describe('EditUserComponent', () => {
     });
 
     router = TestBed.inject(Router);
-    spyOn(router, 'navigate');
+    vi.spyOn(router, 'navigate');
 
     await TestBed.createComponent(ValidationDefaultsComponent).whenStable();
 
-    accessionHolderService.list.and.returnValue(
+    accessionHolderService.list.mockReturnValue(
       of([
         {
           id: 11,
@@ -123,7 +125,7 @@ describe('EditUserComponent', () => {
       ] as Array<AccessionHolder>)
     );
 
-    grcService.list.and.returnValue(
+    grcService.list.mockReturnValue(
       of([
         {
           id: 1,
@@ -220,7 +222,7 @@ describe('EditUserComponent', () => {
       await tester.orderVisualization.check();
       await tester.visualizationGrcs[1].check();
 
-      userService.create.and.returnValue(of({} as User));
+      userService.create.mockReturnValue(of({} as User));
       await tester.saveButton.click();
 
       const expectedCommand: UserCommand = {
@@ -239,7 +241,7 @@ describe('EditUserComponent', () => {
   describe('in update mode', () => {
     beforeEach(async () => {
       route.setParam('userId', '42');
-      userService.get.and.returnValue(
+      userService.get.mockReturnValue(
         of({
           id: 42,
           name: 'Test',
@@ -282,7 +284,7 @@ describe('EditUserComponent', () => {
       await tester.orderVisualization.uncheck();
       await tester.administration.check();
 
-      userService.update.and.returnValue(of(undefined));
+      userService.update.mockReturnValue(of(undefined));
       await tester.saveButton.click();
 
       const expectedCommand: UserCommand = {

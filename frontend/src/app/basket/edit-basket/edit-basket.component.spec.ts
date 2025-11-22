@@ -1,13 +1,15 @@
+import { beforeEach, describe, expect, it, type MockedObject } from 'vitest';
 import { TestBed } from '@angular/core/testing';
 
 import { EditBasketComponent } from './edit-basket.component';
-import { ComponentTester, createMock, TestButton } from 'ngx-speculoos';
+import { ComponentTester, TestButton } from 'ngx-speculoos';
 import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
 import { AccessionHolderBasket, Basket, BasketCommand, BasketItem } from '../basket.model';
 import { ValidationDefaultsComponent } from '../../validation-defaults/validation-defaults.component';
 import { ConfirmationService } from '../../shared/confirmation.service';
 import { of } from 'rxjs';
-import { provideI18nTesting } from '../../i18n/mock-18n.spec';
+import { provideI18nTesting } from '../../i18n/mock-18n';
+import { createMock } from '../../../mock';
 
 @Component({
   template: `@if (basket(); as basket) {
@@ -135,7 +137,7 @@ class TestComponentTester extends ComponentTester<TestComponent> {
 
 describe('EditBasketComponent', () => {
   let tester: TestComponentTester;
-  let confirmationService: jasmine.SpyObj<ConfirmationService>;
+  let confirmationService: MockedObject<ConfirmationService>;
 
   beforeEach(async () => {
     confirmationService = createMock(ConfirmationService);
@@ -336,7 +338,7 @@ describe('EditBasketComponent', () => {
       }));
       await tester.stable();
 
-      confirmationService.confirm.and.returnValue(of(undefined));
+      confirmationService.confirm.mockReturnValue(of(undefined));
 
       // delete first of 3 items
       await tester.accessionDeleteButtons[0].click();

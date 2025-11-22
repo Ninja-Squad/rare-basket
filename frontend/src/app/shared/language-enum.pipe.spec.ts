@@ -1,5 +1,6 @@
+import { describe, it } from 'vitest';
 import { LanguageEnumPipe } from './language-enum.pipe';
-import { testEnumPipe } from './base-enum-pipe.spec';
+import { testEnumPipe } from './base-enum-pipe-test';
 
 describe('LanguageEnumPipe', () => {
   it('should translate languages', () => {

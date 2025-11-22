@@ -1,3 +1,4 @@
+import { beforeEach, describe, expect, it } from 'vitest';
 import { ChartComponent } from './chart.component';
 import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
 import { ArcElement, Chart, ChartConfiguration, DoughnutController } from 'chart.js';

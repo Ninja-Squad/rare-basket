@@ -1,7 +1,8 @@
+import { beforeEach, describe, expect, it, type MockedObject } from 'vitest';
 import { TestBed } from '@angular/core/testing';
 
 import { UsersComponent } from './users.component';
-import { ComponentTester, createMock, stubRoute, TestButton } from 'ngx-speculoos';
+import { ComponentTester, stubRoute, TestButton } from 'ngx-speculoos';
 import { PaginationComponent } from '../../rb-ngb/pagination/pagination.component';
 import { ActivatedRoute } from '@angular/router';
 import { EMPTY, of } from 'rxjs';
@@ -10,7 +11,8 @@ import { Page } from '../../shared/page.model';
 import { User } from '../../shared/user.model';
 import { ConfirmationService } from '../../shared/confirmation.service';
 import { ToastService } from '../../shared/toast.service';
-import { provideI18nTesting } from '../../i18n/mock-18n.spec';
+import { provideI18nTesting } from '../../i18n/mock-18n';
+import { createMock } from '../../../mock';
 
 class UsersComponentTester extends ComponentTester<UsersComponent> {
   constructor() {
@@ -36,9 +38,9 @@ class UsersComponentTester extends ComponentTester<UsersComponent> {
 
 describe('UsersComponent', () => {
   let tester: UsersComponentTester;
-  let userService: jasmine.SpyObj<UserService>;
-  let confirmationService: jasmine.SpyObj<ConfirmationService>;
-  let toastService: jasmine.SpyObj<ToastService>;
+  let userService: MockedObject<UserService>;
+  let confirmationService: MockedObject<ConfirmationService>;
+  let toastService: MockedObject<ToastService>;
 
   beforeEach(() => {
     const route = stubRoute({
@@ -61,7 +63,7 @@ describe('UsersComponent', () => {
   });
 
   it('should not display anything until users are available', async () => {
-    userService.list.and.returnValue(EMPTY);
+    userService.list.mockReturnValue(EMPTY);
     tester = new UsersComponentTester();
     await tester.stable();
 
@@ -90,12 +92,12 @@ describe('UsersComponent', () => {
       ] as Array<User>
     };
 
-    userService.list.and.returnValue(of(users));
+    userService.list.mockReturnValue(of(users));
     tester = new UsersComponentTester();
     await tester.stable();
 
     expect(tester.users.length).toBe(2);
-    expect(tester.users[0]).toContainText('admin');
+    expect.speculoos(tester.users[0]).toHaveTextContent('admin');
     expect(tester.users[0]).toContainText('Administration');
     expect(tester.users[1]).toContainText('John');
     expect(tester.users[1]).toContainText('Administration, Gestion des commandes');
@@ -123,12 +125,12 @@ describe('UsersComponent', () => {
       ] as Array<User>
     };
 
-    userService.list.and.returnValues(of(users), of({ ...users, totalElements: 21, content: [users.content[1]] }));
+    userService.list.mockReturnValueOnce(of(users)).mockReturnValueOnce(of({ ...users, totalElements: 21, content: [users.content[1]] }));
     tester = new UsersComponentTester();
     await tester.stable();
 
-    confirmationService.confirm.and.returnValue(of(undefined));
-    userService.delete.and.returnValue(of(undefined));
+    confirmationService.confirm.mockReturnValue(of(undefined));
+    userService.delete.mockReturnValue(of(undefined));
 
     await tester.deleteButtons[0].click();
 

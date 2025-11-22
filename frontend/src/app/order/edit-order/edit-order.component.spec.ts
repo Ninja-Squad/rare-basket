@@ -1,13 +1,15 @@
+import { beforeEach, describe, expect, it } from 'vitest';
 import { TestBed } from '@angular/core/testing';
 
 import { EditOrderComponent } from './edit-order.component';
 import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
 import { Order, OrderCommand, OrderItemCommand } from '../order.model';
-import { ComponentTester, createMock, TestButton } from 'ngx-speculoos';
+import { ComponentTester, TestButton } from 'ngx-speculoos';
 import { ValidationDefaultsComponent } from '../../validation-defaults/validation-defaults.component';
-import { MockModalService, provideModalTesting } from '../../rb-ngb/mock-modal.service.spec';
+import { MockModalService, provideModalTesting } from '../../rb-ngb/mock-modal.service';
 import { CsvModalComponent } from '../csv-modal/csv-modal.component';
-import { provideI18nTesting } from '../../i18n/mock-18n.spec';
+import { provideI18nTesting } from '../../i18n/mock-18n';
+import { createMock } from '../../../mock';
 
 @Component({
   template: '<rb-edit-order [order]="order" (cancelled)="cancelled.set(true)" (saved)="saved.set($event)" />',

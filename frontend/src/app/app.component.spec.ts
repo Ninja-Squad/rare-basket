@@ -1,12 +1,14 @@
+import { beforeEach, describe, expect, it, type MockedObject } from 'vitest';
 import { TestBed } from '@angular/core/testing';
 import { AppComponent } from './app.component';
-import { ComponentTester, createMock } from 'ngx-speculoos';
+import { ComponentTester } from 'ngx-speculoos';
 import { RouterOutlet } from '@angular/router';
 import { NavbarComponent } from './navbar/navbar.component';
 import { AuthenticationService } from './shared/authentication.service';
 import { of } from 'rxjs';
 import { ToastsComponent } from './rb-ngb/toasts/toasts.component';
-import { provideI18nTesting } from './i18n/mock-18n.spec';
+import { provideI18nTesting } from './i18n/mock-18n';
+import { createMock } from '../mock';
 
 class AppComponentTester extends ComponentTester<AppComponent> {
   constructor() {
@@ -28,11 +30,11 @@ class AppComponentTester extends ComponentTester<AppComponent> {
 
 describe('AppComponent', () => {
   let tester: AppComponentTester;
-  let authenticationService: jasmine.SpyObj<AuthenticationService>;
+  let authenticationService: MockedObject<AuthenticationService>;
 
   beforeEach(async () => {
     authenticationService = createMock(AuthenticationService);
-    authenticationService.getCurrentUser.and.returnValue(of(null));
+    authenticationService.getCurrentUser.mockReturnValue(of(null));
 
     TestBed.configureTestingModule({
       providers: [provideI18nTesting(), { provide: AuthenticationService, useValue: authenticationService }]
