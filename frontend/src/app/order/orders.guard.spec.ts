@@ -1,3 +1,4 @@
+import { beforeEach, describe, expect, it, type MockedObject, vi } from 'vitest';
 import { TestBed } from '@angular/core/testing';
 
 import { ordersGuard } from './orders.guard';
@@ -7,15 +8,17 @@ import { User } from '../shared/user.model';
 import { UrlTree } from '@angular/router';
 
 describe('ordersGuard', () => {
-  let authenticationService: jasmine.SpyObj<AuthenticationService>;
+  let authenticationService: MockedObject<AuthenticationService>;
   let currentUserSubject: BehaviorSubject<User>;
 
   beforeEach(() => {
     currentUserSubject = new BehaviorSubject<User>({
       permissions: ['ORDER_MANAGEMENT', 'ORDER_VISUALIZATION']
     } as User);
-    authenticationService = jasmine.createSpyObj('AuthenticationService', ['getCurrentUser']);
-    authenticationService.getCurrentUser.and.returnValue(currentUserSubject);
+    authenticationService = {
+      getCurrentUser: vi.fn()
+    } as MockedObject<AuthenticationService>;
+    authenticationService.getCurrentUser.mockReturnValue(currentUserSubject);
 
     TestBed.configureTestingModule({
       providers: [{ provide: AuthenticationService, useValue: authenticationService }]

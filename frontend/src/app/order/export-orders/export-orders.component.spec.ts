@@ -1,14 +1,16 @@
+import { beforeEach, describe, expect, it, type MockedObject } from 'vitest';
 import { TestBed } from '@angular/core/testing';
 
 import { ExportOrdersComponent } from './export-orders.component';
-import { ComponentTester, createMock } from 'ngx-speculoos';
+import { ComponentTester } from 'ngx-speculoos';
 import { OrderService } from '../order.service';
 import { DownloadService } from '../../shared/download.service';
 import { HttpResponse } from '@angular/common/http';
 import { Subject } from 'rxjs';
 import { ValidationDefaultsComponent } from '../../validation-defaults/validation-defaults.component';
-import { provideI18nTesting } from '../../i18n/mock-18n.spec';
+import { provideI18nTesting } from '../../i18n/mock-18n';
 import { provideNgbDatepickerServices } from '../../rb-ngb/datepicker-providers';
+import { createMock } from '../../../mock';
 
 class ExportOrdersComponentTester extends ComponentTester<ExportOrdersComponent> {
   constructor() {
@@ -38,8 +40,8 @@ class ExportOrdersComponentTester extends ComponentTester<ExportOrdersComponent>
 
 describe('ExportOrdersComponent', () => {
   let tester: ExportOrdersComponentTester;
-  let orderService: jasmine.SpyObj<OrderService>;
-  let downloadService: jasmine.SpyObj<DownloadService>;
+  let orderService: MockedObject<OrderService>;
+  let downloadService: MockedObject<DownloadService>;
 
   beforeEach(async () => {
     orderService = createMock(OrderService);
@@ -87,7 +89,7 @@ describe('ExportOrdersComponent', () => {
 
     const response = new HttpResponse<Blob>();
     const responseSubject = new Subject<HttpResponse<Blob>>();
-    orderService.exportReport.and.returnValue(responseSubject);
+    orderService.exportReport.mockReturnValue(responseSubject);
 
     await tester.exportButton.click();
 

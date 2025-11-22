@@ -1,3 +1,4 @@
+import { beforeEach, describe, expect, it } from 'vitest';
 import { TestBed } from '@angular/core/testing';
 
 import { EditDocumentComponent } from './edit-document.component';
@@ -7,7 +8,7 @@ import { ComponentTester } from 'ngx-speculoos';
 import { NgbProgressbar } from '@ng-bootstrap/ng-bootstrap';
 import { By } from '@angular/platform-browser';
 import { ValidationDefaultsComponent } from '../../validation-defaults/validation-defaults.component';
-import { provideI18nTesting } from '../../i18n/mock-18n.spec';
+import { provideI18nTesting } from '../../i18n/mock-18n';
 import { provideRouter } from '@angular/router';
 
 @Component({
@@ -202,16 +203,16 @@ describe('EditDocumentComponent', () => {
 
   it('should drag and drop file on input', async () => {
     await tester.file.dispatchEvent(new DragEvent('dragenter'));
-    expect(tester.file).toHaveClass('highlighted');
+    expect(tester.file.nativeElement.classList.contains('highlighted')).toBe(true);
 
     await tester.file.dispatchEvent(new DragEvent('dragexit'));
-    expect(tester.file).not.toHaveClass('highlighted');
+    expect(tester.file.nativeElement.classList.contains('highlighted')).toBe(false);
 
     await tester.file.dispatchEvent(new DragEvent('dragenter'));
-    expect(tester.file).toHaveClass('highlighted');
+    expect(tester.file.nativeElement.classList.contains('highlighted')).toBe(true);
 
     await tester.file.dispatchEvent(new DragEvent('dragleave'));
-    expect(tester.file).not.toHaveClass('highlighted');
+    expect(tester.file.nativeElement.classList.contains('highlighted')).toBe(false);
 
     // quite hard to test drop event
   });

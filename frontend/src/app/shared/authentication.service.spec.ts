@@ -1,3 +1,4 @@
+import { beforeEach, describe, expect, it, type Mock, type MockedObject, vi } from 'vitest';
 import { TestBed } from '@angular/core/testing';
 
 import { AuthenticationService } from './authentication.service';
@@ -6,29 +7,33 @@ import { LoginResponse, OidcSecurityService } from 'angular-auth-oidc-client';
 import { Router } from '@angular/router';
 import { defer, of, Subject } from 'rxjs';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
-import { createMock } from 'ngx-speculoos';
 import { provideHttpClient } from '@angular/common/http';
+import { createMock } from '../../mock';
 
 describe('AuthenticationService', () => {
   let service: AuthenticationService;
   let fakeWindow: Window;
-  let oidcSecurityService: jasmine.SpyObj<OidcSecurityService>;
-  let router: jasmine.SpyObj<Router>;
+  let oidcSecurityService: MockedObject<OidcSecurityService>;
+  let router: MockedObject<Router>;
   let http: HttpTestingController;
 
   beforeEach(() => {
     fakeWindow = {
       origin: 'http://localhost:4201',
       location: 'http://localhost:4201/orders',
-      sessionStorage: jasmine.createSpyObj<Storage>('SessionStorage', ['getItem', 'setItem', 'removeItem'])
+      sessionStorage: {
+        getItem: vi.fn(),
+        setItem: vi.fn(),
+        removeItem: vi.fn()
+      }
     } as unknown as Window;
 
-    oidcSecurityService = jasmine.createSpyObj<OidcSecurityService>('OidcSecurityService', [
-      'authorize',
-      'logoff',
-      'logoffLocal',
-      'checkAuth'
-    ]);
+    oidcSecurityService = {
+      authorize: vi.fn(),
+      logoff: vi.fn(),
+      logoffLocal: vi.fn(),
+      checkAuth: vi.fn()
+    } as MockedObject<OidcSecurityService>;
 
     router = createMock(Router);
 
@@ -59,7 +64,7 @@ describe('AuthenticationService', () => {
 
   it('should logout', () => {
     let subscribed = false;
-    oidcSecurityService.logoff.and.returnValue(
+    oidcSecurityService.logoff.mockReturnValue(
       defer(() => {
         subscribed = true;
         return of(undefined);
@@ -67,7 +72,7 @@ describe('AuthenticationService', () => {
     );
     service.logout();
     expect(oidcSecurityService.logoff).toHaveBeenCalled();
-    expect(subscribed).toBeTrue();
+    expect(subscribed).toBe(true);
   });
 
   it('should tell if the user is authenticated when authentication check succeeds', () => {
@@ -75,7 +80,7 @@ describe('AuthenticationService', () => {
 
     const subject = new Subject<LoginResponse>();
 
-    oidcSecurityService.checkAuth.and.returnValue(subject);
+    oidcSecurityService.checkAuth.mockReturnValue(subject);
 
     service.init();
     service.isAuthenticated().subscribe(event => events.push(event));
@@ -100,7 +105,7 @@ describe('AuthenticationService', () => {
 
     const subject = new Subject<LoginResponse>();
 
-    oidcSecurityService.checkAuth.and.returnValue(subject);
+    oidcSecurityService.checkAuth.mockReturnValue(subject);
 
     service.init();
     service.isAuthenticated().subscribe(event => events.push(event));
@@ -122,7 +127,7 @@ describe('AuthenticationService', () => {
 
     const subject = new Subject<LoginResponse>();
 
-    oidcSecurityService.checkAuth.and.returnValue(subject);
+    oidcSecurityService.checkAuth.mockReturnValue(subject);
 
     service.init();
     service.isAuthenticated().subscribe(event => events.push(event));
@@ -143,11 +148,11 @@ describe('AuthenticationService', () => {
   });
 
   it('should init and route to requested URL when authentication succeeds', () => {
-    (fakeWindow.sessionStorage.getItem as jasmine.Spy).and.returnValue('/foo');
+    (fakeWindow.sessionStorage.getItem as Mock).mockReturnValue('/foo');
 
     const subject = new Subject<LoginResponse>();
 
-    oidcSecurityService.checkAuth.and.returnValue(subject);
+    oidcSecurityService.checkAuth.mockReturnValue(subject);
 
     service.init();
 

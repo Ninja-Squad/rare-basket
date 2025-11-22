@@ -1,14 +1,16 @@
+import { beforeEach, describe, expect, it, type MockedObject } from 'vitest';
 import { TestBed } from '@angular/core/testing';
 
 import { GrcsComponent } from './grcs.component';
-import { ComponentTester, createMock, TestButton } from 'ngx-speculoos';
+import { ComponentTester, TestButton } from 'ngx-speculoos';
 import { ConfirmationService } from '../../shared/confirmation.service';
 import { EMPTY, of } from 'rxjs';
 import { Grc } from '../../shared/user.model';
 import { GrcService } from '../../shared/grc.service';
 import { ToastService } from '../../shared/toast.service';
-import { provideI18nTesting } from '../../i18n/mock-18n.spec';
+import { provideI18nTesting } from '../../i18n/mock-18n';
 import { provideRouter } from '@angular/router';
+import { createMock } from '../../../mock';
 
 class GrcsComponentTester extends ComponentTester<GrcsComponent> {
   constructor() {
@@ -30,9 +32,9 @@ class GrcsComponentTester extends ComponentTester<GrcsComponent> {
 
 describe('GrcsComponent', () => {
   let tester: GrcsComponentTester;
-  let grcService: jasmine.SpyObj<GrcService>;
-  let confirmationService: jasmine.SpyObj<ConfirmationService>;
-  let toastService: jasmine.SpyObj<ToastService>;
+  let grcService: MockedObject<GrcService>;
+  let confirmationService: MockedObject<ConfirmationService>;
+  let toastService: MockedObject<ToastService>;
 
   beforeEach(() => {
     grcService = createMock(GrcService);
@@ -51,7 +53,7 @@ describe('GrcsComponent', () => {
   });
 
   it('should not display anything until grcs are available', async () => {
-    grcService.list.and.returnValue(EMPTY);
+    grcService.list.mockReturnValue(EMPTY);
     tester = new GrcsComponentTester();
     await tester.stable();
 
@@ -75,7 +77,7 @@ describe('GrcsComponent', () => {
       }
     ];
 
-    grcService.list.and.returnValue(of(grcs));
+    grcService.list.mockReturnValue(of(grcs));
     tester = new GrcsComponentTester();
     await tester.stable();
 
@@ -103,12 +105,12 @@ describe('GrcsComponent', () => {
       }
     ];
 
-    grcService.list.and.returnValues(of(grcs), of([grcs[1]]));
+    grcService.list.mockReturnValueOnce(of(grcs)).mockReturnValueOnce(of([grcs[1]]));
     tester = new GrcsComponentTester();
     await tester.stable();
 
-    confirmationService.confirm.and.returnValue(of(undefined));
-    grcService.delete.and.returnValue(of(undefined));
+    confirmationService.confirm.mockReturnValue(of(undefined));
+    grcService.delete.mockReturnValue(of(undefined));
 
     await tester.deleteButtons[0].click();
 

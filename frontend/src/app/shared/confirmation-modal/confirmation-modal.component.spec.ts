@@ -1,8 +1,9 @@
+import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ConfirmationOptions, ConfirmationService } from '../confirmation.service';
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { Observable } from 'rxjs';
-import { provideI18nTesting } from '../../i18n/mock-18n.spec';
+import { provideI18nTesting } from '../../i18n/mock-18n';
 import { provideDisabledNgbAnimation } from '../../rb-ngb/disable-animations';
 
 class ModalComponentTester {
@@ -96,7 +97,7 @@ describe('ConfirmationModalComponent and ConfirmationService', () => {
     await tester.yes();
 
     expect(tester.modalWindow).toBeFalsy();
-    expect(nexted).toBeTrue();
+    expect(nexted).toBe(true);
   });
 
   it('should error when not confirming and errorOnClose is true', async () => {
@@ -108,7 +109,7 @@ describe('ConfirmationModalComponent and ConfirmationService', () => {
     await tester.no();
 
     expect(tester.modalWindow).toBeFalsy();
-    expect(errored).toBeTrue();
+    expect(errored).toBe(true);
   });
 
   it('should do nothing when not confirming and errorOnClose is not set', async () => {
@@ -120,6 +121,6 @@ describe('ConfirmationModalComponent and ConfirmationService', () => {
     await tester.no();
 
     expect(tester.modalWindow).toBeFalsy();
-    expect(completed).toBeTrue();
+    expect(completed).toBe(true);
   });
 });

@@ -1,10 +1,11 @@
+import { beforeEach, describe, expect, it } from 'vitest';
 import { TestBed } from '@angular/core/testing';
 
 import { EditConfirmationComponent } from './edit-confirmation.component';
 import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
 import { AccessionHolderBasket, Basket } from '../basket.model';
 import { ComponentTester } from 'ngx-speculoos';
-import { provideI18nTesting } from '../../i18n/mock-18n.spec';
+import { provideI18nTesting } from '../../i18n/mock-18n';
 
 @Component({
   template: `

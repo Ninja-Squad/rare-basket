@@ -1,11 +1,13 @@
+import { beforeEach, describe, expect, it, type MockedObject } from 'vitest';
 import { TestBed } from '@angular/core/testing';
 
 import { CsvModalComponent } from './csv-modal.component';
-import { ComponentTester, createMock } from 'ngx-speculoos';
+import { ComponentTester } from 'ngx-speculoos';
 import { OrderCsvParserService } from '../order-csv-parser.service';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { OrderItemCommand } from '../order.model';
-import { provideI18nTesting } from '../../i18n/mock-18n.spec';
+import { provideI18nTesting } from '../../i18n/mock-18n';
+import { createMock } from '../../../mock';
 
 class CsvModalComponentTester extends ComponentTester<CsvModalComponent> {
   constructor() {
@@ -39,8 +41,8 @@ class CsvModalComponentTester extends ComponentTester<CsvModalComponent> {
 
 describe('CsvModalComponent', () => {
   let tester: CsvModalComponentTester;
-  let parser: jasmine.SpyObj<OrderCsvParserService>;
-  let activeModal: jasmine.SpyObj<NgbActiveModal>;
+  let parser: MockedObject<OrderCsvParserService>;
+  let activeModal: MockedObject<NgbActiveModal>;
 
   beforeEach(async () => {
     parser = createMock(OrderCsvParserService);
@@ -67,7 +69,7 @@ describe('CsvModalComponent', () => {
   });
 
   it('should parse and display errors', async () => {
-    parser.parse.and.returnValue({
+    parser.parse.mockReturnValue({
       errors: [
         {
           row: 0,
@@ -87,7 +89,7 @@ describe('CsvModalComponent', () => {
   });
 
   it('should parse and display items', async () => {
-    parser.parse.and.returnValue({
+    parser.parse.mockReturnValue({
       errors: [],
       items: [
         {
@@ -130,7 +132,7 @@ describe('CsvModalComponent', () => {
         unit: null
       }
     ];
-    parser.parse.and.returnValue({
+    parser.parse.mockReturnValue({
       errors: [],
       items
     });

@@ -1,9 +1,11 @@
+import { beforeEach, describe, expect, it, type MockedObject } from 'vitest';
 import { TestBed } from '@angular/core/testing';
 
 import { FinalizationWarningsModalComponent } from './finalization-warnings-modal.component';
-import { ComponentTester, createMock } from 'ngx-speculoos';
+import { ComponentTester } from 'ngx-speculoos';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
-import { provideI18nTesting } from '../../i18n/mock-18n.spec';
+import { provideI18nTesting } from '../../i18n/mock-18n';
+import { createMock } from '../../../mock';
 
 class FinalizationWarningsModalComponentTester extends ComponentTester<FinalizationWarningsModalComponent> {
   constructor() {
@@ -25,7 +27,7 @@ class FinalizationWarningsModalComponentTester extends ComponentTester<Finalizat
 
 describe('FinalizationWarningsModalComponent', () => {
   let tester: FinalizationWarningsModalComponentTester;
-  let activeModal: jasmine.SpyObj<NgbActiveModal>;
+  let activeModal: MockedObject<NgbActiveModal>;
 
   beforeEach(async () => {
     activeModal = createMock(NgbActiveModal);

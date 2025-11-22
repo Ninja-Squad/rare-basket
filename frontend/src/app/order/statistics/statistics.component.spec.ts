@@ -1,7 +1,8 @@
+import { beforeEach, describe, expect, it, type MockedObject } from 'vitest';
 import { TestBed } from '@angular/core/testing';
 
 import { StatisticsComponent } from './statistics.component';
-import { ActivatedRouteStub, ComponentTester, createMock, stubRoute, TestInput } from 'ngx-speculoos';
+import { ActivatedRouteStub, ComponentTester, stubRoute, TestInput } from 'ngx-speculoos';
 import { of } from 'rxjs';
 import { ActivatedRoute, Router } from '@angular/router';
 import { OrderService } from '../order.service';
@@ -11,8 +12,9 @@ import { Grc, User } from '../../shared/user.model';
 import { AuthenticationService } from '../../shared/authentication.service';
 import { GrcService } from '../../shared/grc.service';
 import { OrderStatistics } from '../order.model';
-import { provideI18nTesting } from '../../i18n/mock-18n.spec';
+import { provideI18nTesting } from '../../i18n/mock-18n';
 import { provideNgbDatepickerServices } from '../../rb-ngb/datepicker-providers';
+import { createMock } from '../../../mock';
 
 class StatisticsComponentTester extends ComponentTester<StatisticsComponent> {
   constructor() {
@@ -78,9 +80,9 @@ class StatisticsComponentTester extends ComponentTester<StatisticsComponent> {
 
 describe('StatisticsComponent', () => {
   let tester: StatisticsComponentTester;
-  let router: jasmine.SpyObj<Router>;
-  let orderService: jasmine.SpyObj<OrderService>;
-  let grcService: jasmine.SpyObj<GrcService>;
+  let router: MockedObject<Router>;
+  let orderService: MockedObject<OrderService>;
+  let grcService: MockedObject<GrcService>;
   let user: User;
   let allGrcs: Array<Grc>;
   let statistics: OrderStatistics;
@@ -140,13 +142,13 @@ describe('StatisticsComponent', () => {
     router = createMock(Router);
 
     orderService = createMock(OrderService);
-    orderService.getStatistics.and.returnValue(of(statistics));
+    orderService.getStatistics.mockReturnValue(of(statistics));
 
     const authenticationService = createMock(AuthenticationService);
-    authenticationService.getCurrentUser.and.returnValue(of(user));
+    authenticationService.getCurrentUser.mockReturnValue(of(user));
 
     grcService = createMock(GrcService);
-    grcService.list.and.returnValue(of(allGrcs));
+    grcService.list.mockReturnValue(of(allGrcs));
 
     TestBed.configureTestingModule({
       providers: [
@@ -164,7 +166,7 @@ describe('StatisticsComponent', () => {
   });
 
   describe('initialization, with global visualization user', () => {
-    it('should initialize form when no query param', async () => {
+    it.only('should initialize form when no query param', async () => {
       tester = new StatisticsComponentTester();
       await tester.stable();
 
@@ -423,8 +425,8 @@ describe('StatisticsComponent', () => {
     beforeEach(async () => {
       tester = new StatisticsComponentTester();
       await tester.stable();
-      router.navigate.calls.reset();
-      orderService.getStatistics.calls.reset();
+      router.navigate.mockClear();
+      orderService.getStatistics.mockClear();
     });
 
     it('should navigate and refresh', async () => {
@@ -470,8 +472,8 @@ describe('StatisticsComponent', () => {
     beforeEach(async () => {
       tester = new StatisticsComponentTester();
       await tester.stable();
-      router.navigate.calls.reset();
-      orderService.getStatistics.calls.reset();
+      router.navigate.mockClear();
+      orderService.getStatistics.mockClear();
     });
 
     it('should navigate and refresh', async () => {

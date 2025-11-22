@@ -1,3 +1,4 @@
+import { beforeEach, describe, expect, it, type MockedObject, vi } from 'vitest';
 import { TestBed } from '@angular/core/testing';
 
 import { OrdersContainerComponent } from './orders-container.component';
@@ -6,7 +7,7 @@ import { provideRouter, RouterOutlet } from '@angular/router';
 import { AuthenticationService } from '../../shared/authentication.service';
 import { User } from '../../shared/user.model';
 import { BehaviorSubject } from 'rxjs';
-import { provideI18nTesting } from '../../i18n/mock-18n.spec';
+import { provideI18nTesting } from '../../i18n/mock-18n';
 
 class OrdersContainerComponentTester extends ComponentTester<OrdersContainerComponent> {
   constructor() {
@@ -24,15 +25,17 @@ class OrdersContainerComponentTester extends ComponentTester<OrdersContainerComp
 
 describe('OrdersContainerComponent', () => {
   let tester: OrdersContainerComponentTester;
-  let authenticationService: jasmine.SpyObj<AuthenticationService>;
+  let authenticationService: MockedObject<AuthenticationService>;
   let currentUserSubject: BehaviorSubject<User>;
 
   beforeEach(async () => {
     currentUserSubject = new BehaviorSubject<User>({
       permissions: ['ORDER_MANAGEMENT', 'ORDER_VISUALIZATION']
     } as User);
-    authenticationService = jasmine.createSpyObj('AuthenticationService', ['getCurrentUser']);
-    authenticationService.getCurrentUser.and.returnValue(currentUserSubject);
+    authenticationService = {
+      getCurrentUser: vi.fn()
+    } as MockedObject<AuthenticationService>;
+    authenticationService.getCurrentUser.mockReturnValue(currentUserSubject);
 
     TestBed.configureTestingModule({
       providers: [provideRouter([]), provideI18nTesting(), { provide: AuthenticationService, useValue: authenticationService }]

@@ -1,15 +1,16 @@
+import { beforeEach, describe, expect, it, type MockedObject } from 'vitest';
 import { TestBed } from '@angular/core/testing';
 
 import { errorInterceptor } from './error.interceptor';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { HttpClient, provideHttpClient, withInterceptors } from '@angular/common/http';
 import { ToastService } from './toast.service';
-import { createMock } from 'ngx-speculoos';
+import { createMock } from '../../mock';
 
 describe('errorInterceptor', () => {
   let http: HttpTestingController;
   let httpClient: HttpClient;
-  let toastService: jasmine.SpyObj<ToastService>;
+  let toastService: MockedObject<ToastService>;
 
   beforeEach(() => {
     toastService = createMock(ToastService);

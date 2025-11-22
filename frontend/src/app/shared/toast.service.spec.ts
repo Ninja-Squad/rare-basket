@@ -1,8 +1,9 @@
+import { beforeEach, describe, expect, it } from 'vitest';
 import { TestBed } from '@angular/core/testing';
 import { HttpStatusCode } from '@angular/common/http';
 
 import { Toast, ToastService } from './toast.service';
-import { provideI18nTesting } from '../i18n/mock-18n.spec';
+import { provideI18nTesting } from '../i18n/mock-18n';
 
 describe('ToastService', () => {
   let service: ToastService;
