@@ -18,9 +18,7 @@
           "builder": "@angular/build:application",
           "options": {
             "browser": "src/main.ts",
-            "polyfills": [
-              "@angular/localize/init"
-            ],
+            "polyfills": ["@angular/localize/init"],
             "tsConfig": "tsconfig.app.json",
             "assets": [
               {
@@ -28,20 +26,14 @@
                 "input": "public"
               }
             ],
-            "styles": [
-              "src/styles.scss"
-            ],
+            "styles": ["src/styles.scss"],
             "stylePreprocessorOptions": {
               "sass": {
                 "silenceDeprecations": ["import", "color-functions", "global-builtin"]
               }
             },
             "baseHref": "/rare-basket/",
-            "allowedCommonJsDependencies": [
-              "@angular/common/locales/fr",
-              "papaparse",
-              "chart.js"
-            ]
+            "allowedCommonJsDependencies": ["@angular/common/locales/fr", "papaparse", "chart.js"]
           },
           "configurations": {
             "production": {
@@ -90,16 +82,12 @@
           },
           "defaultConfiguration": "development"
         },
-        "extract-i18n": {
-          "builder": "@angular/build:extract-i18n"
-        },
         "test": {
           "builder": "@angular/build:karma",
           "options": {
+            "aot": true,
             "main": "src/test.ts",
-            "polyfills": [
-              "@angular/localize/init"
-            ],
+            "polyfills": ["@angular/localize/init"],
             "tsConfig": "tsconfig.spec.json",
             "browsers": "ChromeHeadless",
             "assets": [
@@ -108,9 +96,7 @@
                 "input": "public"
               }
             ],
-            "styles": [
-              "src/styles.scss"
-            ],
+            "styles": ["src/styles.scss"],
             "stylePreprocessorOptions": {
               "sass": {
                 "silenceDeprecations": ["import", "color-functions", "global-builtin"]
@@ -121,10 +107,7 @@
         "lint": {
           "builder": "@angular-eslint/builder:lint",
           "options": {
-            "lintFilePatterns": [
-              "src/**/*.ts",
-              "src/**/*.html"
-            ],
+            "lintFilePatterns": ["src/**/*.ts", "src/**/*.html"],
             "maxWarnings": 0,
             "concurrency": "auto"
           }
@@ -133,9 +116,7 @@
     }
   },
   "cli": {
-    "schematicCollections": [
-      "@angular-eslint/schematics"
-    ]
+    "packageManager": "pnpm"
   },
   "schematics": {
     "@schematics/angular:component": {

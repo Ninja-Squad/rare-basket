@@ -12,15 +12,11 @@
     "isolatedModules": true,
     "importHelpers": true,
     "target": "ES2022",
-    "module": "preserve",
-    "types": [
-      "@angular/localize"
-    ]
+    "module": "preserve"
   },
   "angularCompilerOptions": {
     "strictInjectionParameters": true,
     "strictInputAccessModifiers": true,
-    "typeCheckHostBindings": true,
     "strictTemplates": true,
     "extendedDiagnostics": {
       "defaultCategory": "error"

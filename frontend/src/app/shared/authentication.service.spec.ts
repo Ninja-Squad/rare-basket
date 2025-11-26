@@ -7,7 +7,6 @@ import { Router } from '@angular/router';
 import { defer, of, Subject } from 'rxjs';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { createMock } from 'ngx-speculoos';
-import { provideHttpClient } from '@angular/common/http';
 
 describe('AuthenticationService', () => {
   let service: AuthenticationService;
@@ -34,7 +33,6 @@ describe('AuthenticationService', () => {
 
     TestBed.configureTestingModule({
       providers: [
-        provideHttpClient(),
         provideHttpClientTesting(),
         { provide: WINDOW, useValue: fakeWindow },
         { provide: OidcSecurityService, useValue: oidcSecurityService },

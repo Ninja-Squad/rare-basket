@@ -4,7 +4,6 @@ import { UserService } from './user.service';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { Page } from '../shared/page.model';
 import { User, UserCommand } from '../shared/user.model';
-import { provideHttpClient } from '@angular/common/http';
 
 describe('UserService', () => {
   let service: UserService;
@@ -12,7 +11,7 @@ describe('UserService', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [provideHttpClient(), provideHttpClientTesting()]
+      providers: [provideHttpClientTesting()]
     });
     service = TestBed.inject(UserService);
     http = TestBed.inject(HttpTestingController);
