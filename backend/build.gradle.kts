@@ -7,7 +7,7 @@ buildscript {
 
     dependencies {
         classpath("org.postgresql:postgresql:42.7.8")
-        classpath("org.flywaydb:flyway-database-postgresql:11.17.1")
+        classpath("org.flywaydb:flyway-database-postgresql:11.17.2")
     }
 }
 
@@ -83,7 +83,7 @@ tasks {
 dependencyManagement {
     imports {
         mavenBom("org.keycloak.bom:keycloak-adapter-bom:25.0.6")
-        mavenBom("org.springframework.cloud:spring-cloud-dependencies:2025.0.0")
+        mavenBom("org.springframework.cloud:spring-cloud-dependencies:2025.1.0")
     }
 }
 
