@@ -1,4 +1,4 @@
-import { provideBrowserGlobalErrorListeners, provideZonelessChangeDetection } from '@angular/core';
+import { provideBrowserGlobalErrorListeners } from '@angular/core';
 import { AppComponent } from './app/app.component';
 import { provideI18n } from './app/i18n/i18n';
 import { APP_ROUTES } from './app/app.routes';
@@ -13,7 +13,6 @@ import { provideNgbDatepickerServices } from './app/rb-ngb/datepicker-providers'
 
 bootstrapApplication(AppComponent, {
   providers: [
-    provideZonelessChangeDetection(),
     provideBrowserGlobalErrorListeners(),
     provideAuth({
       loader: {

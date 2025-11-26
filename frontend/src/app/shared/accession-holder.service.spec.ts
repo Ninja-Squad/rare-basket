@@ -3,7 +3,6 @@ import { TestBed } from '@angular/core/testing';
 import { AccessionHolderService } from './accession-holder.service';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { AccessionHolder, AccessionHolderCommand } from './user.model';
-import { provideHttpClient } from '@angular/common/http';
 
 describe('AccessionHolderService', () => {
   let service: AccessionHolderService;
@@ -11,7 +10,7 @@ describe('AccessionHolderService', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [provideHttpClient(), provideHttpClientTesting()]
+      providers: [provideHttpClientTesting()]
     });
     service = TestBed.inject(AccessionHolderService);
     http = TestBed.inject(HttpTestingController);
