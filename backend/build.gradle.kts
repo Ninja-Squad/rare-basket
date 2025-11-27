@@ -44,7 +44,6 @@ tasks {
                 from("${project(":frontend").projectDir}/dist/rare-basket-frontend/browser")
             }
         }
-        launchScript()
     }
 
     test {
@@ -83,20 +82,21 @@ tasks {
 dependencyManagement {
     imports {
         mavenBom("org.keycloak.bom:keycloak-adapter-bom:25.0.6")
-        mavenBom("org.springframework.cloud:spring-cloud-dependencies:2025.0.0")
+        mavenBom("org.springframework.cloud:spring-cloud-dependencies:2025.1.0")
     }
 }
 
 dependencies {
     val itextVersion = "9.4.0"
 
-    implementation("org.springframework.boot:spring-boot-starter-web")
+    implementation("org.springframework.boot:spring-boot-starter-webmvc")
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
+    implementation("org.springframework.boot:spring-boot-starter-flyway")
     implementation("org.springframework.boot:spring-boot-starter-mail")
     implementation("org.springframework.boot:spring-boot-starter-security")
     implementation("org.springframework.boot:spring-boot-starter-validation")
-    implementation("org.springframework.cloud:spring-cloud-starter-config")
     implementation("org.springframework.boot:spring-boot-starter-oauth2-resource-server")
+    implementation("org.springframework.cloud:spring-cloud-starter-config")
     implementation("com.samskivert:jmustache")
     implementation("com.itextpdf:kernel:$itextVersion")
     implementation("com.itextpdf:io:$itextVersion")
@@ -109,6 +109,10 @@ dependencies {
     runtimeOnly("org.flywaydb:flyway-database-postgresql")
 
     testImplementation("org.springframework.boot:spring-boot-starter-test")
+    testImplementation("org.springframework.boot:spring-boot-starter-security-test")
+    testImplementation("org.springframework.boot:spring-boot-starter-data-jpa-test")
+    testImplementation("org.springframework.boot:spring-boot-starter-flyway-test")
+    testImplementation("org.springframework.boot:spring-boot-starter-webmvc-test")
     testImplementation("org.springframework.security:spring-security-test")
 
     testImplementation("com.ninja-squad:DbSetup:2.1.0")
