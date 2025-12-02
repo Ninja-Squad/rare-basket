@@ -19,13 +19,13 @@
     "node": "24.11.1"
   },
   "dependencies": {
-    "@angular/common": "21.0.1",
-    "@angular/compiler": "21.0.1",
-    "@angular/core": "21.0.1",
-    "@angular/forms": "21.0.1",
-    "@angular/localize": "21.0.1",
-    "@angular/platform-browser": "21.0.1",
-    "@angular/router": "21.0.1",
+    "@angular/common": "21.0.2",
+    "@angular/compiler": "21.0.2",
+    "@angular/core": "21.0.2",
+    "@angular/forms": "21.0.2",
+    "@angular/localize": "21.0.2",
+    "@angular/platform-browser": "21.0.2",
+    "@angular/router": "21.0.2",
     "@fortawesome/angular-fontawesome": "4.0.0",
     "@fortawesome/free-solid-svg-icons": "7.1.0",
     "@ng-bootstrap/ng-bootstrap": "19.0.1",
@@ -42,16 +42,16 @@
   "devDependencies": {
     "@angular/build": "21.0.1",
     "@angular/cli": "21.0.1",
-    "@angular/compiler-cli": "21.0.1",
+    "@angular/compiler-cli": "21.0.2",
     "@eslint/js": "9.39.1",
     "@playwright/test": "1.57.0",
     "@types/jasmine": "5.1.13",
-    "@types/papaparse": "5.5.0",
+    "@types/papaparse": "5.5.1",
     "angular-eslint": "21.0.1",
     "eslint": "9.39.1",
     "eslint-config-prettier": "10.1.8",
     "eslint-plugin-prettier": "5.5.4",
-    "jasmine-core": "5.12.1",
+    "jasmine-core": "5.13.0",
     "jasmine-spec-reporter": "7.0.0",
     "karma": "6.4.4",
     "karma-chrome-launcher": "3.2.0",
@@ -61,6 +61,6 @@
     "ngx-speculoos": "14.0.0",
     "prettier": "3.7.3",
     "typescript": "5.9.3",
-    "typescript-eslint": "8.48.0"
+    "typescript-eslint": "8.48.1"
   }
 }
