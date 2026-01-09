@@ -7,7 +7,7 @@ buildscript {
 
     dependencies {
         classpath("org.postgresql:postgresql:42.7.8")
-        classpath("org.flywaydb:flyway-database-postgresql:11.20.0")
+        classpath("org.flywaydb:flyway-database-postgresql:11.20.1")
     }
 }
 
@@ -87,7 +87,7 @@ dependencyManagement {
 }
 
 dependencies {
-    val itextVersion = "9.4.0"
+    val itextVersion = "9.5.0"
 
     implementation("org.springframework.boot:spring-boot-starter-webmvc")
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
