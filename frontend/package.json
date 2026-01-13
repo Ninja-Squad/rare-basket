@@ -45,7 +45,7 @@
     "@angular/compiler-cli": "21.0.8",
     "@eslint/js": "9.39.2",
     "@playwright/test": "1.57.0",
-    "@types/jasmine": "5.1.14",
+    "@types/jasmine": "5.1.15",
     "@types/papaparse": "5.5.2",
     "angular-eslint": "21.1.0",
     "eslint": "9.39.2",
@@ -61,6 +61,6 @@
     "ngx-speculoos": "15.0.0",
     "prettier": "3.7.4",
     "typescript": "5.9.3",
-    "typescript-eslint": "8.52.0"
+    "typescript-eslint": "8.53.0"
   }
 }
