@@ -14,7 +14,7 @@
     "knip": "pnpx knip --fix-type exports,types --exclude dependencies,unlisted,files,binaries --tags=knipignore"
   },
   "private": true,
-  "packageManager": "pnpm@10.28.0",
+  "packageManager": "pnpm@10.28.1",
   "engines": {
     "node": "24.13.0"
   },
@@ -61,6 +61,6 @@
     "ngx-speculoos": "15.0.0",
     "prettier": "3.8.0",
     "typescript": "5.9.3",
-    "typescript-eslint": "8.53.0"
+    "typescript-eslint": "8.53.1"
   }
 }
