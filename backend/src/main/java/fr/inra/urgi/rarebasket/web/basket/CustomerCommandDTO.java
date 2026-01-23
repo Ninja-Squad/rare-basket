@@ -94,7 +94,7 @@ public final class CustomerCommandDTO {
             Objects.equals(organization, that.organization) &&
             Objects.equals(email, that.email) &&
             Objects.equals(deliveryAddress, that.deliveryAddress) &&
-            Objects.equals(deliveryAddress, that.deliveryAddress) &&
+            Objects.equals(billingAddress, that.billingAddress) &&
             type == that.type &&
             language == that.language;
     }
