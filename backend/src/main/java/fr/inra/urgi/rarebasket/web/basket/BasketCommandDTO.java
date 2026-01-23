@@ -24,19 +24,19 @@ public final class BasketCommandDTO {
     private CustomerCommandDTO customer;
 
     private String rationale;
-    private boolean complete = false;
+    private boolean complete;
 
     @JsonCreator
     public BasketCommandDTO(
         @JsonProperty("items") List<BasketItemCommandDTO> items,
         @JsonProperty("customer") CustomerCommandDTO customer,
         @JsonProperty("rationale") String rationale,
-        @JsonProperty("complete") boolean complete
+        @JsonProperty("complete") Boolean complete
     ) {
         this.items = items;
         this.customer = customer;
         this.rationale = rationale;
-        this.complete = complete;
+        this.complete = complete != null && complete;
     }
 
     public BasketCommandDTO(List<BasketItemCommandDTO> items) {
