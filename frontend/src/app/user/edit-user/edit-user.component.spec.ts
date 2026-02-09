@@ -1,7 +1,8 @@
 import { TestBed } from '@angular/core/testing';
 
 import { EditUserComponent } from './edit-user.component';
-import { ActivatedRouteStub, ComponentTester, createMock, stubRoute, TestInput } from 'ngx-speculoos';
+import { createMock, MockObject } from '../../../test/mock';
+import { ActivatedRouteStub, stubRoute } from '../../../test/route-stub';
 import { AccessionHolder, Grc, User, UserCommand } from '../../shared/user.model';
 import { UserService } from '../user.service';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -10,65 +11,37 @@ import { of } from 'rxjs';
 import { AccessionHolderService } from '../../shared/accession-holder.service';
 import { GrcService } from '../../shared/grc.service';
 import { ToastService } from '../../shared/toast.service';
-import { provideI18nTesting } from '../../i18n/mock-18n.spec';
+import { provideI18nTesting } from '../../i18n/mock-18n';
+import { page } from 'vitest/browser';
+import { beforeEach, describe, expect, test, vi } from 'vitest';
 
-class EditUserComponentTester extends ComponentTester<EditUserComponent> {
-  constructor() {
-    super(EditUserComponent);
-  }
+class EditUserComponentTester {
+  readonly fixture = TestBed.createComponent(EditUserComponent);
+  readonly root = page.elementLocator(this.fixture.nativeElement);
+  readonly title = this.root.getByCss('h1');
+  readonly name = this.root.getByCss('#name');
+  readonly orderManagement = this.root.getByCss('#order-management');
+  readonly orderVisualization = this.root.getByCss('#order-visualization');
+  readonly administration = this.root.getByCss('#administration');
+  readonly accessionHolders = this.root.getByCss('.accession-holders input');
+  readonly noGlobalVisualization = this.root.getByCss('#no-global-visualization');
+  readonly globalVisualization = this.root.getByCss('#global-visualization');
+  readonly visualizationGrcs = this.root.getByCss('.grcs input');
+  readonly errors = this.root.getByCss('.invalid-feedback div');
+  readonly saveButton = this.root.getByCss('#save-button');
 
-  get title() {
-    return this.element('h1')!;
-  }
-
-  get name() {
-    return this.input('#name')!;
-  }
-
-  get orderManagement() {
-    return this.input('#order-management')!;
-  }
-
-  get orderVisualization() {
-    return this.input('#order-visualization')!;
-  }
-
-  get administration() {
-    return this.input('#administration')!;
-  }
-
-  get accessionHolders() {
-    return this.elements('.accession-holders input') as Array<TestInput>;
-  }
-
-  get noGlobalVisualization() {
-    return this.input('#no-global-visualization')!;
-  }
-
-  get globalVisualization() {
-    return this.input('#global-visualization')!;
-  }
-
-  get visualizationGrcs() {
-    return this.elements('.grcs input') as Array<TestInput>;
-  }
-
-  get errors() {
-    return this.elements('.invalid-feedback div');
-  }
-
-  get saveButton() {
-    return this.button('#save-button')!;
+  get componentInstance() {
+    return this.fixture.componentInstance;
   }
 }
 
 describe('EditUserComponent', () => {
   let tester: EditUserComponentTester;
-  let userService: jasmine.SpyObj<UserService>;
-  let accessionHolderService: jasmine.SpyObj<AccessionHolderService>;
-  let grcService: jasmine.SpyObj<GrcService>;
+  let userService: MockObject<UserService>;
+  let accessionHolderService: MockObject<AccessionHolderService>;
+  let grcService: MockObject<GrcService>;
   let router: Router;
-  let toastService: jasmine.SpyObj<ToastService>;
+  let toastService: MockObject<ToastService>;
   let route: ActivatedRouteStub;
 
   beforeEach(async () => {
@@ -90,11 +63,11 @@ describe('EditUserComponent', () => {
     });
 
     router = TestBed.inject(Router);
-    spyOn(router, 'navigate');
+    vi.spyOn(router, 'navigate');
 
     await TestBed.createComponent(ValidationDefaultsComponent).whenStable();
 
-    accessionHolderService.list.and.returnValue(
+    accessionHolderService.list.mockReturnValue(
       of([
         {
           id: 11,
@@ -123,7 +96,7 @@ describe('EditUserComponent', () => {
       ] as Array<AccessionHolder>)
     );
 
-    grcService.list.and.returnValue(
+    grcService.list.mockReturnValue(
       of([
         {
           id: 1,
@@ -140,87 +113,87 @@ describe('EditUserComponent', () => {
   describe('in create mode', () => {
     beforeEach(async () => {
       tester = new EditUserComponentTester();
-      await tester.stable();
+      await tester.fixture.whenStable();
     });
 
-    it('should have a title', () => {
-      expect(tester.title).toContainText('Créer un utilisateur');
+    test('should have a title', () => {
+      expect(tester.title.element().textContent).toContain('Créer un utilisateur');
     });
 
-    it('should display an empty form', async () => {
-      expect(tester.name).toHaveValue('');
-      expect(tester.orderManagement).not.toBeChecked();
-      expect(tester.orderVisualization).not.toBeChecked();
-      expect(tester.administration).not.toBeChecked();
+    test('should display an empty form', async () => {
+      await expect.element(tester.name).toHaveValue('');
+      await expect.element(tester.orderManagement).not.toBeChecked();
+      await expect.element(tester.orderVisualization).not.toBeChecked();
+      await expect.element(tester.administration).not.toBeChecked();
 
-      expect(tester.accessionHolders.length).toBe(0);
-      expect(tester.noGlobalVisualization).toBeNull();
-      expect(tester.globalVisualization).toBeNull();
-      expect(tester.visualizationGrcs.length).toBe(0);
+      await expect.element(tester.accessionHolders).toHaveLength(0);
+      await expect.element(tester.noGlobalVisualization).not.toBeInTheDocument();
+      await expect.element(tester.globalVisualization).not.toBeInTheDocument();
+      await expect.element(tester.visualizationGrcs).toHaveLength(0);
 
-      await tester.orderManagement.check();
+      await tester.orderManagement.click();
 
-      expect(tester.accessionHolders.length).toBe(3);
+      await expect.element(tester.accessionHolders).toHaveLength(3);
 
-      await tester.orderVisualization.check();
+      await tester.orderVisualization.click();
 
-      expect(tester.noGlobalVisualization).not.toBeNull();
-      expect(tester.globalVisualization).not.toBeNull();
-      expect(tester.noGlobalVisualization).toBeChecked();
-      expect(tester.globalVisualization).not.toBeChecked();
-      expect(tester.visualizationGrcs.length).toBe(2);
+      await expect.element(tester.noGlobalVisualization).toBeInTheDocument();
+      await expect.element(tester.globalVisualization).toBeInTheDocument();
+      await expect.element(tester.noGlobalVisualization).toBeChecked();
+      await expect.element(tester.globalVisualization).not.toBeChecked();
+      await expect.element(tester.visualizationGrcs).toHaveLength(2);
 
-      await tester.globalVisualization.check();
-      expect(tester.visualizationGrcs.length).toBe(0);
+      await tester.globalVisualization.click();
+      await expect.element(tester.visualizationGrcs).toHaveLength(0);
     });
 
-    it('should not save if error', async () => {
-      expect(tester.errors.length).toBe(0);
+    test('should not save if error', async () => {
+      await expect.element(tester.errors).toHaveLength(0);
 
       await tester.saveButton.click();
 
-      expect(tester.errors.length).toBe(1);
-      expect(tester.errors[0]).toContainText('Le nom est obligatoire');
-      await tester.name.fillWith('Test');
+      await expect.element(tester.errors).toHaveLength(1);
+      await expect.element(tester.errors.nth(0)).toHaveTextContent('Le nom est obligatoire');
+      await tester.name.fill('Test');
       expect(tester.componentInstance.form.valid).toBe(true);
 
-      await tester.orderManagement.check();
+      await tester.orderManagement.click();
       expect(tester.componentInstance.form.valid).toBe(false);
 
-      expect(tester.errors.length).toBe(1);
-      expect(tester.errors[0]).toContainText(`Au moins un gestionnaire d'accessions doit être sélectionné`);
+      await expect.element(tester.errors).toHaveLength(1);
+      await expect.element(tester.errors.nth(0)).toHaveTextContent(`Au moins un gestionnaire d'accessions doit être sélectionné`);
 
-      await tester.orderManagement.uncheck();
+      await tester.orderManagement.click();
       expect(tester.componentInstance.form.valid).toBe(true);
-      expect(tester.errors.length).toBe(0);
+      await expect.element(tester.errors).toHaveLength(0);
 
-      await tester.orderVisualization.check();
+      await tester.orderVisualization.click();
       expect(tester.componentInstance.form.valid).toBe(false);
-      expect(tester.errors.length).toBe(1);
-      expect(tester.errors[0]).toContainText(`Au moins un CRB doit être sélectionné`);
+      await expect.element(tester.errors).toHaveLength(1);
+      await expect.element(tester.errors.nth(0)).toHaveTextContent(`Au moins un CRB doit être sélectionné`);
 
-      await tester.globalVisualization.check();
+      await tester.globalVisualization.click();
       expect(tester.componentInstance.form.valid).toBe(true);
-      expect(tester.errors.length).toBe(0);
+      await expect.element(tester.errors).toHaveLength(0);
 
-      await tester.noGlobalVisualization.check();
+      await tester.noGlobalVisualization.click();
       expect(tester.componentInstance.form.valid).toBe(false);
 
-      await tester.orderVisualization.uncheck();
+      await tester.orderVisualization.click();
       expect(tester.componentInstance.form.valid).toBe(true);
 
       expect(userService.create).not.toHaveBeenCalled();
     });
 
-    it('should create user', async () => {
-      await tester.name.fillWith('Test');
-      await tester.orderManagement.check();
-      await tester.accessionHolders[1].check();
+    test('should create user', async () => {
+      await tester.name.fill('Test');
+      await tester.orderManagement.click();
+      await tester.accessionHolders.nth(1).click();
 
-      await tester.orderVisualization.check();
-      await tester.visualizationGrcs[1].check();
+      await tester.orderVisualization.click();
+      await tester.visualizationGrcs.nth(1).click();
 
-      userService.create.and.returnValue(of({} as User));
+      userService.create.mockReturnValue(of({} as User));
       await tester.saveButton.click();
 
       const expectedCommand: UserCommand = {
@@ -239,7 +212,7 @@ describe('EditUserComponent', () => {
   describe('in update mode', () => {
     beforeEach(async () => {
       route.setParam('userId', '42');
-      userService.get.and.returnValue(
+      userService.get.mockReturnValue(
         of({
           id: 42,
           name: 'Test',
@@ -255,34 +228,34 @@ describe('EditUserComponent', () => {
       );
 
       tester = new EditUserComponentTester();
-      await tester.stable();
+      await tester.fixture.whenStable();
     });
 
-    it('should have a title', () => {
-      expect(tester.title).toContainText(`Modifier l'utilisateur Test`);
+    test('should have a title', () => {
+      expect(tester.title.element().textContent).toContain(`Modifier l'utilisateur Test`);
     });
 
-    it('should display a filled form', () => {
-      expect(tester.name).toHaveValue('Test');
-      expect(tester.orderManagement).toBeChecked();
-      expect(tester.accessionHolders[0]).not.toBeChecked();
-      expect(tester.accessionHolders[1]).toBeChecked();
-      expect(tester.accessionHolders[2]).not.toBeChecked();
-      expect(tester.orderVisualization).toBeChecked();
-      expect(tester.noGlobalVisualization).toBeChecked();
-      expect(tester.globalVisualization).not.toBeChecked();
-      expect(tester.visualizationGrcs[0]).not.toBeChecked();
-      expect(tester.visualizationGrcs[1]).toBeChecked();
-      expect(tester.administration).not.toBeChecked();
+    test('should display a filled form', async () => {
+      await expect.element(tester.name).toHaveValue('Test');
+      await expect.element(tester.orderManagement).toBeChecked();
+      await expect.element(tester.accessionHolders.nth(0)).not.toBeChecked();
+      await expect.element(tester.accessionHolders.nth(1)).toBeChecked();
+      await expect.element(tester.accessionHolders.nth(2)).not.toBeChecked();
+      await expect.element(tester.orderVisualization).toBeChecked();
+      await expect.element(tester.noGlobalVisualization).toBeChecked();
+      await expect.element(tester.globalVisualization).not.toBeChecked();
+      await expect.element(tester.visualizationGrcs.nth(0)).not.toBeChecked();
+      await expect.element(tester.visualizationGrcs.nth(1)).toBeChecked();
+      await expect.element(tester.administration).not.toBeChecked();
     });
 
-    it('should update user', async () => {
-      await tester.name.fillWith('Test2');
-      await tester.orderManagement.uncheck();
-      await tester.orderVisualization.uncheck();
-      await tester.administration.check();
+    test('should update user', async () => {
+      await tester.name.fill('Test2');
+      await tester.orderManagement.click();
+      await tester.orderVisualization.click();
+      await tester.administration.click();
 
-      userService.update.and.returnValue(of(undefined));
+      userService.update.mockReturnValue(of(undefined));
       await tester.saveButton.click();
 
       const expectedCommand: UserCommand = {

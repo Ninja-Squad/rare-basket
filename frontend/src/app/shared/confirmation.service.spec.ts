@@ -1,10 +1,11 @@
 import { TestBed } from '@angular/core/testing';
 import { ConfirmationModalComponent } from './confirmation-modal/confirmation-modal.component';
 import { ConfirmationOptions, ConfirmationService } from './confirmation.service';
-import { MockModalService, provideModalTesting } from '../rb-ngb/mock-modal.service.spec';
-import { provideI18nTesting } from '../i18n/mock-18n.spec';
+import { MockModalService, provideModalTesting } from '../rb-ngb/mock-modal.service';
+import { provideI18nTesting } from '../i18n/mock-18n';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
-import { createMock } from 'ngx-speculoos';
+import { createMock } from '../../test/mock';
+import { beforeEach, describe, expect, test } from 'vitest';
 
 describe('ConfirmationService', () => {
   let confirmationService: ConfirmationService;
@@ -21,7 +22,7 @@ describe('ConfirmationService', () => {
     confirmationModalComponent = TestBed.runInInjectionContext(() => new ConfirmationModalComponent());
   });
 
-  it('should create a modal instance with title and message', () => {
+  test('should create a modal instance with title and message', () => {
     mockModalService.mockClosedModal(confirmationModalComponent);
 
     let closed = false;
@@ -32,7 +33,7 @@ describe('ConfirmationService', () => {
     expect(closed).toBe(true);
   });
 
-  it('should do nothing on No', () => {
+  test('should do nothing on No', () => {
     mockModalService.mockDismissedModal(confirmationModalComponent);
 
     let closed = false;
@@ -41,7 +42,7 @@ describe('ConfirmationService', () => {
     expect(closed).toBe(false);
   });
 
-  it('should emit an error if on No if options says so', () => {
+  test('should emit an error if on No if options says so', () => {
     mockModalService.mockDismissedWithErrorModal(confirmationModalComponent);
 
     let hasErrored = false;

@@ -5,30 +5,32 @@ import { AuthenticationService } from '../shared/authentication.service';
 import { BehaviorSubject } from 'rxjs';
 import { User } from '../shared/user.model';
 import { UrlTree } from '@angular/router';
+import { createMock, MockObject } from '../../test/mock';
+import { beforeEach, describe, expect, test } from 'vitest';
 
 describe('ordersGuard', () => {
-  let authenticationService: jasmine.SpyObj<AuthenticationService>;
+  let authenticationService: MockObject<AuthenticationService>;
   let currentUserSubject: BehaviorSubject<User>;
 
   beforeEach(() => {
     currentUserSubject = new BehaviorSubject<User>({
       permissions: ['ORDER_MANAGEMENT', 'ORDER_VISUALIZATION']
     } as User);
-    authenticationService = jasmine.createSpyObj('AuthenticationService', ['getCurrentUser']);
-    authenticationService.getCurrentUser.and.returnValue(currentUserSubject);
+    authenticationService = createMock(AuthenticationService);
+    authenticationService.getCurrentUser.mockReturnValue(currentUserSubject);
 
     TestBed.configureTestingModule({
       providers: [{ provide: AuthenticationService, useValue: authenticationService }]
     });
   });
 
-  it('should redirect to in progress orders if user has permission ORDER_MANAGEMENT', () => {
+  test('should redirect to in progress orders if user has permission ORDER_MANAGEMENT', () => {
     let result: UrlTree | undefined;
     TestBed.runInInjectionContext(() => ordersGuard()).subscribe(r => (result = r));
     expect(result!.toString()).toBe('/orders/in-progress');
   });
 
-  it('should redirect to statistics if user does not have permission ORDER_MANAGEMENT', () => {
+  test('should redirect to statistics if user does not have permission ORDER_MANAGEMENT', () => {
     currentUserSubject.next({
       permissions: ['ORDER_VISUALIZATION']
     } as User);

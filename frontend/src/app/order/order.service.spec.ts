@@ -6,6 +6,7 @@ import { CustomerInformationCommand, Document, DocumentCommand, Order, OrderComm
 import { Page } from '../shared/page.model';
 import { filter } from 'rxjs';
 import { HttpEventType, HttpResponse } from '@angular/common/http';
+import { afterEach, beforeEach, describe, expect, test } from 'vitest';
 
 describe('OrderService', () => {
   let service: OrderService;
@@ -21,7 +22,7 @@ describe('OrderService', () => {
 
   afterEach(() => http.verify());
 
-  it('should get an order', () => {
+  test('should get an order', () => {
     let actualOrder: Order | undefined;
 
     service.get(42).subscribe(order => (actualOrder = order));
@@ -31,7 +32,7 @@ describe('OrderService', () => {
     expect(actualOrder).toBe(expectedOrder);
   });
 
-  it('should list in progress orders', () => {
+  test('should list in progress orders', () => {
     let actualOrders: Page<Order> | undefined;
 
     service.listInProgress(0, null).subscribe(orders => (actualOrders = orders));
@@ -41,7 +42,7 @@ describe('OrderService', () => {
     expect(actualOrders).toBe(expectedOrders);
   });
 
-  it('should list in progress orders for specfic accession holder', () => {
+  test('should list in progress orders for specfic accession holder', () => {
     let actualOrders: Page<Order> | undefined;
 
     service.listInProgress(0, 42).subscribe(orders => (actualOrders = orders));
@@ -51,7 +52,7 @@ describe('OrderService', () => {
     expect(actualOrders).toBe(expectedOrders);
   });
 
-  it('should list done orders', () => {
+  test('should list done orders', () => {
     let actualOrders: Page<Order> | undefined;
 
     service.listDone(0, null).subscribe(orders => (actualOrders = orders));
@@ -61,7 +62,7 @@ describe('OrderService', () => {
     expect(actualOrders).toBe(expectedOrders);
   });
 
-  it('should update an order', () => {
+  test('should update an order', () => {
     let done = false;
 
     const command = {} as OrderCommand;
@@ -73,7 +74,7 @@ describe('OrderService', () => {
     expect(done).toBe(true);
   });
 
-  it('should add a document', async () => {
+  test('should add a document', async () => {
     let actual: Document | null | undefined;
 
     const command: DocumentCommand = {
@@ -104,7 +105,7 @@ describe('OrderService', () => {
     expect(actual).toBe(expected);
   });
 
-  it('should delete a document', () => {
+  test('should delete a document', () => {
     let done = false;
     service.deleteDocument(42, 54).subscribe(() => (done = true));
 
@@ -112,7 +113,7 @@ describe('OrderService', () => {
     expect(done).toBe(true);
   });
 
-  it('should download a document', () => {
+  test('should download a document', () => {
     let actual: Blob | null | undefined;
     service.downloadDocument(42, 54).subscribe(response => (actual = response.body));
 
@@ -121,7 +122,7 @@ describe('OrderService', () => {
     expect(actual).toBe(expected);
   });
 
-  it('should download delivery form', () => {
+  test('should download delivery form', () => {
     let actual: Blob | null | undefined;
     service.downloadDeliveryForm(42).subscribe(response => (actual = response.body));
 
@@ -130,7 +131,7 @@ describe('OrderService', () => {
     expect(actual).toBe(expected);
   });
 
-  it('should download delivery form with attached documents', () => {
+  test('should download delivery form with attached documents', () => {
     let actual: Blob | null | undefined;
     service.downloadDeliveryForm(42, { withDocuments: true }).subscribe(response => (actual = response.body));
 
@@ -139,7 +140,7 @@ describe('OrderService', () => {
     expect(actual).toBe(expected);
   });
 
-  it('should finalize an order', () => {
+  test('should finalize an order', () => {
     let done = false;
     service.finalize(42).subscribe(() => (done = true));
 
@@ -147,7 +148,7 @@ describe('OrderService', () => {
     expect(done).toBe(true);
   });
 
-  it('should export a report', () => {
+  test('should export a report', () => {
     let actual: Blob | null | undefined;
     service.exportReport('2020-01-01', '2021-01-01').subscribe(response => (actual = response.body));
 
@@ -156,7 +157,7 @@ describe('OrderService', () => {
     expect(actual).toBe(expected);
   });
 
-  it('should get statistics', () => {
+  test('should get statistics', () => {
     let actual: OrderStatistics | undefined;
     service.getStatistics('2020-01-01', '2021-01-01', [1, 2]).subscribe(stats => (actual = stats));
 
@@ -165,7 +166,7 @@ describe('OrderService', () => {
     expect(actual).toBe(expected);
   });
 
-  it('should update the customer information of an order', () => {
+  test('should update the customer information of an order', () => {
     let done = false;
 
     const command = {} as CustomerInformationCommand;

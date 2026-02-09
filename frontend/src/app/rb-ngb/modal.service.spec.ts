@@ -3,6 +3,7 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 
 import { ModalOptions, ModalService } from './modal.service';
+import { beforeEach, describe, expect, test, vi } from 'vitest';
 
 @Component({
   template: 'Hello',
@@ -13,7 +14,7 @@ class TestModalComponent {}
 describe('ModalService', () => {
   let ngbModal: NgbModal;
   let modalService: ModalService;
-  const fakeModalComponent = jasmine.createSpyObj<TestModalComponent>(['']);
+  const fakeModalComponent = {} as TestModalComponent;
 
   beforeEach(() => {
     TestBed.configureTestingModule({});
@@ -21,8 +22,8 @@ describe('ModalService', () => {
     modalService = TestBed.inject(ModalService);
   });
 
-  it('should create a modal instance', () => {
-    spyOn(ngbModal, 'open').and.returnValue({
+  test('should create a modal instance', () => {
+    vi.spyOn(ngbModal, 'open').mockReturnValue({
       componentInstance: fakeModalComponent,
       result: Promise.resolve()
     } as NgbModalRef);
@@ -33,9 +34,9 @@ describe('ModalService', () => {
     expect(modal.componentInstance).toBe(fakeModalComponent);
   });
 
-  it('should emit on close', async () => {
+  test('should emit on close', async () => {
     const promise = Promise.resolve();
-    spyOn(ngbModal, 'open').and.returnValue({
+    vi.spyOn(ngbModal, 'open').mockReturnValue({
       componentInstance: fakeModalComponent,
       result: promise
     } as NgbModalRef);
@@ -51,9 +52,9 @@ describe('ModalService', () => {
     expect(closed).toBe(true);
   });
 
-  it('should emit EMPTY on cancel', async () => {
+  test('should emit EMPTY on cancel', async () => {
     const promise = Promise.reject();
-    spyOn(ngbModal, 'open').and.returnValue({
+    vi.spyOn(ngbModal, 'open').mockReturnValue({
       componentInstance: fakeModalComponent,
       result: promise
     } as unknown as NgbModalRef);
@@ -73,9 +74,9 @@ describe('ModalService', () => {
     expect(closed).toBe(false);
   });
 
-  it('should throw error on cancel if options says so', async () => {
+  test('should throw error on cancel if options says so', async () => {
     const promise = Promise.reject();
-    spyOn(ngbModal, 'open').and.returnValue({
+    vi.spyOn(ngbModal, 'open').mockReturnValue({
       componentInstance: fakeModalComponent,
       result: promise
     } as unknown as NgbModalRef);

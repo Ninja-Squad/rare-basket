@@ -1,38 +1,28 @@
+import { beforeEach, describe, expect, test } from 'vitest';
 import { TestBed } from '@angular/core/testing';
-
-import { ComponentTester, createMock, TestButton } from 'ngx-speculoos';
+import { createMock, MockObject } from '../../../test/mock';
 import { EMPTY, of } from 'rxjs';
 import { AccessionHolder } from '../../shared/user.model';
 import { ConfirmationService } from '../../shared/confirmation.service';
 import { AccessionHoldersComponent } from './accession-holders.component';
 import { AccessionHolderService } from '../../shared/accession-holder.service';
 import { ToastService } from '../../shared/toast.service';
-import { provideI18nTesting } from '../../i18n/mock-18n.spec';
+import { provideI18nTesting } from '../../i18n/mock-18n';
 import { provideRouter } from '@angular/router';
+import { page } from 'vitest/browser';
 
-class AccessionHoldersComponentTester extends ComponentTester<AccessionHoldersComponent> {
-  constructor() {
-    super(AccessionHoldersComponent);
-  }
-
-  get accessionHolders() {
-    return this.elements('.accession-holder');
-  }
-
-  get createLink() {
-    return this.element('#create-accession-holder');
-  }
-
-  get deleteButtons() {
-    return this.elements('.delete-accession-holder-button') as Array<TestButton>;
-  }
+class AccessionHoldersComponentTester {
+  readonly fixture = TestBed.createComponent(AccessionHoldersComponent);
+  readonly accessionHolders = page.getByCss('.accession-holder');
+  readonly createLink = page.getByCss('#create-accession-holder');
+  readonly deleteButtons = page.getByCss('.delete-accession-holder-button');
 }
 
 describe('AccessionHoldersComponent', () => {
   let tester: AccessionHoldersComponentTester;
-  let accessionHolderService: jasmine.SpyObj<AccessionHolderService>;
-  let confirmationService: jasmine.SpyObj<ConfirmationService>;
-  let toastService: jasmine.SpyObj<ToastService>;
+  let accessionHolderService: MockObject<AccessionHolderService>;
+  let confirmationService: MockObject<ConfirmationService>;
+  let toastService: MockObject<ToastService>;
 
   beforeEach(() => {
     accessionHolderService = createMock(AccessionHolderService);
@@ -50,16 +40,15 @@ describe('AccessionHoldersComponent', () => {
     });
   });
 
-  it('should not display anything until accession holders are available', async () => {
-    accessionHolderService.list.and.returnValue(EMPTY);
+  test('should not display anything until accession holders are available', async () => {
+    accessionHolderService.list.mockReturnValue(EMPTY);
     tester = new AccessionHoldersComponentTester();
-    await tester.stable();
 
-    expect(tester.accessionHolders.length).toBe(0);
-    expect(tester.createLink).toBeNull();
+    await expect.element(tester.accessionHolders).toHaveLength(0);
+    await expect.element(tester.createLink).not.toBeInTheDocument();
   });
 
-  it('should display accession holders', async () => {
+  test('should display accession holders', async () => {
     const accessionHolders: Array<AccessionHolder> = [
       {
         id: 1,
@@ -87,21 +76,20 @@ describe('AccessionHoldersComponent', () => {
       }
     ];
 
-    accessionHolderService.list.and.returnValue(of(accessionHolders));
+    accessionHolderService.list.mockReturnValue(of(accessionHolders));
     tester = new AccessionHoldersComponentTester();
-    await tester.stable();
 
-    expect(tester.accessionHolders.length).toBe(2);
-    expect(tester.accessionHolders[0]).toContainText('Holder1');
-    expect(tester.accessionHolders[0]).toContainText('holder1@mail.com');
-    expect(tester.accessionHolders[0]).toContainText('GRC1');
-    expect(tester.accessionHolders[1]).toContainText('Holder2');
-    expect(tester.accessionHolders[1]).toContainText('holder2@mail.com');
-    expect(tester.accessionHolders[1]).toContainText('GRC2');
-    expect(tester.createLink).not.toBeNull();
+    await expect.element(tester.accessionHolders).toHaveLength(2);
+    await expect.element(tester.accessionHolders.nth(0)).toHaveTextContent('Holder1');
+    await expect.element(tester.accessionHolders.nth(0)).toHaveTextContent('holder1@mail.com');
+    await expect.element(tester.accessionHolders.nth(0)).toHaveTextContent('GRC1');
+    await expect.element(tester.accessionHolders.nth(1)).toHaveTextContent('Holder2');
+    await expect.element(tester.accessionHolders.nth(1)).toHaveTextContent('holder2@mail.com');
+    await expect.element(tester.accessionHolders.nth(1)).toHaveTextContent('GRC2');
+    await expect.element(tester.createLink).toBeInTheDocument();
   });
 
-  it('should delete after confirmation and reload', async () => {
+  test('should delete after confirmation and reload', async () => {
     const accessionHolders: Array<AccessionHolder> = [
       {
         id: 1,
@@ -129,16 +117,15 @@ describe('AccessionHoldersComponent', () => {
       }
     ];
 
-    accessionHolderService.list.and.returnValues(of(accessionHolders), of([accessionHolders[1]]));
+    accessionHolderService.list.mockReturnValueOnce(of(accessionHolders)).mockReturnValueOnce(of([accessionHolders[1]]));
     tester = new AccessionHoldersComponentTester();
-    await tester.stable();
 
-    confirmationService.confirm.and.returnValue(of(undefined));
-    accessionHolderService.delete.and.returnValue(of(undefined));
+    confirmationService.confirm.mockReturnValue(of(undefined));
+    accessionHolderService.delete.mockReturnValue(of(undefined));
 
-    await tester.deleteButtons[0].click();
+    await tester.deleteButtons.nth(0).click();
 
-    expect(tester.accessionHolders.length).toBe(1);
+    await expect.element(tester.accessionHolders).toHaveLength(1);
     expect(accessionHolderService.delete).toHaveBeenCalledWith(1);
     expect(toastService.success).toHaveBeenCalled();
   });

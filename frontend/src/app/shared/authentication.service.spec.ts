@@ -6,28 +6,34 @@ import { LoginResponse, OidcSecurityService } from 'angular-auth-oidc-client';
 import { Router } from '@angular/router';
 import { defer, of, Subject } from 'rxjs';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
-import { createMock } from 'ngx-speculoos';
+import { createMock, MockObject } from '../../test/mock';
+import type { Mock } from 'vitest';
+import { beforeEach, describe, expect, test, vi } from 'vitest';
 
 describe('AuthenticationService', () => {
   let service: AuthenticationService;
   let fakeWindow: Window;
-  let oidcSecurityService: jasmine.SpyObj<OidcSecurityService>;
-  let router: jasmine.SpyObj<Router>;
+  let oidcSecurityService: MockObject<OidcSecurityService>;
+  let router: MockObject<Router>;
   let http: HttpTestingController;
+  let sessionStorageMock: Storage;
 
   beforeEach(() => {
     fakeWindow = {
       origin: 'http://localhost:4201',
       location: 'http://localhost:4201/orders',
-      sessionStorage: jasmine.createSpyObj<Storage>('SessionStorage', ['getItem', 'setItem', 'removeItem'])
+      sessionStorage: {
+        getItem: vi.fn(),
+        setItem: vi.fn(),
+        removeItem: vi.fn(),
+        clear: vi.fn(),
+        key: vi.fn(),
+        length: 0
+      } as unknown as Storage
     } as unknown as Window;
+    sessionStorageMock = fakeWindow.sessionStorage;
 
-    oidcSecurityService = jasmine.createSpyObj<OidcSecurityService>('OidcSecurityService', [
-      'authorize',
-      'logoff',
-      'logoffLocal',
-      'checkAuth'
-    ]);
+    oidcSecurityService = createMock(OidcSecurityService);
 
     router = createMock(Router);
 
@@ -43,21 +49,21 @@ describe('AuthenticationService', () => {
     http = TestBed.inject(HttpTestingController);
   });
 
-  it('should login without requested URL', () => {
+  test('should login without requested URL', () => {
     service.login();
     expect(fakeWindow.sessionStorage.setItem).toHaveBeenCalledWith('rare-basket-requested-url', '/');
     expect(oidcSecurityService.authorize).toHaveBeenCalled();
   });
 
-  it('should login with requested URL', () => {
+  test('should login with requested URL', () => {
     service.login('/foo');
     expect(fakeWindow.sessionStorage.setItem).toHaveBeenCalledWith('rare-basket-requested-url', '/foo');
     expect(oidcSecurityService.authorize).toHaveBeenCalled();
   });
 
-  it('should logout', () => {
+  test('should logout', () => {
     let subscribed = false;
-    oidcSecurityService.logoff.and.returnValue(
+    oidcSecurityService.logoff.mockReturnValue(
       defer(() => {
         subscribed = true;
         return of(undefined);
@@ -65,15 +71,15 @@ describe('AuthenticationService', () => {
     );
     service.logout();
     expect(oidcSecurityService.logoff).toHaveBeenCalled();
-    expect(subscribed).toBeTrue();
+    expect(subscribed).toBe(true);
   });
 
-  it('should tell if the user is authenticated when authentication check succeeds', () => {
+  test('should tell if the user is authenticated when authentication check succeeds', () => {
     const events: Array<boolean> = [];
 
     const subject = new Subject<LoginResponse>();
 
-    oidcSecurityService.checkAuth.and.returnValue(subject);
+    oidcSecurityService.checkAuth.mockReturnValue(subject);
 
     service.init();
     service.isAuthenticated().subscribe(event => events.push(event));
@@ -93,12 +99,12 @@ describe('AuthenticationService', () => {
     http.verify();
   });
 
-  it('should tell if the user is authenticated when authentication check fails', () => {
+  test('should tell if the user is authenticated when authentication check fails', () => {
     const events: Array<boolean> = [];
 
     const subject = new Subject<LoginResponse>();
 
-    oidcSecurityService.checkAuth.and.returnValue(subject);
+    oidcSecurityService.checkAuth.mockReturnValue(subject);
 
     service.init();
     service.isAuthenticated().subscribe(event => events.push(event));
@@ -115,12 +121,12 @@ describe('AuthenticationService', () => {
     http.verify();
   });
 
-  it('should tell if the user is authenticated when authentication check succeeds but getting user fails', () => {
+  test('should tell if the user is authenticated when authentication check succeeds but getting user fails', () => {
     const events: Array<boolean> = [];
 
     const subject = new Subject<LoginResponse>();
 
-    oidcSecurityService.checkAuth.and.returnValue(subject);
+    oidcSecurityService.checkAuth.mockReturnValue(subject);
 
     service.init();
     service.isAuthenticated().subscribe(event => events.push(event));
@@ -140,12 +146,12 @@ describe('AuthenticationService', () => {
     http.verify();
   });
 
-  it('should init and route to requested URL when authentication succeeds', () => {
-    (fakeWindow.sessionStorage.getItem as jasmine.Spy).and.returnValue('/foo');
+  test('should init and route to requested URL when authentication succeeds', () => {
+    (sessionStorageMock.getItem as Mock).mockReturnValue('/foo');
 
     const subject = new Subject<LoginResponse>();
 
-    oidcSecurityService.checkAuth.and.returnValue(subject);
+    oidcSecurityService.checkAuth.mockReturnValue(subject);
 
     service.init();
 

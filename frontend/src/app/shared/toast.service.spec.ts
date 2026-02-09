@@ -2,7 +2,8 @@ import { TestBed } from '@angular/core/testing';
 import { HttpStatusCode } from '@angular/common/http';
 
 import { Toast, ToastService } from './toast.service';
-import { provideI18nTesting } from '../i18n/mock-18n.spec';
+import { provideI18nTesting } from '../i18n/mock-18n';
+import { beforeEach, describe, expect, test } from 'vitest';
 
 describe('ToastService', () => {
   let service: ToastService;
@@ -14,7 +15,7 @@ describe('ToastService', () => {
     service = TestBed.inject(ToastService);
   });
 
-  it('should signal errors and successes', () => {
+  test('should signal errors and successes', () => {
     const toasts: Array<Toast> = [];
     service.toasts().subscribe(toast => toasts.push(toast));
 

@@ -1,13 +1,15 @@
 import { TestBed } from '@angular/core/testing';
 
 import { EditBasketComponent } from './edit-basket.component';
-import { ComponentTester, createMock, TestButton } from 'ngx-speculoos';
+import { createMock, MockObject } from '../../../test/mock';
 import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
 import { AccessionHolderBasket, Basket, BasketCommand, BasketItem } from '../basket.model';
 import { ValidationDefaultsComponent } from '../../validation-defaults/validation-defaults.component';
 import { ConfirmationService } from '../../shared/confirmation.service';
 import { of } from 'rxjs';
-import { provideI18nTesting } from '../../i18n/mock-18n.spec';
+import { provideI18nTesting } from '../../i18n/mock-18n';
+import { page } from 'vitest/browser';
+import { beforeEach, describe, expect, test } from 'vitest';
 
 @Component({
   template: `@if (basket(); as basket) {
@@ -72,79 +74,42 @@ const grc2: AccessionHolderBasket = {
   items: [itemBacteria]
 };
 
-class TestComponentTester extends ComponentTester<TestComponent> {
-  constructor() {
-    super(TestComponent);
-  }
+class TestComponentTester {
+  readonly fixture = TestBed.createComponent(TestComponent);
+  readonly root = page.elementLocator(this.fixture.nativeElement);
+  readonly customerName = this.root.getByCss('#name');
+  readonly customerOrganization = this.root.getByCss('#organization');
+  readonly customerEmail = this.root.getByCss('#email');
+  readonly customerDeliveryAddress = this.root.getByCss('#delivery-address');
+  readonly customerBillingAddress = this.root.getByCss('#billing-address');
+  readonly useDeliveryAddress = this.root.getByCss('#use-delivery-address');
+  readonly customerType = this.root.getByCss('#type');
+  readonly rationale = this.root.getByCss('#rationale');
+  readonly gdprAgreement = this.root.getByCss('#gdpr-agreement');
+  readonly saveButton = this.root.getByCss('#save');
+  readonly errors = this.root.getByCss('.invalid-feedback div');
+  readonly accessionsHolderTitles = this.root.getByCss('h3');
+  readonly accessionsTables = this.root.getByCss('table');
+  readonly accessions = this.root.getByCss('.accession');
+  readonly accessionDeleteButtons = this.root.getByCss('.accession .delete-btn');
 
-  get customerName() {
-    return this.input('#name')!;
-  }
-
-  get customerOrganization() {
-    return this.input('#organization')!;
-  }
-
-  get customerEmail() {
-    return this.input('#email')!;
-  }
-
-  get customerDeliveryAddress() {
-    return this.textarea('#delivery-address')!;
-  }
-
-  get customerBillingAddress() {
-    return this.textarea('#billing-address')!;
-  }
-
-  get useDeliveryAddress() {
-    return this.input('#use-delivery-address')!;
-  }
-
-  get customerType() {
-    return this.select('#type')!;
-  }
-
-  get rationale() {
-    return this.textarea('#rationale')!;
-  }
-
-  get gdprAgreement() {
-    return this.input('#gdpr-agreement')!;
-  }
-
-  get saveButton() {
-    return this.button('#save')!;
-  }
-
-  get errors() {
-    return this.elements('.invalid-feedback div');
-  }
-
-  get accessionsHolderTitles() {
-    return this.elements('h3');
-  }
-
-  get accessionsTables() {
-    return this.elements('table');
+  get componentInstance() {
+    return this.fixture.componentInstance;
   }
 
   accessionsHeadings(index: number) {
-    return this.accessionsTables[index].elements('th');
+    return this.accessionsTables.nth(index).getByCss('th');
   }
 
-  get accessions() {
-    return this.elements('.accession');
-  }
-
-  get accessionDeleteButtons(): Array<TestButton> {
-    return this.elements('.accession .delete-btn') as Array<TestButton>;
+  optionLabels() {
+    const select = this.customerType.element() as HTMLSelectElement;
+    return Array.from(select.options).map(option => option.textContent ?? '');
   }
 }
 
 describe('EditBasketComponent', () => {
   let tester: TestComponentTester;
-  let confirmationService: jasmine.SpyObj<ConfirmationService>;
+  let confirmationService: MockObject<ConfirmationService>;
 
   beforeEach(async () => {
     confirmationService = createMock(ConfirmationService);
@@ -170,36 +135,34 @@ describe('EditBasketComponent', () => {
       });
     });
 
-    it('should display an empty form', async () => {
-      await tester.stable();
-
-      expect(tester.customerName).toHaveValue('');
-      expect(tester.customerEmail).toHaveValue('');
-      expect(tester.customerDeliveryAddress).toHaveValue('');
-      expect(tester.customerBillingAddress).toHaveValue('');
-      expect(tester.useDeliveryAddress).not.toBeChecked();
-      expect(tester.customerType).toHaveSelectedLabel('');
-      expect(tester.rationale).toHaveValue('');
-      expect(tester.accessionsHolderTitles.length).toBe(2);
-      expect(tester.accessionsHolderTitles[0]).toHaveText('GRC1 - Contact1');
-      expect(tester.accessionsHolderTitles[1]).toHaveText('GRC2 - Contact2');
-      expect(tester.accessionsTables.length).toBe(2);
-      expect(tester.accessionsHeadings(0).length).toBe(4);
-      expect(tester.accessionsHeadings(1).length).toBe(4);
-      expect(tester.accessionsHeadings(0)[0]).toHaveText('Nom');
-      expect(tester.accessionsHeadings(0)[1]).toHaveText(`N° d'accession`);
-      expect(tester.accessionsHeadings(0)[2]).toHaveText('Taxon');
-      expect(tester.accessionsHeadings(0)[3]).toHaveText('Actions');
-      expect(tester.accessions.length).toBe(3);
-      expect(tester.accessions[0]).toContainText('Rosa');
-      expect(tester.accessions[0]).toContainText('rosaTaxon');
-      expect(tester.accessions[1]).toContainText('Violetta');
-      expect(tester.accessions[1]).toContainText('violettaNumber');
-      expect(tester.accessions[1]).toContainText('violettaTaxon');
-      expect(tester.gdprAgreement).not.toBeChecked();
+    test('should display an empty form', async () => {
+      await expect.element(tester.customerName).toHaveValue('');
+      await expect.element(tester.customerEmail).toHaveValue('');
+      await expect.element(tester.customerDeliveryAddress).toHaveValue('');
+      await expect.element(tester.customerBillingAddress).toHaveValue('');
+      await expect.element(tester.useDeliveryAddress).not.toBeChecked();
+      await expect.element(tester.customerType).toHaveDisplayValue('');
+      await expect.element(tester.rationale).toHaveValue('');
+      await expect.element(tester.accessionsHolderTitles).toHaveLength(2);
+      await expect.element(tester.accessionsHolderTitles.nth(0)).toHaveTextContent('GRC1 - Contact1');
+      await expect.element(tester.accessionsHolderTitles.nth(1)).toHaveTextContent('GRC2 - Contact2');
+      await expect.element(tester.accessionsTables).toHaveLength(2);
+      await expect.element(tester.accessionsHeadings(0)).toHaveLength(4);
+      await expect.element(tester.accessionsHeadings(1)).toHaveLength(4);
+      await expect.element(tester.accessionsHeadings(0).nth(0)).toHaveTextContent('Nom');
+      await expect.element(tester.accessionsHeadings(0).nth(1)).toHaveTextContent(`N° d'accession`);
+      await expect.element(tester.accessionsHeadings(0).nth(2)).toHaveTextContent('Taxon');
+      await expect.element(tester.accessionsHeadings(0).nth(3)).toHaveTextContent('Actions');
+      await expect.element(tester.accessions).toHaveLength(3);
+      await expect.element(tester.accessions.nth(0)).toHaveTextContent('Rosa');
+      await expect.element(tester.accessions.nth(0)).toHaveTextContent('rosaTaxon');
+      await expect.element(tester.accessions.nth(1)).toHaveTextContent('Violetta');
+      await expect.element(tester.accessions.nth(1)).toHaveTextContent('violettaNumber');
+      await expect.element(tester.accessions.nth(1)).toHaveTextContent('violettaTaxon');
+      await expect.element(tester.gdprAgreement).not.toBeChecked();
     });
 
-    it('should display quantities if at least one is set', async () => {
+    test('should display quantities if at least one is set', async () => {
       const itemRosaWith10Bags: BasketItem = {
         ...itemRosa,
         quantity: 10,
@@ -215,46 +178,41 @@ describe('EditBasketComponent', () => {
         ...basket!,
         accessionHolderBaskets: [grc1WithRosa10Bags, grc2]
       }));
-      await tester.stable();
 
-      expect(tester.accessionsHeadings(0).length).toBe(5);
-      expect(tester.accessionsHeadings(1).length).toBe(5);
-      expect(tester.accessionsHeadings(0)[0]).toHaveText('Nom');
-      expect(tester.accessionsHeadings(0)[1]).toHaveText(`N° d'accession`);
-      expect(tester.accessionsHeadings(0)[2]).toHaveText('Taxon');
-      expect(tester.accessionsHeadings(0)[3]).toHaveText('Quantité');
-      expect(tester.accessionsHeadings(0)[4]).toHaveText('Actions');
-      expect(tester.accessions[0]).toContainText('10 bags');
+      await expect.element(tester.accessionsHeadings(0)).toHaveLength(5);
+      await expect.element(tester.accessionsHeadings(1)).toHaveLength(5);
+      await expect.element(tester.accessionsHeadings(0).nth(0)).toHaveTextContent('Nom');
+      await expect.element(tester.accessionsHeadings(0).nth(1)).toHaveTextContent(`N° d'accession`);
+      await expect.element(tester.accessionsHeadings(0).nth(2)).toHaveTextContent('Taxon');
+      await expect.element(tester.accessionsHeadings(0).nth(3)).toHaveTextContent('Quantité');
+      await expect.element(tester.accessionsHeadings(0).nth(4)).toHaveTextContent('Actions');
+      await expect.element(tester.accessions.nth(0)).toHaveTextContent('10 bags');
     });
 
-    it('should display accession numbers if at least one is set', async () => {
-      await tester.stable();
+    test('should display accession numbers if at least one is set', async () => {
+      await expect.element(tester.accessionsHeadings(0)).toHaveLength(4);
+      await expect.element(tester.accessionsHeadings(0).nth(1)).toHaveTextContent(`N° d'accession`);
 
-      expect(tester.accessionsHeadings(0).length).toBe(4);
-      expect(tester.accessionsHeadings(0)[1]).toContainText(`N° d'accession`);
+      confirmationService.confirm.mockReturnValue(of(undefined));
+      await tester.accessionDeleteButtons.nth(1).click();
 
-      confirmationService.confirm.and.returnValue(of(undefined));
-      await tester.accessionDeleteButtons[1].click();
-
-      expect(tester.accessionsHeadings(0).length).toBe(3);
-      expect(tester.accessionsHeadings(0)[1]).toContainText(`Taxon`);
+      await expect.element(tester.accessionsHeadings(0)).toHaveLength(3);
+      await expect.element(tester.accessionsHeadings(0).nth(1)).toHaveTextContent(`Taxon`);
     });
 
-    it('should validate and not save', async () => {
-      await tester.stable();
-
+    test('should validate and not save', async () => {
       await tester.saveButton.click();
       expect(tester.componentInstance.savedCommand()).toBeNull();
-      expect(tester.errors.length).toBe(6);
-      expect(tester.testElement).toContainText('Le nom est obligatoire');
-      expect(tester.testElement).toContainText(`L'adresse courriel est obligatoire`);
-      expect(tester.testElement).toContainText(`L'adresse postale de livraison est obligatoire`);
-      expect(tester.testElement).toContainText(`L'adresse postale de facturation est obligatoire`);
-      expect(tester.testElement).toContainText(`La catégorie est obligatoire`);
-      expect(tester.testElement).toContainText(`Vous devez cocher cette case pour pouvoir finaliser votre commande`);
+      await expect.element(tester.errors).toHaveLength(6);
+      await expect.element(tester.root).toHaveTextContent('Le nom est obligatoire');
+      await expect.element(tester.root).toHaveTextContent(`L'adresse courriel est obligatoire`);
+      await expect.element(tester.root).toHaveTextContent(`L'adresse postale de livraison est obligatoire`);
+      await expect.element(tester.root).toHaveTextContent(`L'adresse postale de facturation est obligatoire`);
+      await expect.element(tester.root).toHaveTextContent(`La catégorie est obligatoire`);
+      await expect.element(tester.root).toHaveTextContent(`Vous devez cocher cette case pour pouvoir finaliser votre commande`);
     });
 
-    it('should save', async () => {
+    test('should save', async () => {
       const itemRosaWith10Bags: BasketItem = {
         ...itemRosa,
         quantity: 10,
@@ -270,19 +228,18 @@ describe('EditBasketComponent', () => {
         ...basket!,
         accessionHolderBaskets: [grc1WithRosa10Bags, grc2]
       }));
-      await tester.stable();
 
-      await tester.customerName.fillWith('John');
-      await tester.customerOrganization.fillWith('Wheat SA');
-      await tester.customerEmail.fillWith('john@mail.com');
-      await tester.customerDeliveryAddress.fillWith('21 Jump Street');
-      await tester.customerBillingAddress.fillWith('21 Jump Street - billing service');
-      await tester.customerType.selectLabel('Citoyen');
-      await tester.rationale.fillWith('Because');
-      await tester.gdprAgreement.check();
+      await tester.customerName.fill('John');
+      await tester.customerOrganization.fill('Wheat SA');
+      await tester.customerEmail.fill('john@mail.com');
+      await tester.customerDeliveryAddress.fill('21 Jump Street');
+      await tester.customerBillingAddress.fill('21 Jump Street - billing service');
+      await tester.customerType.selectOptions('Citoyen');
+      await tester.rationale.fill('Because');
+      await tester.gdprAgreement.click();
 
       await tester.saveButton.click();
-      expect(tester.errors.length).toBe(0);
+      await expect.element(tester.errors).toHaveLength(0);
 
       const expectedCommand: BasketCommand = {
         customer: {
@@ -317,27 +274,25 @@ describe('EditBasketComponent', () => {
       expect(tester.componentInstance.savedCommand()).toEqual(expectedCommand);
     });
 
-    it('should use the delivery address as the billing address', async () => {
-      await tester.stable();
-
-      await tester.customerName.fillWith('John');
-      await tester.customerOrganization.fillWith('Wheat SA');
-      await tester.customerEmail.fillWith('john@mail.com');
-      await tester.customerDeliveryAddress.fillWith('21 Jump Street');
-      await tester.useDeliveryAddress.check();
-      expect(tester.customerBillingAddress.disabled).toBe(true);
-      await tester.customerType.selectLabel('Citoyen');
-      await tester.rationale.fillWith('Because');
-      await tester.gdprAgreement.check();
-
+    test('should use the delivery address as the billing address', async () => {
+      await tester.customerName.fill('John');
+      await tester.customerOrganization.fill('Wheat SA');
+      await tester.customerEmail.fill('john@mail.com');
+      await tester.customerDeliveryAddress.fill('21 Jump Street');
+      await tester.useDeliveryAddress.click();
+      await expect.element(tester.customerBillingAddress).toBeDisabled();
+      await tester.customerType.selectOptions('Citoyen');
+      await tester.rationale.fill('Because');
+      await new Promise(resolve => setTimeout(resolve, 100));
+      await tester.gdprAgreement.click();
       await tester.saveButton.click();
-      expect(tester.errors.length).toBe(0);
+      await expect.element(tester.errors).toHaveLength(0);
       expect(tester.componentInstance.savedCommand()!.customer.billingAddress).toEqual(
         tester.componentInstance.savedCommand()!.customer.deliveryAddress
       );
     });
 
-    it('should remove accession after confirmation and make last one removal disabled', async () => {
+    test('should remove accession after confirmation and make last one removal disabled', async () => {
       const itemRosaWith10: BasketItem = {
         ...itemRosa,
         quantity: 10
@@ -352,26 +307,26 @@ describe('EditBasketComponent', () => {
         ...basket!,
         accessionHolderBaskets: [grc1WithRosa10, grc2]
       }));
-      await tester.stable();
+      await tester.fixture.whenStable();
 
-      confirmationService.confirm.and.returnValue(of(undefined));
+      confirmationService.confirm.mockReturnValue(of(undefined));
 
       // delete first of 3 items
-      await tester.accessionDeleteButtons[0].click();
+      await tester.accessionDeleteButtons.nth(0).click();
 
       expect(confirmationService.confirm).toHaveBeenCalled();
-      expect(tester.accessionsTables.length).toBe(2);
-      expect(tester.accessions.length).toBe(2);
-      expect(tester.accessions[0]).toContainText('Violetta');
-      expect(tester.accessionsHeadings(0).length).toBe(4); // because there is no accession with a quantity anymore
+      await expect.element(tester.accessionsTables).toHaveLength(2);
+      await expect.element(tester.accessions).toHaveLength(2);
+      await expect.element(tester.accessions.nth(0)).toHaveTextContent('Violetta');
+      await expect.element(tester.accessionsHeadings(0)).toHaveLength(4); // because there is no accession with a quantity anymore
 
       // delete first of 2 items
-      await tester.accessionDeleteButtons[0].click();
-      expect(tester.accessionsTables.length).toBe(1); // because the first accession holder basket is now empty, thus removed
-      expect(tester.accessions.length).toBe(1);
-      expect(tester.accessions[0]).toContainText('Bacteria');
+      await tester.accessionDeleteButtons.nth(0).click();
+      await expect.element(tester.accessionsTables).toHaveLength(1); // because the first accession holder basket is now empty, thus removed
+      await expect.element(tester.accessions).toHaveLength(1);
+      await expect.element(tester.accessions.nth(0)).toHaveTextContent('Bacteria');
 
-      expect(tester.accessionDeleteButtons[0].disabled).toBe(true); // because it's the last one, which can thus not be deleted
+      await expect.element(tester.accessionDeleteButtons.nth(0)).toBeDisabled(); // because it's the last one, which can thus not be deleted
     });
   });
 
@@ -406,19 +361,17 @@ describe('EditBasketComponent', () => {
           }
         ]
       });
-
-      await tester.stable();
     });
 
-    it('should display a filled form', () => {
-      expect(tester.customerName).toHaveValue('John');
-      expect(tester.customerOrganization).toHaveValue('Wheat SA');
-      expect(tester.customerEmail).toHaveValue('john@mail.com');
-      expect(tester.customerDeliveryAddress).toHaveValue('21 Jump Street');
-      expect(tester.customerBillingAddress).toHaveValue('21 Jump Street - billing service');
-      expect(tester.useDeliveryAddress).not.toBeChecked();
-      expect(tester.customerType).toHaveSelectedLabel('Citoyen');
-      expect(tester.rationale).toHaveValue('Because');
+    test('should display a filled form', async () => {
+      await expect.element(tester.customerName).toHaveValue('John');
+      await expect.element(tester.customerOrganization).toHaveValue('Wheat SA');
+      await expect.element(tester.customerEmail).toHaveValue('john@mail.com');
+      await expect.element(tester.customerDeliveryAddress).toHaveValue('21 Jump Street');
+      await expect.element(tester.customerBillingAddress).toHaveValue('21 Jump Street - billing service');
+      await expect.element(tester.useDeliveryAddress).not.toBeChecked();
+      await expect.element(tester.customerType).toHaveDisplayValue('Citoyen');
+      await expect.element(tester.rationale).toHaveValue('Because');
     });
   });
 });

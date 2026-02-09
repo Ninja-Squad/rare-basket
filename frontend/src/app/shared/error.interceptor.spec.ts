@@ -4,12 +4,13 @@ import { errorInterceptor } from './error.interceptor';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { HttpClient, provideHttpClient, withInterceptors } from '@angular/common/http';
 import { ToastService } from './toast.service';
-import { createMock } from 'ngx-speculoos';
+import { createMock, MockObject } from '../../test/mock';
+import { beforeEach, describe, expect, test } from 'vitest';
 
 describe('errorInterceptor', () => {
   let http: HttpTestingController;
   let httpClient: HttpClient;
-  let toastService: jasmine.SpyObj<ToastService>;
+  let toastService: MockObject<ToastService>;
 
   beforeEach(() => {
     toastService = createMock(ToastService);
@@ -26,7 +27,7 @@ describe('errorInterceptor', () => {
     httpClient = TestBed.inject(HttpClient);
   });
 
-  it('should do nothing if no error', () => {
+  test('should do nothing if no error', () => {
     httpClient.get('api/foo').subscribe({
       error: () => {
         // ignore
@@ -38,7 +39,7 @@ describe('errorInterceptor', () => {
     expect(toastService.error).not.toHaveBeenCalled();
   });
 
-  it('should signal functional errors', () => {
+  test('should signal functional errors', () => {
     httpClient.get('api/foo').subscribe({
       error: () => {
         // ignore
@@ -50,7 +51,7 @@ describe('errorInterceptor', () => {
     expect(toastService.error).toHaveBeenCalledWith('common.error-interceptor.functional-error.FOO');
   });
 
-  it('should signal server errors', () => {
+  test('should signal server errors', () => {
     httpClient.get('api/foo').subscribe({
       error: () => {
         // ignore
@@ -62,7 +63,7 @@ describe('errorInterceptor', () => {
     expect(toastService.error).toHaveBeenCalledWith('common.error-interceptor.server-error', { status: 400, message: 'FOO' });
   });
 
-  it('should signal client errors', () => {
+  test('should signal client errors', () => {
     httpClient.get('api/foo').subscribe({
       error: () => {
         // ignore

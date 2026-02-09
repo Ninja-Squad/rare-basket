@@ -1,7 +1,8 @@
 import { TestBed } from '@angular/core/testing';
 import { ActivatedRoute, Router } from '@angular/router';
 import { of } from 'rxjs';
-import { ActivatedRouteStub, ComponentTester, createMock, stubRoute } from 'ngx-speculoos';
+import { createMock, MockObject } from '../../../test/mock';
+import { ActivatedRouteStub, stubRoute } from '../../../test/route-stub';
 
 import { EditAccessionHolderComponent } from './edit-accession-holder.component';
 import { AccessionHolderService } from '../../shared/accession-holder.service';
@@ -9,48 +10,33 @@ import { ValidationDefaultsComponent } from '../../validation-defaults/validatio
 import { AccessionHolder, AccessionHolderCommand, Grc } from '../../shared/user.model';
 import { GrcService } from '../../shared/grc.service';
 import { ToastService } from '../../shared/toast.service';
-import { provideI18nTesting } from '../../i18n/mock-18n.spec';
+import { provideI18nTesting } from '../../i18n/mock-18n';
+import { page } from 'vitest/browser';
+import { beforeEach, describe, expect, test, vi } from 'vitest';
 
-class EditAccessionHolderComponentTester extends ComponentTester<EditAccessionHolderComponent> {
-  constructor() {
-    super(EditAccessionHolderComponent);
-  }
+class EditAccessionHolderComponentTester {
+  readonly fixture = TestBed.createComponent(EditAccessionHolderComponent);
+  readonly root = page.elementLocator(this.fixture.nativeElement);
+  readonly title = this.root.getByCss('h1');
+  readonly name = this.root.getByCss('#name');
+  readonly email = this.root.getByCss('#email');
+  readonly phone = this.root.getByCss('#phone');
+  readonly grc = this.root.getByCss('#grc');
+  readonly errors = this.root.getByCss('.invalid-feedback div');
+  readonly saveButton = this.root.getByCss('#save-button');
 
-  get title() {
-    return this.element('h1')!;
-  }
-
-  get name() {
-    return this.input('#name')!;
-  }
-
-  get email() {
-    return this.input('#email')!;
-  }
-
-  get phone() {
-    return this.input('#phone')!;
-  }
-
-  get grc() {
-    return this.select('#grc')!;
-  }
-
-  get errors() {
-    return this.elements('.invalid-feedback div');
-  }
-
-  get saveButton() {
-    return this.button('#save-button')!;
+  optionLabels() {
+    const select = this.grc.element() as HTMLSelectElement;
+    return Array.from(select.options).map(option => option.textContent ?? '');
   }
 }
 
 describe('EditAccessionHolderComponent', () => {
   let tester: EditAccessionHolderComponentTester;
-  let accessionHolderService: jasmine.SpyObj<AccessionHolderService>;
-  let grcService: jasmine.SpyObj<GrcService>;
+  let accessionHolderService: MockObject<AccessionHolderService>;
+  let grcService: MockObject<GrcService>;
   let router: Router;
-  let toastService: jasmine.SpyObj<ToastService>;
+  let toastService: MockObject<ToastService>;
   let route: ActivatedRouteStub;
 
   beforeEach(async () => {
@@ -70,11 +56,11 @@ describe('EditAccessionHolderComponent', () => {
     });
 
     router = TestBed.inject(Router);
-    spyOn(router, 'navigate');
+    vi.spyOn(router, 'navigate');
 
     await TestBed.createComponent(ValidationDefaultsComponent).whenStable();
 
-    grcService.list.and.returnValue(
+    grcService.list.mockReturnValue(
       of([
         {
           id: 1,
@@ -91,45 +77,44 @@ describe('EditAccessionHolderComponent', () => {
   describe('in create mode', () => {
     beforeEach(async () => {
       tester = new EditAccessionHolderComponentTester();
-      await tester.stable();
     });
 
-    it('should have a title', () => {
-      expect(tester.title).toContainText(`Créer un gestionnaire d'accessions`);
+    test('should have a title', async () => {
+      await expect.element(tester.title).toHaveTextContent(`Créer un gestionnaire d'accessions`);
     });
 
-    it('should display an empty form', () => {
-      expect(tester.name).toHaveValue('');
-      expect(tester.email).toHaveValue('');
-      expect(tester.phone).toHaveValue('');
-      expect(tester.grc).toHaveSelectedLabel('');
-      expect(tester.grc.optionLabels).toEqual(['', 'GRC1', 'GRC2']);
+    test('should display an empty form', async () => {
+      await expect.element(tester.name).toHaveValue('');
+      await expect.element(tester.email).toHaveValue('');
+      await expect.element(tester.phone).toHaveValue('');
+      await expect.element(tester.grc).toHaveDisplayValue('');
+      expect(tester.optionLabels()).toEqual(['', 'GRC1', 'GRC2']);
     });
 
-    it('should not save if error', async () => {
-      expect(tester.errors.length).toBe(0);
+    test('should not save if error', async () => {
+      await expect.element(tester.errors).toHaveLength(0);
 
       await tester.saveButton.click();
 
-      expect(tester.errors.length).toBe(4);
-      expect(tester.errors[0]).toContainText('Le nom est obligatoire');
-      expect(tester.errors[1]).toContainText('Le courriel est obligatoire');
-      expect(tester.errors[2]).toContainText('Le téléphone est obligatoire');
-      expect(tester.errors[3]).toContainText('Le CRB est obligatoire');
+      await expect.element(tester.errors).toHaveLength(4);
+      await expect.element(tester.errors.nth(0)).toHaveTextContent('Le nom est obligatoire');
+      await expect.element(tester.errors.nth(1)).toHaveTextContent('Le courriel est obligatoire');
+      await expect.element(tester.errors.nth(2)).toHaveTextContent('Le téléphone est obligatoire');
+      await expect.element(tester.errors.nth(3)).toHaveTextContent('Le CRB est obligatoire');
 
-      await tester.email.fillWith('bad-email');
-      expect(tester.errors[1]).toContainText('Le courriel doit être une adresse email valide');
+      await tester.email.fill('bad-email');
+      await expect.element(tester.errors.nth(1)).toHaveTextContent('Le courriel doit être une adresse email valide');
 
       expect(accessionHolderService.create).not.toHaveBeenCalled();
     });
 
-    it('should create an accession holder', async () => {
-      await tester.name.fillWith('Cyril');
-      await tester.email.fillWith('cyril@grc1.com');
-      await tester.phone.fillWith('0601020304');
-      await tester.grc.selectLabel('GRC1');
+    test('should create an accession holder', async () => {
+      await tester.name.fill('Cyril');
+      await tester.email.fill('cyril@grc1.com');
+      await tester.phone.fill('0601020304');
+      await tester.grc.selectOptions('GRC1');
 
-      accessionHolderService.create.and.returnValue(of({} as AccessionHolder));
+      accessionHolderService.create.mockReturnValue(of({} as AccessionHolder));
       await tester.saveButton.click();
 
       const expectedCommand: AccessionHolderCommand = {
@@ -147,7 +132,7 @@ describe('EditAccessionHolderComponent', () => {
   describe('in update mode', async () => {
     beforeEach(async () => {
       route.setParam('accessionHolderId', '41');
-      accessionHolderService.get.and.returnValue(
+      accessionHolderService.get.mockReturnValue(
         of({
           id: 41,
           name: 'Cyril',
@@ -159,27 +144,27 @@ describe('EditAccessionHolderComponent', () => {
         } as AccessionHolder)
       );
       tester = new EditAccessionHolderComponentTester();
-      await tester.stable();
+      await tester.fixture.whenStable();
     });
 
-    it('should have a title', () => {
-      expect(tester.title).toContainText(`Modifier un gestionnaire d'accessions`);
+    test('should have a title', () => {
+      expect(tester.title.element().textContent).toContain(`Modifier un gestionnaire d'accessions`);
     });
 
-    it('should display a filled form', () => {
-      expect(tester.name).toHaveValue('Cyril');
-      expect(tester.email).toHaveValue('cyril@grc2.fr');
-      expect(tester.phone).toHaveValue('0600000000');
-      expect(tester.grc).toHaveSelectedLabel('GRC2');
-      expect(tester.grc.optionLabels).toEqual(['', 'GRC1', 'GRC2']);
+    test('should display a filled form', async () => {
+      await expect.element(tester.name).toHaveValue('Cyril');
+      await expect.element(tester.email).toHaveValue('cyril@grc2.fr');
+      await expect.element(tester.phone).toHaveValue('0600000000');
+      await expect.element(tester.grc).toHaveDisplayValue('GRC2');
+      expect(tester.optionLabels()).toEqual(['', 'GRC1', 'GRC2']);
     });
 
-    it('should update the accession holder', async () => {
-      await tester.name.fillWith('Cédric');
-      await tester.email.fillWith('cedric@grc1.fr');
-      await tester.grc.selectLabel('GRC1');
+    test('should update the accession holder', async () => {
+      await tester.name.fill('Cédric');
+      await tester.email.fill('cedric@grc1.fr');
+      await tester.grc.selectOptions('GRC1');
 
-      accessionHolderService.update.and.returnValue(of(undefined));
+      accessionHolderService.update.mockReturnValue(of(undefined));
       await tester.saveButton.click();
 
       const expectedCommand: AccessionHolderCommand = {

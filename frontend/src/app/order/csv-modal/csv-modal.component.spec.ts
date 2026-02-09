@@ -1,46 +1,29 @@
 import { TestBed } from '@angular/core/testing';
 
 import { CsvModalComponent } from './csv-modal.component';
-import { ComponentTester, createMock } from 'ngx-speculoos';
+import { createMock, MockObject } from '../../../test/mock';
 import { OrderCsvParserService } from '../order-csv-parser.service';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { OrderItemCommand } from '../order.model';
-import { provideI18nTesting } from '../../i18n/mock-18n.spec';
+import { provideI18nTesting } from '../../i18n/mock-18n';
+import { page } from 'vitest/browser';
+import { beforeEach, describe, expect, test } from 'vitest';
 
-class CsvModalComponentTester extends ComponentTester<CsvModalComponent> {
-  constructor() {
-    super(CsvModalComponent);
-  }
-
-  get csv() {
-    return this.textarea('textarea')!;
-  }
-
-  get csvErrorsAlert() {
-    return this.element('.alert');
-  }
-
-  get csvErrors() {
-    return this.elements('.csv-error');
-  }
-
-  get items() {
-    return this.elements('.order-item');
-  }
-
-  get addItemsButton() {
-    return this.button('#add-items-button')!;
-  }
-
-  get dismissButton() {
-    return this.button('#dismiss-button')!;
-  }
+class CsvModalComponentTester {
+  readonly fixture = TestBed.createComponent(CsvModalComponent);
+  readonly root = page.elementLocator(this.fixture.nativeElement);
+  readonly csv = this.root.getByCss('textarea');
+  readonly csvErrorsAlert = this.root.getByCss('.alert');
+  readonly csvErrors = this.root.getByCss('.csv-error');
+  readonly items = this.root.getByCss('.order-item');
+  readonly addItemsButton = this.root.getByCss('#add-items-button');
+  readonly dismissButton = this.root.getByCss('#dismiss-button');
 }
 
 describe('CsvModalComponent', () => {
   let tester: CsvModalComponentTester;
-  let parser: jasmine.SpyObj<OrderCsvParserService>;
-  let activeModal: jasmine.SpyObj<NgbActiveModal>;
+  let parser: MockObject<OrderCsvParserService>;
+  let activeModal: MockObject<NgbActiveModal>;
 
   beforeEach(async () => {
     parser = createMock(OrderCsvParserService);
@@ -56,18 +39,18 @@ describe('CsvModalComponent', () => {
 
     tester = new CsvModalComponentTester();
 
-    await tester.stable();
+    await tester.fixture.whenStable();
   });
 
-  it('should display no error and no item initially', () => {
-    expect(tester.csv).toHaveValue('');
-    expect(tester.csvErrorsAlert).toBeNull();
-    expect(tester.items.length).toBe(0);
-    expect(tester.addItemsButton.disabled).toBe(true);
+  test('should display no error and no item initially', async () => {
+    await expect.element(tester.csv).toHaveDisplayValue('');
+    await expect.element(tester.csvErrorsAlert).toHaveLength(0);
+    await expect.element(tester.items).toHaveLength(0);
+    await expect.element(tester.addItemsButton).toBeDisabled();
   });
 
-  it('should parse and display errors', async () => {
-    parser.parse.and.returnValue({
+  test('should parse and display errors', async () => {
+    parser.parse.mockReturnValue({
       errors: [
         {
           row: 0,
@@ -77,17 +60,17 @@ describe('CsvModalComponent', () => {
       items: []
     });
 
-    await tester.csv.fillWith('foo;"');
-    expect(tester.csvErrorsAlert).not.toBeNull();
-    expect(tester.csvErrors.length).toBe(1);
-    expect(tester.csvErrors[0].element('th')).toHaveText('1');
-    expect(tester.csvErrors[0].element('td')).toHaveText('Apostrophes manquantes');
-    expect(tester.items.length).toBe(0);
-    expect(tester.addItemsButton.disabled).toBe(true);
+    await tester.csv.fill('foo;"');
+    await expect.element(tester.csvErrorsAlert).toBeInTheDocument();
+    await expect.element(tester.csvErrors).toHaveLength(1);
+    await expect.element(tester.csvErrors.nth(0).getByCss('th')).toHaveTextContent('1');
+    await expect.element(tester.csvErrors.nth(0).getByCss('td')).toHaveTextContent('Apostrophes manquantes');
+    await expect.element(tester.items).toHaveLength(0);
+    await expect.element(tester.addItemsButton).toBeDisabled();
   });
 
-  it('should parse and display items', async () => {
-    parser.parse.and.returnValue({
+  test('should parse and display items', async () => {
+    parser.parse.mockReturnValue({
       errors: [],
       items: [
         {
@@ -115,21 +98,21 @@ describe('CsvModalComponent', () => {
       ]
     });
 
-    await tester.csv.fillWith('correct"');
-    expect(tester.csvErrorsAlert).toBeNull();
-    expect(tester.items.length).toBe(2);
-    expect(tester.items[0]).toContainText('rosaName');
-    expect(tester.items[0]).toContainText('rosa1');
-    expect(tester.items[0]).toContainText('rosaTaxon');
-    expect(tester.items[1]).toContainText('violettaName');
-    expect(tester.items[1]).toContainText('violetta1');
-    expect(tester.items[1]).toContainText('violettaTaxon');
-    expect(tester.items[1]).toContainText('1 000 graines');
+    await tester.csv.fill('correct"');
+    await expect.element(tester.csvErrorsAlert).not.toBeInTheDocument();
+    await expect.element(tester.items).toHaveLength(2);
+    await expect.element(tester.items.nth(0)).toHaveTextContent('rosaName');
+    await expect.element(tester.items.nth(0)).toHaveTextContent('rosa1');
+    await expect.element(tester.items.nth(0)).toHaveTextContent('rosaTaxon');
+    await expect.element(tester.items.nth(1)).toHaveTextContent('violettaName');
+    await expect.element(tester.items.nth(1)).toHaveTextContent('violetta1');
+    await expect.element(tester.items.nth(1)).toHaveTextContent('violettaTaxon');
+    await expect.element(tester.items.nth(1)).toHaveTextContent(/1\s*000 graines/);
 
-    expect(tester.addItemsButton.disabled).toBe(false);
+    await expect.element(tester.addItemsButton).not.toBeDisabled();
   });
 
-  it('should add items', async () => {
+  test('should add items', async () => {
     const items: Array<OrderItemCommand> = [
       {
         accession: {
@@ -143,17 +126,17 @@ describe('CsvModalComponent', () => {
         unit: null
       }
     ];
-    parser.parse.and.returnValue({
+    parser.parse.mockReturnValue({
       errors: [],
       items
     });
 
-    await tester.csv.fillWith('correct"');
+    await tester.csv.fill('correct"');
     await tester.addItemsButton.click();
     expect(activeModal.close).toHaveBeenCalledWith(items);
   });
 
-  it('should dismiss', async () => {
+  test('should dismiss', async () => {
     await tester.dismissButton.click();
     expect(activeModal.dismiss).toHaveBeenCalled();
   });

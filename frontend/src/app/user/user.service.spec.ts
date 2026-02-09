@@ -4,6 +4,7 @@ import { UserService } from './user.service';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { Page } from '../shared/page.model';
 import { User, UserCommand } from '../shared/user.model';
+import { afterEach, beforeEach, describe, expect, test } from 'vitest';
 
 describe('UserService', () => {
   let service: UserService;
@@ -19,7 +20,7 @@ describe('UserService', () => {
 
   afterEach(() => http.verify());
 
-  it('should list users', () => {
+  test('should list users', () => {
     let actual: Page<User> | null = null;
 
     service.list(0).subscribe(users => (actual = users));
@@ -29,7 +30,7 @@ describe('UserService', () => {
     expect(actual!).toBe(expected);
   });
 
-  it('should get', () => {
+  test('should get', () => {
     let actual: User | null = null;
 
     service.get(42).subscribe(user => (actual = user));
@@ -39,7 +40,7 @@ describe('UserService', () => {
     expect(actual!).toBe(expected);
   });
 
-  it('should create', () => {
+  test('should create', () => {
     let actual: User | null = null;
 
     const command = { name: 'foo' } as UserCommand;
@@ -52,7 +53,7 @@ describe('UserService', () => {
     expect(actual!).toBe(expected);
   });
 
-  it('should update', () => {
+  test('should update', () => {
     let done = false;
 
     const command = { name: 'foo' } as UserCommand;
@@ -64,7 +65,7 @@ describe('UserService', () => {
     expect(done).toBe(true);
   });
 
-  it('should delete', () => {
+  test('should delete', () => {
     let done = false;
 
     service.delete(42).subscribe(() => (done = true));

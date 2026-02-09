@@ -1,60 +1,47 @@
 import { TestBed } from '@angular/core/testing';
 import { AppComponent } from './app.component';
-import { ComponentTester, createMock } from 'ngx-speculoos';
-import { RouterOutlet } from '@angular/router';
-import { NavbarComponent } from './navbar/navbar.component';
 import { AuthenticationService } from './shared/authentication.service';
 import { of } from 'rxjs';
-import { ToastsComponent } from './rb-ngb/toasts/toasts.component';
-import { provideI18nTesting } from './i18n/mock-18n.spec';
+import { provideI18nTesting } from './i18n/mock-18n';
+import { beforeEach, describe, expect, test } from 'vitest';
+import { page } from 'vitest/browser';
+import { createMock, MockObject } from '../test/mock';
 
-class AppComponentTester extends ComponentTester<AppComponent> {
-  constructor() {
-    super(AppComponent);
-  }
-
-  get navbar() {
-    return this.element(NavbarComponent);
-  }
-
-  get routerOutlet() {
-    return this.element(RouterOutlet);
-  }
-
-  get toasts() {
-    return this.element(ToastsComponent);
-  }
+class AppComponentTester {
+  readonly fixture = TestBed.createComponent(AppComponent);
+  readonly navbar = page.getByCss('rb-navbar');
+  readonly routerOutlet = page.getByCss('router-outlet');
+  readonly toasts = page.getByCss('rb-toasts');
 }
 
 describe('AppComponent', () => {
   let tester: AppComponentTester;
-  let authenticationService: jasmine.SpyObj<AuthenticationService>;
+  let authenticationService: MockObject<AuthenticationService>;
 
   beforeEach(async () => {
     authenticationService = createMock(AuthenticationService);
-    authenticationService.getCurrentUser.and.returnValue(of(null));
+    authenticationService.getCurrentUser.mockReturnValue(of(null));
 
     TestBed.configureTestingModule({
       providers: [provideI18nTesting(), { provide: AuthenticationService, useValue: authenticationService }]
     });
 
     tester = new AppComponentTester();
-    await tester.stable();
   });
 
-  it('should initialize auth', () => {
+  test('should initialize auth', () => {
     expect(authenticationService.init).toHaveBeenCalled();
   });
 
-  it('should have a router outlet', () => {
-    expect(tester.routerOutlet).not.toBeNull();
+  test('should have a router outlet', async () => {
+    await expect.element(tester.routerOutlet).toBeInTheDocument();
   });
 
-  it('should have a navbar', () => {
-    expect(tester.navbar).not.toBeNull();
+  test('should have a navbar', async () => {
+    await expect.element(tester.navbar).toBeInTheDocument();
   });
 
-  it('should have toasts', () => {
-    expect(tester.toasts).not.toBeNull();
+  test('should have toasts', async () => {
+    await expect.element(tester.toasts).toBeInTheDocument();
   });
 });

@@ -1,20 +1,17 @@
 import { TestBed } from '@angular/core/testing';
 
 import { ToastsComponent } from './toasts.component';
-import { ComponentTester, createMock } from 'ngx-speculoos';
-import { NgbToast } from '@ng-bootstrap/ng-bootstrap';
 import { Subject } from 'rxjs';
 import { Toast, ToastService } from '../../shared/toast.service';
 import { provideDisabledNgbAnimation } from '../disable-animations';
+import { page } from 'vitest/browser';
+import { createMock, MockObject } from '../../../test/mock';
+import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 
-class ToastsComponentTester extends ComponentTester<ToastsComponent> {
-  constructor() {
-    super(ToastsComponent);
-  }
-
-  get toasts(): Array<NgbToast> {
-    return this.components(NgbToast);
-  }
+class ToastsComponentTester {
+  readonly fixture = TestBed.createComponent(ToastsComponent);
+  readonly root = page.elementLocator(this.fixture.nativeElement);
+  readonly toasts = this.root.getByCss('.toast');
 }
 
 describe('ToastsComponent', () => {
@@ -22,46 +19,46 @@ describe('ToastsComponent', () => {
   let toastsSubject: Subject<Toast>;
 
   beforeEach(async () => {
-    const toastService = createMock(ToastService);
+    const toastService: MockObject<ToastService> = createMock(ToastService);
     toastsSubject = new Subject<Toast>();
-    toastService.toasts.and.returnValue(toastsSubject);
+    toastService.toasts.mockReturnValue(toastsSubject);
 
     TestBed.configureTestingModule({
       providers: [provideDisabledNgbAnimation(), { provide: ToastService, useValue: toastService }]
     });
-    jasmine.clock().install();
+    vi.useFakeTimers();
 
     tester = new ToastsComponentTester();
-    await tester.stable();
   });
 
-  afterEach(() => jasmine.clock().uninstall());
+  afterEach(() => vi.useRealTimers());
 
-  it('should display toasts and make them disappear', async () => {
-    expect(tester.toasts.length).toBe(0);
+  test('should display toasts and make them disappear', async () => {
+    vi.advanceTimersToNextFrame();
+    await expect.element(tester.toasts).toHaveLength(0);
 
     toastsSubject.next({ message: 'foo', type: 'error' });
-    jasmine.clock().tick(1);
-    await tester.stable();
-    expect(tester.toasts.length).toBe(1);
-    expect(tester.testElement).toContainText('foo');
+    vi.advanceTimersByTime(1);
+    vi.advanceTimersToNextFrame();
+    await expect.element(tester.toasts).toHaveLength(1);
+    await expect.element(tester.root).toHaveTextContent('foo');
 
-    jasmine.clock().tick(2500);
+    vi.advanceTimersByTime(2500);
     toastsSubject.next({ message: 'bar', type: 'success' });
-    jasmine.clock().tick(1);
-    await tester.stable();
-    expect(tester.toasts.length).toBe(2);
-    expect(tester.testElement).toContainText('foo');
-    expect(tester.testElement).toContainText('bar');
+    vi.advanceTimersByTime(1);
+    vi.advanceTimersToNextFrame();
+    await expect.element(tester.toasts).toHaveLength(2);
+    await expect.element(tester.root).toHaveTextContent('foo');
+    await expect.element(tester.root).toHaveTextContent('bar');
 
-    jasmine.clock().tick(2500);
-    await tester.stable();
-    expect(tester.toasts.length).toBe(1);
-    expect(tester.testElement).not.toContainText('foo');
-    expect(tester.testElement).toContainText('bar');
+    vi.advanceTimersByTime(2500);
+    vi.advanceTimersToNextFrame();
+    await expect.element(tester.toasts).toHaveLength(1);
+    await expect.element(tester.root).not.toHaveTextContent('foo');
+    await expect.element(tester.root).toHaveTextContent('bar');
 
-    jasmine.clock().tick(2500);
-    await tester.stable();
-    expect(tester.toasts.length).toBe(0);
+    vi.advanceTimersByTime(2500);
+    vi.advanceTimersToNextFrame();
+    await expect.element(tester.toasts).toHaveLength(0);
   });
 });

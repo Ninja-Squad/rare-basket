@@ -4,6 +4,7 @@ import { HttpTestingController, provideHttpClientTesting } from '@angular/common
 
 import { BasketService } from './basket.service';
 import { Basket, BasketCommand } from './basket.model';
+import { afterEach, beforeEach, describe, expect, test } from 'vitest';
 
 describe('BasketService', () => {
   let service: BasketService;
@@ -19,7 +20,7 @@ describe('BasketService', () => {
 
   afterEach(() => http.verify());
 
-  it('get a basket', () => {
+  test('get a basket', () => {
     let actualBasket: Basket | undefined;
 
     service.get('ref1').subscribe(basket => (actualBasket = basket));
@@ -29,7 +30,7 @@ describe('BasketService', () => {
     expect(actualBasket).toBe(expectedBasket);
   });
 
-  it('should save a basket', () => {
+  test('should save a basket', () => {
     let done = false;
 
     const command = { rationale: 'because' } as BasketCommand;
@@ -41,7 +42,7 @@ describe('BasketService', () => {
     expect(done).toBe(true);
   });
 
-  it('should confirm a basket', () => {
+  test('should confirm a basket', () => {
     let done = false;
 
     const confirmationCode = 'ZYXWVUTS';
@@ -53,7 +54,7 @@ describe('BasketService', () => {
     expect(done).toBe(true);
   });
 
-  it('should ignore already confirmed error', () => {
+  test('should ignore already confirmed error', () => {
     let done = false;
 
     const confirmationCode = 'ZYXWVUTS';
@@ -65,7 +66,7 @@ describe('BasketService', () => {
     expect(done).toBe(true);
   });
 
-  it('should not ignore other errors', () => {
+  test('should not ignore other errors', () => {
     let done = false;
 
     const confirmationCode = 'ZYXWVUTS';

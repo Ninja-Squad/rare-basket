@@ -4,10 +4,12 @@ import { OrdersComponent } from './orders.component';
 import { ChangeDetectionStrategy, Component, LOCALE_ID } from '@angular/core';
 import { Order } from '../order.model';
 import { Page } from '../../shared/page.model';
-import { ComponentTester } from 'ngx-speculoos';
 import { PaginationComponent } from '../../rb-ngb/pagination/pagination.component';
-import { provideI18nTesting } from '../../i18n/mock-18n.spec';
+import { provideI18nTesting } from '../../i18n/mock-18n';
 import { provideRouter } from '@angular/router';
+import { page } from 'vitest/browser';
+import { By } from '@angular/platform-browser';
+import { beforeEach, describe, expect, test } from 'vitest';
 
 @Component({
   template: `<rb-orders [orders]="orders" />`,
@@ -60,17 +62,17 @@ class TestComponent {
   };
 }
 
-class TestComponentTester extends ComponentTester<TestComponent> {
-  constructor() {
-    super(TestComponent);
+class TestComponentTester {
+  readonly fixture = TestBed.createComponent(TestComponent);
+  readonly root = page.elementLocator(this.fixture.nativeElement);
+  readonly rows = this.root.getByCss('.row');
+
+  get componentInstance() {
+    return this.fixture.componentInstance;
   }
 
   get pagination(): PaginationComponent {
-    return this.component(PaginationComponent);
-  }
-
-  get rows() {
-    return this.elements('.row');
+    return this.fixture.debugElement.query(By.directive(PaginationComponent)).componentInstance;
   }
 }
 
@@ -83,25 +85,25 @@ describe('OrdersComponent', () => {
     });
 
     tester = new TestComponentTester();
-    await tester.stable();
+    await tester.fixture.whenStable();
   });
 
-  it('should have a pagination', () => {
+  test('should have a pagination', () => {
     expect(tester.pagination.page()).toBe(tester.componentInstance.orders);
     expect(tester.pagination.navigate()).toBe(true);
   });
 
-  it('should have rows of data', () => {
-    expect(tester.rows.length).toBe(2);
-    expect(tester.rows[0]).toContainText('ABCDEFGH');
-    expect(tester.rows[0]).toContainText('pour the flower holder');
-    expect(tester.rows[0]).toContainText('John Doe');
-    expect(tester.rows[0]).toContainText('Citoyen');
-    expect(tester.rows[0]).toContainText('2 avr. 2020');
-    expect(tester.rows[0]).toContainText('2 accessions');
-    expect(tester.rows[0]).toContainText('En cours');
+  test('should have rows of data', async () => {
+    await expect.element(tester.rows).toHaveLength(2);
+    await expect.element(tester.rows.nth(0)).toHaveTextContent('ABCDEFGH');
+    await expect.element(tester.rows.nth(0)).toHaveTextContent('pour the flower holder');
+    await expect.element(tester.rows.nth(0)).toHaveTextContent('John Doe');
+    await expect.element(tester.rows.nth(0)).toHaveTextContent('Citoyen');
+    await expect.element(tester.rows.nth(0)).toHaveTextContent('2 avr. 2020');
+    await expect.element(tester.rows.nth(0)).toHaveTextContent('2 accessions');
+    await expect.element(tester.rows.nth(0)).toHaveTextContent('En cours');
 
-    expect(tester.rows[1]).toContainText('(Farm Inc.)');
-    expect(tester.rows[1]).toContainText('1 accession');
+    await expect.element(tester.rows.nth(1)).toHaveTextContent('(Farm Inc.)');
+    await expect.element(tester.rows.nth(1)).toHaveTextContent('1 accession');
   });
 });

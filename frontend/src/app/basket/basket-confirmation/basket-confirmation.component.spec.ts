@@ -1,25 +1,24 @@
 import { TestBed } from '@angular/core/testing';
 
 import { BasketConfirmationComponent } from './basket-confirmation.component';
-import { ComponentTester, createMock, stubRoute } from 'ngx-speculoos';
+import { createMock, MockObject } from '../../../test/mock';
+import { stubRoute } from '../../../test/route-stub';
 import { ActivatedRoute, Router } from '@angular/router';
 import { BasketService } from '../basket.service';
 import { of, throwError } from 'rxjs';
-import { provideI18nTesting } from '../../i18n/mock-18n.spec';
+import { provideI18nTesting } from '../../i18n/mock-18n';
+import { page } from 'vitest/browser';
+import { beforeEach, describe, expect, test, vi } from 'vitest';
 
-class BasketConfirmationComponentTester extends ComponentTester<BasketConfirmationComponent> {
-  constructor() {
-    super(BasketConfirmationComponent);
-  }
-
-  get alert() {
-    return this.element('.alert');
-  }
+class BasketConfirmationComponentTester {
+  readonly fixture = TestBed.createComponent(BasketConfirmationComponent);
+  readonly root = page.elementLocator(this.fixture.nativeElement);
+  readonly alert = this.root.getByCss('.alert');
 }
 
 describe('BasketConfirmationComponent', () => {
   let tester: BasketConfirmationComponentTester;
-  let basketService: jasmine.SpyObj<BasketService>;
+  let basketService: MockObject<BasketService>;
 
   beforeEach(() => {
     const route = stubRoute({
@@ -38,27 +37,25 @@ describe('BasketConfirmationComponent', () => {
     });
   });
 
-  it('should confirm and redirect if successful', async () => {
-    basketService.confirm.and.returnValue(of(undefined));
+  test('should confirm and redirect if successful', async () => {
+    basketService.confirm.mockReturnValue(of(undefined));
     const router = TestBed.inject(Router);
-    spyOn(router, 'navigate');
+    vi.spyOn(router, 'navigate');
     tester = new BasketConfirmationComponentTester();
-    await tester.stable();
 
-    expect(tester.alert).toBeNull();
+    await expect.element(tester.alert).not.toBeInTheDocument();
     expect(basketService.confirm).toHaveBeenCalledWith('ABCDEFGH', 'XYXWVUTS');
     expect(router.navigate).toHaveBeenCalledWith(['/baskets', 'ABCDEFGH']);
   });
 
-  it('should confirm and display an alert is unsuccessful', async () => {
-    basketService.confirm.and.returnValue(throwError(() => undefined));
+  test('should confirm and display an alert is unsuccessful', async () => {
+    basketService.confirm.mockReturnValue(throwError(() => undefined));
     const router = TestBed.inject(Router);
-    spyOn(router, 'navigate');
+    vi.spyOn(router, 'navigate');
     tester = new BasketConfirmationComponentTester();
-    await tester.stable();
 
     expect(basketService.confirm).toHaveBeenCalledWith('ABCDEFGH', 'XYXWVUTS');
     expect(router.navigate).not.toHaveBeenCalled();
-    expect(tester.alert).not.toBeNull();
+    await expect.element(tester.alert).toBeInTheDocument();
   });
 });

@@ -1,31 +1,27 @@
 import { TestBed } from '@angular/core/testing';
 
 import { FinalizationWarningsModalComponent } from './finalization-warnings-modal.component';
-import { ComponentTester, createMock } from 'ngx-speculoos';
+import { createMock, MockObject } from '../../../test/mock';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
-import { provideI18nTesting } from '../../i18n/mock-18n.spec';
+import { provideI18nTesting } from '../../i18n/mock-18n';
+import { page } from 'vitest/browser';
+import { beforeEach, describe, expect, test } from 'vitest';
 
-class FinalizationWarningsModalComponentTester extends ComponentTester<FinalizationWarningsModalComponent> {
-  constructor() {
-    super(FinalizationWarningsModalComponent);
-  }
+class FinalizationWarningsModalComponentTester {
+  readonly fixture = TestBed.createComponent(FinalizationWarningsModalComponent);
+  readonly root = page.elementLocator(this.fixture.nativeElement);
+  readonly yesButton = this.root.getByCss('#yes-button');
+  readonly noButton = this.root.getByCss('#no-button');
+  readonly messages = this.root.getByCss('li');
 
-  get yesButton() {
-    return this.button('#yes-button')!;
-  }
-
-  get noButton() {
-    return this.button('#no-button')!;
-  }
-
-  get messages() {
-    return this.elements('li');
+  get componentInstance() {
+    return this.fixture.componentInstance;
   }
 }
 
 describe('FinalizationWarningsModalComponent', () => {
   let tester: FinalizationWarningsModalComponentTester;
-  let activeModal: jasmine.SpyObj<NgbActiveModal>;
+  let activeModal: MockObject<NgbActiveModal>;
 
   beforeEach(async () => {
     activeModal = createMock(NgbActiveModal);
@@ -36,21 +32,21 @@ describe('FinalizationWarningsModalComponent', () => {
 
     tester = new FinalizationWarningsModalComponentTester();
     tester.componentInstance.init(['foo', 'bar']);
-    await tester.stable();
+    await tester.fixture.whenStable();
   });
 
-  it('should display messages', () => {
-    expect(tester.messages.length).toBe(2);
-    expect(tester.messages[0]).toHaveText('foo');
-    expect(tester.messages[1]).toHaveText('bar');
+  test('should display messages', async () => {
+    await expect.element(tester.messages).toHaveLength(2);
+    await expect.element(tester.messages.nth(0)).toHaveTextContent('foo');
+    await expect.element(tester.messages.nth(1)).toHaveTextContent('bar');
   });
 
-  it('should close when clicking yes', async () => {
+  test('should close when clicking yes', async () => {
     await tester.yesButton.click();
     expect(activeModal.close).toHaveBeenCalled();
   });
 
-  it('should dismiss when clicking no', async () => {
+  test('should dismiss when clicking no', async () => {
     await tester.noButton.click();
     expect(activeModal.dismiss).toHaveBeenCalled();
   });

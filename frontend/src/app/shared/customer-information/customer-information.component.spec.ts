@@ -1,9 +1,10 @@
 import { TestBed } from '@angular/core/testing';
 import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
-import { ComponentTester } from 'ngx-speculoos';
 import { Customer } from '../../basket/basket.model';
 import { CustomerInformationComponent } from './customer-information.component';
-import { provideI18nTesting } from '../../i18n/mock-18n.spec';
+import { provideI18nTesting } from '../../i18n/mock-18n';
+import { page } from 'vitest/browser';
+import { beforeEach, describe, expect, test } from 'vitest';
 
 @Component({
   template: '<rb-customer-information [customer]="customer()" [rationale]="rationale()" [withLanguage]="withLanguage()" />',
@@ -25,9 +26,12 @@ class TestComponent {
   readonly withLanguage = signal(false);
 }
 
-class TestComponentTester extends ComponentTester<TestComponent> {
-  constructor() {
-    super(TestComponent);
+class TestComponentTester {
+  readonly fixture = TestBed.createComponent(TestComponent);
+  readonly root = page.elementLocator(this.fixture.nativeElement);
+
+  get componentInstance() {
+    return this.fixture.componentInstance;
   }
 }
 
@@ -42,24 +46,22 @@ describe('CustomerInformationComponent', () => {
     tester = new TestComponentTester();
   });
 
-  it('should display customer information', async () => {
-    await tester.stable();
-
-    expect(tester.testElement).toContainText('John');
-    expect(tester.testElement).toContainText('Entreprise ou organisation');
-    expect(tester.testElement).toContainText('Boom Inc.');
-    expect(tester.testElement).toContainText('john@mail.com');
-    expect(tester.testElement).toContainText('Av. du Centre\n75000 Paris');
-    expect(tester.testElement).toContainText('Av. du Centre - billing service\n75000 Paris');
-    expect(tester.testElement).toContainText('Citoyen');
-    expect(tester.testElement).toContainText('Why not?');
-    expect(tester.testElement).not.toContainText('Français');
+  test('should display customer information', async () => {
+    await expect.element(tester.root).toHaveTextContent('John');
+    await expect.element(tester.root).toHaveTextContent('Entreprise ou organisation');
+    await expect.element(tester.root).toHaveTextContent('Boom Inc.');
+    await expect.element(tester.root).toHaveTextContent('john@mail.com');
+    await expect.element(tester.root).toHaveTextContent(/Av\. du Centre\s*75000 Paris/);
+    await expect.element(tester.root).toHaveTextContent(/Av\. du Centre - billing service\s*75000 Paris/);
+    await expect.element(tester.root).toHaveTextContent('Citoyen');
+    await expect.element(tester.root).toHaveTextContent('Why not?');
+    await expect.element(tester.root).not.toHaveTextContent('Français');
 
     tester.componentInstance.withLanguage.set(true);
     tester.componentInstance.customer.update(customer => ({ ...customer, organization: '' }));
-    await tester.stable();
+    await tester.fixture.whenStable();
 
-    expect(tester.testElement).toContainText('Français');
-    expect(tester.testElement).not.toContainText('Entreprise ou organisation');
+    await expect.element(tester.root).toHaveTextContent('Français');
+    await expect.element(tester.root).not.toHaveTextContent('Entreprise ou organisation');
   });
 });

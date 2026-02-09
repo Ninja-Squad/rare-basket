@@ -83,25 +83,11 @@
           "defaultConfiguration": "development"
         },
         "test": {
-          "builder": "@angular/build:karma",
+          "builder": "@angular/build:unit-test",
           "options": {
-            "aot": true,
-            "main": "src/test.ts",
-            "polyfills": ["@angular/localize/init"],
-            "tsConfig": "tsconfig.spec.json",
-            "browsers": "ChromeHeadless",
-            "assets": [
-              {
-                "glob": "**/*",
-                "input": "public"
-              }
-            ],
-            "styles": ["src/styles.scss"],
-            "stylePreprocessorOptions": {
-              "sass": {
-                "silenceDeprecations": ["import", "color-functions", "global-builtin"]
-              }
-            }
+            "runnerConfig": true,
+            "browsers": ["chromiumHeadless"],
+            "setupFiles": ["src/test/test.ts"]
           }
         },
         "lint": {
