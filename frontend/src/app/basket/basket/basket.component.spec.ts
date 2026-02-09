@@ -1,7 +1,8 @@
 import { TestBed } from '@angular/core/testing';
 
 import { BasketComponent } from './basket.component';
-import { ComponentTester, createMock, stubRoute } from 'ngx-speculoos';
+import { createMock, MockObject } from '../../../test/mock';
+import { stubRoute } from '../../../test/route-stub';
 import { EditBasketComponent } from '../edit-basket/edit-basket.component';
 import { ActivatedRoute } from '@angular/router';
 import { AccessionHolderBasket, Basket, BasketCommand } from '../basket.model';
@@ -9,33 +10,32 @@ import { BasketService } from '../basket.service';
 import { of } from 'rxjs';
 import { EditConfirmationComponent } from '../edit-confirmation/edit-confirmation.component';
 import { ConfirmedComponent } from '../confirmed/confirmed.component';
-import { provideI18nTesting } from '../../i18n/mock-18n.spec';
+import { provideI18nTesting } from '../../i18n/mock-18n';
+import { page } from 'vitest/browser';
+import { By } from '@angular/platform-browser';
+import { beforeEach, describe, expect, test } from 'vitest';
 
-class BasketComponentTester extends ComponentTester<BasketComponent> {
-  constructor() {
-    super(BasketComponent);
+class BasketComponentTester {
+  readonly fixture = TestBed.createComponent(BasketComponent);
+  readonly title = page.getByCss('h1');
+  readonly componentInstance = this.fixture.componentInstance;
+
+  get editBasketComponent(): EditBasketComponent | null {
+    return this.fixture.debugElement.query(By.directive(EditBasketComponent))?.componentInstance ?? null;
   }
 
-  get title() {
-    return this.element('h1');
+  get editConfirmationComponent(): EditConfirmationComponent | null {
+    return this.fixture.debugElement.query(By.directive(EditConfirmationComponent))?.componentInstance ?? null;
   }
 
-  get editBasketComponent(): EditBasketComponent {
-    return this.component(EditBasketComponent);
-  }
-
-  get editConfirmationComponent(): EditConfirmationComponent {
-    return this.component(EditConfirmationComponent);
-  }
-
-  get confirmedComponent(): ConfirmedComponent {
-    return this.component(ConfirmedComponent);
+  get confirmedComponent(): ConfirmedComponent | null {
+    return this.fixture.debugElement.query(By.directive(ConfirmedComponent))?.componentInstance ?? null;
   }
 }
 
 describe('BasketComponent', () => {
   let tester: BasketComponentTester;
-  let basketService: jasmine.SpyObj<BasketService>;
+  let basketService: MockObject<BasketService>;
 
   beforeEach(() => {
     const route = stubRoute({
@@ -71,36 +71,36 @@ describe('BasketComponent', () => {
         accessionHolderBaskets: [] as Array<AccessionHolderBasket>
       } as Basket;
 
-      basketService.get.and.returnValues(of(basket), of(savedBasket));
+      basketService.get.mockReturnValueOnce(of(basket)).mockReturnValueOnce(of(savedBasket));
       tester = new BasketComponentTester();
-      await tester.stable();
+      await tester.fixture.whenStable();
     });
 
-    it('should have a title', () => {
-      expect(tester.title).toContainText('Votre commande ABCDEFGH');
+    test('should have a title', () => {
+      expect(tester.title.element().textContent).toContain('Votre commande ABCDEFGH');
     });
 
-    it('should have an edit component', () => {
+    test('should have an edit component', () => {
       expect(basketService.get).toHaveBeenCalledWith('ABCDEFGH');
       expect(tester.editBasketComponent).not.toBeNull();
-      expect(tester.editBasketComponent.basket()).toBe(basket);
+      expect(tester.editBasketComponent!.basket()).toBe(basket);
       expect(tester.editConfirmationComponent).toBeNull();
       expect(tester.confirmedComponent).toBeNull();
     });
 
-    it('should save basket when edit component emits', async () => {
+    test('should save basket when edit component emits', async () => {
       const command = {} as BasketCommand;
 
-      basketService.save.and.returnValue(of(undefined));
+      basketService.save.mockReturnValue(of(undefined));
 
-      tester.editBasketComponent.basketSaved.emit(command);
-      await tester.stable();
+      tester.editBasketComponent!.basketSaved.emit(command);
+      await tester.fixture.whenStable();
 
       expect(basketService.save).toHaveBeenCalledWith('ABCDEFGH', command);
       expect(tester.componentInstance.basket()).toBe(savedBasket);
       expect(tester.editBasketComponent).toBeNull();
       expect(tester.editConfirmationComponent).not.toBeNull();
-      expect(tester.editConfirmationComponent.basket()).toBe(savedBasket);
+      expect(tester.editConfirmationComponent!.basket()).toBe(savedBasket);
     });
   });
 
@@ -127,37 +127,37 @@ describe('BasketComponent', () => {
         accessionHolderBaskets: [] as Array<AccessionHolderBasket>
       } as Basket;
 
-      basketService.get.and.returnValues(of(basket), of(confirmedBasket));
+      basketService.get.mockReturnValueOnce(of(basket)).mockReturnValueOnce(of(confirmedBasket));
 
       tester = new BasketComponentTester();
-      await tester.stable();
+      await tester.fixture.whenStable();
     });
 
-    it('should have an edit confirmation component', () => {
+    test('should have an edit confirmation component', () => {
       expect(basketService.get).toHaveBeenCalledWith('ABCDEFGH');
       expect(tester.editBasketComponent).toBeNull();
       expect(tester.editConfirmationComponent).not.toBeNull();
       expect(tester.confirmedComponent).toBeNull();
 
-      expect(tester.editConfirmationComponent.basket()).toBe(basket);
+      expect(tester.editConfirmationComponent!.basket()).toBe(basket);
     });
 
-    it('should confirm when edit confirmation component emits', async () => {
-      basketService.confirm.and.returnValue(of(undefined));
+    test('should confirm when edit confirmation component emits', async () => {
+      basketService.confirm.mockReturnValue(of(undefined));
 
-      tester.editConfirmationComponent.basketConfirmed.emit('CODE');
-      await tester.stable();
+      tester.editConfirmationComponent!.basketConfirmed.emit('CODE');
+      await tester.fixture.whenStable();
 
       expect(basketService.confirm).toHaveBeenCalledWith('ABCDEFGH', 'CODE');
       expect(tester.componentInstance.basket()).toBe(confirmedBasket);
       expect(tester.editConfirmationComponent).toBeNull();
       expect(tester.confirmedComponent).not.toBeNull();
-      expect(tester.confirmedComponent.basket()).toBe(confirmedBasket);
+      expect(tester.confirmedComponent!.basket()).toBe(confirmedBasket);
     });
 
-    it('should refresh when edit confirmation component asks to', async () => {
-      tester.editConfirmationComponent.refreshRequested.emit(undefined);
-      await tester.stable();
+    test('should refresh when edit confirmation component asks to', async () => {
+      tester.editConfirmationComponent!.refreshRequested.emit(undefined);
+      await tester.fixture.whenStable();
 
       expect(tester.componentInstance.basket()).toBe(confirmedBasket);
     });

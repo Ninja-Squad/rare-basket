@@ -2,7 +2,9 @@ import { ChartComponent } from './chart.component';
 import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
 import { ArcElement, Chart, ChartConfiguration, DoughnutController } from 'chart.js';
 import { TestBed } from '@angular/core/testing';
-import { ComponentTester } from 'ngx-speculoos';
+import { page } from 'vitest/browser';
+import { By } from '@angular/platform-browser';
+import { beforeEach, describe, expect, test } from 'vitest';
 
 @Component({
   template: '<rb-chart [configuration]="configuration()" />',
@@ -34,23 +36,23 @@ describe('ChartComponent', () => {
     TestBed.configureTestingModule({});
   });
 
-  it('should display a chart', async () => {
-    const tester = new ComponentTester(TestComponent);
-    await tester.change();
+  test('should display a chart', async () => {
+    const fixture = TestBed.createComponent(TestComponent);
+    await fixture.whenStable();
 
-    const canvas: HTMLCanvasElement = tester.element('canvas')!.nativeElement;
+    const canvas = page.elementLocator(fixture.nativeElement).getByCss('canvas').element() as HTMLCanvasElement;
     expect(canvas.toDataURL().length).toBeGreaterThan(0);
-    const chartComponent: ChartComponent = tester.component(ChartComponent);
-    expect(chartComponent.configuration()).toBe(tester.componentInstance.configuration());
+    const chartComponent: ChartComponent = fixture.debugElement.query(By.directive(ChartComponent)).componentInstance;
+    expect(chartComponent.configuration()).toBe(fixture.componentInstance.configuration());
   });
 
-  it('should display a different chart when input changes', async () => {
-    const tester = new ComponentTester(TestComponent);
-    await tester.change();
+  test('should display a different chart when input changes', async () => {
+    const fixture = TestBed.createComponent(TestComponent);
+    await fixture.whenStable();
 
-    const canvas: HTMLCanvasElement = tester.element('canvas')!.nativeElement;
+    const canvas = page.elementLocator(fixture.nativeElement).getByCss('canvas').element() as HTMLCanvasElement;
     const firstImage = canvas.toDataURL();
-    const chartComponent: ChartComponent = tester.component(ChartComponent);
+    const chartComponent: ChartComponent = fixture.debugElement.query(By.directive(ChartComponent)).componentInstance;
 
     const newConfiguration: ChartConfiguration<'doughnut'> = {
       type: 'doughnut',
@@ -67,8 +69,8 @@ describe('ChartComponent', () => {
         }
       }
     };
-    tester.componentInstance.configuration.set(newConfiguration);
-    await tester.change();
+    fixture.componentInstance.configuration.set(newConfiguration);
+    await fixture.whenStable();
 
     expect(canvas.toDataURL()).not.toBe(firstImage);
     expect(chartComponent.configuration()).toBe(newConfiguration);

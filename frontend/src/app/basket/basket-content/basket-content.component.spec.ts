@@ -3,8 +3,9 @@ import { TestBed } from '@angular/core/testing';
 import { BasketContentComponent } from './basket-content.component';
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { Basket } from '../basket.model';
-import { ComponentTester } from 'ngx-speculoos';
-import { provideI18nTesting } from '../../i18n/mock-18n.spec';
+import { provideI18nTesting } from '../../i18n/mock-18n';
+import { page } from 'vitest/browser';
+import { beforeEach, describe, expect, test } from 'vitest';
 
 @Component({
   template: '<rb-basket-content [basket]="basket" />',
@@ -76,25 +77,16 @@ class TestComponent {
   } as Basket;
 }
 
-class TestComponentTester extends ComponentTester<TestComponent> {
-  constructor() {
-    super(TestComponent);
-  }
-
-  get items() {
-    return this.elements('.basket-item');
-  }
-
-  get accessionHolderTitles() {
-    return this.elements('h3');
-  }
-
-  get itemTables() {
-    return this.elements('table');
-  }
+class TestComponentTester {
+  readonly fixture = TestBed.createComponent(TestComponent);
+  readonly root = page.elementLocator(this.fixture.nativeElement);
+  readonly items = this.root.getByCss('.basket-item');
+  readonly accessionHolderTitles = this.root.getByCss('h3');
+  readonly itemTables = this.root.getByCss('table');
+  readonly componentInstance = this.fixture.componentInstance;
 
   itemTableHeadings(index: number) {
-    return this.itemTables[index].elements('th');
+    return this.itemTables.nth(index).getByCss('th');
   }
 }
 
@@ -109,60 +101,51 @@ describe('BasketContentComponent', () => {
     tester = new TestComponentTester();
   });
 
-  it('should display customer information', async () => {
-    await tester.stable();
-
-    expect(tester.testElement).toContainText('John');
-    expect(tester.testElement).toContainText('Boom Inc.');
-    expect(tester.testElement).toContainText('john@mail.com');
-    expect(tester.testElement).toContainText('Av. du Centre\n75000 Paris');
-    expect(tester.testElement).toContainText('Av. du Centre - billing service\n75000 Paris');
-    expect(tester.testElement).toContainText('Citoyen');
-    expect(tester.testElement).toContainText('Why not?');
-    expect(tester.testElement).not.toContainText('Français');
+  test('should display customer information', async () => {
+    await expect.element(tester.root).toHaveTextContent('John');
+    await expect.element(tester.root).toHaveTextContent('Boom Inc.');
+    await expect.element(tester.root).toHaveTextContent('john@mail.com');
+    await expect.element(tester.root).toHaveTextContent(/Av\. du Centre\s*75000 Paris/);
+    await expect.element(tester.root).toHaveTextContent(/Av\. du Centre - billing service\s*75000 Paris/);
+    await expect.element(tester.root).toHaveTextContent('Citoyen');
+    await expect.element(tester.root).toHaveTextContent('Why not?');
+    await expect.element(tester.root).not.toHaveTextContent('Français');
   });
 
-  it('should display one section per accession holder basket', async () => {
-    await tester.stable();
-
-    expect(tester.accessionHolderTitles.length).toBe(2);
-    expect(tester.accessionHolderTitles[0]).toHaveText('GRC1 - Contact1');
-    expect(tester.accessionHolderTitles[1]).toHaveText('GRC2 - Contact2');
-    expect(tester.itemTables.length).toBe(2);
+  test('should display one section per accession holder basket', async () => {
+    await expect.element(tester.accessionHolderTitles).toHaveLength(2);
+    await expect.element(tester.accessionHolderTitles.nth(0)).toHaveTextContent('GRC1 - Contact1');
+    await expect.element(tester.accessionHolderTitles.nth(1)).toHaveTextContent('GRC2 - Contact2');
+    await expect.element(tester.itemTables).toHaveLength(2);
   });
 
-  it('should display basket items', async () => {
-    await tester.stable();
-
-    expect(tester.itemTableHeadings(0).length).toBe(4);
-    expect(tester.items.length).toBe(3);
-    expect(tester.items[0]).toContainText('Rosa');
-    expect(tester.items[0]).toContainText('rosaTaxon');
-    expect(tester.items[0]).toContainText('1 234 bags');
-    expect(tester.items[1]).toContainText('Violetta');
-    expect(tester.items[1]).toContainText('violettaNumber');
-    expect(tester.items[1]).toContainText('violettaTaxon');
-
-    expect(tester.itemTableHeadings(0).length).toBe(4);
+  test('should display basket items', async () => {
+    await expect.element(tester.itemTableHeadings(0)).toHaveLength(4);
+    await expect.element(tester.items).toHaveLength(3);
+    await expect.element(tester.items.nth(0)).toHaveTextContent('Rosa');
+    await expect.element(tester.items.nth(0)).toHaveTextContent('rosaTaxon');
+    await expect.element(tester.items.nth(0)).toHaveTextContent(/1\s*234 bags/);
+    await expect.element(tester.items.nth(1)).toHaveTextContent('Violetta');
+    await expect.element(tester.items.nth(1)).toHaveTextContent('violettaNumber');
+    await expect.element(tester.items.nth(1)).toHaveTextContent('violettaTaxon');
+    await expect.element(tester.itemTableHeadings(0)).toHaveLength(4);
   });
 
-  it('should display basket items without quantity if no item has a quantity', async () => {
+  test('should display basket items without quantity if no item has a quantity', async () => {
     tester.componentInstance.basket.accessionHolderBaskets.forEach(accessionHolderBasket => {
       accessionHolderBasket.items.forEach(item => (item.quantity = null));
     });
-    await tester.stable();
 
-    expect(tester.itemTableHeadings(0).length).toBe(3);
-    expect(tester.itemTableHeadings(1).length).toBe(3);
+    await expect.element(tester.itemTableHeadings(0)).toHaveLength(3);
+    await expect.element(tester.itemTableHeadings(1)).toHaveLength(3);
   });
 
-  it('should display basket items without accession number if no item has one', async () => {
+  test('should display basket items without accession number if no item has one', async () => {
     tester.componentInstance.basket.accessionHolderBaskets.forEach(accessionHolderBasket => {
       accessionHolderBasket.items.forEach(item => (item.accession.accessionNumber = null));
     });
-    await tester.stable();
 
-    expect(tester.itemTableHeadings(0).length).toBe(3);
-    expect(tester.itemTableHeadings(1).length).toBe(3);
+    await expect.element(tester.itemTableHeadings(0)).toHaveLength(3);
+    await expect.element(tester.itemTableHeadings(1)).toHaveLength(3);
   });
 });

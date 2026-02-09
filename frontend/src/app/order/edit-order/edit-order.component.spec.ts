@@ -3,11 +3,13 @@ import { TestBed } from '@angular/core/testing';
 import { EditOrderComponent } from './edit-order.component';
 import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
 import { Order, OrderCommand, OrderItemCommand } from '../order.model';
-import { ComponentTester, createMock, TestButton } from 'ngx-speculoos';
+import { createMock } from '../../../test/mock';
 import { ValidationDefaultsComponent } from '../../validation-defaults/validation-defaults.component';
-import { MockModalService, provideModalTesting } from '../../rb-ngb/mock-modal.service.spec';
+import { MockModalService, provideModalTesting } from '../../rb-ngb/mock-modal.service';
 import { CsvModalComponent } from '../csv-modal/csv-modal.component';
-import { provideI18nTesting } from '../../i18n/mock-18n.spec';
+import { provideI18nTesting } from '../../i18n/mock-18n';
+import { page } from 'vitest/browser';
+import { beforeEach, describe, expect, test } from 'vitest';
 
 @Component({
   template: '<rb-edit-order [order]="order" (cancelled)="cancelled.set(true)" (saved)="saved.set($event)" />',
@@ -47,57 +49,42 @@ class TestComponent {
   } as Order;
 }
 
-class TestComponentTester extends ComponentTester<TestComponent> {
-  constructor() {
-    super(TestComponent);
-  }
+class TestComponentTester {
+  readonly fixture = TestBed.createComponent(TestComponent);
+  readonly root = page.elementLocator(this.fixture.nativeElement);
+  readonly items = this.root.getByCss('.edit-order-item');
+  readonly addItemButton = this.root.getByCss('#add-item-button');
+  readonly csvButton = this.root.getByCss('#csv-button');
+  readonly saveButton = this.root.getByCss('#save-button');
+  readonly cancelButton = this.root.getByCss('#cancel-button');
+  readonly errors = this.root.getByCss('.invalid-feedback div');
 
-  get items() {
-    return this.elements('.edit-order-item');
+  get componentInstance() {
+    return this.fixture.componentInstance;
   }
 
   name(index: number) {
-    return this.input(`#name-${index}`);
+    return this.root.getByCss(`#name-${index}`);
   }
 
   accessionNumber(index: number) {
-    return this.input(`#accession-number-${index}`);
+    return this.root.getByCss(`#accession-number-${index}`);
   }
 
   taxon(index: number) {
-    return this.input(`#taxon-${index}`);
+    return this.root.getByCss(`#taxon-${index}`);
   }
 
   quantity(index: number) {
-    return this.input(`#quantity-${index}`);
+    return this.root.getByCss(`#quantity-${index}`);
   }
 
   unit(index: number) {
-    return this.input(`#unit-${index}`);
+    return this.root.getByCss(`#unit-${index}`);
   }
 
   deleteButton(index: number) {
-    return this.elements('.delete-order-item')[index] as TestButton;
-  }
-
-  get addItemButton() {
-    return this.button('#add-item-button')!;
-  }
-
-  get csvButton() {
-    return this.button('#csv-button')!;
-  }
-
-  get saveButton() {
-    return this.button('#save-button')!;
-  }
-
-  get cancelButton() {
-    return this.button('#cancel-button')!;
-  }
-
-  get errors() {
-    return this.elements('.invalid-feedback div');
+    return this.root.getByCss('.delete-order-item').nth(index);
   }
 }
 
@@ -114,77 +101,71 @@ describe('EditOrderComponent', () => {
     tester = new TestComponentTester();
   });
 
-  it('should display a filled form', async () => {
-    await tester.stable();
-    expect(tester.items.length).toBe(2);
+  test('should display a filled form', async () => {
+    await expect.element(tester.items).toHaveLength(2);
 
-    expect(tester.name(0)).toHaveValue('rosa');
-    expect(tester.accessionNumber(0)).toHaveValue('rosaNumber');
-    expect(tester.taxon(0)).toHaveValue('rosaTaxon');
-    expect(tester.quantity(0)).toHaveValue('');
-    expect(tester.unit(0)).toHaveValue('');
-    expect(tester.deleteButton(1).disabled).toBe(false);
+    await expect.element(tester.name(0)).toHaveValue('rosa');
+    await expect.element(tester.accessionNumber(0)).toHaveValue('rosaNumber');
+    await expect.element(tester.taxon(0)).toHaveValue('rosaTaxon');
+    await expect.element(tester.quantity(0)).toHaveDisplayValue('');
+    await expect.element(tester.unit(0)).toHaveValue('');
+    await expect.element(tester.deleteButton(1)).not.toBeDisabled();
 
-    expect(tester.name(1)).toHaveValue('violetta');
-    expect(tester.accessionNumber(1)).toHaveValue('');
-    expect(tester.taxon(1)).toHaveValue('violettaTaxon');
-    expect(tester.quantity(1)).toHaveValue('12');
-    expect(tester.unit(1)).toHaveValue('bags');
-    expect(tester.deleteButton(1).disabled).toBe(false);
+    await expect.element(tester.name(1)).toHaveValue('violetta');
+    await expect.element(tester.accessionNumber(1)).toHaveValue('');
+    await expect.element(tester.taxon(1)).toHaveValue('violettaTaxon');
+    await expect.element(tester.quantity(1)).toHaveValue(12);
+    await expect.element(tester.unit(1)).toHaveValue('bags');
+    await expect.element(tester.deleteButton(1)).not.toBeDisabled();
   });
 
-  it('should add an item', async () => {
-    await tester.stable();
+  test('should add an item', async () => {
     await tester.addItemButton.click();
 
-    expect(tester.items.length).toBe(3);
-    expect(tester.name(2)).toHaveValue('');
-    expect(tester.accessionNumber(2)).toHaveValue('');
-    expect(tester.taxon(2)).toHaveValue('');
-    expect(tester.quantity(2)).toHaveValue('');
-    expect(tester.unit(2)).toHaveValue('');
+    await expect.element(tester.items).toHaveLength(3);
+    await expect.element(tester.name(2)).toHaveValue('');
+    await expect.element(tester.accessionNumber(2)).toHaveValue('');
+    await expect.element(tester.taxon(2)).toHaveValue('');
+    await expect.element(tester.quantity(2)).toHaveDisplayValue('');
+    await expect.element(tester.unit(2)).toHaveValue('');
   });
 
-  it('should delete an item', async () => {
-    await tester.stable();
+  test('should delete an item', async () => {
     await tester.deleteButton(0).click();
 
-    expect(tester.items.length).toBe(1);
-    expect(tester.name(0)).toHaveValue('violetta');
-    expect(tester.accessionNumber(0)).toHaveValue('');
-    expect(tester.taxon(0)).toHaveValue('violettaTaxon');
-    expect(tester.quantity(0)).toHaveValue('12');
-    expect(tester.unit(0)).toHaveValue('bags');
-    expect(tester.deleteButton(0).disabled).toBe(true); // last item: not deletable
+    await expect.element(tester.items).toHaveLength(1);
+    await expect.element(tester.name(0)).toHaveValue('violetta');
+    await expect.element(tester.accessionNumber(0)).toHaveValue('');
+    await expect.element(tester.taxon(0)).toHaveValue('violettaTaxon');
+    await expect.element(tester.quantity(0)).toHaveValue(12);
+    await expect.element(tester.unit(0)).toHaveValue('bags');
+    await expect.element(tester.deleteButton(0)).toBeDisabled(); // last item: not deletable
   });
 
-  it('should validate', async () => {
-    await tester.stable();
-    await tester.name(0)!.fillWith('');
-    await tester.accessionNumber(0)!.fillWith('');
-    await tester.taxon(0)!.fillWith('');
-    await tester.quantity(0)!.fillWith('0');
+  test('should validate', async () => {
+    await tester.name(0).fill('');
+    await tester.accessionNumber(0).fill('');
+    await tester.taxon(0).fill('');
+    await tester.quantity(0).fill('0');
     await tester.saveButton.click();
 
     expect(tester.componentInstance.saved()).toBeNull();
-    expect(tester.errors.length).toBe(3);
+    await expect.element(tester.errors).toHaveLength(3);
   });
 
-  it('should cancel', async () => {
-    await tester.stable();
+  test('should cancel', async () => {
     await tester.cancelButton.click();
     expect(tester.componentInstance.cancelled()).toBe(true);
   });
 
-  it('should save', async () => {
-    await tester.stable();
+  test('should save', async () => {
     await tester.deleteButton(1).click();
-    await tester.name(0)!.fillWith('ROSA');
-    await tester.quantity(0)!.fillWith('10');
-    await tester.unit(0)!.fillWith('pieces');
+    await tester.name(0).fill('ROSA');
+    await tester.quantity(0).fill('10');
+    await tester.unit(0).fill('pieces');
     await tester.addItemButton.click();
-    await tester.name(1)!.fillWith('bacteria');
-    await tester.taxon(1)!.fillWith('bacteriaTaxon');
+    await tester.name(1).fill('bacteria');
+    await tester.taxon(1).fill('bacteriaTaxon');
 
     await tester.saveButton.click();
 
@@ -216,20 +197,19 @@ describe('EditOrderComponent', () => {
     });
   });
 
-  it('should add a first item if order does not have any', async () => {
+  test('should add a first item if order does not have any', async () => {
     tester.componentInstance.order.items = [];
-    await tester.stable();
 
-    expect(tester.items.length).toBe(1);
+    await expect.element(tester.items).toHaveLength(1);
 
-    expect(tester.name(0)).toHaveValue('');
-    expect(tester.accessionNumber(0)).toHaveValue('');
-    expect(tester.taxon(0)).toHaveValue('');
-    expect(tester.quantity(0)).toHaveValue('');
-    expect(tester.unit(0)).toHaveValue('');
+    await expect.element(tester.name(0)).toHaveValue('');
+    await expect.element(tester.accessionNumber(0)).toHaveValue('');
+    await expect.element(tester.taxon(0)).toHaveValue('');
+    await expect.element(tester.quantity(0)).toHaveDisplayValue('');
+    await expect.element(tester.unit(0)).toHaveValue('');
   });
 
-  it('should open a CSV modal and add the entered items', async () => {
+  test('should open a CSV modal and add the entered items', async () => {
     const enteredItems: Array<OrderItemCommand> = [
       {
         accession: { name: 'rosa', identifier: null, accessionNumber: 'rosa2', taxon: 'rosa2Taxon', url: null },
@@ -246,25 +226,23 @@ describe('EditOrderComponent', () => {
     const modalService: MockModalService<CsvModalComponent> = TestBed.inject(MockModalService);
     modalService.mockClosedModal(createMock(CsvModalComponent), enteredItems);
 
-    await tester.stable();
-
     await tester.csvButton.click();
 
-    expect(tester.items.length).toBe(4);
-    expect(tester.name(2)).toHaveValue('rosa');
-    expect(tester.accessionNumber(2)).toHaveValue('rosa2');
-    expect(tester.taxon(2)).toHaveValue('rosa2Taxon');
-    expect(tester.quantity(2)).toHaveValue('');
-    expect(tester.unit(2)).toHaveValue('');
+    await expect.element(tester.items).toHaveLength(4);
+    await expect.element(tester.name(2)).toHaveValue('rosa');
+    await expect.element(tester.accessionNumber(2)).toHaveValue('rosa2');
+    await expect.element(tester.taxon(2)).toHaveValue('rosa2Taxon');
+    await expect.element(tester.quantity(2)).toHaveDisplayValue('');
+    await expect.element(tester.unit(2)).toHaveValue('');
 
-    expect(tester.name(3)).toHaveValue('bolet');
-    expect(tester.accessionNumber(3)).toHaveValue('bolet1');
-    expect(tester.taxon(3)).toHaveValue('boletTaxon');
-    expect(tester.quantity(3)).toHaveValue('5');
-    expect(tester.unit(3)).toHaveValue('pièces');
+    await expect.element(tester.name(3)).toHaveValue('bolet');
+    await expect.element(tester.accessionNumber(3)).toHaveValue('bolet1');
+    await expect.element(tester.taxon(3)).toHaveValue('boletTaxon');
+    await expect.element(tester.quantity(3)).toHaveValue(5);
+    await expect.element(tester.unit(3)).toHaveValue('pièces');
   });
 
-  it('should open a CSV modal and remove the last blank item before adding the entered items', async () => {
+  test('should open a CSV modal and remove the last blank item before adding the entered items', async () => {
     const enteredItems: Array<OrderItemCommand> = [
       {
         accession: {
@@ -282,12 +260,10 @@ describe('EditOrderComponent', () => {
     const modalService: MockModalService<CsvModalComponent> = TestBed.inject(MockModalService);
     modalService.mockClosedModal(createMock(CsvModalComponent), enteredItems);
 
-    await tester.stable();
-
     await tester.addItemButton.click(); // add a new blank item
     await tester.csvButton.click();
 
-    expect(tester.items.length).toBe(3);
-    expect(tester.name(2)).toHaveValue('rosa');
+    await expect.element(tester.items).toHaveLength(3);
+    await expect.element(tester.name(2)).toHaveValue('rosa');
   });
 });

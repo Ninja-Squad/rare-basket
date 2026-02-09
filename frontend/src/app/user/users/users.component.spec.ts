@@ -1,7 +1,8 @@
 import { TestBed } from '@angular/core/testing';
 
 import { UsersComponent } from './users.component';
-import { ComponentTester, createMock, stubRoute, TestButton } from 'ngx-speculoos';
+import { createMock, MockObject } from '../../../test/mock';
+import { stubRoute } from '../../../test/route-stub';
 import { PaginationComponent } from '../../rb-ngb/pagination/pagination.component';
 import { ActivatedRoute } from '@angular/router';
 import { EMPTY, of } from 'rxjs';
@@ -10,35 +11,28 @@ import { Page } from '../../shared/page.model';
 import { User } from '../../shared/user.model';
 import { ConfirmationService } from '../../shared/confirmation.service';
 import { ToastService } from '../../shared/toast.service';
-import { provideI18nTesting } from '../../i18n/mock-18n.spec';
+import { provideI18nTesting } from '../../i18n/mock-18n';
+import { page } from 'vitest/browser';
+import { By } from '@angular/platform-browser';
+import { beforeEach, describe, expect, test } from 'vitest';
 
-class UsersComponentTester extends ComponentTester<UsersComponent> {
-  constructor() {
-    super(UsersComponent);
-  }
-
-  get users() {
-    return this.elements('.user');
-  }
+class UsersComponentTester {
+  readonly fixture = TestBed.createComponent(UsersComponent);
+  readonly root = page.elementLocator(this.fixture.nativeElement);
+  readonly users = this.root.getByCss('.user');
+  readonly createLink = this.root.getByCss('#create-user');
+  readonly deleteButtons = this.root.getByCss('.delete-user-button');
 
   get paginationComponent(): PaginationComponent | null {
-    return this.component(PaginationComponent);
-  }
-
-  get createLink() {
-    return this.element('#create-user');
-  }
-
-  get deleteButtons() {
-    return this.elements('.delete-user-button') as Array<TestButton>;
+    return this.fixture.debugElement.query(By.directive(PaginationComponent))?.componentInstance ?? null;
   }
 }
 
 describe('UsersComponent', () => {
   let tester: UsersComponentTester;
-  let userService: jasmine.SpyObj<UserService>;
-  let confirmationService: jasmine.SpyObj<ConfirmationService>;
-  let toastService: jasmine.SpyObj<ToastService>;
+  let userService: MockObject<UserService>;
+  let confirmationService: MockObject<ConfirmationService>;
+  let toastService: MockObject<ToastService>;
 
   beforeEach(() => {
     const route = stubRoute({
@@ -60,17 +54,16 @@ describe('UsersComponent', () => {
     });
   });
 
-  it('should not display anything until users are available', async () => {
-    userService.list.and.returnValue(EMPTY);
+  test('should not display anything until users are available', async () => {
+    userService.list.mockReturnValue(EMPTY);
     tester = new UsersComponentTester();
-    await tester.stable();
 
-    expect(tester.users.length).toBe(0);
+    await expect.element(tester.users).toHaveLength(0);
     expect(tester.paginationComponent).toBeNull();
-    expect(tester.createLink).toBeNull();
+    await expect.element(tester.createLink).not.toBeInTheDocument();
   });
 
-  it('should display users', async () => {
+  test('should display users', async () => {
     const users: Page<User> = {
       totalPages: 2,
       totalElements: 22,
@@ -90,20 +83,19 @@ describe('UsersComponent', () => {
       ] as Array<User>
     };
 
-    userService.list.and.returnValue(of(users));
+    userService.list.mockReturnValue(of(users));
     tester = new UsersComponentTester();
-    await tester.stable();
 
-    expect(tester.users.length).toBe(2);
-    expect(tester.users[0]).toContainText('admin');
-    expect(tester.users[0]).toContainText('Administration');
-    expect(tester.users[1]).toContainText('John');
-    expect(tester.users[1]).toContainText('Administration, Gestion des commandes');
+    await expect.element(tester.users).toHaveLength(2);
+    await expect.element(tester.users.nth(0)).toHaveTextContent('admin');
+    await expect.element(tester.users.nth(0)).toHaveTextContent('Administration');
+    await expect.element(tester.users.nth(1)).toHaveTextContent('John');
+    await expect.element(tester.users.nth(1)).toHaveTextContent('Administration, Gestion des commandes');
     expect(tester.paginationComponent!.navigate()).toBe(true);
-    expect(tester.createLink).not.toBeNull();
+    await expect.element(tester.createLink).toBeInTheDocument();
   });
 
-  it('should delete after confirmation and reload', async () => {
+  test('should delete after confirmation and reload', async () => {
     const users: Page<User> = {
       totalPages: 2,
       totalElements: 22,
@@ -123,16 +115,15 @@ describe('UsersComponent', () => {
       ] as Array<User>
     };
 
-    userService.list.and.returnValues(of(users), of({ ...users, totalElements: 21, content: [users.content[1]] }));
+    userService.list.mockReturnValueOnce(of(users)).mockReturnValueOnce(of({ ...users, totalElements: 21, content: [users.content[1]] }));
     tester = new UsersComponentTester();
-    await tester.stable();
 
-    confirmationService.confirm.and.returnValue(of(undefined));
-    userService.delete.and.returnValue(of(undefined));
+    confirmationService.confirm.mockReturnValue(of(undefined));
+    userService.delete.mockReturnValue(of(undefined));
 
-    await tester.deleteButtons[0].click();
+    await tester.deleteButtons.nth(0).click();
 
-    expect(tester.users.length).toBe(1);
+    await expect.element(tester.users).toHaveLength(1);
     expect(userService.delete).toHaveBeenCalledWith(1);
     expect(toastService.success).toHaveBeenCalled();
   });

@@ -1,11 +1,12 @@
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { TestBed } from '@angular/core/testing';
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { NgbDatepicker, NgbInputDatepicker } from '@ng-bootstrap/ng-bootstrap';
-import { ComponentTester } from 'ngx-speculoos';
+import { NgbInputDatepicker } from '@ng-bootstrap/ng-bootstrap';
 import { DatepickerContainerComponent } from './datepicker-container.component';
-import { provideI18nTesting } from '../i18n/mock-18n.spec';
+import { provideI18nTesting } from '../i18n/mock-18n';
 import { provideNgbDatepickerServices } from './datepicker-providers';
+import { page } from 'vitest/browser';
+import { beforeEach, describe, expect, test } from 'vitest';
 
 @Component({
   template: `
@@ -20,26 +21,13 @@ class TestComponent {
   dateCtrl = new FormControl(null as string | null);
 }
 
-class TestComponentTester extends ComponentTester<TestComponent> {
-  constructor() {
-    super(TestComponent);
-  }
-
-  get dateInput() {
-    return this.input('input')!;
-  }
-
-  get toggleButton() {
-    return this.button('button.btn-outline-secondary')!;
-  }
-
-  get datepicker() {
-    return this.element(NgbDatepicker)!;
-  }
-
-  get container() {
-    return this.element(DatepickerContainerComponent)!;
-  }
+class TestComponentTester {
+  readonly fixture = TestBed.createComponent(TestComponent);
+  readonly root = page.elementLocator(this.fixture.nativeElement);
+  readonly dateInput = this.root.getByCss('input');
+  readonly toggleButton = this.root.getByCss('button.btn-outline-secondary');
+  readonly datepicker = page.getByCss('ngb-datepicker');
+  readonly container = this.root.getByCss('rb-datepicker-container');
 }
 
 describe('DatepickerContainerComponent', () => {
@@ -51,25 +39,25 @@ describe('DatepickerContainerComponent', () => {
     });
 
     tester = new TestComponentTester();
-    await tester.stable();
+    await tester.fixture.whenStable();
   });
 
-  it('should display a toggle button, an input, and toggle the datepicker', async () => {
-    expect(tester.dateInput).not.toBeNull();
-    expect(tester.toggleButton).not.toBeNull();
-    expect(tester.datepicker).toBeNull();
+  test('should display a toggle button, an input, and toggle the datepicker', async () => {
+    await expect.element(tester.dateInput).toBeInTheDocument();
+    await expect.element(tester.toggleButton).toBeInTheDocument();
+    await expect.element(tester.datepicker).not.toBeInTheDocument();
 
     await tester.toggleButton.click();
 
-    expect(tester.datepicker).not.toBeNull();
+    await expect.element(tester.datepicker).toBeInTheDocument();
 
     await tester.toggleButton.click();
 
-    expect(tester.datepicker).toBeNull();
+    await expect.element(tester.datepicker).not.toBeInTheDocument();
   });
 
-  it('should have the input-group class in addition to its original class', () => {
-    expect(tester.container).toHaveClass('input-group');
-    expect(tester.container).toHaveClass('foo');
+  test('should have the input-group class in addition to its original class', async () => {
+    await expect.element(tester.container).toHaveClass('input-group');
+    await expect.element(tester.container).toHaveClass('foo');
   });
 });

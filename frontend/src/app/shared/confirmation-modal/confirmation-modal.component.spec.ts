@@ -2,15 +2,12 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ConfirmationOptions, ConfirmationService } from '../confirmation.service';
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { Observable } from 'rxjs';
-import { provideI18nTesting } from '../../i18n/mock-18n.spec';
+import { provideI18nTesting } from '../../i18n/mock-18n';
 import { provideDisabledNgbAnimation } from '../../rb-ngb/disable-animations';
+import { afterEach, beforeEach, describe, expect, test } from 'vitest';
 
 class ModalComponentTester {
-  constructor(private fixture: ComponentFixture<unknown>) {}
-
-  async stable() {
-    await this.fixture.whenStable();
-  }
+  constructor(public fixture: ComponentFixture<unknown>) {}
 
   get modalWindow(): HTMLElement | null {
     return document.querySelector('ngb-modal-window');
@@ -30,12 +27,12 @@ class ModalComponentTester {
 
   async yes() {
     (document.querySelector('#yes-button') as HTMLButtonElement).click();
-    await this.stable();
+    await this.fixture.whenStable();
   }
 
   async no() {
     (document.querySelector('#no-button') as HTMLButtonElement).click();
-    await this.stable();
+    await this.fixture.whenStable();
   }
 }
 
@@ -59,7 +56,7 @@ describe('ConfirmationModalComponent and ConfirmationService', () => {
 
     confirmationService = TestBed.inject(ConfirmationService);
     tester = new ModalComponentTester(TestBed.createComponent(TestComponent));
-    await tester.stable();
+    await tester.fixture.whenStable();
   });
 
   afterEach(() => {
@@ -75,51 +72,51 @@ describe('ConfirmationModalComponent and ConfirmationService', () => {
     return confirmationService.confirm(options);
   }
 
-  it('should display a modal dialog when confirming and use default title', async () => {
+  test('should display a modal dialog when confirming and use default title', async () => {
     confirm({ messageKey: 'basket.edit-basket.confirm-accession-deletion' });
-    await tester.stable();
+    await tester.fixture.whenStable();
     expect(tester.modalWindow).toBeTruthy();
     expect(tester.modalTitle?.textContent).toBe('Confirmation');
     expect(tester.modalBody?.textContent).toContain('Voulez-vous vraiment supprimer cette accession de votre commande\u00a0?');
   });
 
-  it('should honor the titleKey option', async () => {
+  test('should honor the titleKey option', async () => {
     confirm({ messageKey: 'basket.edit-basket.confirm-accession-deletion', titleKey: 'basket.edit-basket.email' });
-    await tester.stable();
+    await tester.fixture.whenStable();
     expect(tester.modalTitle?.textContent).toBe('Votre adresse courriel');
   });
 
-  it('should emit when confirming', async () => {
+  test('should emit when confirming', async () => {
     let nexted = false;
     confirm({ messageKey: 'basket.edit-basket.confirm-accession-deletion' }).subscribe(() => (nexted = true));
-    await tester.stable();
+    await tester.fixture.whenStable();
     await tester.yes();
 
     expect(tester.modalWindow).toBeFalsy();
-    expect(nexted).toBeTrue();
+    expect(nexted).toBe(true);
   });
 
-  it('should error when not confirming and errorOnClose is true', async () => {
+  test('should error when not confirming and errorOnClose is true', async () => {
     let errored = false;
     confirm({ messageKey: 'basket.edit-basket.confirm-accession-deletion', errorOnClose: true }).subscribe({
       error: () => (errored = true)
     });
-    await tester.stable();
+    await tester.fixture.whenStable();
     await tester.no();
 
     expect(tester.modalWindow).toBeFalsy();
-    expect(errored).toBeTrue();
+    expect(errored).toBe(true);
   });
 
-  it('should do nothing when not confirming and errorOnClose is not set', async () => {
+  test('should do nothing when not confirming and errorOnClose is not set', async () => {
     let completed = false;
     confirm({ messageKey: 'basket.edit-basket.confirm-accession-deletion' }).subscribe({
       complete: () => (completed = true)
     });
-    await tester.stable();
+    await tester.fixture.whenStable();
     await tester.no();
 
     expect(tester.modalWindow).toBeFalsy();
-    expect(completed).toBeTrue();
+    expect(completed).toBe(true);
   });
 });

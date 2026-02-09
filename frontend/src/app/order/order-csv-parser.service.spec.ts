@@ -1,6 +1,6 @@
 import { TestBed } from '@angular/core/testing';
-
 import { OrderCsvParserService } from './order-csv-parser.service';
+import { beforeEach, describe, expect, test } from 'vitest';
 
 describe('OrderCsvParserService', () => {
   let service: OrderCsvParserService;
@@ -9,7 +9,7 @@ describe('OrderCsvParserService', () => {
     service = TestBed.inject(OrderCsvParserService);
   });
 
-  it('should fail if parsing error', () => {
+  test('should fail if parsing error', () => {
     const input = `rosa;;rosaTaxon\nvioletta;;"violetta1`;
     expect(service.parse(input)).toEqual({
       items: [],
@@ -17,7 +17,7 @@ describe('OrderCsvParserService', () => {
     });
   });
 
-  it('should fail if only one field or two fields', () => {
+  test('should fail if only one field or two fields', () => {
     const input = `rosa;rosaNumber;rosaTaxon;10\nvioletta;violettaNumber;violettaTaxon\nfoo\nbar;baz`;
     expect(service.parse(input)).toEqual({
       items: [],
@@ -28,7 +28,7 @@ describe('OrderCsvParserService', () => {
     });
   });
 
-  it('should fail if blank name', () => {
+  test('should fail if blank name', () => {
     const input = `rosa;rosaNumber;rosaTaxon;10\n;violettaNumber;violettaTaxon`;
     expect(service.parse(input)).toEqual({
       items: [],
@@ -36,7 +36,7 @@ describe('OrderCsvParserService', () => {
     });
   });
 
-  it('should fail if blank taxon', () => {
+  test('should fail if blank taxon', () => {
     const input = `rosa;;rosaTaxon10\nvioletta;; ;10`;
     expect(service.parse(input)).toEqual({
       items: [],
@@ -44,7 +44,7 @@ describe('OrderCsvParserService', () => {
     });
   });
 
-  it('should fail if invalid quantity', () => {
+  test('should fail if invalid quantity', () => {
     const input = `rosa;rosaNumber;rosaTaxon;10\nvioletta;violettaNumber;violettaTaxon;10abcd`;
     expect(service.parse(input)).toEqual({
       items: [],
@@ -52,7 +52,7 @@ describe('OrderCsvParserService', () => {
     });
   });
 
-  it('should succeed with semi-colons', () => {
+  test('should succeed with semi-colons', () => {
     const input = `rosa;rosaNumber;rosaTaxon\nvioletta;;violettaTaxon;10\nbolet;;boletTaxon;5;pièces;ignored`;
     expect(service.parse(input)).toEqual({
       items: [
@@ -76,7 +76,7 @@ describe('OrderCsvParserService', () => {
     });
   });
 
-  it('should succeed with commas', () => {
+  test('should succeed with commas', () => {
     const input = `rosa,rosaNumber,rosaTaxon\nvioletta,,violettaTaxon,10\nbolet,,boletTaxon,5,pièces,ignored`;
     expect(service.parse(input)).toEqual({
       items: [
@@ -100,7 +100,7 @@ describe('OrderCsvParserService', () => {
     });
   });
 
-  it('should succeed with tabs', () => {
+  test('should succeed with tabs', () => {
     const input = `rosa\trosaNumber\trosaTaxon\nvioletta\t\tviolettaTaxon\t10\nbolet\t\tboletTaxon\t5\tpièces\tignored`;
     expect(service.parse(input)).toEqual({
       items: [
@@ -124,7 +124,7 @@ describe('OrderCsvParserService', () => {
     });
   });
 
-  it('should ignore empty lines', () => {
+  test('should ignore empty lines', () => {
     const input = `rosa;;rosaTaxon\nvioletta;;violettaTaxon\n\n`;
     expect(service.parse(input)).toEqual({
       items: [

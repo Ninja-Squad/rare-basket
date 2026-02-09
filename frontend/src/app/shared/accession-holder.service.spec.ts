@@ -1,5 +1,5 @@
+import { afterEach, beforeEach, describe, expect, test } from 'vitest';
 import { TestBed } from '@angular/core/testing';
-
 import { AccessionHolderService } from './accession-holder.service';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { AccessionHolder, AccessionHolderCommand } from './user.model';
@@ -18,7 +18,7 @@ describe('AccessionHolderService', () => {
 
   afterEach(() => http.verify());
 
-  it('should list accession holders', () => {
+  test('should list accession holders', () => {
     let actual: Array<AccessionHolder> | undefined;
 
     service.list().subscribe(accessionHolders => (actual = accessionHolders));
@@ -28,7 +28,7 @@ describe('AccessionHolderService', () => {
     expect(actual).toBe(expected);
   });
 
-  it('should get', () => {
+  test('should get', () => {
     let actual: AccessionHolder | undefined;
 
     service.get(42).subscribe(accessionHolder => (actual = accessionHolder));
@@ -38,7 +38,7 @@ describe('AccessionHolderService', () => {
     expect(actual).toBe(expected);
   });
 
-  it('should create', () => {
+  test('should create', () => {
     let actual: AccessionHolder | undefined;
 
     const command = { name: 'foo' } as AccessionHolderCommand;
@@ -51,7 +51,7 @@ describe('AccessionHolderService', () => {
     expect(actual).toBe(expected);
   });
 
-  it('should update', () => {
+  test('should update', () => {
     let done = false;
 
     const command = { name: 'foo' } as AccessionHolderCommand;
@@ -63,7 +63,7 @@ describe('AccessionHolderService', () => {
     expect(done).toBe(true);
   });
 
-  it('should delete', () => {
+  test('should delete', () => {
     let done = false;
 
     service.delete(42).subscribe(() => (done = true));

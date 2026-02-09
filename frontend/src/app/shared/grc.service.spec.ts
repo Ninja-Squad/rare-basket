@@ -3,6 +3,7 @@ import { HttpTestingController, provideHttpClientTesting } from '@angular/common
 
 import { GrcService } from './grc.service';
 import { Grc, GrcCommand } from './user.model';
+import { afterEach, beforeEach, describe, expect, test } from 'vitest';
 
 describe('GrcService', () => {
   let service: GrcService;
@@ -18,7 +19,7 @@ describe('GrcService', () => {
 
   afterEach(() => http.verify());
 
-  it('should list grcs', () => {
+  test('should list grcs', () => {
     let actual: Array<Grc> | undefined;
 
     service.list().subscribe(grcs => (actual = grcs));
@@ -28,7 +29,7 @@ describe('GrcService', () => {
     expect(actual).toBe(expected);
   });
 
-  it('should get', () => {
+  test('should get', () => {
     let actual: Grc | undefined;
 
     service.get(42).subscribe(grc => (actual = grc));
@@ -38,7 +39,7 @@ describe('GrcService', () => {
     expect(actual).toBe(expected);
   });
 
-  it('should create', () => {
+  test('should create', () => {
     let actual: Grc | undefined;
 
     const command = { name: 'foo' } as GrcCommand;
@@ -51,7 +52,7 @@ describe('GrcService', () => {
     expect(actual).toBe(expected);
   });
 
-  it('should update', () => {
+  test('should update', () => {
     let done = false;
 
     const command = { name: 'foo' } as GrcCommand;
@@ -63,7 +64,7 @@ describe('GrcService', () => {
     expect(done).toBe(true);
   });
 
-  it('should delete', () => {
+  test('should delete', () => {
     let done = false;
 
     service.delete(42).subscribe(() => (done = true));

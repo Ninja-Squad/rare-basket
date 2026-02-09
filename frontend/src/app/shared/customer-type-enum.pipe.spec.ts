@@ -1,8 +1,9 @@
 import { CustomerTypeEnumPipe } from './customer-type-enum.pipe';
-import { testEnumPipe } from './base-enum-pipe.spec';
+import { testEnumPipe } from './base-enum-pipe-test';
+import { describe, test } from 'vitest';
 
 describe('CustomerTypeEnumPipe', () => {
-  it('should translate customer types', () => {
+  test('should translate customer types', () => {
     testEnumPipe(CustomerTypeEnumPipe, {
       INRAE_RESEARCHER: 'Chercheur INRAE',
       FARMER: 'Agriculteur'

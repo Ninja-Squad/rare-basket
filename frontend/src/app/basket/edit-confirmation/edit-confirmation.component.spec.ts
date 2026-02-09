@@ -3,8 +3,9 @@ import { TestBed } from '@angular/core/testing';
 import { EditConfirmationComponent } from './edit-confirmation.component';
 import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
 import { AccessionHolderBasket, Basket } from '../basket.model';
-import { ComponentTester } from 'ngx-speculoos';
-import { provideI18nTesting } from '../../i18n/mock-18n.spec';
+import { provideI18nTesting } from '../../i18n/mock-18n';
+import { page } from 'vitest/browser';
+import { beforeEach, describe, expect, test } from 'vitest';
 
 @Component({
   template: `
@@ -28,21 +29,15 @@ class TestComponent {
   readonly refreshRequested = signal(false);
 }
 
-class TestComponentTester extends ComponentTester<TestComponent> {
-  constructor() {
-    super(TestComponent);
-  }
+class TestComponentTester {
+  readonly fixture = TestBed.createComponent(TestComponent);
+  readonly root = page.elementLocator(this.fixture.nativeElement);
+  readonly infoRefreshLink = this.root.getByCss('#info-refresh-link');
+  readonly confirmationCode = this.root.getByCss('#confirmation-code');
+  readonly confirmButton = this.root.getByCss('#confirm-button');
 
-  get infoRefreshLink() {
-    return this.element<HTMLAnchorElement>('#info-refresh-link')!;
-  }
-
-  get confirmationCode() {
-    return this.input('#confirmation-code')!;
-  }
-
-  get confirmButton() {
-    return this.button('#confirm-button')!;
+  get componentInstance() {
+    return this.fixture.componentInstance;
   }
 }
 
@@ -55,23 +50,23 @@ describe('EditConfirmationComponent', () => {
     });
 
     tester = new TestComponentTester();
-    await tester.stable();
+    await tester.fixture.whenStable();
   });
 
-  it('should display empty form', () => {
-    expect(tester.infoRefreshLink).not.toBeNull();
-    expect(tester.confirmationCode).toHaveValue('');
-    expect(tester.confirmButton.disabled).toBe(true);
+  test('should display empty form', async () => {
+    await expect.element(tester.infoRefreshLink).toBeInTheDocument();
+    await expect.element(tester.confirmationCode).toHaveValue('');
+    await expect.element(tester.confirmButton).toBeDisabled();
   });
 
-  it('should emit when info refresh link clicked', async () => {
+  test('should emit when info refresh link clicked', async () => {
     await tester.infoRefreshLink.click();
     expect(tester.componentInstance.refreshRequested()).toBe(true);
   });
 
-  it('should emit when confirming', async () => {
-    await tester.confirmationCode.fillWith('ZYXWVUTS');
-    expect(tester.confirmButton.disabled).toBe(false);
+  test('should emit when confirming', async () => {
+    await tester.confirmationCode.fill('ZYXWVUTS');
+    await expect.element(tester.confirmButton).not.toBeDisabled();
     await tester.confirmButton.click();
     expect(tester.componentInstance.confirmationCode()).toBe('ZYXWVUTS');
   });

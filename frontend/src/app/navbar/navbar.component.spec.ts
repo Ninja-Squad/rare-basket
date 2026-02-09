@@ -1,142 +1,120 @@
 import { TestBed } from '@angular/core/testing';
-
 import { NavbarComponent } from './navbar.component';
-import { ComponentTester, createMock } from 'ngx-speculoos';
 import { AuthenticationService } from '../shared/authentication.service';
 import { Subject } from 'rxjs';
 import { Permission, User } from '../shared/user.model';
-import { provideI18nTesting } from '../i18n/mock-18n.spec';
+import { provideI18nTesting } from '../i18n/mock-18n';
 import { provideRouter } from '@angular/router';
+import { beforeEach, describe, expect, test } from 'vitest';
+import { page } from 'vitest/browser';
+import { createMock, MockObject } from '../../test/mock';
 
-class NavbarComponentTester extends ComponentTester<NavbarComponent> {
-  constructor() {
-    super(NavbarComponent);
-  }
-
-  get orders() {
-    return this.element('#navbar-orders');
-  }
-
-  get user() {
-    return this.element('#navbar-user');
-  }
-
-  get administrationDropdown() {
-    return this.element('#navbar-administration-dropdown');
-  }
-
-  get users() {
-    return this.element('#navbar-users');
-  }
-
-  get accessionHolders() {
-    return this.element('#navbar-accession-holders');
-  }
-
-  get login() {
-    return this.element<HTMLAnchorElement>('#navbar-login');
-  }
-
-  get logout() {
-    return this.element<HTMLAnchorElement>('#navbar-logout');
-  }
+class NavbarComponentTester {
+  readonly fixture = TestBed.createComponent(NavbarComponent);
+  readonly orders = page.getByCss('#navbar-orders');
+  readonly user = page.getByCss('#navbar-user');
+  readonly administrationDropdown = page.getByCss('#navbar-administration-dropdown');
+  readonly users = page.getByCss('#navbar-users');
+  readonly accessionHolders = page.getByCss('#navbar-accession-holders');
+  readonly login = page.getByCss('#navbar-login');
+  readonly logout = page.getByCss('#navbar-logout');
 }
 
 describe('NavbarComponent', () => {
   let tester: NavbarComponentTester;
-  let authenticationService: jasmine.SpyObj<AuthenticationService>;
+  let authenticationService: MockObject<AuthenticationService>;
   let userSubject: Subject<User | null>;
 
   beforeEach(async () => {
     userSubject = new Subject<User | null>();
     authenticationService = createMock(AuthenticationService);
-    authenticationService.getCurrentUser.and.returnValue(userSubject);
+    authenticationService.getCurrentUser.mockReturnValue(userSubject);
 
     TestBed.configureTestingModule({
       providers: [provideRouter([]), provideI18nTesting(), { provide: AuthenticationService, useValue: authenticationService }]
     });
 
     tester = new NavbarComponentTester();
-    await tester.stable();
+    await tester.fixture.whenStable();
   });
 
-  it('should display elements depending on user presence and permissions', async () => {
-    expect(tester.user).toBeNull();
-    expect(tester.orders).toBeNull();
-    expect(tester.users).toBeNull();
-    expect(tester.accessionHolders).toBeNull();
-    expect(tester.logout).toBeNull();
-    expect(tester.login).toBeNull();
+  test('should display elements depending on user presence and permissions', async () => {
+    await expect.element(tester.user).not.toBeInTheDocument();
+    await expect.element(tester.orders).not.toBeInTheDocument();
+    await expect.element(tester.users).not.toBeInTheDocument();
+    await expect.element(tester.accessionHolders).not.toBeInTheDocument();
+    await expect.element(tester.logout).not.toBeInTheDocument();
+    await expect.element(tester.login).not.toBeInTheDocument();
 
     userSubject.next({ name: 'JB', permissions: ['ORDER_MANAGEMENT'] } as User);
-    await tester.stable();
+    await tester.fixture.whenStable();
 
-    expect(tester.user).toContainText('JB');
-    expect(tester.orders).not.toBeNull();
-    expect(tester.administrationDropdown).toBeNull();
-    expect(tester.users).toBeNull();
-    expect(tester.accessionHolders).toBeNull();
-    expect(tester.logout).not.toBeNull();
-    expect(tester.login).toBeNull();
+    await expect.element(tester.user).toHaveTextContent('JB');
+    await expect.element(tester.orders).toBeInTheDocument();
+    await expect.element(tester.administrationDropdown).not.toBeInTheDocument();
+    await expect.element(tester.users).not.toBeInTheDocument();
+    await expect.element(tester.accessionHolders).not.toBeInTheDocument();
+    await expect.element(tester.logout).toBeInTheDocument();
+    await expect.element(tester.login).not.toBeInTheDocument();
 
     userSubject.next(null);
-    await tester.stable();
+    await tester.fixture.whenStable();
 
-    expect(tester.user).toBeNull();
-    expect(tester.orders).toBeNull();
-    expect(tester.administrationDropdown).toBeNull();
-    expect(tester.users).toBeNull();
-    expect(tester.accessionHolders).toBeNull();
-    expect(tester.logout).toBeNull();
-    expect(tester.login).not.toBeNull();
+    await expect.element(tester.user).not.toBeInTheDocument();
+    await expect.element(tester.orders).not.toBeInTheDocument();
+    await expect.element(tester.administrationDropdown).not.toBeInTheDocument();
+    await expect.element(tester.users).not.toBeInTheDocument();
+    await expect.element(tester.accessionHolders).not.toBeInTheDocument();
+    await expect.element(tester.logout).not.toBeInTheDocument();
+    await expect.element(tester.login).toBeInTheDocument();
 
     userSubject.next({ name: 'JB', permissions: [] as Array<Permission> } as User);
-    await tester.stable();
+    await tester.fixture.whenStable();
 
-    expect(tester.user).toContainText('JB');
-    expect(tester.orders).toBeNull();
-    expect(tester.administrationDropdown).toBeNull();
-    expect(tester.users).toBeNull();
-    expect(tester.accessionHolders).toBeNull();
-    expect(tester.logout).not.toBeNull();
-    expect(tester.login).toBeNull();
+    await expect.element(tester.user).toHaveTextContent('JB');
+    await expect.element(tester.orders).not.toBeInTheDocument();
+    await expect.element(tester.administrationDropdown).not.toBeInTheDocument();
+    await expect.element(tester.users).not.toBeInTheDocument();
+    await expect.element(tester.accessionHolders).not.toBeInTheDocument();
+    await expect.element(tester.logout).toBeInTheDocument();
+    await expect.element(tester.login).not.toBeInTheDocument();
 
     userSubject.next({ name: 'JB', permissions: ['ADMINISTRATION'] } as User);
-    await tester.stable();
+    await tester.fixture.whenStable();
 
-    expect(tester.user).toContainText('JB');
-    expect(tester.orders).toBeNull();
-    expect(tester.administrationDropdown).not.toBeNull();
-    expect(tester.users).not.toBeNull();
-    expect(tester.accessionHolders).not.toBeNull();
-    expect(tester.logout).not.toBeNull();
-    expect(tester.login).toBeNull();
+    await expect.element(tester.user).toHaveTextContent('JB');
+    await expect.element(tester.orders).not.toBeInTheDocument();
+    await expect.element(tester.administrationDropdown).toBeInTheDocument();
+    await expect.element(tester.users).toBeInTheDocument();
+    await expect.element(tester.accessionHolders).toBeInTheDocument();
+    await expect.element(tester.logout).toBeInTheDocument();
+    await expect.element(tester.login).not.toBeInTheDocument();
 
     userSubject.next({ name: 'JB', permissions: ['ORDER_VISUALIZATION'] } as User);
-    await tester.stable();
+    await tester.fixture.whenStable();
 
-    expect(tester.user).toContainText('JB');
-    expect(tester.orders).not.toBeNull();
-    expect(tester.administrationDropdown).toBeNull();
-    expect(tester.users).toBeNull();
-    expect(tester.accessionHolders).toBeNull();
-    expect(tester.logout).not.toBeNull();
-    expect(tester.login).toBeNull();
+    await expect.element(tester.user).toHaveTextContent('JB');
+    await expect.element(tester.orders).toBeInTheDocument();
+    await expect.element(tester.administrationDropdown).not.toBeInTheDocument();
+    await expect.element(tester.users).not.toBeInTheDocument();
+    await expect.element(tester.accessionHolders).not.toBeInTheDocument();
+    await expect.element(tester.logout).toBeInTheDocument();
+    await expect.element(tester.login).not.toBeInTheDocument();
   });
 
-  it('should login', async () => {
+  test('should login', async () => {
     userSubject.next(null);
-    await tester.stable();
+    await tester.fixture.whenStable();
 
-    await tester.login!.click();
+    (tester.login.element() as HTMLAnchorElement).click();
     expect(authenticationService.login).toHaveBeenCalled();
   });
 
-  it('should logout', async () => {
+  test('should logout', async () => {
     userSubject.next({ name: 'JB', permissions: [] as Array<Permission> } as User);
-    await tester.stable();
+    await tester.fixture.whenStable();
 
-    await tester.logout!.click();
+    (tester.logout.element() as HTMLAnchorElement).click();
     expect(authenticationService.logout).toHaveBeenCalled();
   });
 });

@@ -1,38 +1,30 @@
 import { TestBed } from '@angular/core/testing';
 
 import { GrcsComponent } from './grcs.component';
-import { ComponentTester, createMock, TestButton } from 'ngx-speculoos';
+import { createMock, MockObject } from '../../../test/mock';
 import { ConfirmationService } from '../../shared/confirmation.service';
 import { EMPTY, of } from 'rxjs';
 import { Grc } from '../../shared/user.model';
 import { GrcService } from '../../shared/grc.service';
 import { ToastService } from '../../shared/toast.service';
-import { provideI18nTesting } from '../../i18n/mock-18n.spec';
+import { provideI18nTesting } from '../../i18n/mock-18n';
 import { provideRouter } from '@angular/router';
+import { page } from 'vitest/browser';
+import { beforeEach, describe, expect, test } from 'vitest';
 
-class GrcsComponentTester extends ComponentTester<GrcsComponent> {
-  constructor() {
-    super(GrcsComponent);
-  }
-
-  get grcs() {
-    return this.elements('.grc');
-  }
-
-  get createLink() {
-    return this.element('#create-grc');
-  }
-
-  get deleteButtons() {
-    return this.elements('.delete-grc-button') as Array<TestButton>;
-  }
+class GrcsComponentTester {
+  readonly fixture = TestBed.createComponent(GrcsComponent);
+  readonly root = page.elementLocator(this.fixture.nativeElement);
+  readonly grcs = this.root.getByCss('.grc');
+  readonly createLink = this.root.getByCss('#create-grc');
+  readonly deleteButtons = this.root.getByCss('.delete-grc-button');
 }
 
 describe('GrcsComponent', () => {
   let tester: GrcsComponentTester;
-  let grcService: jasmine.SpyObj<GrcService>;
-  let confirmationService: jasmine.SpyObj<ConfirmationService>;
-  let toastService: jasmine.SpyObj<ToastService>;
+  let grcService: MockObject<GrcService>;
+  let confirmationService: MockObject<ConfirmationService>;
+  let toastService: MockObject<ToastService>;
 
   beforeEach(() => {
     grcService = createMock(GrcService);
@@ -50,16 +42,15 @@ describe('GrcsComponent', () => {
     });
   });
 
-  it('should not display anything until grcs are available', async () => {
-    grcService.list.and.returnValue(EMPTY);
+  test('should not display anything until grcs are available', async () => {
+    grcService.list.mockReturnValue(EMPTY);
     tester = new GrcsComponentTester();
-    await tester.stable();
 
-    expect(tester.grcs.length).toBe(0);
-    expect(tester.createLink).toBeNull();
+    await expect.element(tester.grcs).toHaveLength(0);
+    await expect.element(tester.createLink).not.toBeInTheDocument();
   });
 
-  it('should display grcs', async () => {
+  test('should display grcs', async () => {
     const grcs: Array<Grc> = [
       {
         id: 432,
@@ -75,19 +66,19 @@ describe('GrcsComponent', () => {
       }
     ];
 
-    grcService.list.and.returnValue(of(grcs));
+    grcService.list.mockReturnValue(of(grcs));
     tester = new GrcsComponentTester();
-    await tester.stable();
+    await tester.fixture.whenStable();
 
-    expect(tester.grcs.length).toBe(2);
-    expect(tester.grcs[0]).toContainText('GRC1');
-    expect(tester.grcs[0]).toContainText('INRAE');
-    expect(tester.grcs[1]).toContainText('GRC2');
-    expect(tester.grcs[1]).toContainText('INRAE');
-    expect(tester.createLink).not.toBeNull();
+    await expect.element(tester.grcs).toHaveLength(2);
+    await expect.element(tester.grcs.nth(0)).toHaveTextContent('GRC1');
+    await expect.element(tester.grcs.nth(0)).toHaveTextContent('INRAE');
+    await expect.element(tester.grcs.nth(1)).toHaveTextContent('GRC2');
+    await expect.element(tester.grcs.nth(1)).toHaveTextContent('INRAE');
+    await expect.element(tester.createLink).toBeInTheDocument();
   });
 
-  it('should delete after confirmation and reload', async () => {
+  test('should delete after confirmation and reload', async () => {
     const grcs: Array<Grc> = [
       {
         id: 432,
@@ -103,16 +94,15 @@ describe('GrcsComponent', () => {
       }
     ];
 
-    grcService.list.and.returnValues(of(grcs), of([grcs[1]]));
+    grcService.list.mockReturnValueOnce(of(grcs)).mockReturnValueOnce(of([grcs[1]]));
     tester = new GrcsComponentTester();
-    await tester.stable();
 
-    confirmationService.confirm.and.returnValue(of(undefined));
-    grcService.delete.and.returnValue(of(undefined));
+    confirmationService.confirm.mockReturnValue(of(undefined));
+    grcService.delete.mockReturnValue(of(undefined));
 
-    await tester.deleteButtons[0].click();
+    await tester.deleteButtons.nth(0).click();
 
-    expect(tester.grcs.length).toBe(1);
+    await expect.element(tester.grcs).toHaveLength(1);
     expect(grcService.delete).toHaveBeenCalledWith(432);
     expect(toastService.success).toHaveBeenCalled();
   });

@@ -3,12 +3,13 @@ import { TestBed } from '@angular/core/testing';
 import { EditDocumentComponent } from './edit-document.component';
 import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
 import { ALL_DOCUMENT_TYPES, DetailedOrder, Document, DocumentCommand } from '../order.model';
-import { ComponentTester } from 'ngx-speculoos';
 import { NgbProgressbar } from '@ng-bootstrap/ng-bootstrap';
 import { By } from '@angular/platform-browser';
 import { ValidationDefaultsComponent } from '../../validation-defaults/validation-defaults.component';
-import { provideI18nTesting } from '../../i18n/mock-18n.spec';
+import { provideI18nTesting } from '../../i18n/mock-18n';
 import { provideRouter } from '@angular/router';
+import { page } from 'vitest/browser';
+import { beforeEach, describe, expect, test } from 'vitest';
 
 @Component({
   template:
@@ -25,45 +26,28 @@ class TestComponent {
   readonly saved = signal<DocumentCommand | null>(null);
 }
 
-class TestComponentTester extends ComponentTester<TestComponent> {
-  constructor() {
-    super(TestComponent);
-  }
+class TestComponentTester {
+  readonly fixture = TestBed.createComponent(TestComponent);
+  readonly root = page.elementLocator(this.fixture.nativeElement);
+  readonly type = this.root.getByCss('#document-type');
+  readonly description = this.root.getByCss('#document-description');
+  readonly file = this.root.getByCss('#document-file');
+  readonly onDeliveryForm = this.root.getByCss('#on-delivery-form');
+  readonly errors = this.root.getByCss('.invalid-feedback div');
+  readonly saveButton = this.root.getByCss('#document-save-button');
+  readonly cancelButton = this.root.getByCss('#document-cancel-button');
 
   get editDocumentComponent(): EditDocumentComponent {
-    return this.component(EditDocumentComponent)!;
-  }
-
-  get type() {
-    return this.select('#document-type')!;
-  }
-
-  get description() {
-    return this.input('#document-description')!;
-  }
-
-  get file() {
-    return this.input('#document-file')!;
-  }
-
-  get onDeliveryForm() {
-    return this.input('#on-delivery-form')!;
-  }
-
-  get errors() {
-    return this.elements('.invalid-feedback div');
-  }
-
-  get saveButton() {
-    return this.button('#document-save-button')!;
-  }
-
-  get cancelButton() {
-    return this.button('#document-cancel-button')!;
+    return this.fixture.debugElement.query(By.directive(EditDocumentComponent)).componentInstance;
   }
 
   get progressBar(): NgbProgressbar | null {
-    return this.debugElement.query(By.directive(NgbProgressbar))?.componentInstance ?? null;
+    return this.fixture.debugElement.query(By.directive(NgbProgressbar))?.componentInstance ?? null;
+  }
+
+  optionLabels(selectLocator: typeof this.type) {
+    const select = selectLocator.element() as HTMLSelectElement;
+    return Array.from(select.options).map(option => option.textContent ?? '');
   }
 }
 
@@ -78,26 +62,28 @@ describe('EditDocumentComponent', () => {
     TestBed.createComponent(ValidationDefaultsComponent).detectChanges();
 
     tester = new TestComponentTester();
-    await tester.stable();
+    await tester.fixture.whenStable();
   });
 
-  it('should display an empty form', () => {
-    expect(tester.type).toHaveSelectedLabel('');
-    expect(tester.type.optionLabels.length).toBe(ALL_DOCUMENT_TYPES.length + 1);
-    expect(tester.type.optionLabels).toContain('Facture');
-    expect(tester.description).toHaveValue('');
-    expect(tester.onDeliveryForm).not.toBeChecked();
+  test('should display an empty form', async () => {
+    await expect.element(tester.type).toHaveDisplayValue('');
+    expect(tester.optionLabels(tester.type).length).toBe(ALL_DOCUMENT_TYPES.length + 1);
+    expect(tester.optionLabels(tester.type)).toContain('Facture');
+    await expect.element(tester.description).toHaveDisplayValue('');
+    await expect.element(tester.onDeliveryForm).not.toBeChecked();
 
-    [tester.type, tester.description, tester.file, tester.saveButton, tester.cancelButton].forEach(e => expect(e.disabled).toBe(false));
+    [tester.type, tester.description, tester.file, tester.saveButton, tester.cancelButton].forEach(
+      async locator => await expect.element(locator).not.toBeDisabled()
+    );
 
     expect(tester.progressBar).toBeNull();
   });
 
-  it('should filter out unique document types if they are present in the order', async () => {
-    expect(tester.type.optionLabels.length).toBe(ALL_DOCUMENT_TYPES.length + 1);
-    expect(tester.type.optionLabels).toContain('Facture');
+  test('should filter out unique document types if they are present in the order', async () => {
+    expect(tester.optionLabels(tester.type).length).toBe(ALL_DOCUMENT_TYPES.length + 1);
+    expect(tester.optionLabels(tester.type)).toContain('Facture');
 
-    tester.componentInstance.order.update(order => ({
+    tester.fixture.componentInstance.order.update(order => ({
       ...order,
       documents: [
         {
@@ -105,23 +91,23 @@ describe('EditDocumentComponent', () => {
         } as Document
       ]
     }));
-    await tester.stable();
+    await tester.fixture.whenStable();
 
-    expect(tester.type.optionLabels.length).toBe(ALL_DOCUMENT_TYPES.length);
-    expect(tester.type.optionLabels).not.toContain('Facture');
+    expect(tester.optionLabels(tester.type).length).toBe(ALL_DOCUMENT_TYPES.length);
+    expect(tester.optionLabels(tester.type)).not.toContain('Facture');
   });
 
-  it('should validate', async () => {
+  test('should validate', async () => {
     await tester.saveButton.click();
 
-    expect(tester.componentInstance.saved()).toBeNull();
-    expect(tester.errors.length).toBe(2); // type, file
+    expect(tester.fixture.componentInstance.saved()).toBeNull();
+    await expect.element(tester.errors).toHaveLength(2); // type, file
 
-    await tester.type.selectLabel('Autre');
-    expect(tester.errors.length).toBe(2); // description, file
+    await tester.type.selectOptions('Autre');
+    await expect.element(tester.errors).toHaveLength(2); // description, file
 
-    await tester.type.selectLabel('Facture');
-    expect(tester.errors.length).toBe(1); // file
+    await tester.type.selectOptions('Facture');
+    await expect.element(tester.errors).toHaveLength(1); // file
 
     let mockFile = { name: 'foo.exe', size: 11 * 1024 * 1024 };
     let selectedFile = mockFile as File;
@@ -129,10 +115,12 @@ describe('EditDocumentComponent', () => {
       item: (index: number) => [selectedFile][index] ?? null
     } as unknown as FileList;
     tester.editDocumentComponent.fileChanged(fileList);
-    await tester.stable();
+    await tester.fixture.whenStable();
 
-    expect(tester.testElement).toContainText(`Le fichier doit avoir l'une des extensions suivantes\u00a0: .pdf, .txt, .eml, .pst, .ost`);
-    expect(tester.errors.length).toBe(1); // file invalid
+    await expect
+      .element(tester.root)
+      .toHaveTextContent(/Le fichier doit avoir l'une des extensions suivantes\s*:\s*\.pdf, \.txt, \.eml, \.pst, \.ost/);
+    await expect.element(tester.errors).toHaveLength(1); // file invalid
 
     mockFile = { ...mockFile, name: 'foo.pdf' };
     selectedFile = mockFile as File;
@@ -141,47 +129,51 @@ describe('EditDocumentComponent', () => {
     } as unknown as FileList;
 
     tester.editDocumentComponent.fileChanged(fileList);
-    await tester.stable();
+    await tester.fixture.whenStable();
 
-    expect(tester.testElement).toContainText('Le fichier est trop volumineux. Il ne doit pas dépasser 10\u00a0MB');
-    expect(tester.errors.length).toBe(1); // file size invalid
+    await expect.element(tester.root).toHaveTextContent(/Le fichier est trop volumineux\. Il ne doit pas dépasser 10\s*MB/);
+    await expect.element(tester.errors).toHaveLength(1); // file size invalid
   });
 
-  it('should disable everything and display progress bar when uploading', async () => {
-    tester.componentInstance.progress.set(0.1);
-    await tester.stable();
+  test('should disable everything and display progress bar when uploading', async () => {
+    tester.fixture.componentInstance.progress.set(0.1);
+    await tester.fixture.whenStable();
 
-    [tester.type, tester.description, tester.file, tester.onDeliveryForm, tester.saveButton].forEach(e => expect(e.disabled).toBe(true));
+    [tester.type, tester.description, tester.file, tester.onDeliveryForm, tester.saveButton].forEach(
+      async locator => await expect.element(locator).toBeDisabled()
+    );
 
     expect(tester.progressBar).not.toBeNull();
     expect(tester.progressBar!.getPercentValue()).toBe(10);
     expect(tester.progressBar!.animated).toBe(false);
     expect(tester.progressBar!.striped).toBe(false);
 
-    tester.componentInstance.progress.set(1);
-    await tester.stable();
+    tester.fixture.componentInstance.progress.set(1);
+    await tester.fixture.whenStable();
 
     expect(tester.progressBar!.getPercentValue()).toBe(100);
     expect(tester.progressBar!.animated).toBe(true);
     expect(tester.progressBar!.striped).toBe(true);
 
-    tester.componentInstance.progress.set(null);
-    await tester.stable();
+    tester.fixture.componentInstance.progress.set(null);
+    await tester.fixture.whenStable();
 
-    [tester.type, tester.description, tester.file, tester.saveButton].forEach(e => expect(e.disabled).toBe(false));
+    [tester.type, tester.description, tester.file, tester.saveButton].forEach(
+      async locator => await expect.element(locator).not.toBeDisabled()
+    );
   });
 
-  it('should save', async () => {
-    await tester.type.selectLabel('Autre');
-    await tester.description.fillWith('desc');
-    await tester.onDeliveryForm.check();
+  test('should save', async () => {
+    await tester.type.selectOptions('Autre');
+    await tester.description.fill('desc');
+    await tester.onDeliveryForm.click();
 
     const selectedFile = { name: 'foo.txt', size: 100 } as File;
     const fileList = {
       item: (index: number) => [selectedFile][index] ?? null
     } as unknown as FileList;
     tester.editDocumentComponent.fileChanged(fileList);
-    await tester.stable();
+    await tester.fixture.whenStable();
 
     await tester.saveButton.click();
     const expectedCommand: DocumentCommand = {
@@ -192,41 +184,41 @@ describe('EditDocumentComponent', () => {
         onDeliveryForm: true
       }
     };
-    expect(tester.componentInstance.saved()).toEqual(expectedCommand);
+    expect(tester.fixture.componentInstance.saved()).toEqual(expectedCommand);
   });
 
-  it('should cancel', async () => {
+  test('should cancel', async () => {
     await tester.cancelButton.click();
-    expect(tester.componentInstance.cancelled()).toBe(true);
+    expect(tester.fixture.componentInstance.cancelled()).toBe(true);
   });
 
-  it('should drag and drop file on input', async () => {
-    await tester.file.dispatchEvent(new DragEvent('dragenter'));
-    expect(tester.file).toHaveClass('highlighted');
+  test('should drag and drop file on input', async () => {
+    tester.file.element().dispatchEvent(new DragEvent('dragenter'));
+    await expect.element(tester.file).toHaveClass('highlighted');
 
-    await tester.file.dispatchEvent(new DragEvent('dragexit'));
-    expect(tester.file).not.toHaveClass('highlighted');
+    tester.file.element().dispatchEvent(new DragEvent('dragexit'));
+    await expect.element(tester.file).not.toHaveClass('highlighted');
 
-    await tester.file.dispatchEvent(new DragEvent('dragenter'));
-    expect(tester.file).toHaveClass('highlighted');
+    tester.file.element().dispatchEvent(new DragEvent('dragenter'));
+    await expect.element(tester.file).toHaveClass('highlighted');
 
-    await tester.file.dispatchEvent(new DragEvent('dragleave'));
-    expect(tester.file).not.toHaveClass('highlighted');
+    tester.file.element().dispatchEvent(new DragEvent('dragleave'));
+    await expect.element(tester.file).not.toHaveClass('highlighted');
 
     // quite hard to test drop event
   });
 
-  it('should change on delivery form value depending on document type unless dirty', async () => {
-    await tester.type.selectValue('MTA');
-    expect(tester.onDeliveryForm).toBeChecked();
+  test('should change on delivery form value depending on document type unless dirty', async () => {
+    await tester.type.selectOptions('MTA');
+    await expect.element(tester.onDeliveryForm).toBeChecked();
 
-    await tester.type.selectLabel('Courriel');
-    expect(tester.onDeliveryForm).not.toBeChecked();
+    await tester.type.selectOptions('Courriel');
+    await expect.element(tester.onDeliveryForm).not.toBeChecked();
 
-    await tester.onDeliveryForm.check();
-    await tester.onDeliveryForm.uncheck();
+    await tester.onDeliveryForm.click();
+    await tester.onDeliveryForm.click();
 
-    await tester.type.selectValue('MTA');
-    expect(tester.onDeliveryForm).not.toBeChecked();
+    await tester.type.selectOptions('MTA');
+    await expect.element(tester.onDeliveryForm).not.toBeChecked();
   });
 });

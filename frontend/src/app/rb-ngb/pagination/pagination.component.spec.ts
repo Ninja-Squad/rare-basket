@@ -3,10 +3,12 @@ import { TestBed } from '@angular/core/testing';
 import { PaginationComponent } from './pagination.component';
 import { NgbPagination } from '@ng-bootstrap/ng-bootstrap';
 import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
-import { ComponentTester, RoutingTester } from 'ngx-speculoos';
-import { provideRouter, Routes } from '@angular/router';
+import { provideRouter, Router, Routes } from '@angular/router';
 import { Page } from '../../shared/page.model';
 import { RouterTestingHarness } from '@angular/router/testing';
+import { page } from 'vitest/browser';
+import { By } from '@angular/platform-browser';
+import { beforeEach, describe, expect, test } from 'vitest';
 
 @Component({
   template: `@if (page(); as page) {
@@ -26,31 +28,36 @@ class TestComponent {
   }
 }
 
-class TestComponentTester extends ComponentTester<TestComponent> {
-  constructor() {
-    super(TestComponent);
-  }
+class TestComponentTester {
+  readonly fixture = TestBed.createComponent(TestComponent);
+  readonly componentInstance = this.fixture.componentInstance;
+  readonly root = page.elementLocator(this.fixture.nativeElement);
+  readonly firstPageLink = this.root.getByRole('link', { name: '1' });
 
-  get ngbPagination(): NgbPagination {
-    return this.component(NgbPagination);
-  }
-
-  get firstPageLink() {
-    return this.element<HTMLAnchorElement>('a');
+  get ngbPagination(): NgbPagination | null {
+    return this.fixture.debugElement.query(By.directive(NgbPagination))?.componentInstance ?? null;
   }
 }
 
-class RoutingTestComponentTester extends RoutingTester {
+class RoutingTestComponentTester {
+  readonly root;
+  readonly firstPageLink;
+
+  constructor(readonly harness: RouterTestingHarness) {
+    this.root = page.elementLocator(harness.fixture.nativeElement);
+    this.firstPageLink = this.root.getByRole('link', { name: '1' });
+  }
+
   get testComponent(): TestComponent {
-    return this.component(TestComponent);
+    return this.harness.routeDebugElement?.componentInstance as TestComponent;
   }
 
-  get ngbPagination(): NgbPagination {
-    return this.component(NgbPagination);
+  get ngbPagination(): NgbPagination | null {
+    return this.harness.fixture.debugElement.query(By.directive(NgbPagination))?.componentInstance ?? null;
   }
 
-  get firstPageLink() {
-    return this.element<HTMLAnchorElement>('a');
+  get url(): string {
+    return TestBed.inject(Router).url;
   }
 }
 
@@ -64,29 +71,29 @@ describe('PaginationComponent', () => {
       tester = new TestComponentTester();
     });
 
-    it('should not display pagination if page is empty', async () => {
+    test('should not display pagination if page is empty', async () => {
       tester.componentInstance.page.set({ content: [], number: 0, totalElements: 0, size: 20, totalPages: 1 });
 
-      await tester.stable();
+      await tester.fixture.whenStable();
 
       expect(tester.ngbPagination).toBeNull();
     });
 
-    it('should not display pagination if page is alone', async () => {
+    test('should not display pagination if page is alone', async () => {
       tester.componentInstance.page.set({ content: ['a'], number: 0, totalElements: 1, size: 20, totalPages: 1 });
 
-      await tester.stable();
+      await tester.fixture.whenStable();
 
       expect(tester.ngbPagination).toBeNull();
     });
 
-    it('should emit event when page changes', async () => {
+    test('should emit event when page changes', async () => {
       tester.componentInstance.page.set({ content: ['a'], number: 1, totalElements: 21, size: 20, totalPages: 2 });
 
-      await tester.stable();
-      expect(tester.ngbPagination.page).toBe(2);
+      await tester.fixture.whenStable();
+      expect(tester.ngbPagination?.page).toBe(2);
 
-      await tester.firstPageLink!.click();
+      await tester.firstPageLink.click();
 
       expect(tester.componentInstance.newPage()).toBe(0);
     });
@@ -110,21 +117,21 @@ describe('PaginationComponent', () => {
       tester.testComponent.page.set({ content: ['a'], number: 1, totalElements: 21, size: 20, totalPages: 2 });
     });
 
-    it('should not navigate if navigate is false', async () => {
-      await tester.stable();
+    test('should not navigate if navigate is false', async () => {
+      await tester.harness.fixture.whenStable();
 
-      await tester.firstPageLink!.click();
+      await tester.firstPageLink.click();
 
       expect(tester.url).toBe('/foo');
       expect(tester.testComponent.newPage()).toBe(0);
     });
 
-    it('should navigate if navigate is true', async () => {
+    test('should navigate if navigate is true', async () => {
       tester.testComponent.navigate.set(true);
 
-      await tester.stable();
+      await tester.harness.fixture.whenStable();
 
-      await tester.firstPageLink!.click();
+      await tester.firstPageLink.click();
 
       expect(tester.url).toBe('/foo?page=0');
       expect(tester.testComponent.newPage()).toBe(0);

@@ -1,8 +1,9 @@
 import { PermissionEnumPipe } from './permission-enum.pipe';
-import { testEnumPipe } from '../shared/base-enum-pipe.spec';
+import { testEnumPipe } from '../shared/base-enum-pipe-test';
+import { describe, test } from 'vitest';
 
 describe('PermissionEnumPipe', () => {
-  it('should translate permissions', () => {
+  test('should translate permissions', () => {
     testEnumPipe(PermissionEnumPipe, {
       ORDER_MANAGEMENT: 'Gestion des commandes',
       ADMINISTRATION: 'Administration'

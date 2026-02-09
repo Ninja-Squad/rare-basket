@@ -1,50 +1,34 @@
 import { TestBed } from '@angular/core/testing';
 import { ActivatedRoute, Router } from '@angular/router';
 import { of } from 'rxjs';
-import { ActivatedRouteStub, ComponentTester, createMock, stubRoute } from 'ngx-speculoos';
+import { createMock, MockObject } from '../../../test/mock';
+import { ActivatedRouteStub, stubRoute } from '../../../test/route-stub';
 
 import { EditGrcComponent } from './edit-grc.component';
 import { ValidationDefaultsComponent } from '../../validation-defaults/validation-defaults.component';
 import { Grc, GrcCommand } from '../../shared/user.model';
 import { GrcService } from '../../shared/grc.service';
 import { ToastService } from '../../shared/toast.service';
-import { provideI18nTesting } from '../../i18n/mock-18n.spec';
+import { provideI18nTesting } from '../../i18n/mock-18n';
+import { page } from 'vitest/browser';
+import { beforeEach, describe, expect, test, vi } from 'vitest';
 
-class EditGrcComponentTester extends ComponentTester<EditGrcComponent> {
-  constructor() {
-    super(EditGrcComponent);
-  }
-
-  get title() {
-    return this.element('h1');
-  }
-
-  get name() {
-    return this.input('#name')!;
-  }
-
-  get institution() {
-    return this.input('#institution')!;
-  }
-
-  get address() {
-    return this.textarea('#address')!;
-  }
-
-  get errors() {
-    return this.elements('.invalid-feedback div');
-  }
-
-  get saveButton() {
-    return this.button('#save-button')!;
-  }
+class EditGrcComponentTester {
+  readonly fixture = TestBed.createComponent(EditGrcComponent);
+  readonly root = page.elementLocator(this.fixture.nativeElement);
+  readonly title = this.root.getByCss('h1');
+  readonly name = this.root.getByCss('#name');
+  readonly institution = this.root.getByCss('#institution');
+  readonly address = this.root.getByCss('#address');
+  readonly errors = this.root.getByCss('.invalid-feedback div');
+  readonly saveButton = this.root.getByCss('#save-button');
 }
 
 describe('EditGrcComponent', () => {
   let tester: EditGrcComponentTester;
-  let grcService: jasmine.SpyObj<GrcService>;
+  let grcService: MockObject<GrcService>;
   let router: Router;
-  let toastService: jasmine.SpyObj<ToastService>;
+  let toastService: MockObject<ToastService>;
   let route: ActivatedRouteStub;
 
   beforeEach(async () => {
@@ -62,7 +46,7 @@ describe('EditGrcComponent', () => {
     });
 
     router = TestBed.inject(Router);
-    spyOn(router, 'navigate');
+    vi.spyOn(router, 'navigate');
 
     await TestBed.createComponent(ValidationDefaultsComponent).whenStable();
   });
@@ -70,38 +54,38 @@ describe('EditGrcComponent', () => {
   describe('in create mode', () => {
     beforeEach(async () => {
       tester = new EditGrcComponentTester();
-      await tester.stable();
+      await tester.fixture.whenStable();
     });
 
-    it('should have a title', () => {
-      expect(tester.title).toContainText(`Créer un CRB`);
+    test('should have a title', () => {
+      expect(tester.title.element().textContent).toContain(`Créer un CRB`);
     });
 
-    it('should display an empty form', () => {
-      expect(tester.name).toHaveValue('');
-      expect(tester.institution).toHaveValue('');
-      expect(tester.address).toHaveValue('');
+    test('should display an empty form', async () => {
+      await expect.element(tester.name).toHaveValue('');
+      await expect.element(tester.institution).toHaveValue('');
+      await expect.element(tester.address).toHaveValue('');
     });
 
-    it('should not save if error', async () => {
-      expect(tester.errors.length).toBe(0);
+    test('should not save if error', async () => {
+      await expect.element(tester.errors).toHaveLength(0);
 
       await tester.saveButton.click();
 
-      expect(tester.errors.length).toBe(3);
-      expect(tester.errors[0]).toContainText('Le nom est obligatoire');
-      expect(tester.errors[1]).toContainText("L'institution est obligatoire");
-      expect(tester.errors[2]).toContainText("L'adresse est obligatoire");
+      await expect.element(tester.errors).toHaveLength(3);
+      await expect.element(tester.errors.nth(0)).toHaveTextContent('Le nom est obligatoire');
+      await expect.element(tester.errors.nth(1)).toHaveTextContent("L'institution est obligatoire");
+      await expect.element(tester.errors.nth(2)).toHaveTextContent("L'adresse est obligatoire");
 
       expect(grcService.create).not.toHaveBeenCalled();
     });
 
-    it('should create a GRC', async () => {
-      await tester.name.fillWith('GRC1');
-      await tester.institution.fillWith('INRAE');
-      await tester.address.fillWith('12 Boulevard Marie Curie, 69007 LYON');
+    test('should create a GRC', async () => {
+      await tester.name.fill('GRC1');
+      await tester.institution.fill('INRAE');
+      await tester.address.fill('12 Boulevard Marie Curie, 69007 LYON');
 
-      grcService.create.and.returnValue(of({} as Grc));
+      grcService.create.mockReturnValue(of({} as Grc));
       await tester.saveButton.click();
 
       const expectedCommand: GrcCommand = {
@@ -119,7 +103,7 @@ describe('EditGrcComponent', () => {
     beforeEach(async () => {
       route.setParam('grcId', '41');
 
-      grcService.get.and.returnValue(
+      grcService.get.mockReturnValue(
         of({
           id: 41,
           name: 'GRC1',
@@ -129,24 +113,24 @@ describe('EditGrcComponent', () => {
       );
 
       tester = new EditGrcComponentTester();
-      await tester.stable();
+      await tester.fixture.whenStable();
     });
 
-    it('should have a title', () => {
-      expect(tester.title).toContainText(`Modifier un CRB`);
+    test('should have a title', () => {
+      expect(tester.title.element().textContent).toContain(`Modifier un CRB`);
     });
 
-    it('should display a filled form', () => {
-      expect(tester.name).toHaveValue('GRC1');
-      expect(tester.institution).toHaveValue('INRAE');
-      expect(tester.address).toHaveValue('12 Boulevard Marie Curie, 69007 LYON');
+    test('should display a filled form', async () => {
+      await expect.element(tester.name).toHaveValue('GRC1');
+      await expect.element(tester.institution).toHaveValue('INRAE');
+      await expect.element(tester.address).toHaveValue('12 Boulevard Marie Curie, 69007 LYON');
     });
 
-    it('should update the GRC', async () => {
-      await tester.name.fillWith('GRC2');
-      await tester.address.fillWith('13 Boulevard Marie Curie, 69007 LYON');
+    test('should update the GRC', async () => {
+      await tester.name.fill('GRC2');
+      await tester.address.fill('13 Boulevard Marie Curie, 69007 LYON');
 
-      grcService.update.and.returnValue(of(undefined));
+      grcService.update.mockReturnValue(of(undefined));
       await tester.saveButton.click();
 
       const expectedCommand: GrcCommand = {

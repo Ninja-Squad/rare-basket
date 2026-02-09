@@ -1,9 +1,10 @@
 import { TestBed } from '@angular/core/testing';
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { RoutingTester } from 'ngx-speculoos';
 import { provideRouter, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { RouterNavDirective, RouterNavLinkDirective, RouterNavPanelDirective } from './router-nav.directive';
 import { RouterTestingHarness } from '@angular/router/testing';
+import { page } from 'vitest/browser';
+import { beforeEach, describe, expect, test } from 'vitest';
 
 @Component({
   template: '',
@@ -33,17 +34,17 @@ class PlaceholderComponent {}
 })
 class TestComponent {}
 
-class TestComponentTester extends RoutingTester {
-  get tabList() {
-    return this.element('ul')!;
-  }
+class TestComponentTester {
+  readonly root;
+  readonly tabList;
+  readonly tabLinks;
+  readonly tabPanel;
 
-  get tabLinks() {
-    return this.elements('a');
-  }
-
-  get tabPanel() {
-    return this.element('div')!;
+  constructor(readonly harness: RouterTestingHarness) {
+    this.root = page.elementLocator(harness.fixture.nativeElement);
+    this.tabList = this.root.getByCss('ul');
+    this.tabLinks = this.root.getByCss('a');
+    this.tabPanel = this.root.getByCss('div');
   }
 }
 
@@ -67,30 +68,35 @@ describe('Router nav directives', () => {
     });
   });
 
-  it('should add class and accessibility attributes', async () => {
+  test('should add class and accessibility attributes', async () => {
     tester = new TestComponentTester(await RouterTestingHarness.create('/foo'));
-    await tester.stable();
+    await tester.harness.fixture.whenStable();
 
-    expect(tester.tabList.attr('role')).toBe('tablist');
-    expect(tester.tabList).toHaveClass('nav');
+    await expect.element(tester.tabList).toHaveAttribute('role', 'tablist');
+    await expect.element(tester.tabList).toHaveClass('nav');
 
-    expect(tester.tabLinks[0].attr('role')).toBe('tab');
-    expect(tester.tabLinks[0]).toHaveClass('nav-link');
-    expect(tester.tabLinks[0].nativeElement.id).toBeTruthy();
-    expect(tester.tabLinks[0].attr('aria-selected')).toBe('true');
+    const firstLink = tester.tabLinks.nth(0);
+    const secondLink = tester.tabLinks.nth(1);
+    await expect.element(firstLink).toHaveAttribute('role', 'tab');
+    await expect.element(firstLink).toHaveClass('nav-link');
+    const firstLinkId = firstLink.element().id;
+    expect(firstLinkId).toBeTruthy();
+    await expect.element(firstLink).toHaveAttribute('aria-selected', 'true');
 
-    expect(tester.tabLinks[1].attr('role')).toBe('tab');
-    expect(tester.tabLinks[1]).toHaveClass('nav-link');
-    expect(tester.tabLinks[1].nativeElement.id).toBe('bar');
-    expect(tester.tabLinks[1].attr('aria-selected')).toBe('false');
+    await expect.element(secondLink).toHaveAttribute('role', 'tab');
+    await expect.element(secondLink).toHaveClass('nav-link');
+    const secondLinkId = secondLink.element().id;
+    expect(secondLinkId).toBe('bar');
+    await expect.element(secondLink).toHaveAttribute('aria-selected', 'false');
 
-    expect(tester.tabPanel.attr('role')).toBe('tabpanel');
-    expect(tester.tabPanel.attr('aria-labelledby')).toBe(tester.tabLinks[0].nativeElement.id);
+    await expect.element(tester.tabPanel).toHaveAttribute('role', 'tabpanel');
+    await expect.element(tester.tabPanel).toHaveAttribute('aria-labelledby', firstLinkId);
 
     await tester.harness.navigateByUrl('/bar');
+    await tester.harness.fixture.whenStable();
 
-    expect(tester.tabLinks[0].attr('aria-selected')).toBe('false');
-    expect(tester.tabLinks[1].attr('aria-selected')).toBe('true');
-    expect(tester.tabPanel.attr('aria-labelledby')).toBe('bar');
+    await expect.element(firstLink).toHaveAttribute('aria-selected', 'false');
+    await expect.element(secondLink).toHaveAttribute('aria-selected', 'true');
+    await expect.element(tester.tabPanel).toHaveAttribute('aria-labelledby', 'bar');
   });
 });

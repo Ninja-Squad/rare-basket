@@ -1,10 +1,11 @@
 import { TestBed } from '@angular/core/testing';
 
 import { ConfirmedComponent } from './confirmed.component';
-import { ComponentTester } from 'ngx-speculoos';
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { AccessionHolderBasket, Basket } from '../basket.model';
-import { provideI18nTesting } from '../../i18n/mock-18n.spec';
+import { provideI18nTesting } from '../../i18n/mock-18n';
+import { page } from 'vitest/browser';
+import { beforeEach, describe, expect, test } from 'vitest';
 
 @Component({
   template: `<rb-confirmed [basket]="basket" />`,
@@ -20,10 +21,9 @@ class TestComponent {
   } as Basket;
 }
 
-class TestComponentTester extends ComponentTester<TestComponent> {
-  constructor() {
-    super(TestComponent);
-  }
+class TestComponentTester {
+  readonly fixture = TestBed.createComponent(TestComponent);
+  readonly root = page.elementLocator(this.fixture.nativeElement);
 }
 
 describe('ConfirmedComponent', () => {
@@ -35,10 +35,9 @@ describe('ConfirmedComponent', () => {
     });
 
     tester = new TestComponentTester();
-    await tester.stable();
   });
 
-  it('should display some text, containing the email', () => {
-    expect(tester.testElement).toContainText('john@mail.com');
+  test('should display some text, containing the email', async () => {
+    await expect.element(tester.root).toHaveTextContent('john@mail.com');
   });
 });

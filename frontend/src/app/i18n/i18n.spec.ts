@@ -1,5 +1,6 @@
 import FR_TRANSLATIONS from './fr.json';
 import EN_TRANSLATIONS from './en.json';
+import { describe, expect, test } from 'vitest';
 
 describe('i18n', () => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -8,14 +9,10 @@ describe('i18n', () => {
     const otherKeys = Object.keys(other);
 
     referenceKeys.forEach(key => {
-      expect(otherKeys.includes(key))
-        .withContext(`key ${prefix + key} is present in fr.json but not in ${otherLanguage}.json`)
-        .toBeTrue();
+      expect(otherKeys.includes(key), `key ${prefix + key} is present in fr.json but not in ${otherLanguage}.json`).toBe(true);
     });
     otherKeys.forEach(key => {
-      expect(referenceKeys.includes(key))
-        .withContext(`key ${prefix + key} should not be in ${otherLanguage}.json`)
-        .toBeTrue();
+      expect(referenceKeys.includes(key), `key ${prefix + key} should not be in ${otherLanguage}.json`).toBe(true);
     });
 
     referenceKeys.forEach(key => {
@@ -28,7 +25,7 @@ describe('i18n', () => {
     });
   }
 
-  it('should have the same keys in all languages', () => {
+  test('should have the same keys in all languages', () => {
     checkObject(FR_TRANSLATIONS, EN_TRANSLATIONS, '', 'en');
   });
 });

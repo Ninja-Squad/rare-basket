@@ -2,6 +2,7 @@ import { TestBed } from '@angular/core/testing';
 
 import { DownloadService } from './download.service';
 import { HttpHeaders, HttpResponse } from '@angular/common/http';
+import { beforeEach, describe, expect, test } from 'vitest';
 
 describe('DownloadService', () => {
   let service: DownloadService;
@@ -10,7 +11,7 @@ describe('DownloadService', () => {
     service = TestBed.inject(DownloadService);
   });
 
-  it('should extract the file name from the response', () => {
+  test('should extract the file name from the response', () => {
     const blob = new Blob();
     const response = new HttpResponse<Blob>({
       body: blob,
@@ -23,7 +24,7 @@ describe('DownloadService', () => {
     expect(result.name).toBe('test.xlsx');
   });
 
-  it('should use the default file name if not present in the response', () => {
+  test('should use the default file name if not present in the response', () => {
     const blob = new Blob();
     const response = new HttpResponse<Blob>({
       body: blob
