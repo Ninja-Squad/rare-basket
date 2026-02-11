@@ -90,6 +90,9 @@ importers:
       '@vitest/browser-playwright':
         specifier: 4.0.18
         version: 4.0.18(playwright@1.58.2)(vite@7.3.0(@types/node@25.0.10)(sass@1.97.1))(vitest@4.0.18)
+      '@vitest/eslint-plugin':
+        specifier: 1.6.7
+        version: 1.6.7(eslint@9.39.2)(typescript@5.9.3)(vitest@4.0.18)
       '@vitest/spy':
         specifier: 4.0.18
         version: 4.0.18
@@ -1653,6 +1656,19 @@ packages:
     resolution: {integrity: sha512-gVQqh7paBz3gC+ZdcCmNSWJMk70IUjDeVqi+5m5vYpEHsIwRgw3Y545jljtajhkekIpIp5Gg8oK7bctgY0E2Ng==}
     peerDependencies:
       vitest: 4.0.18
+
+  '@vitest/eslint-plugin@1.6.7':
+    resolution: {integrity: sha512-sd2QJirEscSQk3Pywtelbs7z8RQp1gyF5BfeZVtTHE8y3suyzbAA71NuT9z01uTRMHoCf5p6M2t2WYNJ7m5FlA==}
+    engines: {node: '>=18'}
+    peerDependencies:
+      eslint: '>=8.57.0'
+      typescript: '>=5.0.0'
+      vitest: '*'
+    peerDependenciesMeta:
+      typescript:
+        optional: true
+      vitest:
+        optional: true
 
   '@vitest/expect@4.0.18':
     resolution: {integrity: sha512-8sCWUyckXXYvx4opfzVY03EOiYVxyNrHS5QxX3DAIi5dpJAAkyJezHCP77VMX4HKA2LDT/Jpfo8i2r5BE3GnQQ==}
@@ -5119,6 +5135,17 @@ snapshots:
       - msw
       - utf-8-validate
       - vite
+
+  '@vitest/eslint-plugin@1.6.7(eslint@9.39.2)(typescript@5.9.3)(vitest@4.0.18)':
+    dependencies:
+      '@typescript-eslint/scope-manager': 8.55.0
+      '@typescript-eslint/utils': 8.55.0(eslint@9.39.2)(typescript@5.9.3)
+      eslint: 9.39.2
+    optionalDependencies:
+      typescript: 5.9.3
+      vitest: 4.0.18(@types/node@25.0.10)(@vitest/browser-playwright@4.0.18)(sass@1.97.1)
+    transitivePeerDependencies:
+      - supports-color
 
   '@vitest/expect@4.0.18':
     dependencies:
