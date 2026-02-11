@@ -26,6 +26,7 @@ describe('i18n', () => {
   }
 
   test('should have the same keys in all languages', () => {
+    expect.hasAssertions();
     checkObject(FR_TRANSLATIONS, EN_TRANSLATIONS, '', 'en');
   });
 });

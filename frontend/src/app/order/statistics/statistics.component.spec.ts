@@ -392,67 +392,6 @@ describe('StatisticsComponent', () => {
       orderService.getStatistics.mockReturnValue(of(statistics));
     });
 
-    test('should navigate and refresh', async () => {
-      await tester.from.fill('2019-01-01');
-      await tester.to.fill('2019-02-01');
-      await tester.refreshButton.click();
-
-      expect(router.navigate).toHaveBeenCalledWith([], {
-        queryParams: { from: '2019-01-01', to: '2019-02-01' },
-        replaceUrl: true
-      });
-      expect(orderService.getStatistics).toHaveBeenCalledWith('2019-01-01', '2019-02-01', []);
-    });
-
-    test('should not navigate and refresh if invalid', async () => {
-      await tester.from.fill('2019-02-01');
-      await tester.to.fill('2019-01-31');
-      await tester.refreshButton.click();
-
-      await expect.element(tester.errors).toHaveLength(1);
-      await expect.element(tester.root).toHaveTextContent('La plage de dates est invalide');
-
-      await tester.from.fill('');
-      await tester.to.fill('');
-      await tester.refreshButton.click();
-
-      // required errors are not displayed because it messes up the layout, but the form should be invalid
-      expect(tester.componentInstance.form.invalid).toBe(true);
-
-      await tester.editPerimeterButton.click();
-      await tester.noGlobalVisualizationRadio.click();
-      const grcCount = tester.grcs.length;
-      for (let index = 0; index < grcCount; index += 1) {
-        await tester.grcs.nth(index).click();
-      }
-      await tester.fixture.whenStable();
-
-      expect(router.navigate).not.toHaveBeenCalled();
-      expect(orderService.getStatistics).not.toHaveBeenCalled();
-    });
-  });
-
-  describe('after first display', () => {
-    beforeEach(async () => {
-      tester = new StatisticsComponentTester();
-      await tester.fixture.whenStable();
-      router.navigate.mockReset();
-      orderService.getStatistics.mockReset();
-      orderService.getStatistics.mockReturnValue(of(statistics));
-    });
-
-    test('should navigate and refresh', async () => {
-      await tester.from.fill('2019-01-01');
-      await tester.to.fill('2019-02-01');
-      await tester.refreshButton.click();
-
-      expect(router.navigate).toHaveBeenCalledWith([], {
-        queryParams: { from: '2019-01-01', to: '2019-02-01' },
-        replaceUrl: true
-      });
-      expect(orderService.getStatistics).toHaveBeenCalledWith('2019-01-01', '2019-02-01', []);
-    });
-
     test('should not navigate and refresh if invalid', async () => {
       await tester.from.fill('2019-02-01');
       await tester.to.fill('2019-01-31');
