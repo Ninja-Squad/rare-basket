@@ -48,7 +48,7 @@
     "@types/papaparse": "5.5.2",
     "@vitest/browser": "4.1.0",
     "@vitest/browser-playwright": "4.1.0",
-    "@vitest/eslint-plugin": "1.6.11",
+    "@vitest/eslint-plugin": "1.6.12",
     "@vitest/spy": "4.1.0",
     "angular-eslint": "21.3.0",
     "eslint": "9.39.4",
