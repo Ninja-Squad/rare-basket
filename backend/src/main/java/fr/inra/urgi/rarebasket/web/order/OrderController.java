@@ -8,6 +8,7 @@ import java.nio.file.Path;
 import java.time.Duration;
 import java.time.Instant;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -455,6 +456,7 @@ public class OrderController {
     }
 
     private Path createCompleteDeliveryFormZipFile(Order order, String folder) throws IOException {
+        List<Document> deliveryFormDocuments = new ArrayList<>(order.getDocuments());
         byte[] deliveryForm = deliveryFormGenerator.generate(order);
 
         Path tempFile = Files.createTempFile("rare-basket-", ".zip");
@@ -464,7 +466,7 @@ public class OrderController {
             zip.putNextEntry(new ZipEntry(folder + "/bon-de-livraison.pdf"));
             zip.write(deliveryForm);
             zip.closeEntry();
-            for (Document document: order.getDocuments()) {
+            for (Document document: deliveryFormDocuments) {
                 if (document.isOnDeliveryForm()) {
                     zip.putNextEntry(new ZipEntry(folder + "/" + document.getId() + "-" + document.getOriginalFileName()));
                     StreamUtils.copy(documentStorage.documentInputStream(document.getId(),
