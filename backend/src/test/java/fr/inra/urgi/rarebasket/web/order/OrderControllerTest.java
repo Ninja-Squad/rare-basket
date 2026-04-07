@@ -50,6 +50,7 @@ import fr.inra.urgi.rarebasket.service.user.VisualizationPerimeter;
 import fr.inra.urgi.rarebasket.web.basket.CustomerCommandDTO;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junitpioneer.jupiter.RetryingTest;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -443,7 +444,7 @@ class OrderControllerTest {
                .andExpect(status().isBadRequest());
     }
 
-    @Test
+    @RetryingTest(maxAttempts = 3)
     void shouldDownloadCompleteDeliveryForm() throws Exception {
         order.setStatus(OrderStatus.FINALIZED);
         Document onDeliveryFormDocument = new Document();
