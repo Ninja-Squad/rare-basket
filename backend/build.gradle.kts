@@ -116,6 +116,7 @@ dependencies {
     testImplementation("org.springframework.security:spring-security-test")
 
     testImplementation("com.ninja-squad:DbSetup:2.1.0")
+    testImplementation("org.junit-pioneer:junit-pioneer:2.3.0")
 
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 }
