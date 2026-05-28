@@ -14,7 +14,7 @@
     "knip": "pnpx knip --fix-type exports,types --exclude dependencies,unlisted,files,binaries --tags=knipignore"
   },
   "private": true,
-  "packageManager": "pnpm@11.2.2",
+  "packageManager": "pnpm@11.3.0",
   "engines": {
     "node": "24.16.0"
   },
@@ -48,7 +48,7 @@
     "@types/papaparse": "5.5.2",
     "@vitest/browser": "4.1.7",
     "@vitest/browser-playwright": "4.1.7",
-    "@vitest/eslint-plugin": "1.6.17",
+    "@vitest/eslint-plugin": "1.6.18",
     "@vitest/spy": "4.1.7",
     "angular-eslint": "21.4.0",
     "eslint": "10.4.0",
