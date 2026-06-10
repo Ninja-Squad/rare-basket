@@ -1,10 +1,8 @@
-import { Injectable } from '@angular/core';
+import { Service } from '@angular/core';
 import { NgbDateParserFormatter, NgbDateStruct } from '@ng-bootstrap/ng-bootstrap';
 import { isNumber, padNumber, toInteger } from './utils';
 
-@Injectable({
-  providedIn: 'root'
-})
+@Service()
 export class CustomDateParserFormatterService extends NgbDateParserFormatter {
   parse(value: string): NgbDateStruct | null {
     if (value) {

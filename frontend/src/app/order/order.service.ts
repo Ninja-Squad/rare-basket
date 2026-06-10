@@ -1,4 +1,4 @@
-import { Injectable, inject } from '@angular/core';
+import { Service, inject } from '@angular/core';
 import { HttpClient, HttpEvent, HttpResponse } from '@angular/common/http';
 import {
   CustomerInformationCommand,
@@ -14,9 +14,7 @@ import {
 import { Observable } from 'rxjs';
 import { Page } from '../shared/page.model';
 
-@Injectable({
-  providedIn: 'root'
-})
+@Service()
 export class OrderService {
   private http = inject(HttpClient);
 
