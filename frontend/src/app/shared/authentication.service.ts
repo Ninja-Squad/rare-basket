@@ -1,4 +1,4 @@
-import { inject, Injectable } from '@angular/core';
+import { inject, Service } from '@angular/core';
 import { OidcSecurityService } from 'angular-auth-oidc-client';
 import { map, Observable, of, ReplaySubject, switchMap } from 'rxjs';
 import { Router } from '@angular/router';
@@ -8,9 +8,7 @@ import { User } from './user.model';
 
 const REQUESTED_URL_KEY = 'rare-basket-requested-url';
 
-@Injectable({
-  providedIn: 'root'
-})
+@Service()
 export class AuthenticationService {
   private oidcSecurityService = inject(OidcSecurityService);
   private router = inject(Router);

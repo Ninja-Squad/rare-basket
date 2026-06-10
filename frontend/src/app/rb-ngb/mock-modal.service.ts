@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Service } from '@angular/core';
 import { Modal, ModalService } from './modal.service';
 import { EMPTY, of, throwError } from 'rxjs';
 
@@ -15,7 +15,7 @@ import { EMPTY, of, throwError } from 'rxjs';
  * If you forget to call the `mockXXXModal` method before using the modal,
  * an explicit error will be thrown.
  */
-@Injectable()
+@Service({ autoProvided: false })
 export class MockModalService<T> {
   private modal!: Modal<T>;
 

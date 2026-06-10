@@ -1,9 +1,9 @@
-import { Injectable } from '@angular/core';
+import { Service } from '@angular/core';
 import { NgbDateAdapter, NgbDateParserFormatter, NgbDatepickerConfig } from '@ng-bootstrap/ng-bootstrap';
 import { CustomDateParserFormatterService } from './custom-date-parser-formatter.service';
 import { DateStringAdapterService } from './date-string-adapter.service';
 
-@Injectable()
+@Service({ autoProvided: false })
 class RbNgbDatepickerConfig extends NgbDatepickerConfig {
   constructor() {
     super();

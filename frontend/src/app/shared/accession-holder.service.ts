@@ -1,11 +1,9 @@
-import { Injectable, inject } from '@angular/core';
+import { Service, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { AccessionHolder, AccessionHolderCommand } from './user.model';
 
-@Injectable({
-  providedIn: 'root'
-})
+@Service()
 export class AccessionHolderService {
   private http = inject(HttpClient);
 

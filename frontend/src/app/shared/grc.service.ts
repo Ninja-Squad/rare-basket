@@ -1,11 +1,9 @@
-import { Injectable, inject } from '@angular/core';
+import { Service, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Grc, GrcCommand } from './user.model';
 
-@Injectable({
-  providedIn: 'root'
-})
+@Service()
 export class GrcService {
   private http = inject(HttpClient);
 

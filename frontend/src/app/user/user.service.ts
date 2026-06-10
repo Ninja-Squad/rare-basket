@@ -1,12 +1,10 @@
-import { Injectable, inject } from '@angular/core';
+import { Service, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { User, UserCommand } from '../shared/user.model';
 import { Page } from '../shared/page.model';
 
-@Injectable({
-  providedIn: 'root'
-})
+@Service()
 export class UserService {
   private http = inject(HttpClient);
 

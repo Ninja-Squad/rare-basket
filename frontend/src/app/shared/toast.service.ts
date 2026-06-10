@@ -1,4 +1,4 @@
-import { Injectable, inject } from '@angular/core';
+import { Service, inject } from '@angular/core';
 import { Observable, Subject } from 'rxjs';
 import { TranslateService } from '@ngx-translate/core';
 
@@ -7,9 +7,7 @@ export interface Toast {
   type: 'success' | 'error';
 }
 
-@Injectable({
-  providedIn: 'root'
-})
+@Service()
 export class ToastService {
   private translateService = inject(TranslateService);
 

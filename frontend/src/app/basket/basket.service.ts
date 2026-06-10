@@ -1,11 +1,9 @@
-import { Injectable, inject } from '@angular/core';
+import { Service, inject } from '@angular/core';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { catchError, Observable, of, throwError } from 'rxjs';
 import { Basket, BasketCommand } from './basket.model';
 
-@Injectable({
-  providedIn: 'root'
-})
+@Service()
 export class BasketService {
   private http = inject(HttpClient);
 

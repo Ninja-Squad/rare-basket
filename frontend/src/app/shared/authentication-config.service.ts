@@ -1,4 +1,4 @@
-import { inject, Injectable } from '@angular/core';
+import { inject, Service } from '@angular/core';
 import {
   AbstractSecurityStorage,
   AuthWellKnownEndpoints,
@@ -16,7 +16,7 @@ const CONFIG_ID = 'rare-basket-auth';
  * We use local storage instead of the default local storage, otherwise we can't even open
  * a link in a new tab without losing authentication
  */
-@Injectable()
+@Service({ autoProvided: false })
 export class CustomSecurityStorage extends AbstractSecurityStorage {
   constructor() {
     super();
@@ -48,9 +48,7 @@ export class CustomSecurityStorage extends AbstractSecurityStorage {
   }
 }
 
-@Injectable({
-  providedIn: 'root'
-})
+@Service()
 export class AuthenticationConfigService {
   private window = inject(WINDOW);
   private locationStrategy = inject(LocationStrategy);

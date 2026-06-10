@@ -5,7 +5,7 @@ import { ActivatedRoute, ParamMap, Router } from '@angular/router';
 import { AuthenticationService } from '../shared/authentication.service';
 import { combineLatest, ignoreElements, map, merge, Observable, switchMap, tap } from 'rxjs';
 import { FormControl } from '@angular/forms';
-import { Injectable, inject } from '@angular/core';
+import { Service, inject } from '@angular/core';
 import { OrderService } from './order.service';
 
 export interface OrderListViewModel {
@@ -23,9 +23,7 @@ export interface OrderListViewModel {
  * - navigates to the current route with the page set to 0 and the selected accession holder ID in the query params
  *   whenever the accession holder form control changes its value
  */
-@Injectable({
-  providedIn: 'root'
-})
+@Service()
 export class OrderListService {
   private authenticationService = inject(AuthenticationService);
   private orderService = inject(OrderService);
