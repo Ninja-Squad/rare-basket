@@ -1,5 +1,7 @@
 import { defineConfig } from 'vitest/config';
 
+const timeout = process.env.CI ? 5000 : 2000;
+
 export default defineConfig({
   test: {
     expect: {
@@ -10,7 +12,7 @@ export default defineConfig({
     browser: {
       screenshotFailures: false
     },
-    testTimeout: 2000,
-    hookTimeout: 2000
+    testTimeout: timeout,
+    hookTimeout: timeout
   }
 });
