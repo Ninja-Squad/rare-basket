@@ -1,12 +1,12 @@
 import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslateDirective } from '@ngx-translate/core';
 
 @Component({
   selector: 'rb-confirmation-modal',
   templateUrl: './confirmation-modal.component.html',
   styleUrl: './confirmation-modal.component.scss',
-  imports: [TranslateModule],
+  imports: [TranslateDirective],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ConfirmationModalComponent {

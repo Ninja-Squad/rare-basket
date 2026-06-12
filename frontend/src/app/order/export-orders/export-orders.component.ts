@@ -11,14 +11,15 @@ import { FaIconComponent } from '@fortawesome/angular-fontawesome';
 import { FormControlValidationDirective } from '../../shared/form-control-validation.directive';
 import { NgbInputDatepicker } from '@ng-bootstrap/ng-bootstrap';
 import { DatepickerContainerComponent } from '../../rb-ngb/datepicker-container.component';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'rb-export-orders',
   templateUrl: './export-orders.component.html',
   styleUrl: './export-orders.component.scss',
   imports: [
-    TranslateModule,
+    TranslateDirective,
+    TranslatePipe,
     ReactiveFormsModule,
     DatepickerContainerComponent,
     NgbInputDatepicker,

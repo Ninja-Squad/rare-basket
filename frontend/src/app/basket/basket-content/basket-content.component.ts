@@ -3,7 +3,7 @@ import { Basket } from '../basket.model';
 import { AccessionComponent } from '../../shared/accession/accession.component';
 import { DecimalPipe } from '@angular/common';
 import { CustomerInformationComponent } from '../../shared/customer-information/customer-information.component';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslateDirective } from '@ngx-translate/core';
 
 /**
  * Component used to remind the customer of his basket
@@ -12,7 +12,7 @@ import { TranslateModule } from '@ngx-translate/core';
   selector: 'rb-basket-content',
   templateUrl: './basket-content.component.html',
   styleUrl: './basket-content.component.scss',
-  imports: [TranslateModule, CustomerInformationComponent, AccessionComponent, DecimalPipe],
+  imports: [TranslateDirective, CustomerInformationComponent, AccessionComponent, DecimalPipe],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class BasketContentComponent {

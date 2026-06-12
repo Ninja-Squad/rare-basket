@@ -4,7 +4,7 @@ import { Page } from '../../shared/page.model';
 import { OrderStatusEnumPipe } from '../order-status-enum.pipe';
 import { CustomerTypeEnumPipe } from '../../shared/customer-type-enum.pipe';
 import { PaginationComponent } from '../../rb-ngb/pagination/pagination.component';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslateDirective } from '@ngx-translate/core';
 import { RouterLink } from '@angular/router';
 import { DatePipe, DecimalPipe, NgPlural, NgPluralCase } from '@angular/common';
 
@@ -16,7 +16,7 @@ import { DatePipe, DecimalPipe, NgPlural, NgPluralCase } from '@angular/common';
     RouterLink,
     NgPlural,
     NgPluralCase,
-    TranslateModule,
+    TranslateDirective,
     PaginationComponent,
     DecimalPipe,
     DatePipe,

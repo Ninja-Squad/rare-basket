@@ -3,7 +3,7 @@ import { AuthenticationService } from '../../shared/authentication.service';
 import { Permission } from '../../shared/user.model';
 import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { RouterNavDirective, RouterNavLinkDirective, RouterNavPanelDirective } from '../../rb-ngb/router-nav.directive';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslateDirective } from '@ngx-translate/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 
 @Component({
@@ -11,7 +11,7 @@ import { toSignal } from '@angular/core/rxjs-interop';
   templateUrl: './orders-container.component.html',
   styleUrl: './orders-container.component.scss',
   imports: [
-    TranslateModule,
+    TranslateDirective,
     RouterNavDirective,
     RouterLink,
     RouterLinkActive,

@@ -13,14 +13,14 @@ import {
 import { LanguageEnumPipe } from '../language-enum.pipe';
 import { CustomerTypeEnumPipe } from '../customer-type-enum.pipe';
 
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslateDirective } from '@ngx-translate/core';
 import { FaIconComponent } from '@fortawesome/angular-fontawesome';
 
 @Component({
   selector: 'rb-customer-information',
   templateUrl: './customer-information.component.html',
   styleUrl: './customer-information.component.scss',
-  imports: [FaIconComponent, TranslateModule, CustomerTypeEnumPipe, LanguageEnumPipe],
+  imports: [FaIconComponent, TranslateDirective, CustomerTypeEnumPipe, LanguageEnumPipe],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class CustomerInformationComponent {

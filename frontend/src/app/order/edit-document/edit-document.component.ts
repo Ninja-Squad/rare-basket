@@ -15,7 +15,7 @@ import { NgbProgressbar } from '@ng-bootstrap/ng-bootstrap';
 import { FormControlValidationDirective } from '../../shared/form-control-validation.directive';
 import { ValidationErrorsComponent } from 'ngx-valdemort';
 import { DecimalPipe } from '@angular/common';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
 
 const validExtensions = ['.pdf', '.txt', '.eml', '.pst', '.ost'];
 const maxFileSize = 10 * 1024 * 1024; // 10 MB
@@ -26,7 +26,8 @@ const maxFileSize = 10 * 1024 * 1024; // 10 MB
   styleUrl: './edit-document.component.scss',
   imports: [
     ReactiveFormsModule,
-    TranslateModule,
+    TranslateDirective,
+    TranslatePipe,
     ValidationErrorsComponent,
     FormControlValidationDirective,
     NgbProgressbar,

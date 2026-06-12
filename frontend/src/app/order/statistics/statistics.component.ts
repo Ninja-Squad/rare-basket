@@ -3,7 +3,7 @@ import { OrderService } from '../order.service';
 import { CustomerTypeStatistics, OrderStatistics, OrderStatusStatistics } from '../order.model';
 import { ArcElement, Chart, ChartConfiguration, DoughnutController, Legend, Tooltip } from 'chart.js';
 import { COLORS } from '../../chart/colors';
-import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { TranslateDirective, TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { DecimalPipe, formatDate, formatNumber, formatPercent, PercentPipe } from '@angular/common';
 import {
   AbstractControl,
@@ -51,7 +51,8 @@ interface StatsParams {
   styleUrl: './statistics.component.scss',
   imports: [
     ReactiveFormsModule,
-    TranslateModule,
+    TranslateDirective,
+    TranslatePipe,
     DatepickerContainerComponent,
     NgbInputDatepicker,
     FormControlValidationDirective,
