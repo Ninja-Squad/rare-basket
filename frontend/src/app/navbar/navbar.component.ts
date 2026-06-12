@@ -11,7 +11,7 @@ import {
   faUsersCog
 } from '@fortawesome/free-solid-svg-icons';
 import { Permission, User } from '../shared/user.model';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
 import { FaIconComponent } from '@fortawesome/angular-fontawesome';
 import { RouterLink } from '@angular/router';
 
@@ -25,7 +25,17 @@ type ViewModel = { status: 'unknown' | 'absent' } | { status: 'present'; user: U
   selector: 'rb-navbar',
   templateUrl: './navbar.component.html',
   styleUrl: './navbar.component.scss',
-  imports: [RouterLink, FaIconComponent, TranslateModule, NgbDropdown, NgbDropdownToggle, NgbDropdownMenu, NgbDropdownItem, NgbCollapse],
+  imports: [
+    RouterLink,
+    FaIconComponent,
+    TranslateDirective,
+    TranslatePipe,
+    NgbDropdown,
+    NgbDropdownToggle,
+    NgbDropdownMenu,
+    NgbDropdownItem,
+    NgbCollapse
+  ],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class NavbarComponent {

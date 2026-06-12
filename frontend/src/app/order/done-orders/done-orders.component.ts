@@ -3,14 +3,14 @@ import { ActivatedRoute } from '@angular/router';
 import { OrdersComponent } from '../orders/orders.component';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { OrderListService, OrderListViewModel } from '../order-list.service';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslateDirective } from '@ngx-translate/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'rb-done-orders',
   templateUrl: './done-orders.component.html',
   styleUrl: './done-orders.component.scss',
-  imports: [OrdersComponent, ReactiveFormsModule, TranslateModule],
+  imports: [OrdersComponent, ReactiveFormsModule, TranslateDirective],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class DoneOrdersComponent {

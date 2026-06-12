@@ -18,7 +18,7 @@ import {
 import { ConfirmationService } from '../../shared/confirmation.service';
 import { HttpEventType } from '@angular/common/http';
 import { DownloadService } from '../../shared/download.service';
-import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { TranslateDirective, TranslateService } from '@ngx-translate/core';
 import { FinalizationWarningsModalComponent } from '../finalization-warnings-modal/finalization-warnings-modal.component';
 import { filter, finalize, map, Observable, startWith, Subject, switchMap, tap } from 'rxjs';
 import { ModalService } from '../../rb-ngb/modal.service';
@@ -42,7 +42,7 @@ import { toSignal } from '@angular/core/rxjs-interop';
   templateUrl: './order.component.html',
   styleUrl: './order.component.scss',
   imports: [
-    TranslateModule,
+    TranslateDirective,
     CustomerInformationComponent,
     FaIconComponent,
     EditCustomerInformationComponent,

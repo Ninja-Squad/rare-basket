@@ -17,6 +17,10 @@ const inProgressNinjaSquadOrder = {
     },
     confirmationInstant: '2022-09-30T19:23:30.191702Z'
   },
+  accessionHolder: {
+    id: 1,
+    name: 'CBGP'
+  },
   status: 'DRAFT',
   items: [] as Array<unknown>,
   documents: [] as Array<unknown>

@@ -7,7 +7,7 @@ import { ToastService } from '../../shared/toast.service';
 import { RouterLink } from '@angular/router';
 import { FaIconComponent } from '@fortawesome/angular-fontawesome';
 
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslateDirective } from '@ngx-translate/core';
 import { startWith, Subject, switchMap, tap } from 'rxjs';
 import { toSignal } from '@angular/core/rxjs-interop';
 
@@ -15,7 +15,7 @@ import { toSignal } from '@angular/core/rxjs-interop';
   selector: 'rb-accession-holders',
   templateUrl: './accession-holders.component.html',
   styleUrl: './accession-holders.component.scss',
-  imports: [TranslateModule, FaIconComponent, RouterLink],
+  imports: [TranslateDirective, FaIconComponent, RouterLink],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AccessionHoldersComponent {

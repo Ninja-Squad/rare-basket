@@ -4,7 +4,7 @@ import { NonNullableFormBuilder, ReactiveFormsModule, Validators } from '@angula
 import { faCheckCircle, faInfoCircle } from '@fortawesome/free-solid-svg-icons';
 import { BasketContentComponent } from '../basket-content/basket-content.component';
 import { FormControlValidationDirective } from '../../shared/form-control-validation.directive';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
 import { FaIconComponent } from '@fortawesome/angular-fontawesome';
 
 /**
@@ -15,7 +15,14 @@ import { FaIconComponent } from '@fortawesome/angular-fontawesome';
   selector: 'rb-edit-confirmation',
   templateUrl: './edit-confirmation.component.html',
   styleUrl: './edit-confirmation.component.scss',
-  imports: [FaIconComponent, TranslateModule, ReactiveFormsModule, FormControlValidationDirective, BasketContentComponent],
+  imports: [
+    FaIconComponent,
+    TranslateDirective,
+    TranslatePipe,
+    ReactiveFormsModule,
+    FormControlValidationDirective,
+    BasketContentComponent
+  ],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class EditConfirmationComponent {

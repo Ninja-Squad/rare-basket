@@ -5,7 +5,7 @@ import { ActivatedRoute } from '@angular/router';
 import { ConfirmedComponent } from '../confirmed/confirmed.component';
 import { EditConfirmationComponent } from '../edit-confirmation/edit-confirmation.component';
 import { EditBasketComponent } from '../edit-basket/edit-basket.component';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslateDirective } from '@ngx-translate/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { startWith, Subject, switchMap } from 'rxjs';
 
@@ -13,7 +13,7 @@ import { startWith, Subject, switchMap } from 'rxjs';
   selector: 'rb-basket',
   templateUrl: './basket.component.html',
   styleUrl: './basket.component.scss',
-  imports: [TranslateModule, EditBasketComponent, EditConfirmationComponent, ConfirmedComponent],
+  imports: [TranslateDirective, EditBasketComponent, EditConfirmationComponent, ConfirmedComponent],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class BasketComponent {
