@@ -4,13 +4,13 @@ import { ToastsComponent } from './rb-ngb/toasts/toasts.component';
 import { RouterOutlet } from '@angular/router';
 import { ValidationDefaultsComponent } from './validation-defaults/validation-defaults.component';
 import { NavbarComponent } from './navbar/navbar.component';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslateDirective } from '@ngx-translate/core';
 
 @Component({
   selector: 'rb-root',
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss',
-  imports: [TranslateModule, NavbarComponent, ValidationDefaultsComponent, RouterOutlet, ToastsComponent],
+  imports: [TranslateDirective, NavbarComponent, ValidationDefaultsComponent, RouterOutlet, ToastsComponent],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AppComponent {

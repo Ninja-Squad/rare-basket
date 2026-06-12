@@ -6,7 +6,7 @@ import { faBuilding, faPlus, faTrash } from '@fortawesome/free-solid-svg-icons';
 import { ToastService } from '../../shared/toast.service';
 import { RouterLink } from '@angular/router';
 
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslateDirective } from '@ngx-translate/core';
 import { FaIconComponent } from '@fortawesome/angular-fontawesome';
 import { startWith, Subject, switchMap, tap } from 'rxjs';
 import { toSignal } from '@angular/core/rxjs-interop';
@@ -15,7 +15,7 @@ import { toSignal } from '@angular/core/rxjs-interop';
   selector: 'rb-grcs',
   templateUrl: './grcs.component.html',
   styleUrl: './grcs.component.scss',
-  imports: [TranslateModule, RouterLink, FaIconComponent],
+  imports: [TranslateDirective, RouterLink, FaIconComponent],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class GrcsComponent {

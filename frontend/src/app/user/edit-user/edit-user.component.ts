@@ -11,7 +11,7 @@ import { ToastService } from '../../shared/toast.service';
 import { PermissionEnumPipe } from '../permission-enum.pipe';
 import { ValidationErrorDirective, ValidationErrorsComponent } from 'ngx-valdemort';
 import { FormControlValidationDirective } from '../../shared/form-control-validation.directive';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
 import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 
 interface GrcOptionGroup {
@@ -36,7 +36,8 @@ interface ViewModel {
   templateUrl: './edit-user.component.html',
   styleUrl: './edit-user.component.scss',
   imports: [
-    TranslateModule,
+    TranslateDirective,
+    TranslatePipe,
     ReactiveFormsModule,
     FormControlValidationDirective,
     ValidationErrorsComponent,

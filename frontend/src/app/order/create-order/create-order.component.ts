@@ -3,7 +3,7 @@ import { OrderCreationCommand } from '../order.model';
 import { OrderService } from '../order.service';
 import { Router } from '@angular/router';
 import { ToastService } from '../../shared/toast.service';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
 import { NonNullableFormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ALL_CUSTOMER_TYPES, ALL_LANGUAGES, CustomerCommand, CustomerType } from '../../basket/basket.model';
 import { AccessionHolder } from '../../shared/user.model';
@@ -21,7 +21,8 @@ import { first, map, startWith, tap } from 'rxjs';
   templateUrl: './create-order.component.html',
   styleUrl: './create-order.component.scss',
   imports: [
-    TranslateModule,
+    TranslateDirective,
+    TranslatePipe,
     ReactiveFormsModule,
     CustomerTypeEnumPipe,
     FormControlValidationDirective,

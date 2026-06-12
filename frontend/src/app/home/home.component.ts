@@ -5,7 +5,7 @@ import { AuthenticationService } from '../shared/authentication.service';
 import { RouterLink } from '@angular/router';
 import { FaIconComponent } from '@fortawesome/angular-fontawesome';
 
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslateDirective } from '@ngx-translate/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { map } from 'rxjs';
 
@@ -15,7 +15,7 @@ type ViewModel = { status: 'unknown' | 'absent' } | { status: 'present'; user: U
   selector: 'rb-home',
   templateUrl: './home.component.html',
   styleUrl: './home.component.scss',
-  imports: [TranslateModule, FaIconComponent, RouterLink],
+  imports: [TranslateDirective, FaIconComponent, RouterLink],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class HomeComponent {

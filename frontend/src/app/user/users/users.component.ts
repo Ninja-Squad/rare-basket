@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, inject, Signal } from '@angular/cor
 import { UserService } from '../user.service';
 import { User } from '../../shared/user.model';
 import { Page } from '../../shared/page.model';
-import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { TranslateDirective, TranslateService } from '@ngx-translate/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { faPlus, faTrash, faUser } from '@fortawesome/free-solid-svg-icons';
 import { ConfirmationService } from '../../shared/confirmation.service';
@@ -16,7 +16,7 @@ import { toSignal } from '@angular/core/rxjs-interop';
   selector: 'rb-users',
   templateUrl: './users.component.html',
   styleUrl: './users.component.scss',
-  imports: [TranslateModule, FaIconComponent, RouterLink, PaginationComponent],
+  imports: [TranslateDirective, FaIconComponent, RouterLink, PaginationComponent],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class UsersComponent {

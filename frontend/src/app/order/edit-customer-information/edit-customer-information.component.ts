@@ -8,7 +8,7 @@ import { CustomerTypeEnumPipe } from '../../shared/customer-type-enum.pipe';
 import { NgbCollapse } from '@ng-bootstrap/ng-bootstrap';
 import { ValidationErrorsComponent } from 'ngx-valdemort';
 import { FormControlValidationDirective } from '../../shared/form-control-validation.directive';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
 import { startWith } from 'rxjs';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
@@ -18,7 +18,8 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
   styleUrl: './edit-customer-information.component.scss',
   imports: [
     ReactiveFormsModule,
-    TranslateModule,
+    TranslateDirective,
+    TranslatePipe,
     FormControlValidationDirective,
     ValidationErrorsComponent,
     NgbCollapse,

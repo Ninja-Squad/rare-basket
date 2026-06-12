@@ -7,7 +7,7 @@ import { map, Observable, of, tap } from 'rxjs';
 import { ToastService } from '../../shared/toast.service';
 import { ValidationErrorsComponent } from 'ngx-valdemort';
 import { FormControlValidationDirective } from '../../shared/form-control-validation.directive';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 
 interface ViewModel {
@@ -19,7 +19,7 @@ interface ViewModel {
   selector: 'rb-edit-grc',
   templateUrl: './edit-grc.component.html',
   styleUrl: './edit-grc.component.scss',
-  imports: [TranslateModule, ReactiveFormsModule, FormControlValidationDirective, ValidationErrorsComponent, RouterLink],
+  imports: [TranslateDirective, TranslatePipe, ReactiveFormsModule, FormControlValidationDirective, ValidationErrorsComponent, RouterLink],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class EditGrcComponent {

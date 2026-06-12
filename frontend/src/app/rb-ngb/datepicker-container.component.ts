@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, contentChild } from '@angular/core';
 import { NgbInputDatepicker } from '@ng-bootstrap/ng-bootstrap';
 import { faCalendarAlt } from '@fortawesome/free-solid-svg-icons';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslateDirective } from '@ngx-translate/core';
 import { FaIconComponent } from '@fortawesome/angular-fontawesome';
 
 /**
@@ -20,7 +20,7 @@ import { FaIconComponent } from '@fortawesome/angular-fontawesome';
   host: {
     class: 'input-group'
   },
-  imports: [FaIconComponent, TranslateModule],
+  imports: [FaIconComponent, TranslateDirective],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class DatepickerContainerComponent {

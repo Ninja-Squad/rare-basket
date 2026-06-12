@@ -19,7 +19,7 @@ import { CsvModalComponent } from '../csv-modal/csv-modal.component';
 import { FaIconComponent } from '@fortawesome/angular-fontawesome';
 import { ValidationErrorsComponent } from 'ngx-valdemort';
 import { FormControlValidationDirective } from '../../shared/form-control-validation.directive';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Accession } from '../../basket/basket.model';
 
@@ -37,7 +37,14 @@ interface ItemFormValue {
   selector: 'rb-edit-order',
   templateUrl: './edit-order.component.html',
   styleUrl: './edit-order.component.scss',
-  imports: [ReactiveFormsModule, TranslateModule, FormControlValidationDirective, ValidationErrorsComponent, FaIconComponent],
+  imports: [
+    ReactiveFormsModule,
+    TranslateDirective,
+    TranslatePipe,
+    FormControlValidationDirective,
+    ValidationErrorsComponent,
+    FaIconComponent
+  ],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class EditOrderComponent implements OnInit {

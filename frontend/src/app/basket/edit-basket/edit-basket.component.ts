@@ -30,7 +30,7 @@ import { AccessionComponent } from '../../shared/accession/accession.component';
 import { DecimalPipe } from '@angular/common';
 import { NgbCollapse } from '@ng-bootstrap/ng-bootstrap';
 import { ValidationErrorDirective, ValidationErrorsComponent } from 'ngx-valdemort';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormControlValidationDirective } from '../../shared/form-control-validation.directive';
 import { CustomerTypeEnumPipe } from '../../shared/customer-type-enum.pipe';
@@ -40,7 +40,8 @@ import { CustomerTypeEnumPipe } from '../../shared/customer-type-enum.pipe';
   templateUrl: './edit-basket.component.html',
   styleUrl: './edit-basket.component.scss',
   imports: [
-    TranslateModule,
+    TranslateDirective,
+    TranslatePipe,
     ReactiveFormsModule,
     ValidationErrorsComponent,
     NgbCollapse,
