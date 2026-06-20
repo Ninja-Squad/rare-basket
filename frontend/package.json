@@ -14,9 +14,9 @@
     "knip": "pnpx knip --fix-type exports,types --exclude dependencies,unlisted,files,binaries --tags=knipignore"
   },
   "private": true,
-  "packageManager": "pnpm@11.6.0",
+  "packageManager": "pnpm@11.7.0",
   "engines": {
-    "node": "24.16.0"
+    "node": "24.17.0"
   },
   "dependencies": {
     "@angular/common": "22.0.1",
@@ -45,19 +45,19 @@
     "@angular/cli": "22.0.1",
     "@angular/compiler-cli": "22.0.1",
     "@eslint/js": "10.0.1",
-    "@playwright/test": "1.60.0",
+    "@playwright/test": "1.61.0",
     "@types/papaparse": "5.5.2",
-    "@vitest/browser": "4.1.8",
-    "@vitest/browser-playwright": "4.1.8",
+    "@vitest/browser": "4.1.9",
+    "@vitest/browser-playwright": "4.1.9",
     "@vitest/eslint-plugin": "1.6.20",
-    "@vitest/spy": "4.1.8",
+    "@vitest/spy": "4.1.9",
     "angular-eslint": "22.0.0",
     "eslint": "10.5.0",
     "eslint-config-prettier": "10.1.8",
     "eslint-plugin-prettier": "5.5.6",
     "prettier": "3.8.4",
     "typescript": "6.0.3",
-    "typescript-eslint": "8.61.0",
-    "vitest": "4.1.8"
+    "typescript-eslint": "8.61.1",
+    "vitest": "4.1.9"
   }
 }
