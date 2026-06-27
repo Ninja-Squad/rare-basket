@@ -14,7 +14,7 @@
     "knip": "pnpx knip --fix-type exports,types --exclude dependencies,unlisted,files,binaries --tags=knipignore"
   },
   "private": true,
-  "packageManager": "pnpm@11.8.0",
+  "packageManager": "pnpm@11.9.0",
   "engines": {
     "node": "24.18.0"
   },
@@ -45,7 +45,7 @@
     "@angular/cli": "22.0.3",
     "@angular/compiler-cli": "22.0.2",
     "@eslint/js": "10.0.1",
-    "@playwright/test": "1.61.0",
+    "@playwright/test": "1.61.1",
     "@types/papaparse": "5.5.2",
     "@vitest/browser": "4.1.9",
     "@vitest/browser-playwright": "4.1.9",
