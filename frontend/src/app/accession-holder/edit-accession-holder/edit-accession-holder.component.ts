@@ -48,13 +48,11 @@ export class EditAccessionHolderComponent {
         grcs: grcService.list(),
         editedAccessionHolder: accessionHolderId ? this.accessionHolderService.get(parseInt(accessionHolderId)) : of(null)
       }).pipe(
-        map(
-          ({ grcs, editedAccessionHolder }): ViewModel => ({
-            grcs,
-            editedAccessionHolder,
-            mode: editedAccessionHolder ? 'update' : 'create'
-          })
-        ),
+        map(({ grcs, editedAccessionHolder }): ViewModel => ({
+          grcs,
+          editedAccessionHolder,
+          mode: editedAccessionHolder ? 'update' : 'create'
+        })),
         tap(vm => {
           this.form.setValue({
             name: vm.editedAccessionHolder?.name ?? '',
