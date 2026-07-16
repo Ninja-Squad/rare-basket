@@ -1,9 +1,8 @@
-import { Component, inject, output, input, ChangeDetectionStrategy } from '@angular/core';
+import { Component, output, input, ChangeDetectionStrategy, signal } from '@angular/core';
 import { Basket } from '../basket.model';
-import { NonNullableFormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { form, FormField, FormRoot, required } from '@angular/forms/signals';
 import { faCheckCircle, faInfoCircle } from '@fortawesome/free-solid-svg-icons';
 import { BasketContentComponent } from '../basket-content/basket-content.component';
-import { FormControlValidationDirective } from '../../shared/form-control-validation.directive';
 import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
 import { FaIconComponent } from '@fortawesome/angular-fontawesome';
 
@@ -15,14 +14,7 @@ import { FaIconComponent } from '@fortawesome/angular-fontawesome';
   selector: 'rb-edit-confirmation',
   templateUrl: './edit-confirmation.component.html',
   styleUrl: './edit-confirmation.component.scss',
-  imports: [
-    FaIconComponent,
-    TranslateDirective,
-    TranslatePipe,
-    ReactiveFormsModule,
-    FormControlValidationDirective,
-    BasketContentComponent
-  ],
+  imports: [FaIconComponent, TranslateDirective, TranslatePipe, FormRoot, FormField, BasketContentComponent],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class EditConfirmationComponent {
@@ -31,18 +23,26 @@ export class EditConfirmationComponent {
   readonly basketConfirmed = output<string>();
   readonly refreshRequested = output<void>();
 
-  readonly form = inject(NonNullableFormBuilder).group({
-    confirmationCode: ['', Validators.required]
-  });
+  readonly formValue = signal({ confirmationCode: '' });
+  readonly form = form(
+    this.formValue,
+    f => {
+      required(f.confirmationCode);
+    },
+    {
+      submission: {
+        action: async () => {
+          await this.confirm();
+          return undefined;
+        }
+      }
+    }
+  );
   readonly infoIcon = faInfoCircle;
   readonly confirmIcon = faCheckCircle;
 
-  confirm() {
-    if (this.form.invalid) {
-      return;
-    }
-
-    this.basketConfirmed.emit(this.form.controls.confirmationCode.value.trim());
+  async confirm(): Promise<void> {
+    this.basketConfirmed.emit(this.formValue().confirmationCode.trim());
   }
 
   refresh() {
