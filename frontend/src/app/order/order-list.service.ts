@@ -5,7 +5,7 @@ import { ActivatedRoute, ParamMap, Router } from '@angular/router';
 import { AuthenticationService } from '../shared/authentication.service';
 import { combineLatest, ignoreElements, map, merge, Observable, switchMap, tap } from 'rxjs';
 import { FormControl } from '@angular/forms';
-import { Service, inject } from '@angular/core';
+import { Service, WritableSignal, inject } from '@angular/core';
 import { OrderService } from './order.service';
 
 export interface OrderListViewModel {
@@ -34,6 +34,15 @@ export class OrderListService {
    */
   setupInProgress(route: ActivatedRoute, accessionHolderIdCtrl: FormControl<number | null>): Observable<OrderListViewModel> {
     return this.setup(route, accessionHolderIdCtrl, (page, accessionHolderId) => this.orderService.listInProgress(page, accessionHolderId));
+  }
+
+  /**
+   * Creates the observable for the "in progress" orders using a signal form filter
+   */
+  setupInProgressSignal(route: ActivatedRoute, accessionHolderId: WritableSignal<string>): Observable<OrderListViewModel> {
+    return this.setupSignal(route, accessionHolderId, (page, selectedAccessionHolderId) =>
+      this.orderService.listInProgress(page, selectedAccessionHolderId)
+    );
   }
 
   /**
@@ -76,10 +85,39 @@ export class OrderListService {
     );
   }
 
+  private setupSignal(
+    route: ActivatedRoute,
+    accessionHolderId: WritableSignal<string>,
+    pageLoader: (page: number, accessionHolderId: number | null) => Observable<Page<Order>>
+  ): Observable<OrderListViewModel> {
+    return combineLatest([route.queryParamMap, this.authenticationService.getCurrentUser()])
+      .pipe(
+        // when the query params change, set the value of the accession holder field (only if the value is not already
+        // the correct one)
+        tap(([params, user]) => this.populateAccessionHolderSignal(accessionHolderId, params, user)),
+        // when the query params change, load the page of orders and combine it with the current user
+        switchMap(([params, user]) => {
+          const accessionHolderIdAsString = params.get('h');
+          const selectedAccessionHolderId = accessionHolderIdAsString ? parseInt(accessionHolderIdAsString) : null;
+          const page = parseInt(params.get('page') ?? '0');
+          return pageLoader(page, selectedAccessionHolderId).pipe(map(orders => ({ orders, user })));
+        })
+      )
+      .pipe();
+  }
+
   private populateAccessionHolder(accessionHolderIdCtrl: FormControl<number | null>, params: ParamMap, user: User | null): void {
     const accessionHolderId = this.findAcceptableAccessionHolderId(params, user);
     if (accessionHolderIdCtrl.value !== accessionHolderId) {
       accessionHolderIdCtrl.setValue(accessionHolderId);
+    }
+  }
+
+  private populateAccessionHolderSignal(accessionHolderIdSignal: WritableSignal<string>, params: ParamMap, user: User | null): void {
+    const accessionHolderId = this.findAcceptableAccessionHolderId(params, user);
+    const accessionHolderIdAsString = accessionHolderId?.toString() ?? '';
+    if (accessionHolderIdSignal() !== accessionHolderIdAsString) {
+      accessionHolderIdSignal.set(accessionHolderIdAsString);
     }
   }
 
