@@ -66,7 +66,7 @@ describe('ExportOrdersComponent', () => {
     await tester.to.fill('');
     await tester.from.fill('');
     // required errors are not displayed because it messes up the layout, but the form should be invalid
-    expect(tester.componentInstance.form.invalid).toBe(true);
+    expect(tester.componentInstance.form().invalid()).toBe(true);
 
     expect(orderService.exportReport).not.toHaveBeenCalled();
   });
