@@ -3,11 +3,11 @@
     <h1 [translate]="'user.edit.title.' + vm.mode" [translateParams]="{ user: vm.editedUser }"></h1>
 
     <div class="content mt-2">
-      <form [formGroup]="form" (ngSubmit)="save()">
+      <form [formRoot]="form">
         <div class="mb-3">
           <label class="form-label" for="name" translate="user.edit.name"></label>
-          <input class="form-control" formControlName="name" id="name" />
-          <val-errors controlName="name" [label]="'user.edit.name-error-label' | translate" />
+          <input class="form-control" [formField]="form.name" id="name" />
+          <val-signal-errors [formField]="form.name" [label]="'user.edit.name-error-label' | translate" />
           <small
             class="form-text text-body-secondary"
             [innerHTML]="'user.edit.name-help' | translate: { keycloakUrl: keycloakUrl }"
@@ -17,22 +17,22 @@
         <h2 class="fs-6" translate="user.edit.permissions"></h2>
         <div class="mb-2">
           <div class="form-check form-switch">
-            <input type="checkbox" formControlName="orderManagement" class="form-check-input" id="order-management" />
+            <input type="checkbox" [formField]="form.orderManagement" class="form-check-input" id="order-management" />
             <label class="form-check-label" for="order-management">{{ 'ORDER_MANAGEMENT' | permissionEnum }}</label>
           </div>
 
-          @if (form.value.orderManagement) {
+          @if (form.orderManagement().value()) {
             <div class="mt-1 mb-3 ms-4">
               <h3 class="fs-6" translate="user.edit.accession-holders"></h3>
-              <div formGroupName="accessionHolders" class="border rounded py-1 px-2 accession-holders">
-                @for (group of grcOptionGroups(); track group) {
+              <div class="border rounded py-1 px-2 accession-holders">
+                @for (group of grcOptionGroups(); track group.name) {
                   <div>
                     <h4 class="fs-6">{{ group.name }}</h4>
                     <div class="ms-3">
-                      @for (accessionHolder of group.accessionHolders; track accessionHolder) {
+                      @for (accessionHolder of group.accessionHolders; track accessionHolder.id) {
                         <div class="form-check">
                           <input
-                            [formControlName]="accessionHolder.id.toString()"
+                            [formField]="form.accessionHolders[accessionHolderIndex(accessionHolder.id)].selected"
                             class="form-check-input"
                             type="checkbox"
                             [id]="'accession-holder-' + accessionHolder.id"
@@ -46,56 +46,56 @@
                   </div>
                 }
               </div>
-              <val-errors controlName="accessionHolders">
+              <val-signal-errors [formField]="form.accessionHolders">
                 <ng-template valError="required"><span translate="user.edit.accession-holder-required"></span></ng-template>
-              </val-errors>
+              </val-signal-errors>
             </div>
           }
         </div>
 
         <div class="mb-2">
           <div class="form-check form-switch">
-            <input type="checkbox" formControlName="orderVisualization" class="form-check-input" id="order-visualization" />
+            <input type="checkbox" [formField]="form.orderVisualization" class="form-check-input" id="order-visualization" />
             <label class="form-check-label" for="order-visualization">{{ 'ORDER_VISUALIZATION' | permissionEnum }}</label>
           </div>
-          @if (form.value.orderVisualization) {
+          @if (form.orderVisualization().value()) {
             <div class="ms-4">
               <div class="form-check form-check-inline">
                 <input
-                  formControlName="globalVisualization"
+                  [checked]="!form.globalVisualization().value()"
+                  (change)="setGlobalVisualization(false)"
                   class="form-check-input"
                   type="radio"
                   id="no-global-visualization"
-                  [value]="false"
                 />
                 <label class="form-check-label" for="no-global-visualization" translate="user.edit.some-grcs"></label>
               </div>
               <div class="form-check form-check-inline">
                 <input
-                  formControlName="globalVisualization"
+                  [checked]="form.globalVisualization().value()"
+                  (change)="setGlobalVisualization(true)"
                   class="form-check-input"
                   type="radio"
                   id="global-visualization"
-                  [value]="true"
                 />
                 <label class="form-check-label" for="global-visualization" translate="user.edit.all-grcs"></label>
               </div>
-              @if (!form.value.globalVisualization) {
+              @if (!form.globalVisualization().value()) {
                 <div class="mt-1 mb-3">
                   <h2 class="fs-6" translate="user.edit.visualization-grcs"></h2>
-                  <div formGroupName="visualizationGrcs" class="border rounded py-1 px-2 grcs">
-                    @for (grc of vm.grcs; track grc) {
+                  <div class="border rounded py-1 px-2 grcs">
+                    @for (grc of form.visualizationGrcs; track grc.id().value()) {
                       <div class="form-check">
-                        <input [formControlName]="grc.id.toString()" class="form-check-input" type="checkbox" [id]="'grc-' + grc.id" />
-                        <label class="form-check-label" [for]="'grc-' + grc.id">
-                          {{ grc.name }}
+                        <input [formField]="grc.selected" class="form-check-input" type="checkbox" [id]="'grc-' + grc.id().value()" />
+                        <label class="form-check-label" [for]="'grc-' + grc.id().value()">
+                          {{ grc.name().value() }}
                         </label>
                       </div>
                     }
                   </div>
-                  <val-errors controlName="visualizationGrcs">
+                  <val-signal-errors [formField]="form.visualizationGrcs">
                     <ng-template valError="required"><span translate="user.edit.grc-required"></span></ng-template>
-                  </val-errors>
+                  </val-signal-errors>
                 </div>
               }
             </div>
@@ -104,7 +104,7 @@
 
         <div class="mb-2">
           <div class="form-check form-switch">
-            <input type="checkbox" formControlName="administration" class="form-check-input" id="administration" />
+            <input type="checkbox" [formField]="form.administration" class="form-check-input" id="administration" />
             <label class="form-check-label" for="administration">{{ 'ADMINISTRATION' | permissionEnum }}</label>
           </div>
         </div>
