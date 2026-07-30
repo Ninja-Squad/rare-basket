@@ -1,19 +1,19 @@
 @if (vm(); as vm) {
   <div>
-    <form [formGroup]="form" (ngSubmit)="refresh()">
+    <form [formRoot]="form">
       <div class="mb-3">
         <div class="row row-cols-sm-auto gy-0 gx-2 align-items-center">
           <label class="col-12 col-form-label" for="from" translate="order.statistics.from"></label>
           <rb-datepicker-container class="col-12 me-sm-2 w-auto">
-            <input id="from" class="form-control datepicker" formControlName="from" ngbDatepicker />
+            <input id="from" class="form-control datepicker" [formField]="form.from" ngbDatepicker />
           </rb-datepicker-container>
 
           <label class="col-12 col-form-label" for="to" translate="order.statistics.to"></label>
           <rb-datepicker-container class="col-12 w-auto">
-            <input id="to" class="form-control datepicker" formControlName="to" ngbDatepicker />
+            <input id="to" class="form-control datepicker" [formField]="form.to" ngbDatepicker />
           </rb-datepicker-container>
         </div>
-        <val-errors [control]="form" [label]="'order.statistics.date-range-error-label' | translate" />
+        <val-signal-errors [formField]="form" [label]="'order.statistics.date-range-error-label' | translate" />
       </div>
 
       @if (perimeterEdited()) {
@@ -21,36 +21,41 @@
           @if (vm.user.globalVisualization) {
             <div>
               <div class="form-check form-check-inline">
-                <input formControlName="global" class="form-check-input" type="radio" id="no-global-visualization" [value]="false" />
+                <input [formField]="form.global" value="false" class="form-check-input" type="radio" id="no-global-visualization" />
                 <label class="form-check-label" for="no-global-visualization" translate="order.statistics.some-grcs"></label>
               </div>
               <div class="form-check form-check-inline">
-                <input formControlName="global" class="form-check-input" type="radio" id="global-visualization" [value]="true" />
+                <input [formField]="form.global" value="true" class="form-check-input" type="radio" id="global-visualization" />
                 <label class="form-check-label" for="global-visualization" translate="order.statistics.all-grcs"></label>
               </div>
             </div>
           }
-          @if (!this.form.value.global) {
+          @if (form.global().value() === 'false') {
             <div>
-              <div formArrayName="grcs" class="border rounded py-1 px-2 grcs">
-                @for (grcGroup of grcsFormArray.controls; track grcGroup) {
-                  <div class="form-check" [formGroupName]="$index">
-                    <input formControlName="selected" class="form-check-input" type="checkbox" [id]="'grc-' + grcGroup.value.grc!.id" />
-                    <label class="form-check-label" [for]="'grc-' + grcGroup.value.grc!.id">
-                      {{ grcGroup.value.grc!.name }}
+              <div class="border rounded py-1 px-2 grcs">
+                @for (grcGroup of form.grcs; track $index) {
+                  <div class="form-check">
+                    <input
+                      [formField]="grcGroup.selected"
+                      class="form-check-input"
+                      type="checkbox"
+                      [id]="'grc-' + grcGroup.grc().value().id"
+                    />
+                    <label class="form-check-label" [for]="'grc-' + grcGroup.grc().value().id">
+                      {{ grcGroup.grc().value().name }}
                     </label>
                   </div>
                 }
               </div>
-              <val-errors controlName="grcs">
+              <val-signal-errors [formField]="form.grcs">
                 <ng-template valError="required"><span translate="order.statistics.grc-required"></span></ng-template>
-              </val-errors>
+              </val-signal-errors>
             </div>
           }
         </div>
       } @else {
         <div class="mb-2">
-          @if (form.value.global) {
+          @if (form.global().value() === 'true') {
             <span translate="order.statistics.global-perimeter" id="perimeter"></span>
           } @else {
             <span
