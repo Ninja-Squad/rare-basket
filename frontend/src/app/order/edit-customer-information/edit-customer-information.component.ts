@@ -1,27 +1,24 @@
-import { Component, inject, OnInit, output, input, ChangeDetectionStrategy } from '@angular/core';
-import { ALL_CUSTOMER_TYPES, ALL_LANGUAGES, CustomerCommand, CustomerType } from '../../basket/basket.model';
-import { NonNullableFormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { Component, OnInit, output, input, ChangeDetectionStrategy, signal } from '@angular/core';
+import { ALL_CUSTOMER_TYPES, ALL_LANGUAGES, CustomerCommand, CustomerType, Language } from '../../basket/basket.model';
+import { disabled, email, form, FormField, FormRoot, required } from '@angular/forms/signals';
 import { CustomerInformationCommand } from '../order.model';
 import { LanguageEnumPipe } from '../../shared/language-enum.pipe';
 import { CustomerTypeEnumPipe } from '../../shared/customer-type-enum.pipe';
 
 import { NgbCollapse } from '@ng-bootstrap/ng-bootstrap';
-import { ValidationErrorsComponent } from 'ngx-valdemort';
-import { FormControlValidationDirective } from '../../shared/form-control-validation.directive';
+import { ValidationSignalErrorsComponent } from 'ngx-valdemort';
 import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
-import { startWith } from 'rxjs';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'rb-edit-customer-information',
   templateUrl: './edit-customer-information.component.html',
   styleUrl: './edit-customer-information.component.scss',
   imports: [
-    ReactiveFormsModule,
+    FormRoot,
+    FormField,
     TranslateDirective,
     TranslatePipe,
-    FormControlValidationDirective,
-    ValidationErrorsComponent,
+    ValidationSignalErrorsComponent,
     NgbCollapse,
     CustomerTypeEnumPipe,
     LanguageEnumPipe
@@ -34,64 +31,77 @@ export class EditCustomerInformationComponent implements OnInit {
   readonly saved = output<CustomerInformationCommand>();
   readonly cancelled = output<void>();
 
-  private readonly fb = inject(NonNullableFormBuilder);
-  readonly form = this.fb.group({
-    customer: this.fb.group({
-      name: [null as string | null, Validators.required],
-      organization: null as string | null,
-      email: [null as string | null, [Validators.required, Validators.email]],
-      deliveryAddress: [null as string | null, Validators.required],
-      billingAddress: [null as string | null, Validators.required],
-      type: [null as CustomerType | null, Validators.required],
-      language: [null as string | null, Validators.required]
-    }),
-    rationale: null as string | null
+  readonly formValue = signal({
+    customer: {
+      name: '',
+      organization: '',
+      email: '',
+      deliveryAddress: '',
+      billingAddress: '',
+      type: '' as CustomerType | '',
+      language: '' as Language | ''
+    },
+    rationale: '',
+    useDeliveryAddress: false
   });
-  readonly useDeliveryAddressControl = this.fb.control(false);
+  readonly form = form(
+    this.formValue,
+    f => {
+      required(f.customer.name);
+      required(f.customer.email);
+      email(f.customer.email);
+      required(f.customer.deliveryAddress);
+      required(f.customer.billingAddress);
+      disabled(f.customer.billingAddress, { when: ({ valueOf }) => valueOf(f.useDeliveryAddress) });
+      required(f.customer.type);
+      required(f.customer.language);
+    },
+    {
+      submission: {
+        action: async () => {
+          await this.save();
+          return undefined;
+        }
+      }
+    }
+  );
   readonly customerTypes = ALL_CUSTOMER_TYPES;
   readonly languages = ALL_LANGUAGES;
 
-  constructor() {
-    // if we use the delivery address as the billing address
-    // then disable the billing address field
-    this.useDeliveryAddressControl.valueChanges
-      .pipe(startWith(this.useDeliveryAddressControl.value), takeUntilDestroyed())
-      .subscribe(useDeliveryAddress => {
-        const billingAddressControl = this.form.controls.customer.controls.billingAddress;
-        if (useDeliveryAddress) {
-          billingAddressControl.disable();
-        } else {
-          billingAddressControl.enable();
-        }
-      });
-  }
-
   ngOnInit(): void {
     const customer = this.customerInformation().customer;
-    const customerCommand: CustomerCommand = {
+    const customerCommand = {
       name: customer.name,
-      organization: customer.organization,
+      organization: customer.organization ?? '',
       email: customer.email,
       deliveryAddress: customer.deliveryAddress,
       billingAddress: customer.billingAddress,
       type: customer.type,
       language: customer.language
     };
-    const formValue: CustomerInformationCommand = {
+    const formValue = {
       customer: customerCommand,
-      rationale: this.customerInformation().rationale
+      rationale: this.customerInformation().rationale ?? '',
+      useDeliveryAddress: !!customer.billingAddress && customer.billingAddress === customer.deliveryAddress
     };
-    this.form.setValue(formValue);
-    this.useDeliveryAddressControl.setValue(!!customer.billingAddress && customer.billingAddress === customer.deliveryAddress);
+    this.formValue.set(formValue);
   }
 
-  save() {
-    if (!this.form.valid) {
-      return;
-    }
-    const customerInformationCommand = this.form.value as CustomerInformationCommand;
-    const customer = customerInformationCommand.customer as CustomerCommand;
-    customer.billingAddress = this.useDeliveryAddressControl.value ? customer.deliveryAddress : customer.billingAddress;
+  async save(): Promise<void> {
+    const formValue = this.formValue();
+    const customer: CustomerCommand = {
+      name: formValue.customer.name,
+      organization: formValue.customer.organization || null,
+      email: formValue.customer.email,
+      deliveryAddress: formValue.customer.deliveryAddress,
+      billingAddress: formValue.useDeliveryAddress ? formValue.customer.deliveryAddress : formValue.customer.billingAddress,
+      type: formValue.customer.type as CustomerType,
+      language: formValue.customer.language as Language
+    };
+    const customerInformationCommand: CustomerInformationCommand = {
+      customer,
+      rationale: formValue.rationale || null
+    };
     this.saved.emit(customerInformationCommand);
   }
 

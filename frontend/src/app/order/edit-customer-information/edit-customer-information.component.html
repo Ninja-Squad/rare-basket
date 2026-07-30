@@ -1,59 +1,71 @@
-<form [formGroup]="form" (ngSubmit)="save()">
-  <div formGroupName="customer">
+<form [formRoot]="form">
+  <div>
     <div class="mb-3">
       <label class="form-label" for="name" translate="order.edit-customer-information.name"></label>
-      <input formControlName="name" id="name" class="form-control" />
-      <val-errors controlName="name" [label]="'order.edit-customer-information.name-error-label' | translate" />
+      <input [formField]="form.customer.name" id="name" class="form-control" />
+      <val-signal-errors [formField]="form.customer.name" [label]="'order.edit-customer-information.name-error-label' | translate" />
     </div>
     <div class="mb-3">
       <label class="form-label" for="organization" translate="order.edit-customer-information.organization"></label>
-      <input formControlName="organization" id="organization" class="form-control" />
+      <input [formField]="form.customer.organization" id="organization" class="form-control" />
     </div>
     <div class="mb-3">
       <label class="form-label" for="email" translate="order.edit-customer-information.email"></label>
-      <input type="email" formControlName="email" id="email" class="form-control" />
-      <val-errors controlName="email" [label]="'order.edit-customer-information.email-error-label' | translate" />
+      <input type="email" [formField]="form.customer.email" id="email" class="form-control" />
+      <val-signal-errors [formField]="form.customer.email" [label]="'order.edit-customer-information.email-error-label' | translate" />
     </div>
     <div class="mb-3">
       <label class="form-label" for="delivery-address" translate="order.edit-customer-information.delivery-address"></label>
-      <textarea formControlName="deliveryAddress" id="delivery-address" class="form-control"></textarea>
-      <val-errors controlName="deliveryAddress" [label]="'order.edit-customer-information.delivery-address-error-label' | translate" />
+      <textarea [formField]="form.customer.deliveryAddress" id="delivery-address" class="form-control"></textarea>
+      <val-signal-errors
+        [formField]="form.customer.deliveryAddress"
+        [label]="'order.edit-customer-information.delivery-address-error-label' | translate"
+      />
     </div>
     <div class="mb-3">
       <label class="form-label" for="billing-address" translate="order.edit-customer-information.billing-address"></label>
-      <div class="form-check form-switch" [class.mb-2]="!useDeliveryAddressControl.value">
-        <input [formControl]="useDeliveryAddressControl" type="checkbox" class="form-check-input" id="use-delivery-address" />
+      <div class="form-check form-switch" [class.mb-2]="!form.useDeliveryAddress().value()">
+        <input [formField]="form.useDeliveryAddress" type="checkbox" class="form-check-input" id="use-delivery-address" />
         <label class="form-check-label" for="use-delivery-address" translate="order.edit-customer-information.use-delivery-address"></label>
       </div>
-      <div [ngbCollapse]="useDeliveryAddressControl.value">
-        <textarea formControlName="billingAddress" id="billing-address" class="form-control"></textarea>
+      <div [ngbCollapse]="form.useDeliveryAddress().value()">
+        <textarea [formField]="form.customer.billingAddress" id="billing-address" class="form-control"></textarea>
       </div>
-      <val-errors controlName="billingAddress" [label]="'order.edit-customer-information.billing-address-error-label' | translate" />
+      <val-signal-errors
+        [formField]="form.customer.billingAddress"
+        [label]="'order.edit-customer-information.billing-address-error-label' | translate"
+      />
     </div>
     <div class="mb-3">
       <label class="form-label" for="type" translate="order.edit-customer-information.customer-type"></label>
-      <select formControlName="type" id="type" class="form-select">
-        <option [ngValue]="null"></option>
+      <select [formField]="form.customer.type" id="type" class="form-select">
+        <option value=""></option>
         @for (customerType of customerTypes; track customerType) {
           <option [value]="customerType">{{ customerType | customerTypeEnum }}</option>
         }
       </select>
-      <val-errors controlName="type" [label]="'order.edit-customer-information.customer-type-error-label' | translate" />
+      <val-signal-errors
+        [formField]="form.customer.type"
+        [label]="'order.edit-customer-information.customer-type-error-label' | translate"
+      />
     </div>
     <div class="mb-3">
       <label class="form-label" for="language" translate="order.edit-customer-information.language"></label>
-      <select formControlName="language" id="language" class="form-select">
-        <option [ngValue]="null"></option>
+      <select [formField]="form.customer.language" id="language" class="form-select">
+        <option value=""></option>
         @for (language of languages; track language) {
           <option [value]="language">{{ language | languageEnum }}</option>
         }
       </select>
-      <val-errors controlName="language" [label]="'order.edit-customer-information.language-error-label' | translate" />
+      <val-signal-errors
+        [formField]="form.customer.language"
+        [label]="'order.edit-customer-information.language-error-label' | translate"
+      />
     </div>
   </div>
   <div class="mb-3">
     <label class="form-label" for="rationale" translate="order.edit-customer-information.rationale"></label>
-    <textarea formControlName="rationale" id="rationale" class="form-control"></textarea>
+    <textarea [formField]="form.rationale" id="rationale" class="form-control"></textarea>
   </div>
   <div class="text-end">
     <button class="btn btn-primary btn-sm me-2" translate="order.edit-customer-information.save" id="save-button"></button>
