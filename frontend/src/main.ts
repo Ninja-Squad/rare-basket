@@ -10,6 +10,7 @@ import { errorInterceptor } from './app/shared/error.interceptor';
 import { authenticationInterceptor } from './app/shared/authentication.interceptor';
 import { provideHttpClient, withInterceptors, withNoXsrfProtection } from '@angular/common/http';
 import { provideNgbDatepickerServices } from './app/rb-ngb/datepicker-providers';
+import { provideRbSignalFormsConfig } from './app/signal-forms';
 
 bootstrapApplication(AppComponent, {
   providers: [
@@ -25,7 +26,8 @@ bootstrapApplication(AppComponent, {
     provideRouter(APP_ROUTES, withViewTransitions({ skipInitialTransition: true }), withComponentInputBinding()),
     provideHttpClient(withInterceptors([authenticationInterceptor, errorInterceptor]), withNoXsrfProtection()),
     provideI18n(),
-    provideNgbDatepickerServices()
+    provideNgbDatepickerServices(),
+    provideRbSignalFormsConfig()
   ]
 })
   // eslint-disable-next-line no-console
