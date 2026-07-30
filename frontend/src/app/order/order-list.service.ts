@@ -3,9 +3,8 @@ import { Page } from '../shared/page.model';
 import { Order } from './order.model';
 import { ActivatedRoute, ParamMap, Router } from '@angular/router';
 import { AuthenticationService } from '../shared/authentication.service';
-import { combineLatest, ignoreElements, map, merge, Observable, switchMap, tap } from 'rxjs';
-import { FormControl } from '@angular/forms';
-import { Service, inject } from '@angular/core';
+import { combineLatest, map, Observable, switchMap, tap } from 'rxjs';
+import { Service, WritableSignal, inject } from '@angular/core';
 import { OrderService } from './order.service';
 
 export interface OrderListViewModel {
@@ -19,12 +18,11 @@ export interface OrderListViewModel {
  * It allows creating an observable, which is supposed to be subscribed once and only once, which, when subscribed
  * - listens to the activated route query params in order to load the appropriate page of orders and emit it
  * - gets the currently authenticated user, necessary to know which accession holders they can access
- * - populates a form control with the appropriate accession holder ID, retrieved (if present) from the query params
- * - navigates to the current route with the page set to 0 and the selected accession holder ID in the query params
- *   whenever the accession holder form control changes its value
+ * - populates a signal with the appropriate accession holder ID, retrieved (if present) from the query params
  */
 @Service()
 export class OrderListService {
+  private route = inject(ActivatedRoute);
   private authenticationService = inject(AuthenticationService);
   private orderService = inject(OrderService);
   private router = inject(Router);
@@ -32,55 +30,46 @@ export class OrderListService {
   /**
    * Creates the observable for the "in progress" orders
    */
-  setupInProgress(route: ActivatedRoute, accessionHolderIdCtrl: FormControl<number | null>): Observable<OrderListViewModel> {
-    return this.setup(route, accessionHolderIdCtrl, (page, accessionHolderId) => this.orderService.listInProgress(page, accessionHolderId));
+  setupInProgress(accessionHolderId: WritableSignal<string>): Observable<OrderListViewModel> {
+    return this.setup(accessionHolderId, (page, selectedAccessionHolderId) =>
+      this.orderService.listInProgress(page, selectedAccessionHolderId)
+    );
   }
 
   /**
    * Creates the observable for the "done" orders
    */
-  setupDone(route: ActivatedRoute, accessionHolderIdCtrl: FormControl<number | null>): Observable<OrderListViewModel> {
-    return this.setup(route, accessionHolderIdCtrl, (page, accessionHolderId) => this.orderService.listDone(page, accessionHolderId));
+  setupDone(accessionHolderId: WritableSignal<string>): Observable<OrderListViewModel> {
+    return this.setup(accessionHolderId, (page, selectedAccessionHolderId) => this.orderService.listDone(page, selectedAccessionHolderId));
+  }
+
+  filterByAccessionHolder(accessionHolderId: () => string): void {
+    const selectedAccessionHolderId = accessionHolderId();
+    const parsedAccessionHolderId = selectedAccessionHolderId ? parseInt(selectedAccessionHolderId) : null;
+    this.router.navigate([], { queryParams: { page: 0, h: parsedAccessionHolderId ?? undefined } });
   }
 
   private setup(
-    route: ActivatedRoute,
-    accessionHolderIdCtrl: FormControl<number | null>,
+    accessionHolderId: WritableSignal<string>,
     pageLoader: (page: number, accessionHolderId: number | null) => Observable<Page<Order>>
   ): Observable<OrderListViewModel> {
-    const vm$: Observable<OrderListViewModel> = combineLatest([route.queryParamMap, this.authenticationService.getCurrentUser()])
-      .pipe(
-        // when the query params change, set the value of the accession holder form control (only if the value is not already
-        // the correct one)
-        tap(([params, user]) => this.populateAccessionHolder(accessionHolderIdCtrl, params, user)),
-        // when the query params change, load the page of orders and combine it with the current user
-        switchMap(([params, user]) => {
-          const accessionHolderIdAsString = params.get('h');
-          const accessionHolderId = accessionHolderIdAsString ? parseInt(accessionHolderIdAsString) : null;
-          const page = parseInt(params.get('page') ?? '0');
-          return pageLoader(page, accessionHolderId).pipe(map(orders => ({ orders, user })));
-        })
-      )
-      .pipe();
-
-    // create an observable which emits exactly the same events as vm$, but which, when subscribed,
-    // also subscribes to the value changes of the form control, in order to navigate when it changes
-    return merge(
-      vm$,
-      accessionHolderIdCtrl.valueChanges.pipe(
-        tap(accessionHolderId => {
-          this.router.navigate([], { queryParams: { page: 0, h: accessionHolderId ?? undefined } });
-        }),
-        ignoreElements() // to avoid actually merging any elements to the vm$ observable
-      )
+    return combineLatest([this.route.queryParamMap, this.authenticationService.getCurrentUser()]).pipe(
+      // when the query params change, set the value of the accession holder field
+      tap(([params, user]) => this.populateAccessionHolder(accessionHolderId, params, user)),
+      // when the query params change, load the page of orders and combine it with the current user
+      switchMap(([params, user]) => {
+        const accessionHolderIdAsString = params.get('h');
+        const selectedAccessionHolderId = accessionHolderIdAsString ? parseInt(accessionHolderIdAsString) : null;
+        const page = parseInt(params.get('page') ?? '0');
+        return pageLoader(page, selectedAccessionHolderId).pipe(map(orders => ({ orders, user })));
+      })
     );
   }
 
-  private populateAccessionHolder(accessionHolderIdCtrl: FormControl<number | null>, params: ParamMap, user: User | null): void {
+  private populateAccessionHolder(accessionHolderIdSignal: WritableSignal<string>, params: ParamMap, user: User | null): void {
     const accessionHolderId = this.findAcceptableAccessionHolderId(params, user);
-    if (accessionHolderIdCtrl.value !== accessionHolderId) {
-      accessionHolderIdCtrl.setValue(accessionHolderId);
-    }
+    const accessionHolderIdAsString = accessionHolderId?.toString() ?? '';
+    accessionHolderIdSignal.set(accessionHolderIdAsString);
   }
 
   private findAcceptableAccessionHolderId(params: ParamMap, user: User | null): number | null {

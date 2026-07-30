@@ -1,8 +1,7 @@
-import { ChangeDetectionStrategy, Component, inject, Signal } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { OrdersComponent } from '../orders/orders.component';
-import { FormControl, ReactiveFormsModule } from '@angular/forms';
-import { OrderListService, OrderListViewModel } from '../order-list.service';
+import { form, FormField } from '@angular/forms/signals';
+import { OrderListService } from '../order-list.service';
 import { TranslateDirective } from '@ngx-translate/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 
@@ -10,17 +9,17 @@ import { toSignal } from '@angular/core/rxjs-interop';
   selector: 'rb-done-orders',
   templateUrl: './done-orders.component.html',
   styleUrl: './done-orders.component.scss',
-  imports: [OrdersComponent, ReactiveFormsModule, TranslateDirective],
+  imports: [OrdersComponent, FormField, TranslateDirective],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class DoneOrdersComponent {
-  readonly vm: Signal<OrderListViewModel | undefined>;
+  private readonly orderListService = inject(OrderListService);
 
-  readonly accessionHolderIdCtrl = new FormControl<number | null>(null);
+  readonly accessionHolderId = signal('');
+  readonly form = form(this.accessionHolderId);
+  readonly vm = toSignal(this.orderListService.setupDone(this.accessionHolderId));
 
-  constructor() {
-    const route = inject(ActivatedRoute);
-    const orderListService = inject(OrderListService);
-    this.vm = toSignal(orderListService.setupDone(route, this.accessionHolderIdCtrl));
+  filterByAccessionHolder() {
+    this.orderListService.filterByAccessionHolder(this.accessionHolderId);
   }
 }
