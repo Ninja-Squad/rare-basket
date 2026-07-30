@@ -46,7 +46,7 @@ describe('EditGrcComponent', () => {
     });
 
     router = TestBed.inject(Router);
-    vi.spyOn(router, 'navigate');
+    vi.spyOn(router, 'navigate').mockResolvedValue(true);
 
     await TestBed.createComponent(ValidationDefaultsComponent).whenStable();
   });

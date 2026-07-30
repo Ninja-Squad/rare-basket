@@ -1,12 +1,11 @@
-import { ChangeDetectionStrategy, Component, inject, Signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, Signal, signal } from '@angular/core';
 import { Grc, GrcCommand } from '../../shared/user.model';
-import { NonNullableFormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { form, FormField, FormRoot, required } from '@angular/forms/signals';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { GrcService } from '../../shared/grc.service';
-import { map, Observable, of, tap } from 'rxjs';
+import { firstValueFrom, map, Observable, of, tap } from 'rxjs';
 import { ToastService } from '../../shared/toast.service';
-import { ValidationErrorsComponent } from 'ngx-valdemort';
-import { FormControlValidationDirective } from '../../shared/form-control-validation.directive';
+import { ValidationSignalErrorsComponent } from 'ngx-valdemort';
 import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 
@@ -19,7 +18,7 @@ interface ViewModel {
   selector: 'rb-edit-grc',
   templateUrl: './edit-grc.component.html',
   styleUrl: './edit-grc.component.scss',
-  imports: [TranslateDirective, TranslatePipe, ReactiveFormsModule, FormControlValidationDirective, ValidationErrorsComponent, RouterLink],
+  imports: [TranslateDirective, TranslatePipe, FormRoot, FormField, ValidationSignalErrorsComponent, RouterLink],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class EditGrcComponent {
@@ -29,11 +28,27 @@ export class EditGrcComponent {
   private readonly toastService = inject(ToastService);
 
   readonly vm: Signal<ViewModel | undefined>;
-  readonly form = inject(NonNullableFormBuilder).group({
-    name: ['', Validators.required],
-    institution: ['', Validators.required],
-    address: ['', Validators.required]
+  readonly formValue = signal({
+    name: '',
+    institution: '',
+    address: ''
   });
+  readonly form = form(
+    this.formValue,
+    f => {
+      required(f.name);
+      required(f.institution);
+      required(f.address);
+    },
+    {
+      submission: {
+        action: async () => {
+          await this.save();
+          return undefined;
+        }
+      }
+    }
+  );
 
   constructor() {
     const grcId = this.route.snapshot.paramMap.get('grcId');
@@ -44,7 +59,7 @@ export class EditGrcComponent {
         mode: grc ? ('update' as const) : ('create' as const)
       })),
       tap(vm => {
-        this.form.setValue({
+        this.formValue.set({
           name: vm.editedGrc?.name ?? '',
           institution: vm.editedGrc?.institution ?? '',
           address: vm.editedGrc?.address ?? ''
@@ -54,29 +69,20 @@ export class EditGrcComponent {
     this.vm = toSignal(vm$);
   }
 
-  save() {
-    if (this.form.invalid) {
-      return;
-    }
-
+  async save(): Promise<void> {
     const vm = this.vm()!;
-    const formValue = this.form.getRawValue();
+    const formValue = this.formValue();
     const command: GrcCommand = {
       name: formValue.name,
       institution: formValue.institution,
       address: formValue.address
     };
 
-    let obs: Observable<Grc | void>;
-    if (vm.mode === 'update') {
-      obs = this.grcService.update(vm.editedGrc!.id, command);
-    } else {
-      obs = this.grcService.create(command);
-    }
+    const obs: Observable<Grc | void> =
+      vm.mode === 'update' ? this.grcService.update(vm.editedGrc!.id, command) : this.grcService.create(command);
 
-    obs.subscribe(() => {
-      this.router.navigate(['/grcs']);
-      this.toastService.success(`grc.edit.success.${vm.mode}`, { name: command.name });
-    });
+    await firstValueFrom(obs);
+    await this.router.navigate(['/grcs']);
+    this.toastService.success(`grc.edit.success.${vm.mode}`, { name: command.name });
   }
 }
