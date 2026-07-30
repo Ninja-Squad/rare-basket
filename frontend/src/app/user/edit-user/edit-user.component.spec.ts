@@ -63,7 +63,7 @@ describe('EditUserComponent', () => {
     });
 
     router = TestBed.inject(Router);
-    vi.spyOn(router, 'navigate');
+    vi.spyOn(router, 'navigate').mockResolvedValue(true);
 
     await TestBed.createComponent(ValidationDefaultsComponent).whenStable();
 
@@ -155,32 +155,32 @@ describe('EditUserComponent', () => {
       await expect.element(tester.errors).toHaveLength(1);
       await expect.element(tester.errors.nth(0)).toHaveTextContent('Le nom est obligatoire');
       await tester.name.fill('Test');
-      expect(tester.componentInstance.form.valid).toBe(true);
+      expect(tester.componentInstance.form().valid()).toBe(true);
 
       await tester.orderManagement.click();
-      expect(tester.componentInstance.form.valid).toBe(false);
+      expect(tester.componentInstance.form().valid()).toBe(false);
 
       await expect.element(tester.errors).toHaveLength(1);
       await expect.element(tester.errors.nth(0)).toHaveTextContent(`Au moins un gestionnaire d'accessions doit être sélectionné`);
 
       await tester.orderManagement.click();
-      expect(tester.componentInstance.form.valid).toBe(true);
+      expect(tester.componentInstance.form().valid()).toBe(true);
       await expect.element(tester.errors).toHaveLength(0);
 
       await tester.orderVisualization.click();
-      expect(tester.componentInstance.form.valid).toBe(false);
+      expect(tester.componentInstance.form().valid()).toBe(false);
       await expect.element(tester.errors).toHaveLength(1);
       await expect.element(tester.errors.nth(0)).toHaveTextContent(`Au moins un CRB doit être sélectionné`);
 
       await tester.globalVisualization.click();
-      expect(tester.componentInstance.form.valid).toBe(true);
+      expect(tester.componentInstance.form().valid()).toBe(true);
       await expect.element(tester.errors).toHaveLength(0);
 
       await tester.noGlobalVisualization.click();
-      expect(tester.componentInstance.form.valid).toBe(false);
+      expect(tester.componentInstance.form().valid()).toBe(false);
 
       await tester.orderVisualization.click();
-      expect(tester.componentInstance.form.valid).toBe(true);
+      expect(tester.componentInstance.form().valid()).toBe(true);
 
       expect(userService.create).not.toHaveBeenCalled();
     });
