@@ -1,5 +1,5 @@
-import { Component, ElementRef, inject, output, input, effect, computed, signal, ChangeDetectionStrategy, viewChild } from '@angular/core';
-import { NonNullableFormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { Component, ElementRef, output, input, computed, signal, ChangeDetectionStrategy, viewChild } from '@angular/core';
+import { disabled, form, FormField, FormRoot, required } from '@angular/forms/signals';
 import {
   ALL_DOCUMENT_TYPES,
   DetailedOrder,
@@ -12,8 +12,7 @@ import { faFileUpload } from '@fortawesome/free-solid-svg-icons';
 import { DocumentTypeEnumPipe } from '../document-type-enum.pipe';
 import { FaIconComponent } from '@fortawesome/angular-fontawesome';
 import { NgbProgressbar } from '@ng-bootstrap/ng-bootstrap';
-import { FormControlValidationDirective } from '../../shared/form-control-validation.directive';
-import { ValidationErrorsComponent } from 'ngx-valdemort';
+import { ValidationSignalErrorsComponent } from 'ngx-valdemort';
 import { DecimalPipe } from '@angular/common';
 import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
 
@@ -25,11 +24,11 @@ const maxFileSize = 10 * 1024 * 1024; // 10 MB
   templateUrl: './edit-document.component.html',
   styleUrl: './edit-document.component.scss',
   imports: [
-    ReactiveFormsModule,
+    FormRoot,
+    FormField,
     TranslateDirective,
     TranslatePipe,
-    ValidationErrorsComponent,
-    FormControlValidationDirective,
+    ValidationSignalErrorsComponent,
     NgbProgressbar,
     FaIconComponent,
     DecimalPipe,
@@ -38,11 +37,28 @@ const maxFileSize = 10 * 1024 * 1024; // 10 MB
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class EditDocumentComponent {
-  readonly form = inject(NonNullableFormBuilder).group({
-    type: [null as DocumentType | null, Validators.required],
+  readonly formValue = signal({
+    type: '' as DocumentType | '',
     description: '',
     onDeliveryForm: false
   });
+  readonly form = form(
+    this.formValue,
+    f => {
+      required(f.type);
+      required(f.description, { when: ({ valueOf }) => valueOf(f.type) === 'OTHER' });
+      disabled(f, { when: () => this.uploadProgress() !== null });
+    },
+    {
+      submission: {
+        action: async () => {
+          await this.save();
+          return undefined;
+        },
+        onInvalid: () => this.submitted.set(true)
+      }
+    }
+  );
 
   readonly fileInput = viewChild.required<ElementRef<HTMLInputElement>>('fileInput');
 
@@ -55,6 +71,7 @@ export class EditDocumentComponent {
   readonly fileAccept = validExtensions.join(',');
   readonly acceptedExtensions = validExtensions.join(', ');
   readonly selectedFile = signal<File | null>(null);
+  readonly submitted = signal(false);
 
   readonly highlightFileInput = signal(false);
   readonly documentTypes = computed(() =>
@@ -63,28 +80,6 @@ export class EditDocumentComponent {
     )
   );
   readonly saveIcon = faFileUpload;
-
-  constructor() {
-    const descriptionControl = this.form.controls.description;
-    const onDeliveryFormControl = this.form.controls.onDeliveryForm;
-    this.form.controls.type.valueChanges.subscribe((newType: DocumentType | null) => {
-      descriptionControl.setValidators(newType === 'OTHER' ? Validators.required : []);
-      descriptionControl.updateValueAndValidity();
-
-      // only change the on delivery form value if the user hasn't played with the control yet
-      if (!onDeliveryFormControl.dirty) {
-        onDeliveryFormControl.setValue(ON_DELIVERY_FORM_BY_DEFAULT_DOCUMENT_TYPES.includes(newType!));
-      }
-    });
-
-    effect(() => {
-      if (this.uploadProgress() !== null) {
-        this.form.disable();
-      } else {
-        this.form.enable();
-      }
-    });
-  }
 
   fileDropped(event: DragEvent) {
     event.preventDefault();
@@ -100,24 +95,37 @@ export class EditDocumentComponent {
   }
 
   hasFileError() {
-    return !this.selectedFile || !this.selectedFileValid() || !this.selectedFileSizeValid();
+    return !this.selectedFile() || !this.selectedFileValid() || !this.selectedFileSizeValid();
   }
 
-  save() {
-    if (!this.form.valid || this.hasFileError()) {
+  async save(): Promise<void> {
+    this.submitted.set(true);
+    if (this.hasFileError()) {
       return;
     }
 
-    const document = this.form.value;
+    const document = this.formValue();
     const command: DocumentCommand = {
       file: this.selectedFile()!,
       document: {
-        type: document.type!,
-        description: document.description!,
-        onDeliveryForm: document.onDeliveryForm!
+        type: document.type as DocumentType,
+        description: document.description,
+        onDeliveryForm: document.onDeliveryForm
       }
     };
     this.saved.emit(command);
+  }
+
+  documentTypeChanged() {
+    const newType = this.form.type().value();
+
+    // only change the on delivery form value if the user hasn't played with the control yet
+    if (!this.form.onDeliveryForm().dirty()) {
+      this.formValue.update(value => ({
+        ...value,
+        onDeliveryForm: ON_DELIVERY_FORM_BY_DEFAULT_DOCUMENT_TYPES.includes(newType as DocumentType)
+      }));
+    }
   }
 
   cancel() {
