@@ -31,7 +31,7 @@ describe('EditGrcComponent', () => {
   let toastService: MockObject<ToastService>;
   let route: ActivatedRouteStub;
 
-  beforeEach(async () => {
+  beforeEach(() => {
     route = stubRoute();
     grcService = createMock(GrcService);
     toastService = createMock(ToastService);
@@ -48,17 +48,16 @@ describe('EditGrcComponent', () => {
     router = TestBed.inject(Router);
     vi.spyOn(router, 'navigate').mockResolvedValue(true);
 
-    await TestBed.createComponent(ValidationDefaultsComponent).whenStable();
+    TestBed.createComponent(ValidationDefaultsComponent).detectChanges();
   });
 
   describe('in create mode', () => {
-    beforeEach(async () => {
+    beforeEach(() => {
       tester = new EditGrcComponentTester();
-      await tester.fixture.whenStable();
     });
 
-    test('should have a title', () => {
-      expect(tester.title.element().textContent).toContain(`Créer un CRB`);
+    test('should have a title', async () => {
+      await expect.element(tester.title).toHaveTextContent(`Créer un CRB`);
     });
 
     test('should display an empty form', async () => {
@@ -113,11 +112,10 @@ describe('EditGrcComponent', () => {
       );
 
       tester = new EditGrcComponentTester();
-      await tester.fixture.whenStable();
     });
 
-    test('should have a title', () => {
-      expect(tester.title.element().textContent).toContain(`Modifier un CRB`);
+    test('should have a title', async () => {
+      await expect.element(tester.title).toHaveTextContent(`Modifier un CRB`);
     });
 
     test('should display a filled form', async () => {

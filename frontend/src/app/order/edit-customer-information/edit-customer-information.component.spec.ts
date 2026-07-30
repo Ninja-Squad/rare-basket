@@ -66,12 +66,12 @@ class TestComponentTester {
 describe('EditCustomerComponent', () => {
   let tester: TestComponentTester;
 
-  beforeEach(async () => {
+  beforeEach(() => {
     TestBed.configureTestingModule({
       providers: [provideI18nTesting()]
     });
 
-    await TestBed.createComponent(ValidationDefaultsComponent).whenStable();
+    TestBed.createComponent(ValidationDefaultsComponent).detectChanges();
 
     tester = new TestComponentTester();
   });
@@ -94,8 +94,6 @@ describe('EditCustomerComponent', () => {
   });
 
   test('should not save if invalid', async () => {
-    await tester.fixture.whenStable();
-
     await tester.name.fill('');
     await tester.organization.fill('');
     await tester.email.fill('');
@@ -115,8 +113,6 @@ describe('EditCustomerComponent', () => {
   });
 
   test('should save', async () => {
-    await tester.fixture.whenStable();
-
     await tester.name.fill('Jane');
     await tester.organization.fill('Wheat SAS');
     await tester.email.fill('jane@mail.com');
@@ -144,8 +140,6 @@ describe('EditCustomerComponent', () => {
   });
 
   test('should use the delivery address as the billing address', async () => {
-    await tester.fixture.whenStable();
-
     await tester.name.fill('Jane');
     await tester.organization.fill('Wheat SAS');
     await tester.email.fill('jane@mail.com');
@@ -163,8 +157,6 @@ describe('EditCustomerComponent', () => {
   });
 
   test('should cancel', async () => {
-    await tester.fixture.whenStable();
-
     await tester.cancelButton.click();
     expect(tester.componentInstance.cancelled()).toBe(true);
   });

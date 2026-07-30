@@ -55,7 +55,7 @@ class TestComponentTester {
 describe('EditDocumentComponent', () => {
   let tester: TestComponentTester;
 
-  beforeEach(async () => {
+  beforeEach(() => {
     TestBed.configureTestingModule({
       providers: [provideRouter([]), provideI18nTesting(), provideRbSignalFormsConfig()]
     });
@@ -63,13 +63,12 @@ describe('EditDocumentComponent', () => {
     TestBed.createComponent(ValidationDefaultsComponent).detectChanges();
 
     tester = new TestComponentTester();
-    await tester.fixture.whenStable();
   });
 
   test('should display an empty form', async () => {
     await expect.element(tester.type).toHaveDisplayValue('');
-    expect(tester.optionLabels(tester.type).length).toBe(ALL_DOCUMENT_TYPES.length + 1);
-    expect(tester.optionLabels(tester.type)).toContain('Facture');
+    await expect.poll(() => tester.optionLabels(tester.type)).toHaveLength(ALL_DOCUMENT_TYPES.length + 1);
+    await expect.poll(() => tester.optionLabels(tester.type)).toContain('Facture');
     await expect.element(tester.description).toHaveDisplayValue('');
     await expect.element(tester.onDeliveryForm).not.toBeChecked();
 
@@ -81,8 +80,8 @@ describe('EditDocumentComponent', () => {
   });
 
   test('should filter out unique document types if they are present in the order', async () => {
-    expect(tester.optionLabels(tester.type).length).toBe(ALL_DOCUMENT_TYPES.length + 1);
-    expect(tester.optionLabels(tester.type)).toContain('Facture');
+    await expect.poll(() => tester.optionLabels(tester.type)).toHaveLength(ALL_DOCUMENT_TYPES.length + 1);
+    await expect.poll(() => tester.optionLabels(tester.type)).toContain('Facture');
 
     tester.fixture.componentInstance.order.update(order => ({
       ...order,
@@ -92,10 +91,9 @@ describe('EditDocumentComponent', () => {
         } as Document
       ]
     }));
-    await tester.fixture.whenStable();
 
-    expect(tester.optionLabels(tester.type).length).toBe(ALL_DOCUMENT_TYPES.length);
-    expect(tester.optionLabels(tester.type)).not.toContain('Facture');
+    await expect.poll(() => tester.optionLabels(tester.type)).toHaveLength(ALL_DOCUMENT_TYPES.length);
+    await expect.poll(() => tester.optionLabels(tester.type)).not.toContain('Facture');
   });
 
   test('should validate', async () => {
@@ -122,7 +120,6 @@ describe('EditDocumentComponent', () => {
       item: (index: number) => [selectedFile][index] ?? null
     } as unknown as FileList;
     tester.editDocumentComponent.fileChanged(fileList);
-    await tester.fixture.whenStable();
 
     await expect
       .element(tester.root)
@@ -136,7 +133,6 @@ describe('EditDocumentComponent', () => {
     } as unknown as FileList;
 
     tester.editDocumentComponent.fileChanged(fileList);
-    await tester.fixture.whenStable();
 
     await expect.element(tester.root).toHaveTextContent(/Le fichier est trop volumineux\. Il ne doit pas dépasser 10\s*MB/);
     await expect.element(tester.errors).toHaveLength(1); // file size invalid
@@ -153,30 +149,27 @@ describe('EditDocumentComponent', () => {
 
   test('should disable everything and display progress bar when uploading', async () => {
     tester.fixture.componentInstance.progress.set(0.1);
-    await tester.fixture.whenStable();
 
-    [tester.type, tester.description, tester.file, tester.onDeliveryForm, tester.saveButton].forEach(
-      async locator => await expect.element(locator).toBeDisabled()
-    );
+    for (const locator of [tester.type, tester.description, tester.file, tester.onDeliveryForm, tester.saveButton]) {
+      await expect.element(locator).toBeDisabled();
+    }
 
-    expect(tester.progressBar).not.toBeNull();
+    await expect.poll(() => tester.progressBar).not.toBeNull();
     expect(tester.progressBar!.getPercentValue()).toBe(10);
     expect(tester.progressBar!.animated).toBe(false);
     expect(tester.progressBar!.striped).toBe(false);
 
     tester.fixture.componentInstance.progress.set(1);
-    await tester.fixture.whenStable();
 
-    expect(tester.progressBar!.getPercentValue()).toBe(100);
+    await expect.poll(() => tester.progressBar!.getPercentValue()).toBe(100);
     expect(tester.progressBar!.animated).toBe(true);
     expect(tester.progressBar!.striped).toBe(true);
 
     tester.fixture.componentInstance.progress.set(null);
-    await tester.fixture.whenStable();
 
-    [tester.type, tester.description, tester.file, tester.saveButton].forEach(
-      async locator => await expect.element(locator).not.toBeDisabled()
-    );
+    for (const locator of [tester.type, tester.description, tester.file, tester.saveButton]) {
+      await expect.element(locator).not.toBeDisabled();
+    }
   });
 
   test('should save', async () => {
@@ -189,7 +182,6 @@ describe('EditDocumentComponent', () => {
       item: (index: number) => [selectedFile][index] ?? null
     } as unknown as FileList;
     tester.editDocumentComponent.fileChanged(fileList);
-    await tester.fixture.whenStable();
 
     await tester.saveButton.click();
     const expectedCommand: DocumentCommand = {

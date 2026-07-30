@@ -31,7 +31,7 @@ describe('ExportOrdersComponent', () => {
   let orderService: MockObject<OrderService>;
   let downloadService: MockObject<DownloadService>;
 
-  beforeEach(async () => {
+  beforeEach(() => {
     orderService = createMock(OrderService);
     downloadService = createMock(DownloadService);
 
@@ -47,7 +47,6 @@ describe('ExportOrdersComponent', () => {
     TestBed.createComponent(ValidationDefaultsComponent).detectChanges();
 
     tester = new ExportOrdersComponentTester();
-    await tester.fixture.whenStable();
   });
 
   test('should display a form with pre-filled dates', async () => {
@@ -85,7 +84,6 @@ describe('ExportOrdersComponent', () => {
 
     responseSubject.next(response);
     responseSubject.complete();
-    await tester.fixture.whenStable();
 
     await expect.element(tester.exportSpinner).not.toBeInTheDocument();
     expect(orderService.exportReport).toHaveBeenCalledWith('2020-01-01', '2020-04-01');

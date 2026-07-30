@@ -52,10 +52,6 @@ class StatisticsComponentTester {
     this.errors = this.root.getByCss('.invalid-feedback div');
   }
 
-  get fixture() {
-    return this.harness.fixture;
-  }
-
   get componentInstance(): StatisticsComponent {
     return this.harness.routeDebugElement!.componentInstance;
   }
@@ -70,7 +66,7 @@ describe('StatisticsComponent', () => {
   let allGrcs: Array<Grc>;
   let statistics: OrderStatistics;
 
-  beforeEach(async () => {
+  beforeEach(() => {
     user = {
       globalVisualization: true,
       visualizationGrcs: [] as Array<Grc>
@@ -141,7 +137,7 @@ describe('StatisticsComponent', () => {
 
     router = TestBed.inject(Router);
 
-    await TestBed.createComponent(ValidationDefaultsComponent).whenStable();
+    TestBed.createComponent(ValidationDefaultsComponent);
   });
 
   async function createTester(url = '/orders/stats') {
@@ -151,7 +147,6 @@ describe('StatisticsComponent', () => {
   describe('initialization, with global visualization user', () => {
     test('should initialize form when no query param', async () => {
       tester = await createTester();
-      await tester.fixture.whenStable();
 
       const currentYear = new Date().getFullYear();
       await expect.element(tester.from).toHaveValue(`01/01/${currentYear}`);
@@ -199,7 +194,6 @@ describe('StatisticsComponent', () => {
 
     test('should display numbers, charts and tables', async () => {
       tester = await createTester();
-      await tester.fixture.whenStable();
 
       const currentYear = new Date().getFullYear();
       const now = new Date();
@@ -235,16 +229,16 @@ describe('StatisticsComponent', () => {
 
       grcsSubject.next(allGrcs);
       grcsSubject.complete();
-      await tester.fixture.whenStable();
 
       const currentYear = new Date().getFullYear();
       const now = new Date();
-      expect(orderService.getStatistics).toHaveBeenCalledWith(`${currentYear}-01-01`, formatDate(now, 'yyyy-MM-dd', 'en-us'), []);
+      await expect
+        .poll(() => orderService.getStatistics.mock.calls)
+        .toContainEqual([`${currentYear}-01-01`, formatDate(now, 'yyyy-MM-dd', 'en-us'), []]);
     });
 
     test('should display charts and tables for the given parameters', async () => {
       tester = await createTester('/orders/stats?from=2019-01-01&to=2020-01-01&grcs=2&grcs=3');
-      await tester.fixture.whenStable();
 
       await expect.element(tester.from).toHaveValue('01/01/2019');
       await expect.element(tester.to).toHaveValue('01/01/2020');
@@ -260,7 +254,6 @@ describe('StatisticsComponent', () => {
 
     test('should initialize form when no query param', async () => {
       tester = await createTester();
-      await tester.fixture.whenStable();
 
       const currentYear = new Date().getFullYear();
       await expect.element(tester.from).toHaveValue(`01/01/${currentYear}`);
@@ -283,7 +276,6 @@ describe('StatisticsComponent', () => {
 
     test('should initialize form when query params present', async () => {
       tester = await createTester('/orders/stats?from=2019-01-01&to=2020-01-01&grcs=2');
-      await tester.fixture.whenStable();
 
       await expect.element(tester.from).toHaveValue(`01/01/2019`);
       await expect.element(tester.to).toHaveValue('01/01/2020');
@@ -299,7 +291,6 @@ describe('StatisticsComponent', () => {
 
     test('should get statistics', async () => {
       tester = await createTester();
-      await tester.fixture.whenStable();
 
       const currentYear = new Date().getFullYear();
       const now = new Date();
@@ -310,7 +301,6 @@ describe('StatisticsComponent', () => {
 
     test('should display charts and tables for the given parameters', async () => {
       tester = await createTester('/orders/stats?from=2019-01-01&to=2020-01-01&grcs=2');
-      await tester.fixture.whenStable();
 
       await expect.element(tester.from).toHaveValue('01/01/2019');
       await expect.element(tester.to).toHaveValue('01/01/2020');
@@ -326,7 +316,6 @@ describe('StatisticsComponent', () => {
 
     test('should initialize form when no query param', async () => {
       tester = await createTester();
-      await tester.fixture.whenStable();
 
       const currentYear = new Date().getFullYear();
       await expect.element(tester.from).toHaveValue(`01/01/${currentYear}`);
@@ -342,7 +331,6 @@ describe('StatisticsComponent', () => {
 
     test('should initialize form when query params present', async () => {
       tester = await createTester('/orders/stats?from=2019-01-01&to=2020-01-01&grcs=1');
-      await tester.fixture.whenStable();
 
       await expect.element(tester.from).toHaveValue(`01/01/2019`);
       await expect.element(tester.to).toHaveValue('01/01/2020');
@@ -353,7 +341,6 @@ describe('StatisticsComponent', () => {
 
     test('should get statistics', async () => {
       tester = await createTester();
-      await tester.fixture.whenStable();
 
       const currentYear = new Date().getFullYear();
       const now = new Date();
@@ -364,7 +351,6 @@ describe('StatisticsComponent', () => {
 
     test('should display charts and tables for the given parameters', async () => {
       tester = await createTester('/orders/stats?from=2019-01-01&to=2020-01-01&grcs=1');
-      await tester.fixture.whenStable();
 
       await expect.element(tester.from).toHaveValue('01/01/2019');
       await expect.element(tester.to).toHaveValue('01/01/2020');
@@ -375,7 +361,6 @@ describe('StatisticsComponent', () => {
   describe('after first display', () => {
     beforeEach(async () => {
       tester = await createTester();
-      await tester.fixture.whenStable();
       orderService.getStatistics.mockReset();
       orderService.getStatistics.mockReturnValue(of(statistics));
     });
@@ -401,7 +386,6 @@ describe('StatisticsComponent', () => {
       for (let index = 0; index < grcCount; index += 1) {
         await tester.grcs.nth(index).click();
       }
-      await tester.fixture.whenStable();
 
       expect(router.url).toBe('/orders/stats');
       expect(orderService.getStatistics).not.toHaveBeenCalled();
@@ -413,7 +397,6 @@ describe('StatisticsComponent', () => {
       await tester.grcs.nth(1).click();
 
       await tester.refreshButton.click();
-      await tester.fixture.whenStable();
 
       const currentYear = new Date().getFullYear();
       const to = formatDate(new Date(), 'yyyy-MM-dd', 'en-us');
