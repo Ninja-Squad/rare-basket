@@ -65,7 +65,7 @@ describe('CreateOrderComponent', () => {
     await TestBed.createComponent(ValidationDefaultsComponent).whenStable();
 
     router = TestBed.inject(Router);
-    vi.spyOn(router, 'navigate');
+    vi.spyOn(router, 'navigate').mockResolvedValue(true);
   });
 
   describe('when current user has only one accession holder', () => {
@@ -80,7 +80,7 @@ describe('CreateOrderComponent', () => {
 
     test('should not display accession holder and have the only one selected', async () => {
       await expect.element(tester.accessionHolder).toHaveLength(0);
-      expect(tester.componentInstance.form.value.accessionHolder!.id).toBe(1);
+      expect(tester.componentInstance.form().value().accessionHolderId).toBe('1');
     });
   });
 
