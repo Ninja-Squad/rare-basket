@@ -1,55 +1,61 @@
 <p translate="basket.edit-basket.message"></p>
 
 <div class="content">
-  <form [formGroup]="form" (ngSubmit)="save()">
+  <form [formRoot]="form">
     <div class="row">
       <div class="col-lg-4">
         <h2 translate="basket.edit-basket.personal-information"></h2>
-        <div formGroupName="customer">
+        <div>
           <div class="mb-3">
             <label class="form-label" for="name" translate="basket.edit-basket.name"></label>
-            <input formControlName="name" id="name" class="form-control" />
-            <val-errors controlName="name" [label]="'basket.edit-basket.name-error-label' | translate" />
+            <input [formField]="form.customer.name" id="name" class="form-control" />
+            <val-signal-errors [formField]="form.customer.name" [label]="'basket.edit-basket.name-error-label' | translate" />
           </div>
           <div class="mb-3">
             <label class="form-label" for="organization" translate="basket.edit-basket.organization"></label>
-            <input formControlName="organization" id="organization" class="form-control" />
+            <input [formField]="form.customer.organization" id="organization" class="form-control" />
           </div>
           <div class="mb-3">
             <label class="form-label" for="email" translate="basket.edit-basket.email"></label>
-            <input type="email" formControlName="email" id="email" class="form-control" />
-            <val-errors controlName="email" [label]="'basket.edit-basket.email-error-label' | translate" />
+            <input type="email" [formField]="form.customer.email" id="email" class="form-control" />
+            <val-signal-errors [formField]="form.customer.email" [label]="'basket.edit-basket.email-error-label' | translate" />
           </div>
           <div class="mb-3">
             <label class="form-label" for="delivery-address" translate="basket.edit-basket.delivery-address"></label>
-            <textarea formControlName="deliveryAddress" id="delivery-address" class="form-control"></textarea>
-            <val-errors controlName="deliveryAddress" [label]="'basket.edit-basket.delivery-address-error-label' | translate" />
+            <textarea [formField]="form.customer.deliveryAddress" id="delivery-address" class="form-control"></textarea>
+            <val-signal-errors
+              [formField]="form.customer.deliveryAddress"
+              [label]="'basket.edit-basket.delivery-address-error-label' | translate"
+            />
           </div>
           <div class="mb-3">
             <label class="form-label" for="billing-address" translate="basket.edit-basket.billing-address"></label>
-            <div class="form-check form-switch" [class.mb-2]="!useDeliveryAddressControl.value">
-              <input [formControl]="useDeliveryAddressControl" type="checkbox" class="form-check-input" id="use-delivery-address" />
+            <div class="form-check form-switch" [class.mb-2]="!form.useDeliveryAddress().value()">
+              <input [formField]="form.useDeliveryAddress" type="checkbox" class="form-check-input" id="use-delivery-address" />
               <label class="form-check-label" for="use-delivery-address" translate="basket.edit-basket.use-delivery-address"></label>
             </div>
-            <div [ngbCollapse]="useDeliveryAddressControl.value">
-              <textarea formControlName="billingAddress" id="billing-address" class="form-control"></textarea>
+            <div [ngbCollapse]="form.useDeliveryAddress().value()">
+              <textarea [formField]="form.customer.billingAddress" id="billing-address" class="form-control"></textarea>
             </div>
-            <val-errors controlName="billingAddress" [label]="'basket.edit-basket.billing-address-error-label' | translate" />
+            <val-signal-errors
+              [formField]="form.customer.billingAddress"
+              [label]="'basket.edit-basket.billing-address-error-label' | translate"
+            />
           </div>
           <div class="mb-3">
             <label class="form-label" for="type" translate="basket.edit-basket.customer-type"></label>
-            <select formControlName="type" id="type" class="form-select">
-              <option [ngValue]="null"></option>
+            <select [formField]="form.customer.type" id="type" class="form-select">
+              <option value=""></option>
               @for (customerType of customerTypes; track customerType) {
                 <option [value]="customerType">{{ customerType | customerTypeEnum }}</option>
               }
             </select>
-            <val-errors controlName="type" [label]="'basket.edit-basket.customer-type-error-label' | translate" />
+            <val-signal-errors [formField]="form.customer.type" [label]="'basket.edit-basket.customer-type-error-label' | translate" />
           </div>
         </div>
         <div class="mb-3">
           <label class="form-label" for="rationale" translate="basket.edit-basket.rationale"></label>
-          <textarea formControlName="rationale" id="rationale" class="form-control" style="height: 8rem"></textarea>
+          <textarea [formField]="form.rationale" id="rationale" class="form-control" style="height: 8rem"></textarea>
           <small class="text-body-secondary form-text">
             <span translate="basket.edit-basket.rationale-hint"></span>
             <ul>
@@ -129,12 +135,12 @@
         </div>
 
         <div class="form-check small">
-          <input formControlName="gdprAgreement" type="checkbox" class="form-check-input" id="gdpr-agreement" />
+          <input [formField]="form.gdprAgreement" type="checkbox" class="form-check-input" id="gdpr-agreement" />
           <label class="form-check-label" for="gdpr-agreement" translate="basket.edit-basket.gdpr-agreement"></label>
         </div>
-        <val-errors controlName="gdprAgreement">
+        <val-signal-errors [formField]="form.gdprAgreement">
           <ng-template valError="required"><span translate="basket.edit-basket.gdpr-agreement-required"></span></ng-template>
-        </val-errors>
+        </val-signal-errors>
       </div>
 
       <div class="text-center mt-4">

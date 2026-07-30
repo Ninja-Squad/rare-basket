@@ -1,38 +1,24 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  computed,
-  DestroyRef,
-  inject,
-  input,
-  linkedSignal,
-  LOCALE_ID,
-  OnInit,
-  output,
-  signal
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, input, linkedSignal, LOCALE_ID, output, signal } from '@angular/core';
 import {
   AccessionHolderBasket,
   ALL_CUSTOMER_TYPES,
   Basket,
   BasketCommand,
   BasketItemCommand,
+  CustomerCommand,
   CustomerType,
   Language
 } from '../basket.model';
-import { NonNullableFormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { disabled, email, form, FormField, FormRoot, required } from '@angular/forms/signals';
 import { faCheck, faTrash } from '@fortawesome/free-solid-svg-icons';
 import { ConfirmationService } from '../../shared/confirmation.service';
 import { environment } from '../../../environments/environment';
-import { startWith, timer } from 'rxjs';
 import { FaIconComponent } from '@fortawesome/angular-fontawesome';
 import { AccessionComponent } from '../../shared/accession/accession.component';
 import { DecimalPipe } from '@angular/common';
 import { NgbCollapse } from '@ng-bootstrap/ng-bootstrap';
-import { ValidationErrorDirective, ValidationErrorsComponent } from 'ngx-valdemort';
+import { ValidationErrorDirective, ValidationSignalErrorsComponent } from 'ngx-valdemort';
 import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { FormControlValidationDirective } from '../../shared/form-control-validation.directive';
 import { CustomerTypeEnumPipe } from '../../shared/customer-type-enum.pipe';
 
 @Component({
@@ -42,20 +28,19 @@ import { CustomerTypeEnumPipe } from '../../shared/customer-type-enum.pipe';
   imports: [
     TranslateDirective,
     TranslatePipe,
-    ReactiveFormsModule,
-    ValidationErrorsComponent,
+    FormRoot,
+    FormField,
+    ValidationSignalErrorsComponent,
     NgbCollapse,
     AccessionComponent,
     FaIconComponent,
     ValidationErrorDirective,
     DecimalPipe,
-    FormControlValidationDirective,
     CustomerTypeEnumPipe
   ],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class EditBasketComponent implements OnInit {
-  private readonly destroyRef = inject(DestroyRef);
+export class EditBasketComponent {
   private readonly confirmationService = inject(ConfirmationService);
 
   readonly basket = input.required<Basket>();
@@ -66,22 +51,46 @@ export class EditBasketComponent implements OnInit {
   readonly gdprDetailsUrl = environment.gdprDetailsUrl;
   readonly customerTypes = ALL_CUSTOMER_TYPES;
 
-  private readonly fb = inject(NonNullableFormBuilder);
   private readonly language: Language = inject(LOCALE_ID) as Language;
-  readonly form = this.fb.group({
-    customer: this.fb.group({
-      name: [null as string | null, Validators.required],
-      organization: [null as string | null],
-      email: [null as string | null, [Validators.required, Validators.email]],
-      deliveryAddress: [null as string | null, Validators.required],
-      billingAddress: [null as string | null, Validators.required],
-      type: [null as CustomerType | null, Validators.required],
-      language: this.language
-    }),
-    rationale: null as string | null,
-    gdprAgreement: [false, Validators.requiredTrue]
+  readonly formValue = linkedSignal(() => {
+    const customer = this.basket().customer;
+    return {
+      customer: {
+        name: customer?.name ?? '',
+        organization: customer?.organization ?? '',
+        email: customer?.email ?? '',
+        deliveryAddress: customer?.deliveryAddress ?? '',
+        billingAddress: customer?.billingAddress ?? '',
+        type: customer?.type ?? ('' as CustomerType | ''),
+        language: this.language
+      },
+      rationale: this.basket().rationale ?? '',
+      gdprAgreement: false,
+      useDeliveryAddress: !!customer?.deliveryAddress && customer?.deliveryAddress === customer?.billingAddress
+    };
   });
-  readonly useDeliveryAddressControl = this.fb.control(false);
+  readonly form = form(
+    this.formValue,
+    f => {
+      required(f.customer.name);
+      required(f.customer.email);
+      email(f.customer.email);
+      required(f.customer.deliveryAddress);
+      required(f.customer.billingAddress);
+      disabled(f.customer.billingAddress, { when: ({ valueOf }) => valueOf(f.useDeliveryAddress) });
+      required(f.customer.type);
+      required(f.gdprAgreement);
+    },
+    {
+      submission: {
+        action: async () => {
+          await this.save();
+          return undefined;
+        },
+        onInvalid: () => this.temporarilyForbidSave()
+      }
+    }
+  );
 
   readonly deleteIcon = faTrash;
   readonly saveIcon = faCheck;
@@ -97,67 +106,24 @@ export class EditBasketComponent implements OnInit {
   );
   readonly saveForbidden = signal(false);
 
-  constructor() {
-    this.useDeliveryAddressControl.valueChanges
-      .pipe(startWith(this.useDeliveryAddressControl.value), takeUntilDestroyed())
-      .subscribe(useDeliveryAddress => {
-        const billingAddressControl = this.form.controls.customer.controls.billingAddress;
-        if (useDeliveryAddress) {
-          billingAddressControl.disable();
-        } else {
-          billingAddressControl.enable();
-        }
-      });
-  }
-
-  ngOnInit() {
-    const customer = this.basket().customer;
-    const customerGroup = {
-      name: customer?.name ?? null,
-      organization: customer?.organization ?? null,
-      email: customer?.email ?? null,
-      deliveryAddress: customer?.deliveryAddress ?? null,
-      billingAddress: customer?.billingAddress ?? null,
-      type: customer?.type ?? null,
-      language: this.language
-    };
-    this.form.setValue({
-      customer: customerGroup,
-      rationale: this.basket().rationale ?? null,
-      gdprAgreement: false
-    });
-    this.useDeliveryAddressControl.setValue(!!customer?.deliveryAddress && customer?.deliveryAddress === customer?.billingAddress);
-  }
-
   deleteItemAt(accessionHolderBasketIndex: number, itemIndex: number) {
-    this.confirmationService
-      .confirm({ messageKey: 'basket.edit-basket.confirm-accession-deletion' })
-      .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe(() => {
-        this.accessionHolderBaskets.update(accessionHolderBaskets =>
-          accessionHolderBaskets
-            .map((ahb, ahbIndex) =>
-              ahbIndex === accessionHolderBasketIndex
-                ? {
-                    ...ahb,
-                    items: ahb.items.filter((_, index) => index !== itemIndex)
-                  }
-                : ahb
-            )
-            .filter(ahb => ahb.items.length > 0)
-        );
-      });
+    this.confirmationService.confirm({ messageKey: 'basket.edit-basket.confirm-accession-deletion' }).subscribe(() => {
+      this.accessionHolderBaskets.update(accessionHolderBaskets =>
+        accessionHolderBaskets
+          .map((ahb, ahbIndex) =>
+            ahbIndex === accessionHolderBasketIndex
+              ? {
+                  ...ahb,
+                  items: ahb.items.filter((_, index) => index !== itemIndex)
+                }
+              : ahb
+          )
+          .filter(ahb => ahb.items.length > 0)
+      );
+    });
   }
 
-  save() {
-    if (!this.form.valid) {
-      this.saveForbidden.set(true);
-      timer(350)
-        .pipe(takeUntilDestroyed(this.destroyRef))
-        .subscribe(() => this.saveForbidden.set(false));
-      return;
-    }
-
+  async save(): Promise<void> {
     const itemCommands: Array<BasketItemCommand> = this.accessionHolderBaskets().flatMap(ahb =>
       ahb.items.map(item => ({
         accession: item.accession,
@@ -166,24 +132,28 @@ export class EditBasketComponent implements OnInit {
       }))
     );
 
-    const value = this.form.getRawValue();
+    const value = this.formValue();
     // use the delivery address for the billing address if necessary
-    const customer = value.customer;
-    customer.billingAddress = this.useDeliveryAddressControl.value ? customer.deliveryAddress : customer.billingAddress;
+    const customer: CustomerCommand = {
+      name: value.customer.name,
+      type: value.customer.type as CustomerType,
+      email: value.customer.email,
+      billingAddress: value.useDeliveryAddress ? value.customer.deliveryAddress : value.customer.billingAddress,
+      deliveryAddress: value.customer.deliveryAddress,
+      language: value.customer.language,
+      organization: value.customer.organization || null
+    };
     const command: BasketCommand = {
-      customer: {
-        name: customer.name!,
-        type: customer.type!,
-        email: customer.email!,
-        billingAddress: customer.billingAddress!,
-        deliveryAddress: customer.deliveryAddress!,
-        language: customer.language,
-        organization: customer.organization
-      },
-      rationale: value.rationale,
+      customer,
+      rationale: value.rationale || null,
       complete: true,
       items: itemCommands
     };
     this.basketSaved.emit(command);
+  }
+
+  private temporarilyForbidSave() {
+    this.saveForbidden.set(true);
+    setTimeout(() => this.saveForbidden.set(false), 350);
   }
 }
