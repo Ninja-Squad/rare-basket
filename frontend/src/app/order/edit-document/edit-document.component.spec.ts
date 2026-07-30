@@ -10,6 +10,7 @@ import { provideI18nTesting } from '../../i18n/mock-18n';
 import { provideRouter } from '@angular/router';
 import { page } from 'vitest/browser';
 import { beforeEach, describe, expect, test } from 'vitest';
+import { provideRbSignalFormsConfig } from '../../signal-forms';
 
 @Component({
   template:
@@ -56,7 +57,7 @@ describe('EditDocumentComponent', () => {
 
   beforeEach(async () => {
     TestBed.configureTestingModule({
-      providers: [provideRouter([]), provideI18nTesting()]
+      providers: [provideRouter([]), provideI18nTesting(), provideRbSignalFormsConfig()]
     });
 
     TestBed.createComponent(ValidationDefaultsComponent).detectChanges();
@@ -102,12 +103,18 @@ describe('EditDocumentComponent', () => {
 
     expect(tester.fixture.componentInstance.saved()).toBeNull();
     await expect.element(tester.errors).toHaveLength(2); // type, file
+    await expect.element(tester.type).toHaveClass('is-invalid');
+    await expect.element(tester.description).not.toHaveClass('is-invalid');
 
     await tester.type.selectOptions('Autre');
     await expect.element(tester.errors).toHaveLength(2); // description, file
+    await expect.element(tester.type).not.toHaveClass('is-invalid');
+    await expect.element(tester.description).toHaveClass('is-invalid');
 
     await tester.type.selectOptions('Facture');
     await expect.element(tester.errors).toHaveLength(1); // file
+    await expect.element(tester.type).not.toHaveClass('is-invalid');
+    await expect.element(tester.description).not.toHaveClass('is-invalid');
 
     let mockFile = { name: 'foo.exe', size: 11 * 1024 * 1024 };
     let selectedFile = mockFile as File;
@@ -133,6 +140,15 @@ describe('EditDocumentComponent', () => {
 
     await expect.element(tester.root).toHaveTextContent(/Le fichier est trop volumineux\. Il ne doit pas dépasser 10\s*MB/);
     await expect.element(tester.errors).toHaveLength(1); // file size invalid
+  });
+
+  test('should not save a valid document type without a file', async () => {
+    await tester.type.selectOptions('Facture');
+    await tester.saveButton.click();
+
+    expect(tester.fixture.componentInstance.saved()).toBeNull();
+    await expect.element(tester.errors).toHaveLength(1); // file
+    await expect.element(tester.root).toHaveTextContent(/Le fichier est obligatoire/);
   });
 
   test('should disable everything and display progress bar when uploading', async () => {
