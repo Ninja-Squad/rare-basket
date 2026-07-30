@@ -405,7 +405,7 @@ describe('StatisticsComponent', () => {
       await tester.refreshButton.click();
 
       // required errors are not displayed because it messes up the layout, but the form should be invalid
-      expect(tester.componentInstance.form.invalid).toBe(true);
+      expect(tester.componentInstance.form().invalid()).toBe(true);
 
       await tester.editPerimeterButton.click();
       await tester.noGlobalVisualizationRadio.click();
