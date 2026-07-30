@@ -5,34 +5,20 @@ import { ArcElement, Chart, ChartConfiguration, DoughnutController, Legend, Tool
 import { COLORS } from '../../chart/colors';
 import { TranslateDirective, TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { DecimalPipe, formatDate, formatNumber, formatPercent, PercentPipe } from '@angular/common';
-import {
-  AbstractControl,
-  FormControl,
-  FormGroup,
-  NonNullableFormBuilder,
-  ReactiveFormsModule,
-  ValidationErrors,
-  Validators
-} from '@angular/forms';
+import { form, FormField, FormRoot, required, validate } from '@angular/forms/signals';
 import { ActivatedRoute, Params, Router } from '@angular/router';
-import { validDateRange } from '../../shared/validators';
 import { Grc, User } from '../../shared/user.model';
 import { AuthenticationService } from '../../shared/authentication.service';
 import { GrcService } from '../../shared/grc.service';
-import { catchError, concat, first, map, of, ReplaySubject, switchMap, tap } from 'rxjs';
+import { catchError, first, map, of, ReplaySubject, switchMap, tap } from 'rxjs';
 import { OrderStatusEnumPipe } from '../order-status-enum.pipe';
 import { CustomerTypeEnumPipe } from '../../shared/customer-type-enum.pipe';
 import { ChartComponent } from '../../chart/chart/chart.component';
-import { ValidationErrorDirective, ValidationErrorsComponent } from 'ngx-valdemort';
-import { FormControlValidationDirective } from '../../shared/form-control-validation.directive';
+import { ValidationErrorDirective, ValidationSignalErrorsComponent } from 'ngx-valdemort';
 import { NgbInputDatepicker } from '@ng-bootstrap/ng-bootstrap';
 import { DatepickerContainerComponent } from '../../rb-ngb/datepicker-container.component';
 import { toSignal } from '@angular/core/rxjs-interop';
-
-function atLeastOneSelection(control: AbstractControl): ValidationErrors | null {
-  const value: Array<{ grc: Grc; selected: boolean }> = control.value;
-  return value.some(item => item.selected) ? null : { required: true };
-}
+import { validSignalDateRange } from '../../shared/validators';
 
 interface ViewModel {
   user: User;
@@ -50,13 +36,13 @@ interface StatsParams {
   templateUrl: './statistics.component.html',
   styleUrl: './statistics.component.scss',
   imports: [
-    ReactiveFormsModule,
+    FormRoot,
+    FormField,
     TranslateDirective,
     TranslatePipe,
     DatepickerContainerComponent,
     NgbInputDatepicker,
-    FormControlValidationDirective,
-    ValidationErrorsComponent,
+    ValidationSignalErrorsComponent,
     ValidationErrorDirective,
     ChartComponent,
     DecimalPipe,
@@ -72,16 +58,28 @@ export class StatisticsComponent {
   private readonly orderService = inject(OrderService);
   private readonly translateService = inject(TranslateService);
 
-  private readonly fb = inject(NonNullableFormBuilder);
-  readonly grcsFormArray = this.fb.array<FormGroup<{ grc: FormControl<Grc>; selected: FormControl<boolean> }>>([], atLeastOneSelection);
-  readonly form = this.fb.group(
-    {
-      from: [null as string | null, Validators.required],
-      to: [null as string | null, Validators.required],
-      global: null as boolean | null,
-      grcs: this.grcsFormArray
+  readonly formValue = signal({
+    from: '',
+    to: '',
+    global: false,
+    grcs: [] as Array<{ grc: Grc; selected: boolean }>
+  });
+  readonly form = form(
+    this.formValue,
+    f => {
+      required(f.from);
+      required(f.to);
+      validSignalDateRange(f);
+      validate(f.grcs, ({ value }) => (this.formValue().global || value().some(item => item.selected) ? undefined : { kind: 'required' }));
     },
-    { validators: validDateRange }
+    {
+      submission: {
+        action: async () => {
+          await this.refresh();
+          return undefined;
+        }
+      }
+    }
   );
 
   readonly vm: Signal<ViewModel | undefined>;
@@ -116,7 +114,7 @@ export class StatisticsComponent {
         tap(vm => {
           this.populateForm(vm);
           this.initializeForm(vm);
-          this.refresh();
+          void this.refresh();
         })
       )
     );
@@ -143,19 +141,15 @@ export class StatisticsComponent {
     });
   }
 
-  refresh() {
-    if (!this.form.valid) {
-      return;
-    }
-
+  async refresh(): Promise<void> {
     this.refreshed.set(false);
     this.perimeterEdited.set(false);
-    const formValue = this.form.value;
-    const grcIds = formValue.global ? [] : formValue.grcs!.filter(({ selected }) => selected).map(({ grc }) => grc!.id);
+    const formValue = this.formValue();
+    const grcIds = formValue.global ? [] : formValue.grcs.filter(({ selected }) => selected).map(({ grc }) => grc.id);
 
     const statsParams: StatsParams = {
-      from: formValue.from!,
-      to: formValue.to!,
+      from: formValue.from,
+      to: formValue.to,
       grcIds: grcIds
     };
     const queryParams: Params = {
@@ -166,12 +160,16 @@ export class StatisticsComponent {
       queryParams['grcs'] = statsParams.grcIds;
     }
 
-    this.router.navigate([], {
+    await this.router.navigate([], {
       queryParams,
       replaceUrl: true
     });
 
     this.startParamsSubject.next(statsParams);
+  }
+
+  setGlobal(global: boolean) {
+    this.formValue.update(value => ({ ...value, global }));
   }
 
   createdOrderCountRatio(stat: OrderStatusStatistics) {
@@ -183,10 +181,10 @@ export class StatisticsComponent {
   }
 
   get constrainedPerimeterGrcs(): string {
-    const formValue = this.form.value;
-    return formValue
-      .grcs!.filter(({ selected }) => selected)
-      .map(({ grc }) => grc!.name)
+    const formValue = this.formValue();
+    return formValue.grcs
+      .filter(({ selected }) => selected)
+      .map(({ grc }) => grc.name)
       .join(', ');
   }
 
@@ -274,28 +272,13 @@ export class StatisticsComponent {
     startOfYear.setDate(1);
     startOfYear.setMonth(0);
 
-    vm.grcs.forEach(grc => {
-      this.grcsFormArray.push(
-        this.fb.group({
-          grc,
-          selected: false as boolean
-        })
-      );
-    });
-    this.form.patchValue({
+    this.formValue.update(value => ({
+      ...value,
       from: formatDate(startOfYear, 'yyyy-MM-dd', this.locale),
       to: formatDate(now, 'yyyy-MM-dd', this.locale),
-      global: vm.user.globalVisualization
-    });
-
-    const globalControl = this.form.controls.global;
-    concat(of(globalControl.value), globalControl.valueChanges).subscribe(global => {
-      if (global) {
-        this.grcsFormArray.disable();
-      } else {
-        this.grcsFormArray.enable();
-      }
-    });
+      global: vm.user.globalVisualization,
+      grcs: vm.grcs.map(grc => ({ grc, selected: false }))
+    }));
   }
 
   private initializeForm(vm: ViewModel) {
@@ -332,6 +315,6 @@ export class StatisticsComponent {
       }
     }
 
-    this.form.patchValue(newValue);
+    this.formValue.update(value => ({ ...value, ...newValue }));
   }
 }
