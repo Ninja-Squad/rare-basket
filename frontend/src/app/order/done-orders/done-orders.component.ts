@@ -24,7 +24,7 @@ export class DoneOrdersComponent {
   constructor() {
     const route = inject(ActivatedRoute);
     const orderListService = inject(OrderListService);
-    this.vm = toSignal(orderListService.setupDoneSignal(route, this.accessionHolderId));
+    this.vm = toSignal(orderListService.setupDone(route, this.accessionHolderId));
   }
 
   filterByAccessionHolder() {

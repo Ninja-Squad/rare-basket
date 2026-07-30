@@ -1,24 +1,27 @@
-import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { TestBed } from '@angular/core/testing';
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
 import { NgbInputDatepicker } from '@ng-bootstrap/ng-bootstrap';
 import { DatepickerContainerComponent } from './datepicker-container.component';
 import { provideI18nTesting } from '../i18n/mock-18n';
 import { provideNgbDatepickerServices } from './datepicker-providers';
 import { page } from 'vitest/browser';
 import { beforeEach, describe, expect, test } from 'vitest';
+import { form, FormField, FormRoot } from '@angular/forms/signals';
 
 @Component({
   template: `
-    <rb-datepicker-container class="foo">
-      <input class="form-control" [formControl]="dateCtrl" ngbDatepicker />
-    </rb-datepicker-container>
+    <form [formRoot]="form">
+      <rb-datepicker-container class="foo">
+        <input class="form-control" [formField]="form.date" ngbDatepicker />
+      </rb-datepicker-container>
+    </form>
   `,
-  imports: [DatepickerContainerComponent, NgbInputDatepicker, ReactiveFormsModule],
+  imports: [DatepickerContainerComponent, NgbInputDatepicker, FormRoot, FormField],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 class TestComponent {
-  dateCtrl = new FormControl(null as string | null);
+  readonly formValue = signal({ date: null as string | null });
+  readonly form = form(this.formValue);
 }
 
 class TestComponentTester {

@@ -30,7 +30,7 @@ export class InProgressOrdersComponent {
   constructor() {
     const route = inject(ActivatedRoute);
     const orderListService = inject(OrderListService);
-    this.vm = toSignal(orderListService.setupInProgressSignal(route, this.accessionHolderId));
+    this.vm = toSignal(orderListService.setupInProgress(route, this.accessionHolderId));
   }
 
   filterByAccessionHolder() {
