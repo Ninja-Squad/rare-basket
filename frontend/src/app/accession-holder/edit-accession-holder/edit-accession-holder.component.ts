@@ -1,14 +1,13 @@
-import { ChangeDetectionStrategy, Component, inject, Signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, Signal, signal } from '@angular/core';
 import { AccessionHolder, AccessionHolderCommand, Grc } from '../../shared/user.model';
-import { NonNullableFormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { email, form, FormField, FormRoot, required } from '@angular/forms/signals';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { AccessionHolderService } from '../../shared/accession-holder.service';
 import { GrcService } from '../../shared/grc.service';
-import { combineLatest, map, Observable, of, tap } from 'rxjs';
+import { combineLatest, firstValueFrom, map, Observable, of, tap } from 'rxjs';
 import { ToastService } from '../../shared/toast.service';
 
-import { ValidationErrorsComponent } from 'ngx-valdemort';
-import { FormControlValidationDirective } from '../../shared/form-control-validation.directive';
+import { ValidationSignalErrorsComponent } from 'ngx-valdemort';
 import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 
@@ -22,7 +21,7 @@ interface ViewModel {
   selector: 'rb-edit-accession-holder',
   templateUrl: './edit-accession-holder.component.html',
   styleUrl: './edit-accession-holder.component.scss',
-  imports: [TranslateDirective, TranslatePipe, ReactiveFormsModule, FormControlValidationDirective, ValidationErrorsComponent, RouterLink],
+  imports: [TranslateDirective, TranslatePipe, FormRoot, FormField, ValidationSignalErrorsComponent, RouterLink],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class EditAccessionHolderComponent {
@@ -32,12 +31,31 @@ export class EditAccessionHolderComponent {
   private readonly toastService = inject(ToastService);
 
   readonly vm: Signal<ViewModel | undefined>;
-  readonly form = inject(NonNullableFormBuilder).group({
-    name: ['', Validators.required],
-    email: ['', [Validators.required, Validators.email]],
-    phone: ['', Validators.required],
-    grcId: [null as number | null, Validators.required]
+  readonly formValue = signal({
+    name: '',
+    email: '',
+    phone: '',
+    // Native select values are strings; parse back to a number on submit.
+    grcId: ''
   });
+  readonly form = form(
+    this.formValue,
+    f => {
+      required(f.name);
+      required(f.email);
+      email(f.email);
+      required(f.phone);
+      required(f.grcId);
+    },
+    {
+      submission: {
+        action: async () => {
+          await this.save();
+          return undefined;
+        }
+      }
+    }
+  );
 
   constructor() {
     const accessionHolderId = this.route.snapshot.paramMap.get('accessionHolderId');
@@ -54,41 +72,34 @@ export class EditAccessionHolderComponent {
           mode: editedAccessionHolder ? 'update' : 'create'
         })),
         tap(vm => {
-          this.form.setValue({
+          this.formValue.set({
             name: vm.editedAccessionHolder?.name ?? '',
             email: vm.editedAccessionHolder?.email ?? '',
             phone: vm.editedAccessionHolder?.phone ?? '',
-            grcId: vm.editedAccessionHolder?.grc.id ?? null
+            grcId: vm.editedAccessionHolder?.grc.id.toString() ?? ''
           });
         })
       )
     );
   }
 
-  save() {
-    if (!this.form.valid) {
-      return;
-    }
-
-    const formValue = this.form.getRawValue();
+  async save(): Promise<void> {
+    const formValue = this.formValue();
     const command: AccessionHolderCommand = {
       name: formValue.name,
       email: formValue.email,
       phone: formValue.phone,
-      grcId: formValue.grcId!
+      grcId: parseInt(formValue.grcId)
     };
 
     const vm = this.vm()!;
-    let obs: Observable<AccessionHolder | void>;
-    if (vm.mode === 'update') {
-      obs = this.accessionHolderService.update(vm.editedAccessionHolder!.id, command);
-    } else {
-      obs = this.accessionHolderService.create(command);
-    }
+    const obs: Observable<AccessionHolder | void> =
+      vm.mode === 'update'
+        ? this.accessionHolderService.update(vm.editedAccessionHolder!.id, command)
+        : this.accessionHolderService.create(command);
 
-    obs.subscribe(() => {
-      this.router.navigate(['/accession-holders']);
-      this.toastService.success(`accession-holder.edit.success.${vm.mode}`, { name: command.name });
-    });
+    await firstValueFrom(obs);
+    await this.router.navigate(['/accession-holders']);
+    this.toastService.success(`accession-holder.edit.success.${vm.mode}`, { name: command.name });
   }
 }
