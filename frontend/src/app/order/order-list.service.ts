@@ -52,6 +52,15 @@ export class OrderListService {
     return this.setup(route, accessionHolderIdCtrl, (page, accessionHolderId) => this.orderService.listDone(page, accessionHolderId));
   }
 
+  /**
+   * Creates the observable for the "done" orders using a signal form filter
+   */
+  setupDoneSignal(route: ActivatedRoute, accessionHolderId: WritableSignal<string>): Observable<OrderListViewModel> {
+    return this.setupSignal(route, accessionHolderId, (page, selectedAccessionHolderId) =>
+      this.orderService.listDone(page, selectedAccessionHolderId)
+    );
+  }
+
   private setup(
     route: ActivatedRoute,
     accessionHolderIdCtrl: FormControl<number | null>,
