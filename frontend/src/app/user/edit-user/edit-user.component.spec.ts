@@ -44,7 +44,7 @@ describe('EditUserComponent', () => {
   let toastService: MockObject<ToastService>;
   let route: ActivatedRouteStub;
 
-  beforeEach(async () => {
+  beforeEach(() => {
     userService = createMock(UserService);
     accessionHolderService = createMock(AccessionHolderService);
     grcService = createMock(GrcService);
@@ -65,7 +65,7 @@ describe('EditUserComponent', () => {
     router = TestBed.inject(Router);
     vi.spyOn(router, 'navigate').mockResolvedValue(true);
 
-    await TestBed.createComponent(ValidationDefaultsComponent).whenStable();
+    TestBed.createComponent(ValidationDefaultsComponent);
 
     accessionHolderService.list.mockReturnValue(
       of([
@@ -111,13 +111,12 @@ describe('EditUserComponent', () => {
   });
 
   describe('in create mode', () => {
-    beforeEach(async () => {
+    beforeEach(() => {
       tester = new EditUserComponentTester();
-      await tester.fixture.whenStable();
     });
 
-    test('should have a title', () => {
-      expect(tester.title.element().textContent).toContain('Créer un utilisateur');
+    test('should have a title', async () => {
+      await expect.element(tester.title).toHaveTextContent('Créer un utilisateur');
     });
 
     test('should display an empty form', async () => {
@@ -210,7 +209,7 @@ describe('EditUserComponent', () => {
   });
 
   describe('in update mode', () => {
-    beforeEach(async () => {
+    beforeEach(() => {
       route.setParam('userId', '42');
       userService.get.mockReturnValue(
         of({
@@ -228,11 +227,10 @@ describe('EditUserComponent', () => {
       );
 
       tester = new EditUserComponentTester();
-      await tester.fixture.whenStable();
     });
 
-    test('should have a title', () => {
-      expect(tester.title.element().textContent).toContain(`Modifier l'utilisateur Test`);
+    test('should have a title', async () => {
+      await expect.element(tester.title).toHaveTextContent(`Modifier l'utilisateur Test`);
     });
 
     test('should display a filled form', async () => {

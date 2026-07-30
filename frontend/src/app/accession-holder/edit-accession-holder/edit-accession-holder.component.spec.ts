@@ -39,7 +39,7 @@ describe('EditAccessionHolderComponent', () => {
   let toastService: MockObject<ToastService>;
   let route: ActivatedRouteStub;
 
-  beforeEach(async () => {
+  beforeEach(() => {
     accessionHolderService = createMock(AccessionHolderService);
     grcService = createMock(GrcService);
     toastService = createMock(ToastService);
@@ -58,7 +58,7 @@ describe('EditAccessionHolderComponent', () => {
     router = TestBed.inject(Router);
     vi.spyOn(router, 'navigate').mockResolvedValue(true);
 
-    await TestBed.createComponent(ValidationDefaultsComponent).whenStable();
+    TestBed.createComponent(ValidationDefaultsComponent).detectChanges();
 
     grcService.list.mockReturnValue(
       of([
@@ -75,7 +75,7 @@ describe('EditAccessionHolderComponent', () => {
   });
 
   describe('in create mode', () => {
-    beforeEach(async () => {
+    beforeEach(() => {
       tester = new EditAccessionHolderComponentTester();
     });
 
@@ -144,11 +144,10 @@ describe('EditAccessionHolderComponent', () => {
         } as AccessionHolder)
       );
       tester = new EditAccessionHolderComponentTester();
-      await tester.fixture.whenStable();
     });
 
-    test('should have a title', () => {
-      expect(tester.title.element().textContent).toContain(`Modifier un gestionnaire d'accessions`);
+    test('should have a title', async () => {
+      await expect.element(tester.title).toHaveTextContent(`Modifier un gestionnaire d'accessions`);
     });
 
     test('should display a filled form', async () => {

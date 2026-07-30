@@ -11,7 +11,7 @@ import { FaIconComponent } from '@fortawesome/angular-fontawesome';
  * Example usage:
  *
  * <rb-datepicker-container>
- *   <input class="form-control" formControlName="date" ngbDatepicker />
+ *   <input class="form-control" [formField]="form.date" ngbDatepicker />
  * </rb-datepicker-container>
  */
 @Component({
