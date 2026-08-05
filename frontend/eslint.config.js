@@ -127,6 +127,7 @@ export default [
         ...angular.configs.templateRecommended
       ],
       rules: {
+        '@angular-eslint/template/require-switch-default': 'error',
         '@angular-eslint/template/prefer-control-flow': 'error',
         '@angular-eslint/template/prefer-self-closing-tags': 'error',
         '@angular-eslint/template/eqeqeq': [
