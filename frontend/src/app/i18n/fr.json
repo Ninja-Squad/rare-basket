@@ -182,7 +182,9 @@
       "zero-accession": "0 accession",
       "one-accession": "1 accession",
       "n-accessions": "{{ n }} accessions",
-      "for-accession-holder": "pour {{ name }}"
+      "for-accession-holder": "pour {{ name }}",
+      "loading": "Chargement des commandes...",
+      "error": "Le chargement des commandes a échoué."
     },
     "in-progress-orders": {
       "accession-holder": "pour",

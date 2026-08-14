@@ -1,16 +1,28 @@
-@if (vm(); as vm) {
-  @if (vm.user?.accessionHolders?.length! > 1) {
+@if (orders.isLoading()) {
+  <div class="text-center mb-4">
+    <fa-icon [icon]="loadingIcon" animation="spin" id="orders-loading-spinner" class="me-1" />
+    <span translate="order.orders.loading"></span>
+  </div>
+} @else if (orders.error()) {
+  <div class="alert alert-danger" id="orders-error-alert" role="alert">
+    <fa-icon [icon]="errorIcon" class="me-1" />
+    <span translate="order.orders.error"></span>
+  </div>
+} @else if (orders.hasValue()) {
+  @let user = this.user();
+  @let orders = this.orders.value();
+  @if (user?.accessionHolders?.length! > 1) {
     <form class="row gx-2 gy-1 mb-3">
       <label class="col-sm-auto col-form-label" for="accession-holder" translate="order.in-progress-orders.accession-holder"></label>
       <div class="col-sm-auto">
         <select [formField]="form" class="form-select" id="accession-holder" (change)="filterByAccessionHolder()">
           <option value="" translate="order.in-progress-orders.all-accession-holders"></option>
-          @for (ah of vm.user?.accessionHolders; track ah.id) {
+          @for (ah of user?.accessionHolders; track ah.id) {
             <option [value]="ah.id">{{ ah.name }}</option>
           }
         </select>
       </div>
     </form>
   }
-  <rb-orders [orders]="vm.orders" />
+  <rb-orders [orders]="orders" />
 }

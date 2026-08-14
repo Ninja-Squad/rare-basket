@@ -1,13 +1,14 @@
-import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, input } from '@angular/core';
 import { RouterLink } from '@angular/router';
-import { faPlus, faThumbsUp } from '@fortawesome/free-solid-svg-icons';
+import { faExclamationCircle, faPlus, faSpinner, faThumbsUp } from '@fortawesome/free-solid-svg-icons';
 import { FaIconComponent } from '@fortawesome/angular-fontawesome';
 import { OrdersComponent } from '../orders/orders.component';
 import { TranslateDirective } from '@ngx-translate/core';
-import { form, FormField } from '@angular/forms/signals';
-import { OrderListService } from '../order-list.service';
-import { toSignal } from '@angular/core/rxjs-interop';
+import { FormField } from '@angular/forms/signals';
 import { DecimalPipe } from '@angular/common';
+import { OrderListService } from '../order-list.service';
+import { AuthenticationService } from '../../shared/authentication.service';
+import { toSignal } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'rb-in-progress-orders',
@@ -17,16 +18,22 @@ import { DecimalPipe } from '@angular/common';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class InProgressOrdersComponent {
+  private readonly authenticationService = inject(AuthenticationService);
   private readonly orderListService = inject(OrderListService);
 
   readonly noOrderIcon = faThumbsUp;
   readonly createOrderIcon = faPlus;
+  readonly loadingIcon = faSpinner;
+  readonly errorIcon = faExclamationCircle;
 
-  readonly accessionHolderId = signal('');
-  readonly form = form(this.accessionHolderId);
-  readonly vm = toSignal(this.orderListService.setupInProgress(this.accessionHolderId));
+  readonly page = input(0, { transform: (value: string | undefined) => parseInt(value ?? '0') });
+  // eslint-disable-next-line @angular-eslint/no-input-rename -- the query parameter is named h
+  readonly holder = input<string>(undefined, { alias: 'h' });
+  readonly user = toSignal(this.authenticationService.getCurrentUser());
+  readonly form = this.orderListService.createForm(this.holder, this.user);
+  readonly orders = this.orderListService.inProgressOrders(this.page, this.holder, this.user);
 
   filterByAccessionHolder() {
-    this.orderListService.filterByAccessionHolder(this.accessionHolderId);
+    this.orderListService.filterByAccessionHolder(this.form().value);
   }
 }

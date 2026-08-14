@@ -3,8 +3,8 @@ import { TestBed } from '@angular/core/testing';
 import { InProgressOrdersComponent } from './in-progress-orders.component';
 import { createMock, MockObject } from '../../../test/mock';
 import { OrdersComponent } from '../orders/orders.component';
-import { provideRouter, Router } from '@angular/router';
-import { EMPTY, of } from 'rxjs';
+import { provideRouter, Router, withComponentInputBinding } from '@angular/router';
+import { of, Subject, throwError } from 'rxjs';
 import { OrderService } from '../order.service';
 import { Order } from '../order.model';
 import { Page } from '../../shared/page.model';
@@ -19,11 +19,15 @@ import { beforeEach, describe, expect, test } from 'vitest';
 class InProgressOrdersComponentTester {
   readonly root;
   readonly accessionHolder;
+  readonly loadingSpinner;
+  readonly errorAlert;
   readonly noOrderMessage;
 
   constructor(readonly harness: RouterTestingHarness) {
     this.root = page.elementLocator(harness.fixture.nativeElement);
     this.accessionHolder = this.root.getByCss('#accession-holder');
+    this.loadingSpinner = this.root.getByCss('#orders-loading-spinner');
+    this.errorAlert = this.root.getByCss('#orders-error-alert');
     this.noOrderMessage = this.root.getByCss('#no-order-message');
   }
 
@@ -66,22 +70,33 @@ describe('InProgressOrdersComponent', () => {
         provideI18nTesting(),
         { provide: OrderService, useValue: orderService },
         { provide: AuthenticationService, useValue: authenticationService },
-        provideRouter([{ path: 'orders/in-progress', component: InProgressOrdersComponent }])
+        provideRouter([{ path: 'orders/in-progress', component: InProgressOrdersComponent }], withComponentInputBinding())
       ]
     });
 
     router = TestBed.inject(Router);
   });
 
-  test('should not display anything until orders are present', async () => {
-    orderService.listInProgress.mockReturnValue(EMPTY);
+  test('should display a loading spinner until orders are present', async () => {
+    const ordersSubject = new Subject<Page<Order>>();
+    orderService.listInProgress.mockReturnValue(ordersSubject);
     tester = new InProgressOrdersComponentTester(await RouterTestingHarness.create('/orders/in-progress'));
 
-    await tester.harness.fixture.whenStable();
-
+    await expect.element(tester.loadingSpinner).toBeInTheDocument();
     expect(tester.ordersComponent).toBeNull();
     await expect.element(tester.noOrderMessage).not.toBeInTheDocument();
     expect(orderService.listInProgress).toHaveBeenCalledWith(0, null);
+  });
+
+  test('should display an error message if loading orders fails', async () => {
+    orderService.listInProgress.mockReturnValue(throwError(() => undefined));
+
+    tester = new InProgressOrdersComponentTester(await RouterTestingHarness.create('/orders/in-progress'));
+    await tester.harness.fixture.whenStable();
+
+    await expect.element(tester.errorAlert).toBeInTheDocument();
+    expect(tester.ordersComponent).toBeNull();
+    await expect.element(tester.loadingSpinner).not.toBeInTheDocument();
   });
 
   test('should not display accession holder if only one accessible', async () => {

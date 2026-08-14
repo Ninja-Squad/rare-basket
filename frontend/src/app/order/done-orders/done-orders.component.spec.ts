@@ -2,8 +2,8 @@ import { TestBed } from '@angular/core/testing';
 
 import { createMock, MockObject } from '../../../test/mock';
 import { OrdersComponent } from '../orders/orders.component';
-import { provideRouter, Router } from '@angular/router';
-import { EMPTY, of } from 'rxjs';
+import { provideRouter, Router, withComponentInputBinding } from '@angular/router';
+import { of, Subject, throwError } from 'rxjs';
 import { OrderService } from '../order.service';
 import { Order } from '../order.model';
 import { Page } from '../../shared/page.model';
@@ -19,10 +19,14 @@ import { beforeEach, describe, expect, test } from 'vitest';
 class DoneOrdersComponentTester {
   readonly root;
   readonly accessionHolder;
+  readonly loadingSpinner;
+  readonly errorAlert;
 
   constructor(readonly harness: RouterTestingHarness) {
     this.root = page.elementLocator(harness.fixture.nativeElement);
     this.accessionHolder = this.root.getByCss('#accession-holder');
+    this.loadingSpinner = this.root.getByCss('#orders-loading-spinner');
+    this.errorAlert = this.root.getByCss('#orders-error-alert');
   }
 
   get ordersComponent(): OrdersComponent | null {
@@ -64,19 +68,32 @@ describe('DoneOrdersComponent', () => {
         provideI18nTesting(),
         { provide: OrderService, useValue: orderService },
         { provide: AuthenticationService, useValue: authenticationService },
-        provideRouter([{ path: 'orders/done', component: DoneOrdersComponent }])
+        provideRouter([{ path: 'orders/done', component: DoneOrdersComponent }], withComponentInputBinding())
       ]
     });
 
     router = TestBed.inject(Router);
   });
 
-  test('should not display anything until orders are present', async () => {
-    orderService.listDone.mockReturnValue(EMPTY);
+  test('should display a loading spinner until orders are present', async () => {
+    const ordersSubject = new Subject<Page<Order>>();
+    orderService.listDone.mockReturnValue(ordersSubject);
     tester = new DoneOrdersComponentTester(await RouterTestingHarness.create('/orders/done'));
 
+    await expect.element(tester.loadingSpinner).toBeInTheDocument();
     expect(tester.ordersComponent).toBeNull();
     expect(orderService.listDone).toHaveBeenCalledWith(0, null);
+  });
+
+  test('should display an error message if loading orders fails', async () => {
+    orderService.listDone.mockReturnValue(throwError(() => undefined));
+
+    tester = new DoneOrdersComponentTester(await RouterTestingHarness.create('/orders/done'));
+    await tester.harness.fixture.whenStable();
+
+    await expect.element(tester.errorAlert).toBeInTheDocument();
+    expect(tester.ordersComponent).toBeNull();
+    await expect.element(tester.loadingSpinner).not.toBeInTheDocument();
   });
 
   test('should not display accession holder if only one accessible', async () => {
