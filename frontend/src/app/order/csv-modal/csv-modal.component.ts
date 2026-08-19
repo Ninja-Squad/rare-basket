@@ -17,7 +17,7 @@ export class CsvModalComponent {
   private readonly modal = inject(NgbActiveModal);
   private readonly csvParser = inject(OrderCsvParserService);
 
-  readonly formValue = signal({ csv: '' });
+  private readonly formValue = signal({ csv: '' });
   readonly form = form(this.formValue);
   readonly result = computed<CsvResult>(() => {
     const csv = this.form.csv().value();

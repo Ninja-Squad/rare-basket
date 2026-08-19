@@ -37,7 +37,7 @@ const maxFileSize = 10 * 1024 * 1024; // 10 MB
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class EditDocumentComponent {
-  readonly formValue = signal({
+  private readonly formValue = signal({
     type: '' as DocumentType | '',
     description: '',
     onDeliveryForm: false
