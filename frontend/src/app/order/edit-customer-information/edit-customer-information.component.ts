@@ -31,7 +31,7 @@ export class EditCustomerInformationComponent {
   readonly saved = output<CustomerInformationCommand>();
   readonly cancelled = output<void>();
 
-  readonly formValue = linkedSignal(() => {
+  private readonly formValue = linkedSignal(() => {
     const customer = this.customerInformation().customer;
     return {
       customer: {

@@ -39,7 +39,7 @@ export class EditOrderComponent {
   readonly saved = output<OrderCommand>();
   readonly cancelled = output<void>();
 
-  readonly formValue = linkedSignal(() => {
+  private readonly formValue = linkedSignal(() => {
     const items = this.order().items.map(orderItem => this.createItemValue(orderItem.accession, orderItem.quantity, orderItem.unit));
     return {
       items: items.length > 0 ? items : [this.createBlankItemValue()]

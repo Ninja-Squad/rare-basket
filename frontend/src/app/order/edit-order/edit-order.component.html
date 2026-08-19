@@ -65,7 +65,7 @@
               (click)="delete($index)"
               type="button"
               class="ms-auto btn btn-sm btn-outline-danger delete-order-item"
-              [disabled]="formValue().items.length === 1"
+              [disabled]="form.items.length === 1"
             >
               <fa-icon [icon]="deleteIcon" />
               <span class="visually-hidden" translate="order.edit-order.delete-accession"></span>

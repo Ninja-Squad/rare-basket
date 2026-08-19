@@ -49,7 +49,7 @@ export class EditUserComponent {
   private readonly route = inject(ActivatedRoute);
   private readonly userId = this.route.snapshot.paramMap.get('userId');
 
-  readonly formValue = signal({
+  private readonly formValue = signal({
     name: '',
     orderManagement: false,
     accessionHolders: [] as Array<SelectableAccessionHolder>,

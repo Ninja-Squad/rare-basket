@@ -28,7 +28,7 @@ export class EditGrcComponent {
   private readonly toastService = inject(ToastService);
 
   readonly vm: Signal<ViewModel | undefined>;
-  readonly formValue = signal({
+  private readonly formValue = signal({
     name: '',
     institution: '',
     address: ''
