@@ -153,7 +153,7 @@ describe('EditUserComponent', () => {
       await tester.saveButton.click();
 
       await expect.element(tester.errors).toHaveLength(1);
-      await expect.element(tester.errors.nth(0)).toHaveTextContent('Le nom est obligatoire');
+      await expect.element(tester.errors.nth(0)).toMatchTextContent('Le nom est obligatoire');
       await tester.name.fill('Test');
       expect(tester.componentInstance.form.valid).toBe(true);
 
@@ -161,7 +161,7 @@ describe('EditUserComponent', () => {
       expect(tester.componentInstance.form.valid).toBe(false);
 
       await expect.element(tester.errors).toHaveLength(1);
-      await expect.element(tester.errors.nth(0)).toHaveTextContent(`Au moins un gestionnaire d'accessions doit être sélectionné`);
+      await expect.element(tester.errors.nth(0)).toMatchTextContent(`Au moins un gestionnaire d'accessions doit être sélectionné`);
 
       await tester.orderManagement.click();
       expect(tester.componentInstance.form.valid).toBe(true);
@@ -170,7 +170,7 @@ describe('EditUserComponent', () => {
       await tester.orderVisualization.click();
       expect(tester.componentInstance.form.valid).toBe(false);
       await expect.element(tester.errors).toHaveLength(1);
-      await expect.element(tester.errors.nth(0)).toHaveTextContent(`Au moins un CRB doit être sélectionné`);
+      await expect.element(tester.errors.nth(0)).toMatchTextContent(`Au moins un CRB doit être sélectionné`);
 
       await tester.globalVisualization.click();
       expect(tester.componentInstance.form.valid).toBe(true);

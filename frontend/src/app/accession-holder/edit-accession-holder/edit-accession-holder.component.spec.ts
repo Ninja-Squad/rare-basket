@@ -80,7 +80,7 @@ describe('EditAccessionHolderComponent', () => {
     });
 
     test('should have a title', async () => {
-      await expect.element(tester.title).toHaveTextContent(`Créer un gestionnaire d'accessions`);
+      await expect.element(tester.title).toMatchTextContent(`Créer un gestionnaire d'accessions`);
     });
 
     test('should display an empty form', async () => {
@@ -97,13 +97,13 @@ describe('EditAccessionHolderComponent', () => {
       await tester.saveButton.click();
 
       await expect.element(tester.errors).toHaveLength(4);
-      await expect.element(tester.errors.nth(0)).toHaveTextContent('Le nom est obligatoire');
-      await expect.element(tester.errors.nth(1)).toHaveTextContent('Le courriel est obligatoire');
-      await expect.element(tester.errors.nth(2)).toHaveTextContent('Le téléphone est obligatoire');
-      await expect.element(tester.errors.nth(3)).toHaveTextContent('Le CRB est obligatoire');
+      await expect.element(tester.errors.nth(0)).toMatchTextContent('Le nom est obligatoire');
+      await expect.element(tester.errors.nth(1)).toMatchTextContent('Le courriel est obligatoire');
+      await expect.element(tester.errors.nth(2)).toMatchTextContent('Le téléphone est obligatoire');
+      await expect.element(tester.errors.nth(3)).toMatchTextContent('Le CRB est obligatoire');
 
       await tester.email.fill('bad-email');
-      await expect.element(tester.errors.nth(1)).toHaveTextContent('Le courriel doit être une adresse email valide');
+      await expect.element(tester.errors.nth(1)).toMatchTextContent('Le courriel doit être une adresse email valide');
 
       expect(accessionHolderService.create).not.toHaveBeenCalled();
     });

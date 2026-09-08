@@ -47,21 +47,21 @@ describe('CustomerInformationComponent', () => {
   });
 
   test('should display customer information', async () => {
-    await expect.element(tester.root).toHaveTextContent('John');
-    await expect.element(tester.root).toHaveTextContent('Entreprise ou organisation');
-    await expect.element(tester.root).toHaveTextContent('Boom Inc.');
-    await expect.element(tester.root).toHaveTextContent('john@mail.com');
-    await expect.element(tester.root).toHaveTextContent(/Av\. du Centre\s*75000 Paris/);
-    await expect.element(tester.root).toHaveTextContent(/Av\. du Centre - billing service\s*75000 Paris/);
-    await expect.element(tester.root).toHaveTextContent('Citoyen');
-    await expect.element(tester.root).toHaveTextContent('Why not?');
-    await expect.element(tester.root).not.toHaveTextContent('Français');
+    await expect.element(tester.root).toMatchTextContent('John');
+    await expect.element(tester.root).toMatchTextContent('Entreprise ou organisation');
+    await expect.element(tester.root).toMatchTextContent('Boom Inc.');
+    await expect.element(tester.root).toMatchTextContent('john@mail.com');
+    await expect.element(tester.root).toMatchTextContent(/Av\. du Centre\s*75000 Paris/);
+    await expect.element(tester.root).toMatchTextContent(/Av\. du Centre - billing service\s*75000 Paris/);
+    await expect.element(tester.root).toMatchTextContent('Citoyen');
+    await expect.element(tester.root).toMatchTextContent('Why not?');
+    await expect.element(tester.root).not.toMatchTextContent('Français');
 
     tester.componentInstance.withLanguage.set(true);
     tester.componentInstance.customer.update(customer => ({ ...customer, organization: '' }));
     await tester.fixture.whenStable();
 
-    await expect.element(tester.root).toHaveTextContent('Français');
-    await expect.element(tester.root).not.toHaveTextContent('Entreprise ou organisation');
+    await expect.element(tester.root).toMatchTextContent('Français');
+    await expect.element(tester.root).not.toMatchTextContent('Entreprise ou organisation');
   });
 });

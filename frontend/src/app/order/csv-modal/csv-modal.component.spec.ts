@@ -63,8 +63,8 @@ describe('CsvModalComponent', () => {
     await tester.csv.fill('foo;"');
     await expect.element(tester.csvErrorsAlert).toBeInTheDocument();
     await expect.element(tester.csvErrors).toHaveLength(1);
-    await expect.element(tester.csvErrors.nth(0).getByCss('th')).toHaveTextContent('1');
-    await expect.element(tester.csvErrors.nth(0).getByCss('td')).toHaveTextContent('Apostrophes manquantes');
+    await expect.element(tester.csvErrors.nth(0).getByCss('th')).toMatchTextContent('1');
+    await expect.element(tester.csvErrors.nth(0).getByCss('td')).toMatchTextContent('Apostrophes manquantes');
     await expect.element(tester.items).toHaveLength(0);
     await expect.element(tester.addItemsButton).toBeDisabled();
   });
@@ -101,13 +101,13 @@ describe('CsvModalComponent', () => {
     await tester.csv.fill('correct"');
     await expect.element(tester.csvErrorsAlert).not.toBeInTheDocument();
     await expect.element(tester.items).toHaveLength(2);
-    await expect.element(tester.items.nth(0)).toHaveTextContent('rosaName');
-    await expect.element(tester.items.nth(0)).toHaveTextContent('rosa1');
-    await expect.element(tester.items.nth(0)).toHaveTextContent('rosaTaxon');
-    await expect.element(tester.items.nth(1)).toHaveTextContent('violettaName');
-    await expect.element(tester.items.nth(1)).toHaveTextContent('violetta1');
-    await expect.element(tester.items.nth(1)).toHaveTextContent('violettaTaxon');
-    await expect.element(tester.items.nth(1)).toHaveTextContent(/1\s*000 graines/);
+    await expect.element(tester.items.nth(0)).toMatchTextContent('rosaName');
+    await expect.element(tester.items.nth(0)).toMatchTextContent('rosa1');
+    await expect.element(tester.items.nth(0)).toMatchTextContent('rosaTaxon');
+    await expect.element(tester.items.nth(1)).toMatchTextContent('violettaName');
+    await expect.element(tester.items.nth(1)).toMatchTextContent('violetta1');
+    await expect.element(tester.items.nth(1)).toMatchTextContent('violettaTaxon');
+    await expect.element(tester.items.nth(1)).toMatchTextContent(/1\s*000 graines/);
 
     await expect.element(tester.addItemsButton).not.toBeDisabled();
   });

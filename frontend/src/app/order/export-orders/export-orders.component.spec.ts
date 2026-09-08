@@ -61,7 +61,7 @@ describe('ExportOrdersComponent', () => {
     await tester.exportButton.click();
 
     await expect.element(tester.errors).toHaveLength(1);
-    await expect.element(tester.root).toHaveTextContent('La plage de dates est invalide');
+    await expect.element(tester.root).toMatchTextContent('La plage de dates est invalide');
 
     await tester.to.fill('');
     await tester.from.fill('');

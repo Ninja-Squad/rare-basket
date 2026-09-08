@@ -41,21 +41,21 @@ describe('ToastsComponent', () => {
     vi.advanceTimersByTime(1);
     vi.advanceTimersToNextFrame();
     await expect.element(tester.toasts).toHaveLength(1);
-    await expect.element(tester.root).toHaveTextContent('foo');
+    await expect.element(tester.root).toMatchTextContent('foo');
 
     vi.advanceTimersByTime(2500);
     toastsSubject.next({ message: 'bar', type: 'success' });
     vi.advanceTimersByTime(1);
     vi.advanceTimersToNextFrame();
     await expect.element(tester.toasts).toHaveLength(2);
-    await expect.element(tester.root).toHaveTextContent('foo');
-    await expect.element(tester.root).toHaveTextContent('bar');
+    await expect.element(tester.root).toMatchTextContent('foo');
+    await expect.element(tester.root).toMatchTextContent('bar');
 
     vi.advanceTimersByTime(2500);
     vi.advanceTimersToNextFrame();
     await expect.element(tester.toasts).toHaveLength(1);
-    await expect.element(tester.root).not.toHaveTextContent('foo');
-    await expect.element(tester.root).toHaveTextContent('bar');
+    await expect.element(tester.root).not.toMatchTextContent('foo');
+    await expect.element(tester.root).toMatchTextContent('bar');
 
     vi.advanceTimersByTime(2500);
     vi.advanceTimersToNextFrame();

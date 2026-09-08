@@ -144,21 +144,21 @@ describe('EditBasketComponent', () => {
       await expect.element(tester.customerType).toHaveDisplayValue('');
       await expect.element(tester.rationale).toHaveValue('');
       await expect.element(tester.accessionsHolderTitles).toHaveLength(2);
-      await expect.element(tester.accessionsHolderTitles.nth(0)).toHaveTextContent('GRC1 - Contact1');
-      await expect.element(tester.accessionsHolderTitles.nth(1)).toHaveTextContent('GRC2 - Contact2');
+      await expect.element(tester.accessionsHolderTitles.nth(0)).toMatchTextContent('GRC1 - Contact1');
+      await expect.element(tester.accessionsHolderTitles.nth(1)).toMatchTextContent('GRC2 - Contact2');
       await expect.element(tester.accessionsTables).toHaveLength(2);
       await expect.element(tester.accessionsHeadings(0)).toHaveLength(4);
       await expect.element(tester.accessionsHeadings(1)).toHaveLength(4);
-      await expect.element(tester.accessionsHeadings(0).nth(0)).toHaveTextContent('Nom');
-      await expect.element(tester.accessionsHeadings(0).nth(1)).toHaveTextContent(`N° d'accession`);
-      await expect.element(tester.accessionsHeadings(0).nth(2)).toHaveTextContent('Taxon');
-      await expect.element(tester.accessionsHeadings(0).nth(3)).toHaveTextContent('Actions');
+      await expect.element(tester.accessionsHeadings(0).nth(0)).toMatchTextContent('Nom');
+      await expect.element(tester.accessionsHeadings(0).nth(1)).toMatchTextContent(`N° d'accession`);
+      await expect.element(tester.accessionsHeadings(0).nth(2)).toMatchTextContent('Taxon');
+      await expect.element(tester.accessionsHeadings(0).nth(3)).toMatchTextContent('Actions');
       await expect.element(tester.accessions).toHaveLength(3);
-      await expect.element(tester.accessions.nth(0)).toHaveTextContent('Rosa');
-      await expect.element(tester.accessions.nth(0)).toHaveTextContent('rosaTaxon');
-      await expect.element(tester.accessions.nth(1)).toHaveTextContent('Violetta');
-      await expect.element(tester.accessions.nth(1)).toHaveTextContent('violettaNumber');
-      await expect.element(tester.accessions.nth(1)).toHaveTextContent('violettaTaxon');
+      await expect.element(tester.accessions.nth(0)).toMatchTextContent('Rosa');
+      await expect.element(tester.accessions.nth(0)).toMatchTextContent('rosaTaxon');
+      await expect.element(tester.accessions.nth(1)).toMatchTextContent('Violetta');
+      await expect.element(tester.accessions.nth(1)).toMatchTextContent('violettaNumber');
+      await expect.element(tester.accessions.nth(1)).toMatchTextContent('violettaTaxon');
       await expect.element(tester.gdprAgreement).not.toBeChecked();
     });
 
@@ -181,35 +181,35 @@ describe('EditBasketComponent', () => {
 
       await expect.element(tester.accessionsHeadings(0)).toHaveLength(5);
       await expect.element(tester.accessionsHeadings(1)).toHaveLength(5);
-      await expect.element(tester.accessionsHeadings(0).nth(0)).toHaveTextContent('Nom');
-      await expect.element(tester.accessionsHeadings(0).nth(1)).toHaveTextContent(`N° d'accession`);
-      await expect.element(tester.accessionsHeadings(0).nth(2)).toHaveTextContent('Taxon');
-      await expect.element(tester.accessionsHeadings(0).nth(3)).toHaveTextContent('Quantité');
-      await expect.element(tester.accessionsHeadings(0).nth(4)).toHaveTextContent('Actions');
-      await expect.element(tester.accessions.nth(0)).toHaveTextContent('10 bags');
+      await expect.element(tester.accessionsHeadings(0).nth(0)).toMatchTextContent('Nom');
+      await expect.element(tester.accessionsHeadings(0).nth(1)).toMatchTextContent(`N° d'accession`);
+      await expect.element(tester.accessionsHeadings(0).nth(2)).toMatchTextContent('Taxon');
+      await expect.element(tester.accessionsHeadings(0).nth(3)).toMatchTextContent('Quantité');
+      await expect.element(tester.accessionsHeadings(0).nth(4)).toMatchTextContent('Actions');
+      await expect.element(tester.accessions.nth(0)).toMatchTextContent('10 bags');
     });
 
     test('should display accession numbers if at least one is set', async () => {
       await expect.element(tester.accessionsHeadings(0)).toHaveLength(4);
-      await expect.element(tester.accessionsHeadings(0).nth(1)).toHaveTextContent(`N° d'accession`);
+      await expect.element(tester.accessionsHeadings(0).nth(1)).toMatchTextContent(`N° d'accession`);
 
       confirmationService.confirm.mockReturnValue(of(undefined));
       await tester.accessionDeleteButtons.nth(1).click();
 
       await expect.element(tester.accessionsHeadings(0)).toHaveLength(3);
-      await expect.element(tester.accessionsHeadings(0).nth(1)).toHaveTextContent(`Taxon`);
+      await expect.element(tester.accessionsHeadings(0).nth(1)).toMatchTextContent(`Taxon`);
     });
 
     test('should validate and not save', async () => {
       await tester.saveButton.click();
       expect(tester.componentInstance.savedCommand()).toBeNull();
       await expect.element(tester.errors).toHaveLength(6);
-      await expect.element(tester.root).toHaveTextContent('Le nom est obligatoire');
-      await expect.element(tester.root).toHaveTextContent(`L'adresse courriel est obligatoire`);
-      await expect.element(tester.root).toHaveTextContent(`L'adresse postale de livraison est obligatoire`);
-      await expect.element(tester.root).toHaveTextContent(`L'adresse postale de facturation est obligatoire`);
-      await expect.element(tester.root).toHaveTextContent(`La catégorie est obligatoire`);
-      await expect.element(tester.root).toHaveTextContent(`Vous devez cocher cette case pour pouvoir finaliser votre commande`);
+      await expect.element(tester.root).toMatchTextContent('Le nom est obligatoire');
+      await expect.element(tester.root).toMatchTextContent(`L'adresse courriel est obligatoire`);
+      await expect.element(tester.root).toMatchTextContent(`L'adresse postale de livraison est obligatoire`);
+      await expect.element(tester.root).toMatchTextContent(`L'adresse postale de facturation est obligatoire`);
+      await expect.element(tester.root).toMatchTextContent(`La catégorie est obligatoire`);
+      await expect.element(tester.root).toMatchTextContent(`Vous devez cocher cette case pour pouvoir finaliser votre commande`);
     });
 
     test('should save', async () => {
@@ -317,14 +317,14 @@ describe('EditBasketComponent', () => {
       expect(confirmationService.confirm).toHaveBeenCalled();
       await expect.element(tester.accessionsTables).toHaveLength(2);
       await expect.element(tester.accessions).toHaveLength(2);
-      await expect.element(tester.accessions.nth(0)).toHaveTextContent('Violetta');
+      await expect.element(tester.accessions.nth(0)).toMatchTextContent('Violetta');
       await expect.element(tester.accessionsHeadings(0)).toHaveLength(4); // because there is no accession with a quantity anymore
 
       // delete first of 2 items
       await tester.accessionDeleteButtons.nth(0).click();
       await expect.element(tester.accessionsTables).toHaveLength(1); // because the first accession holder basket is now empty, thus removed
       await expect.element(tester.accessions).toHaveLength(1);
-      await expect.element(tester.accessions.nth(0)).toHaveTextContent('Bacteria');
+      await expect.element(tester.accessions.nth(0)).toMatchTextContent('Bacteria');
 
       await expect.element(tester.accessionDeleteButtons.nth(0)).toBeDisabled(); // because it's the last one, which can thus not be deleted
     });

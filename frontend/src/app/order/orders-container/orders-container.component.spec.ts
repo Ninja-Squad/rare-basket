@@ -48,14 +48,14 @@ describe('OrdersContainerComponent', () => {
       permissions: ['ORDER_MANAGEMENT']
     } as User);
     await expect.element(tester.tabs).toHaveLength(2);
-    await expect.element(tester.tabs.nth(0)).toHaveTextContent('En cours');
-    await expect.element(tester.tabs.nth(1)).toHaveTextContent('Terminées');
+    await expect.element(tester.tabs.nth(0)).toMatchTextContent('En cours');
+    await expect.element(tester.tabs.nth(1)).toMatchTextContent('Terminées');
 
     currentUserSubject.next({
       permissions: ['ORDER_VISUALIZATION']
     } as User);
     await expect.element(tester.tabs).toHaveLength(2);
-    await expect.element(tester.tabs.nth(0)).toHaveTextContent('Statistiques');
-    await expect.element(tester.tabs.nth(1)).toHaveTextContent('Export');
+    await expect.element(tester.tabs.nth(0)).toMatchTextContent('Statistiques');
+    await expect.element(tester.tabs.nth(1)).toMatchTextContent('Export');
   });
 });

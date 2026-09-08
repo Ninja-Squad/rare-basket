@@ -95,15 +95,15 @@ describe('OrdersComponent', () => {
 
   test('should have rows of data', async () => {
     await expect.element(tester.rows).toHaveLength(2);
-    await expect.element(tester.rows.nth(0)).toHaveTextContent('ABCDEFGH');
-    await expect.element(tester.rows.nth(0)).toHaveTextContent('pour the flower holder');
-    await expect.element(tester.rows.nth(0)).toHaveTextContent('John Doe');
-    await expect.element(tester.rows.nth(0)).toHaveTextContent('Citoyen');
-    await expect.element(tester.rows.nth(0)).toHaveTextContent('2 avr. 2020');
-    await expect.element(tester.rows.nth(0)).toHaveTextContent('2 accessions');
-    await expect.element(tester.rows.nth(0)).toHaveTextContent('En cours');
+    await expect.element(tester.rows.nth(0)).toMatchTextContent('ABCDEFGH');
+    await expect.element(tester.rows.nth(0)).toMatchTextContent('pour the flower holder');
+    await expect.element(tester.rows.nth(0)).toMatchTextContent('John Doe');
+    await expect.element(tester.rows.nth(0)).toMatchTextContent('Citoyen');
+    await expect.element(tester.rows.nth(0)).toMatchTextContent('2 avr. 2020');
+    await expect.element(tester.rows.nth(0)).toMatchTextContent('2 accessions');
+    await expect.element(tester.rows.nth(0)).toMatchTextContent('En cours');
 
-    await expect.element(tester.rows.nth(1)).toHaveTextContent('(Farm Inc.)');
-    await expect.element(tester.rows.nth(1)).toHaveTextContent('1 accession');
+    await expect.element(tester.rows.nth(1)).toMatchTextContent('(Farm Inc.)');
+    await expect.element(tester.rows.nth(1)).toMatchTextContent('1 accession');
   });
 });

@@ -49,7 +49,7 @@ describe('NavbarComponent', () => {
     userSubject.next({ name: 'JB', permissions: ['ORDER_MANAGEMENT'] } as User);
     await tester.fixture.whenStable();
 
-    await expect.element(tester.user).toHaveTextContent('JB');
+    await expect.element(tester.user).toMatchTextContent('JB');
     await expect.element(tester.orders).toBeInTheDocument();
     await expect.element(tester.administrationDropdown).not.toBeInTheDocument();
     await expect.element(tester.users).not.toBeInTheDocument();
@@ -71,7 +71,7 @@ describe('NavbarComponent', () => {
     userSubject.next({ name: 'JB', permissions: [] as Array<Permission> } as User);
     await tester.fixture.whenStable();
 
-    await expect.element(tester.user).toHaveTextContent('JB');
+    await expect.element(tester.user).toMatchTextContent('JB');
     await expect.element(tester.orders).not.toBeInTheDocument();
     await expect.element(tester.administrationDropdown).not.toBeInTheDocument();
     await expect.element(tester.users).not.toBeInTheDocument();
@@ -82,7 +82,7 @@ describe('NavbarComponent', () => {
     userSubject.next({ name: 'JB', permissions: ['ADMINISTRATION'] } as User);
     await tester.fixture.whenStable();
 
-    await expect.element(tester.user).toHaveTextContent('JB');
+    await expect.element(tester.user).toMatchTextContent('JB');
     await expect.element(tester.orders).not.toBeInTheDocument();
     await expect.element(tester.administrationDropdown).toBeInTheDocument();
     await expect.element(tester.users).toBeInTheDocument();
@@ -93,7 +93,7 @@ describe('NavbarComponent', () => {
     userSubject.next({ name: 'JB', permissions: ['ORDER_VISUALIZATION'] } as User);
     await tester.fixture.whenStable();
 
-    await expect.element(tester.user).toHaveTextContent('JB');
+    await expect.element(tester.user).toMatchTextContent('JB');
     await expect.element(tester.orders).toBeInTheDocument();
     await expect.element(tester.administrationDropdown).not.toBeInTheDocument();
     await expect.element(tester.users).not.toBeInTheDocument();

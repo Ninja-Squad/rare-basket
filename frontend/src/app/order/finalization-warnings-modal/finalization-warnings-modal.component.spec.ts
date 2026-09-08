@@ -37,8 +37,8 @@ describe('FinalizationWarningsModalComponent', () => {
 
   test('should display messages', async () => {
     await expect.element(tester.messages).toHaveLength(2);
-    await expect.element(tester.messages.nth(0)).toHaveTextContent('foo');
-    await expect.element(tester.messages.nth(1)).toHaveTextContent('bar');
+    await expect.element(tester.messages.nth(0)).toMatchTextContent('foo');
+    await expect.element(tester.messages.nth(1)).toMatchTextContent('bar');
   });
 
   test('should close when clicking yes', async () => {

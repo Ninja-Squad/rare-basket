@@ -163,22 +163,22 @@ describe('OrderComponent', () => {
     orderService.get.mockReturnValue(of(order));
     tester = new OrderComponentTester();
 
-    await expect.element(tester.title).toHaveTextContent('Commande n° ABCDEFGH');
+    await expect.element(tester.title).toMatchTextContent('Commande n° ABCDEFGH');
   });
 
   test('should display order and customer information', async () => {
     orderService.get.mockReturnValue(of(order));
     tester = new OrderComponentTester();
 
-    await expect.element(tester.root).toHaveTextContent('pour the flower holder');
-    await expect.element(tester.root).toHaveTextContent('John');
-    await expect.element(tester.root).toHaveTextContent('Wheat SA');
-    await expect.element(tester.root).toHaveTextContent('john@mail.com');
-    await expect.element(tester.root).toHaveTextContent(/Av\. du Centre\s*75000 Paris/);
-    await expect.element(tester.root).toHaveTextContent(/Av\. du Centre - billing service\s*75000 Paris/);
-    await expect.element(tester.root).toHaveTextContent('Citoyen');
-    await expect.element(tester.root).toHaveTextContent('Anglais');
-    await expect.element(tester.root).toHaveTextContent('Why not?');
+    await expect.element(tester.root).toMatchTextContent('pour the flower holder');
+    await expect.element(tester.root).toMatchTextContent('John');
+    await expect.element(tester.root).toMatchTextContent('Wheat SA');
+    await expect.element(tester.root).toMatchTextContent('john@mail.com');
+    await expect.element(tester.root).toMatchTextContent(/Av\. du Centre\s*75000 Paris/);
+    await expect.element(tester.root).toMatchTextContent(/Av\. du Centre - billing service\s*75000 Paris/);
+    await expect.element(tester.root).toMatchTextContent('Citoyen');
+    await expect.element(tester.root).toMatchTextContent('Anglais');
+    await expect.element(tester.root).toMatchTextContent('Why not?');
   });
 
   test('should display order items', async () => {
@@ -186,9 +186,9 @@ describe('OrderComponent', () => {
     tester = new OrderComponentTester();
 
     await expect.element(tester.items).toHaveLength(2);
-    await expect.element(tester.items.nth(0)).toHaveTextContent('Rosa');
-    await expect.element(tester.items.nth(0)).toHaveTextContent(/1\s*234 bags/);
-    await expect.element(tester.items.nth(1)).toHaveTextContent('Violetta');
+    await expect.element(tester.items.nth(0)).toMatchTextContent('Rosa');
+    await expect.element(tester.items.nth(0)).toMatchTextContent(/1\s*234 bags/);
+    await expect.element(tester.items.nth(1)).toMatchTextContent('Violetta');
 
     expect(tester.editOrderComponent).toBeNull();
   });
@@ -327,16 +327,16 @@ describe('OrderComponent', () => {
     tester = new OrderComponentTester();
 
     await expect.element(tester.documents).toHaveLength(1);
-    await expect.element(tester.documents.nth(0)).toHaveTextContent('mail.txt');
-    await expect.element(tester.documents.nth(0)).toHaveTextContent('Autre');
-    await expect.element(tester.documents.nth(0)).toHaveTextContent('first email');
+    await expect.element(tester.documents.nth(0)).toMatchTextContent('mail.txt');
+    await expect.element(tester.documents.nth(0)).toMatchTextContent('Autre');
+    await expect.element(tester.documents.nth(0)).toMatchTextContent('first email');
     await expect.element(tester.deleteDocumentButtons).toHaveLength(1);
     await expect.element(tester.addDocumentButton).toHaveLength(1);
     expect(tester.editDocumentComponent).toBeNull();
     await expect.element(tester.deleteDocumentButtons.nth(0)).not.toBeDisabled();
     await expect.element(tester.addDocumentButton).not.toBeDisabled();
 
-    await expect.element(tester.root).not.toHaveTextContent('Aucun document');
+    await expect.element(tester.root).not.toMatchTextContent('Aucun document');
   });
 
   test('should not display document delete buttons and add button if not DRAFT', async () => {
@@ -384,7 +384,7 @@ describe('OrderComponent', () => {
     expect(confirmationService.confirm).toHaveBeenCalled();
     expect(orderService.deleteDocument).toHaveBeenCalledWith(tester.componentInstance.order()!.id, 543);
     expect(tester.componentInstance.order()).toBe(newOrder);
-    await expect.element(tester.root).toHaveTextContent('Aucun document');
+    await expect.element(tester.root).toMatchTextContent('Aucun document');
   });
 
   test('should add document', async () => {

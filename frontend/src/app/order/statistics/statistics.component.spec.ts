@@ -139,7 +139,7 @@ describe('StatisticsComponent', () => {
       await expect.element(tester.noGlobalVisualizationRadio).toHaveLength(0);
       await expect.element(tester.globalVisualizationRadio).toHaveLength(0);
       await expect.element(tester.grcs).toHaveLength(0);
-      await expect.element(tester.perimeter).toHaveTextContent('Pour tous les CRBs');
+      await expect.element(tester.perimeter).toMatchTextContent('Pour tous les CRBs');
 
       await tester.editPerimeterButton.click();
       await expect.element(tester.perimeter).toHaveLength(0);
@@ -168,7 +168,7 @@ describe('StatisticsComponent', () => {
       await expect.element(tester.from).toHaveValue(`01/01/2019`);
       await expect.element(tester.to).toHaveValue('01/01/2020');
 
-      await expect.element(tester.perimeter).toHaveTextContent(/Pour le\(s\) CRB\(s\) suivant\(s\)\s*:\s*GRC2, GRC3/);
+      await expect.element(tester.perimeter).toMatchTextContent(/Pour le\(s\) CRB\(s\) suivant\(s\)\s*:\s*GRC2, GRC3/);
 
       await tester.editPerimeterButton.click();
       await expect.element(tester.perimeter).not.toBeInTheDocument();
@@ -196,23 +196,23 @@ describe('StatisticsComponent', () => {
         replaceUrl: true
       });
 
-      await expect.element(tester.numbers).toHaveTextContent('40 commandes créées');
-      await expect.element(tester.numbers).toHaveTextContent('35 commandes finalisées');
-      await expect.element(tester.numbers).toHaveTextContent('10 commandes annulées');
-      await expect.element(tester.numbers).toHaveTextContent('20 clients distincts');
-      await expect.element(tester.numbers).toHaveTextContent('3,5 jours pour finaliser une commande');
+      await expect.element(tester.numbers).toMatchTextContent('40 commandes créées');
+      await expect.element(tester.numbers).toMatchTextContent('35 commandes finalisées');
+      await expect.element(tester.numbers).toMatchTextContent('10 commandes annulées');
+      await expect.element(tester.numbers).toMatchTextContent('20 clients distincts');
+      await expect.element(tester.numbers).toMatchTextContent('3,5 jours pour finaliser une commande');
 
       await expect.element(tester.customerTypesChart).toHaveLength(1);
       await expect.element(tester.customerTypeStats).toHaveLength(2);
-      await expect.element(tester.customerTypeStats.nth(0)).toHaveTextContent('Citoyen');
-      await expect.element(tester.customerTypeStats.nth(0)).toHaveTextContent('22');
-      await expect.element(tester.customerTypeStats.nth(1)).toHaveTextContent('Agriculteur');
-      await expect.element(tester.customerTypeStats.nth(1)).toHaveTextContent('13');
+      await expect.element(tester.customerTypeStats.nth(0)).toMatchTextContent('Citoyen');
+      await expect.element(tester.customerTypeStats.nth(0)).toMatchTextContent('22');
+      await expect.element(tester.customerTypeStats.nth(1)).toMatchTextContent('Agriculteur');
+      await expect.element(tester.customerTypeStats.nth(1)).toMatchTextContent('13');
 
       await expect.element(tester.orderStatusChart).toHaveLength(1);
       await expect.element(tester.orderStatusStats).toHaveLength(2);
-      await expect.element(tester.orderStatusStats.nth(0)).toHaveTextContent('En cours');
-      await expect.element(tester.orderStatusStats.nth(0)).toHaveTextContent(/24\s*\(60\s*%\)/);
+      await expect.element(tester.orderStatusStats.nth(0)).toMatchTextContent('En cours');
+      await expect.element(tester.orderStatusStats.nth(0)).toMatchTextContent(/24\s*\(60\s*%\)/);
     });
 
     test('should display charts and tables for the given parameters', async () => {
@@ -248,7 +248,7 @@ describe('StatisticsComponent', () => {
       await expect.element(tester.noGlobalVisualizationRadio).toHaveLength(0);
       await expect.element(tester.globalVisualizationRadio).toHaveLength(0);
       await expect.element(tester.grcs).toHaveLength(0);
-      await expect.element(tester.perimeter).toHaveTextContent(/Pour le\(s\) CRB\(s\) suivant\(s\)\s*:\s*GRC1, GRC2/);
+      await expect.element(tester.perimeter).toMatchTextContent(/Pour le\(s\) CRB\(s\) suivant\(s\)\s*:\s*GRC1, GRC2/);
 
       await tester.editPerimeterButton.click();
       await expect.element(tester.perimeter).not.toBeInTheDocument();
@@ -273,7 +273,7 @@ describe('StatisticsComponent', () => {
       await expect.element(tester.from).toHaveValue(`01/01/2019`);
       await expect.element(tester.to).toHaveValue('01/01/2020');
 
-      await expect.element(tester.perimeter).toHaveTextContent(/Pour le\(s\) CRB\(s\) suivant\(s\)\s*:\s*GRC2/);
+      await expect.element(tester.perimeter).toMatchTextContent(/Pour le\(s\) CRB\(s\) suivant\(s\)\s*:\s*GRC2/);
 
       await tester.editPerimeterButton.click();
       await expect.element(tester.perimeter).toHaveLength(0);
@@ -330,7 +330,7 @@ describe('StatisticsComponent', () => {
       await expect.element(tester.noGlobalVisualizationRadio).not.toBeInTheDocument();
       await expect.element(tester.globalVisualizationRadio).not.toBeInTheDocument();
       await expect.element(tester.grcs).toHaveLength(0);
-      await expect.element(tester.perimeter).toHaveTextContent(/Pour le\(s\) CRB\(s\) suivant\(s\)\s*:\s*GRC1/);
+      await expect.element(tester.perimeter).toMatchTextContent(/Pour le\(s\) CRB\(s\) suivant\(s\)\s*:\s*GRC1/);
 
       await expect.element(tester.editPerimeterButton).not.toBeInTheDocument();
     });
@@ -348,7 +348,7 @@ describe('StatisticsComponent', () => {
       await expect.element(tester.from).toHaveValue(`01/01/2019`);
       await expect.element(tester.to).toHaveValue('01/01/2020');
 
-      await expect.element(tester.perimeter).toHaveTextContent(/Pour le\(s\) CRB\(s\) suivant\(s\)\s*:\s*GRC1/);
+      await expect.element(tester.perimeter).toMatchTextContent(/Pour le\(s\) CRB\(s\) suivant\(s\)\s*:\s*GRC1/);
       await expect.element(tester.editPerimeterButton).not.toBeInTheDocument();
     });
 
@@ -398,7 +398,7 @@ describe('StatisticsComponent', () => {
       await tester.refreshButton.click();
 
       await expect.element(tester.errors).toHaveLength(1);
-      await expect.element(tester.root).toHaveTextContent('La plage de dates est invalide');
+      await expect.element(tester.root).toMatchTextContent('La plage de dates est invalide');
 
       await tester.from.fill('');
       await tester.to.fill('');
@@ -432,8 +432,8 @@ describe('StatisticsComponent', () => {
       await expect.element(tester.customerTypeStats).toHaveLength(0);
       await expect.element(tester.customerTypesChart).toHaveLength(0);
 
-      await expect.element(tester.root).toHaveTextContent('Aucune commande finalisée sur cette plage de temps et ce périmètre');
-      await expect.element(tester.root).toHaveTextContent('Aucune commande créée sur cette plage de temps et ce périmètre');
+      await expect.element(tester.root).toMatchTextContent('Aucune commande finalisée sur cette plage de temps et ce périmètre');
+      await expect.element(tester.root).toMatchTextContent('Aucune commande créée sur cette plage de temps et ce périmètre');
     });
   });
 });

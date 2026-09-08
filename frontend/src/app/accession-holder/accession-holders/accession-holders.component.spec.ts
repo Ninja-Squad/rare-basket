@@ -80,12 +80,12 @@ describe('AccessionHoldersComponent', () => {
     tester = new AccessionHoldersComponentTester();
 
     await expect.element(tester.accessionHolders).toHaveLength(2);
-    await expect.element(tester.accessionHolders.nth(0)).toHaveTextContent('Holder1');
-    await expect.element(tester.accessionHolders.nth(0)).toHaveTextContent('holder1@mail.com');
-    await expect.element(tester.accessionHolders.nth(0)).toHaveTextContent('GRC1');
-    await expect.element(tester.accessionHolders.nth(1)).toHaveTextContent('Holder2');
-    await expect.element(tester.accessionHolders.nth(1)).toHaveTextContent('holder2@mail.com');
-    await expect.element(tester.accessionHolders.nth(1)).toHaveTextContent('GRC2');
+    await expect.element(tester.accessionHolders.nth(0)).toMatchTextContent('Holder1');
+    await expect.element(tester.accessionHolders.nth(0)).toMatchTextContent('holder1@mail.com');
+    await expect.element(tester.accessionHolders.nth(0)).toMatchTextContent('GRC1');
+    await expect.element(tester.accessionHolders.nth(1)).toMatchTextContent('Holder2');
+    await expect.element(tester.accessionHolders.nth(1)).toMatchTextContent('holder2@mail.com');
+    await expect.element(tester.accessionHolders.nth(1)).toMatchTextContent('GRC2');
     await expect.element(tester.createLink).toBeInTheDocument();
   });
 

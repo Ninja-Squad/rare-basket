@@ -71,10 +71,10 @@ describe('GrcsComponent', () => {
     await tester.fixture.whenStable();
 
     await expect.element(tester.grcs).toHaveLength(2);
-    await expect.element(tester.grcs.nth(0)).toHaveTextContent('GRC1');
-    await expect.element(tester.grcs.nth(0)).toHaveTextContent('INRAE');
-    await expect.element(tester.grcs.nth(1)).toHaveTextContent('GRC2');
-    await expect.element(tester.grcs.nth(1)).toHaveTextContent('INRAE');
+    await expect.element(tester.grcs.nth(0)).toMatchTextContent('GRC1');
+    await expect.element(tester.grcs.nth(0)).toMatchTextContent('INRAE');
+    await expect.element(tester.grcs.nth(1)).toMatchTextContent('GRC2');
+    await expect.element(tester.grcs.nth(1)).toMatchTextContent('INRAE');
     await expect.element(tester.createLink).toBeInTheDocument();
   });
 

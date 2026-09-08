@@ -102,32 +102,32 @@ describe('BasketContentComponent', () => {
   });
 
   test('should display customer information', async () => {
-    await expect.element(tester.root).toHaveTextContent('John');
-    await expect.element(tester.root).toHaveTextContent('Boom Inc.');
-    await expect.element(tester.root).toHaveTextContent('john@mail.com');
-    await expect.element(tester.root).toHaveTextContent(/Av\. du Centre\s*75000 Paris/);
-    await expect.element(tester.root).toHaveTextContent(/Av\. du Centre - billing service\s*75000 Paris/);
-    await expect.element(tester.root).toHaveTextContent('Citoyen');
-    await expect.element(tester.root).toHaveTextContent('Why not?');
-    await expect.element(tester.root).not.toHaveTextContent('Français');
+    await expect.element(tester.root).toMatchTextContent('John');
+    await expect.element(tester.root).toMatchTextContent('Boom Inc.');
+    await expect.element(tester.root).toMatchTextContent('john@mail.com');
+    await expect.element(tester.root).toMatchTextContent(/Av\. du Centre\s*75000 Paris/);
+    await expect.element(tester.root).toMatchTextContent(/Av\. du Centre - billing service\s*75000 Paris/);
+    await expect.element(tester.root).toMatchTextContent('Citoyen');
+    await expect.element(tester.root).toMatchTextContent('Why not?');
+    await expect.element(tester.root).not.toMatchTextContent('Français');
   });
 
   test('should display one section per accession holder basket', async () => {
     await expect.element(tester.accessionHolderTitles).toHaveLength(2);
-    await expect.element(tester.accessionHolderTitles.nth(0)).toHaveTextContent('GRC1 - Contact1');
-    await expect.element(tester.accessionHolderTitles.nth(1)).toHaveTextContent('GRC2 - Contact2');
+    await expect.element(tester.accessionHolderTitles.nth(0)).toMatchTextContent('GRC1 - Contact1');
+    await expect.element(tester.accessionHolderTitles.nth(1)).toMatchTextContent('GRC2 - Contact2');
     await expect.element(tester.itemTables).toHaveLength(2);
   });
 
   test('should display basket items', async () => {
     await expect.element(tester.itemTableHeadings(0)).toHaveLength(4);
     await expect.element(tester.items).toHaveLength(3);
-    await expect.element(tester.items.nth(0)).toHaveTextContent('Rosa');
-    await expect.element(tester.items.nth(0)).toHaveTextContent('rosaTaxon');
-    await expect.element(tester.items.nth(0)).toHaveTextContent(/1\s*234 bags/);
-    await expect.element(tester.items.nth(1)).toHaveTextContent('Violetta');
-    await expect.element(tester.items.nth(1)).toHaveTextContent('violettaNumber');
-    await expect.element(tester.items.nth(1)).toHaveTextContent('violettaTaxon');
+    await expect.element(tester.items.nth(0)).toMatchTextContent('Rosa');
+    await expect.element(tester.items.nth(0)).toMatchTextContent('rosaTaxon');
+    await expect.element(tester.items.nth(0)).toMatchTextContent(/1\s*234 bags/);
+    await expect.element(tester.items.nth(1)).toMatchTextContent('Violetta');
+    await expect.element(tester.items.nth(1)).toMatchTextContent('violettaNumber');
+    await expect.element(tester.items.nth(1)).toMatchTextContent('violettaTaxon');
     await expect.element(tester.itemTableHeadings(0)).toHaveLength(4);
   });
 

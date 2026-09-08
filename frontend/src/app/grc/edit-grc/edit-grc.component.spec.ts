@@ -73,9 +73,9 @@ describe('EditGrcComponent', () => {
       await tester.saveButton.click();
 
       await expect.element(tester.errors).toHaveLength(3);
-      await expect.element(tester.errors.nth(0)).toHaveTextContent('Le nom est obligatoire');
-      await expect.element(tester.errors.nth(1)).toHaveTextContent("L'institution est obligatoire");
-      await expect.element(tester.errors.nth(2)).toHaveTextContent("L'adresse est obligatoire");
+      await expect.element(tester.errors.nth(0)).toMatchTextContent('Le nom est obligatoire');
+      await expect.element(tester.errors.nth(1)).toMatchTextContent("L'institution est obligatoire");
+      await expect.element(tester.errors.nth(2)).toMatchTextContent("L'adresse est obligatoire");
 
       expect(grcService.create).not.toHaveBeenCalled();
     });

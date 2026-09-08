@@ -87,10 +87,10 @@ describe('UsersComponent', () => {
     tester = new UsersComponentTester();
 
     await expect.element(tester.users).toHaveLength(2);
-    await expect.element(tester.users.nth(0)).toHaveTextContent('admin');
-    await expect.element(tester.users.nth(0)).toHaveTextContent('Administration');
-    await expect.element(tester.users.nth(1)).toHaveTextContent('John');
-    await expect.element(tester.users.nth(1)).toHaveTextContent('Administration, Gestion des commandes');
+    await expect.element(tester.users.nth(0)).toMatchTextContent('admin');
+    await expect.element(tester.users.nth(0)).toMatchTextContent('Administration');
+    await expect.element(tester.users.nth(1)).toMatchTextContent('John');
+    await expect.element(tester.users.nth(1)).toMatchTextContent('Administration, Gestion des commandes');
     expect(tester.paginationComponent!.navigate()).toBe(true);
     await expect.element(tester.createLink).toBeInTheDocument();
   });

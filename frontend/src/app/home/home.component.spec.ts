@@ -43,14 +43,14 @@ describe('HomeComponent', () => {
     userSubject.next(null);
     await tester.fixture.whenStable();
     await expect.element(tester.card).toBeInTheDocument();
-    await expect.element(tester.card).not.toHaveTextContent('Bienvenue');
+    await expect.element(tester.card).not.toMatchTextContent('Bienvenue');
     await expect.element(tester.loginButton).toBeInTheDocument();
     await expect.element(tester.ordersLink).not.toBeInTheDocument();
 
     // we now know that the user is authenticated
     userSubject.next({ name: 'John', permissions: [] as Array<Permission> } as User);
     await tester.fixture.whenStable();
-    await expect.element(tester.card).toHaveTextContent('Bienvenue John');
+    await expect.element(tester.card).toMatchTextContent('Bienvenue John');
     await expect.element(tester.loginButton).not.toBeInTheDocument();
     await expect.element(tester.ordersLink).not.toBeInTheDocument();
 

@@ -119,7 +119,7 @@ describe('EditDocumentComponent', () => {
 
     await expect
       .element(tester.root)
-      .toHaveTextContent(/Le fichier doit avoir l'une des extensions suivantes\s*:\s*\.pdf, \.txt, \.eml, \.pst, \.ost/);
+      .toMatchTextContent(/Le fichier doit avoir l'une des extensions suivantes\s*:\s*\.pdf, \.txt, \.eml, \.pst, \.ost/);
     await expect.element(tester.errors).toHaveLength(1); // file invalid
 
     mockFile = { ...mockFile, name: 'foo.pdf' };
@@ -131,7 +131,7 @@ describe('EditDocumentComponent', () => {
     tester.editDocumentComponent.fileChanged(fileList);
     await tester.fixture.whenStable();
 
-    await expect.element(tester.root).toHaveTextContent(/Le fichier est trop volumineux\. Il ne doit pas dépasser 10\s*MB/);
+    await expect.element(tester.root).toMatchTextContent(/Le fichier est trop volumineux\. Il ne doit pas dépasser 10\s*MB/);
     await expect.element(tester.errors).toHaveLength(1); // file size invalid
   });
 

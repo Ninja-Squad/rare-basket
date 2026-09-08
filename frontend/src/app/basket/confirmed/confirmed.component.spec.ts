@@ -38,6 +38,6 @@ describe('ConfirmedComponent', () => {
   });
 
   test('should display some text, containing the email', async () => {
-    await expect.element(tester.root).toHaveTextContent('john@mail.com');
+    await expect.element(tester.root).toMatchTextContent('john@mail.com');
   });
 });
