@@ -1,22 +1,22 @@
-<form [formGroup]="form" (ngSubmit)="save()" #formDirective="ngForm">
+<form [formRoot]="form">
   <div class="row gy-1">
     <div class="col-md-6">
       <div class="mb-3">
         <label class="form-label" translate="order.edit-document.type" for="document-type"></label>
-        <select formControlName="type" class="form-select form-select-sm" id="document-type">
-          <option [ngValue]="null"></option>
+        <select [formField]="form.type" class="form-select form-select-sm" id="document-type" (change)="documentTypeChanged()">
+          <option value=""></option>
           @for (documentType of documentTypes(); track documentType) {
             <option [value]="documentType">{{ documentType | documentTypeEnum }}</option>
           }
         </select>
-        <val-errors controlName="type" [label]="'order.edit-document.type-error-label' | translate" />
+        <val-signal-errors [formField]="form.type" [label]="'order.edit-document.type-error-label' | translate" />
       </div>
     </div>
     <div class="col-md-6">
       <div class="mb-3">
         <label class="form-label" translate="order.edit-document.description" for="document-description"></label>
-        <input formControlName="description" class="form-control form-control-sm" id="document-description" />
-        <val-errors controlName="description" [label]="'order.edit-document.description-error-label' | translate" />
+        <input [formField]="form.description" class="form-control form-control-sm" id="document-description" />
+        <val-signal-errors [formField]="form.description" [label]="'order.edit-document.description-error-label' | translate" />
       </div>
     </div>
   </div>
@@ -32,7 +32,7 @@
           [accept]="fileAccept"
           (change)="fileChanged(fileInput.files)"
           [disabled]="uploadProgress() !== null"
-          [class.is-invalid]="formDirective.submitted && hasFileError()"
+          [class.is-invalid]="submitted() && hasFileError()"
           [class.highlighted]="highlightFileInput()"
           (drop)="fileDropped($event); highlightFileInput.set(false)"
           (dragenter)="highlightFileInput.set(true)"
@@ -40,7 +40,7 @@
           (dragexit)="highlightFileInput.set(false)"
           (dragover)="$event.preventDefault()"
         />
-        <div class="invalid-feedback" [class.d-none]="!formDirective.submitted">
+        <div class="invalid-feedback" [class.d-none]="!submitted()">
           @if (!selectedFile()) {
             <div translate="common.errors.required" [translateParams]="{ label: 'order.edit-document.file-error-label' | translate }"></div>
           }
@@ -56,7 +56,7 @@
       <div class="mb-3">
         <label class="form-label" translate="order.edit-document.delivery-form" for=""></label>
         <div class="form-check form-switch mt-md-2">
-          <input class="form-label" formControlName="onDeliveryForm" type="checkbox" class="form-check-input" id="on-delivery-form" />
+          <input class="form-label" [formField]="form.onDeliveryForm" type="checkbox" class="form-check-input" id="on-delivery-form" />
           <label class="custom-control-label" for="on-delivery-form" translate="order.edit-document.on-delivery-form"></label>
         </div>
       </div>
