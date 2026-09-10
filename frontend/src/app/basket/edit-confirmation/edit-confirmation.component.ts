@@ -23,7 +23,7 @@ export class EditConfirmationComponent {
   readonly basketConfirmed = output<string>();
   readonly refreshRequested = output<void>();
 
-  readonly formValue = signal({ confirmationCode: '' });
+  private readonly formValue = signal({ confirmationCode: '' });
   readonly form = form(
     this.formValue,
     f => {

@@ -35,7 +35,7 @@ export class CreateOrderComponent {
   private readonly router = inject(Router);
   private readonly toastService = inject(ToastService);
 
-  readonly formValue = signal({
+  private readonly formValue = signal({
     // Native select values are strings; parse back to a number on submit.
     accessionHolderId: '',
     customer: {

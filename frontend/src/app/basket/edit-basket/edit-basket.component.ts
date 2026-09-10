@@ -52,7 +52,7 @@ export class EditBasketComponent {
   readonly customerTypes = ALL_CUSTOMER_TYPES;
 
   private readonly language: Language = inject(LOCALE_ID) as Language;
-  readonly formValue = linkedSignal(() => {
+  private readonly formValue = linkedSignal(() => {
     const customer = this.basket().customer;
     return {
       customer: {

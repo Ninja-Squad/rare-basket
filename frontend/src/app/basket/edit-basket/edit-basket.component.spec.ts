@@ -111,14 +111,14 @@ describe('EditBasketComponent', () => {
   let tester: TestComponentTester;
   let confirmationService: MockObject<ConfirmationService>;
 
-  beforeEach(async () => {
+  beforeEach(() => {
     confirmationService = createMock(ConfirmationService);
 
     TestBed.configureTestingModule({
       providers: [provideI18nTesting(), { provide: ConfirmationService, useValue: confirmationService }]
     });
 
-    await TestBed.createComponent(ValidationDefaultsComponent).whenStable();
+    TestBed.createComponent(ValidationDefaultsComponent).detectChanges();
 
     tester = new TestComponentTester();
   });
@@ -307,7 +307,6 @@ describe('EditBasketComponent', () => {
         ...basket!,
         accessionHolderBaskets: [grc1WithRosa10, grc2]
       }));
-      await tester.fixture.whenStable();
 
       confirmationService.confirm.mockReturnValue(of(undefined));
 

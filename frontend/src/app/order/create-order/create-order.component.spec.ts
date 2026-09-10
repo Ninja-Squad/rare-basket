@@ -48,7 +48,7 @@ describe('CreateOrderComponent', () => {
   let router: Router;
   let toastService: MockObject<ToastService>;
 
-  beforeEach(async () => {
+  beforeEach(() => {
     authenticationService = createMock(AuthenticationService);
     orderService = createMock(OrderService);
     toastService = createMock(ToastService);
@@ -62,20 +62,19 @@ describe('CreateOrderComponent', () => {
       ]
     });
 
-    await TestBed.createComponent(ValidationDefaultsComponent).whenStable();
+    TestBed.createComponent(ValidationDefaultsComponent);
 
     router = TestBed.inject(Router);
     vi.spyOn(router, 'navigate').mockResolvedValue(true);
   });
 
   describe('when current user has only one accession holder', () => {
-    beforeEach(async () => {
+    beforeEach(() => {
       const user: User = {
         accessionHolders: [{ id: 1, name: 'AH1', grc: { name: 'GRC1' } }]
       } as User;
       authenticationService.getCurrentUser.mockReturnValue(of(user));
       tester = new CreateOrderComponentTester();
-      await tester.fixture.whenStable();
     });
 
     test('should not display accession holder and have the only one selected', async () => {
@@ -85,7 +84,7 @@ describe('CreateOrderComponent', () => {
   });
 
   describe('when current user has several accession holders', async () => {
-    beforeEach(async () => {
+    beforeEach(() => {
       const user: User = {
         accessionHolders: [
           { id: 1, name: 'AH1', grc: { name: 'GRC1' } },
@@ -94,7 +93,6 @@ describe('CreateOrderComponent', () => {
       } as User;
       authenticationService.getCurrentUser.mockReturnValue(of(user));
       tester = new CreateOrderComponentTester();
-      await tester.fixture.whenStable();
     });
 
     test('should display an empty form', async () => {

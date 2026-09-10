@@ -32,7 +32,7 @@ export class ExportOrdersComponent {
   private readonly orderService = inject(OrderService);
   private readonly downloadService = inject(DownloadService);
 
-  readonly formValue = signal({
+  private readonly formValue = signal({
     from: '',
     to: ''
   });

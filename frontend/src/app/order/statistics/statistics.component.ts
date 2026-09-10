@@ -86,7 +86,7 @@ export class StatisticsComponent {
     params: ({ chain }) => chain(this.user),
     stream: ({ params: user }) => (user.globalVisualization ? this.grcService.list() : of(user.visualizationGrcs))
   });
-  readonly formValue = linkedSignal(() => this.createFormValue());
+  private readonly formValue = linkedSignal(() => this.createFormValue());
   readonly form = form(
     this.formValue,
     f => {
