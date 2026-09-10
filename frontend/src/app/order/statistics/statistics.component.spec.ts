@@ -2,10 +2,9 @@ import { TestBed } from '@angular/core/testing';
 
 import { StatisticsComponent } from './statistics.component';
 import { page } from 'vitest/browser';
-import { ActivatedRouteStub, stubRoute } from '../../../test/route-stub';
 import { createMock, MockObject } from '../../../test/mock';
-import { of } from 'rxjs';
-import { ActivatedRoute, Router } from '@angular/router';
+import { of, Subject } from 'rxjs';
+import { provideRouter, Router, withComponentInputBinding } from '@angular/router';
 import { OrderService } from '../order.service';
 import { ValidationDefaultsComponent } from '../../validation-defaults/validation-defaults.component';
 import { formatDate } from '@angular/common';
@@ -15,44 +14,63 @@ import { GrcService } from '../../shared/grc.service';
 import { OrderStatistics } from '../order.model';
 import { provideI18nTesting } from '../../i18n/mock-18n';
 import { provideNgbDatepickerServices } from '../../rb-ngb/datepicker-providers';
+import { RouterTestingHarness } from '@angular/router/testing';
 import { beforeEach, describe, expect, test } from 'vitest';
 
 class StatisticsComponentTester {
-  readonly fixture = TestBed.createComponent(StatisticsComponent);
-  readonly root = page.elementLocator(this.fixture.nativeElement);
-  readonly from = this.root.getByCss('#from');
-  readonly to = this.root.getByCss('#to');
-  readonly perimeter = this.root.getByCss('#perimeter');
-  readonly editPerimeterButton = this.root.getByCss('#edit-perimeter');
-  readonly noGlobalVisualizationRadio = this.root.getByCss('#no-global-visualization');
-  readonly globalVisualizationRadio = this.root.getByCss('#global-visualization');
-  readonly grcs = this.root.getByCss('.grcs input');
-  readonly refreshButton = this.root.getByCss('#refresh-button');
-  readonly numbers = this.root.getByCss('#numbers');
-  readonly customerTypesChart = this.root.getByCss('#customer-types-chart');
-  readonly customerTypeStats = this.root.getByCss('.customer-type-stat');
-  readonly orderStatusChart = this.root.getByCss('#order-status-chart');
-  readonly orderStatusStats = this.root.getByCss('.order-status-stat');
-  readonly errors = this.root.getByCss('.invalid-feedback div');
+  readonly root;
+  readonly from;
+  readonly to;
+  readonly perimeter;
+  readonly editPerimeterButton;
+  readonly noGlobalVisualizationRadio;
+  readonly globalVisualizationRadio;
+  readonly grcs;
+  readonly refreshButton;
+  readonly numbers;
+  readonly customerTypesChart;
+  readonly customerTypeStats;
+  readonly orderStatusChart;
+  readonly orderStatusStats;
+  readonly errors;
 
-  get componentInstance() {
-    return this.fixture.componentInstance;
+  constructor(readonly harness: RouterTestingHarness) {
+    this.root = page.elementLocator(this.harness.fixture.nativeElement);
+    this.from = this.root.getByCss('#from');
+    this.to = this.root.getByCss('#to');
+    this.perimeter = this.root.getByCss('#perimeter');
+    this.editPerimeterButton = this.root.getByCss('#edit-perimeter');
+    this.noGlobalVisualizationRadio = this.root.getByCss('#no-global-visualization');
+    this.globalVisualizationRadio = this.root.getByCss('#global-visualization');
+    this.grcs = this.root.getByCss('.grcs input');
+    this.refreshButton = this.root.getByCss('#refresh-button');
+    this.numbers = this.root.getByCss('#numbers');
+    this.customerTypesChart = this.root.getByCss('#customer-types-chart');
+    this.customerTypeStats = this.root.getByCss('.customer-type-stat');
+    this.orderStatusChart = this.root.getByCss('#order-status-chart');
+    this.orderStatusStats = this.root.getByCss('.order-status-stat');
+    this.errors = this.root.getByCss('.invalid-feedback div');
+  }
+
+  get fixture() {
+    return this.harness.fixture;
+  }
+
+  get componentInstance(): StatisticsComponent {
+    return this.harness.routeDebugElement!.componentInstance;
   }
 }
 
 describe('StatisticsComponent', () => {
   let tester: StatisticsComponentTester;
-  let router: MockObject<Router>;
+  let router: Router;
   let orderService: MockObject<OrderService>;
   let grcService: MockObject<GrcService>;
   let user: User;
   let allGrcs: Array<Grc>;
   let statistics: OrderStatistics;
-  let route: ActivatedRouteStub;
 
   beforeEach(async () => {
-    route = stubRoute();
-
     user = {
       globalVisualization: true,
       visualizationGrcs: [] as Array<Grc>
@@ -101,8 +119,6 @@ describe('StatisticsComponent', () => {
       ]
     };
 
-    router = createMock(Router);
-
     orderService = createMock(OrderService);
     orderService.getStatistics.mockReturnValue(of(statistics));
 
@@ -116,20 +132,25 @@ describe('StatisticsComponent', () => {
       providers: [
         provideI18nTesting(),
         provideNgbDatepickerServices(),
-        { provide: ActivatedRoute, useValue: route },
-        { provide: Router, useValue: router },
         { provide: OrderService, useValue: orderService },
         { provide: AuthenticationService, useValue: authenticationService },
-        { provide: GrcService, useValue: grcService }
+        { provide: GrcService, useValue: grcService },
+        provideRouter([{ path: 'orders/stats', component: StatisticsComponent }], withComponentInputBinding())
       ]
     });
+
+    router = TestBed.inject(Router);
 
     await TestBed.createComponent(ValidationDefaultsComponent).whenStable();
   });
 
+  async function createTester(url = '/orders/stats') {
+    return new StatisticsComponentTester(await RouterTestingHarness.create(url));
+  }
+
   describe('initialization, with global visualization user', () => {
     test('should initialize form when no query param', async () => {
-      tester = new StatisticsComponentTester();
+      tester = await createTester();
       await tester.fixture.whenStable();
 
       const currentYear = new Date().getFullYear();
@@ -157,13 +178,7 @@ describe('StatisticsComponent', () => {
     });
 
     test('should initialize form when query params present', async () => {
-      route.setQueryParams({
-        from: '2019-01-01',
-        to: '2020-01-01',
-        grcs: ['2', '3']
-      });
-
-      tester = new StatisticsComponentTester();
+      tester = await createTester('/orders/stats?from=2019-01-01&to=2020-01-01&grcs=2&grcs=3');
 
       await expect.element(tester.from).toHaveValue(`01/01/2019`);
       await expect.element(tester.to).toHaveValue('01/01/2020');
@@ -183,7 +198,7 @@ describe('StatisticsComponent', () => {
     });
 
     test('should display numbers, charts and tables', async () => {
-      tester = new StatisticsComponentTester();
+      tester = await createTester();
       await tester.fixture.whenStable();
 
       const currentYear = new Date().getFullYear();
@@ -191,10 +206,6 @@ describe('StatisticsComponent', () => {
       const from = `${currentYear}-01-01`;
       const to = formatDate(now, 'yyyy-MM-dd', 'en-us');
       expect(orderService.getStatistics).toHaveBeenCalledWith(from, to, []);
-      expect(router.navigate).toHaveBeenCalledWith([], {
-        queryParams: { from, to },
-        replaceUrl: true
-      });
 
       await expect.element(tester.numbers).toMatchTextContent('40 commandes créées');
       await expect.element(tester.numbers).toMatchTextContent('35 commandes finalisées');
@@ -215,14 +226,24 @@ describe('StatisticsComponent', () => {
       await expect.element(tester.orderStatusStats.nth(0)).toMatchTextContent(/24\s*\(60\s*%\)/);
     });
 
-    test('should display charts and tables for the given parameters', async () => {
-      route.setQueryParams({
-        from: '2019-01-01',
-        to: '2020-01-01',
-        grcs: ['2', '3']
-      });
+    test('should not get statistics before grcs are loaded', async () => {
+      const grcsSubject = new Subject<Array<Grc>>();
+      grcService.list.mockReturnValue(grcsSubject);
 
-      tester = new StatisticsComponentTester();
+      tester = await createTester();
+      expect(orderService.getStatistics).not.toHaveBeenCalled();
+
+      grcsSubject.next(allGrcs);
+      grcsSubject.complete();
+      await tester.fixture.whenStable();
+
+      const currentYear = new Date().getFullYear();
+      const now = new Date();
+      expect(orderService.getStatistics).toHaveBeenCalledWith(`${currentYear}-01-01`, formatDate(now, 'yyyy-MM-dd', 'en-us'), []);
+    });
+
+    test('should display charts and tables for the given parameters', async () => {
+      tester = await createTester('/orders/stats?from=2019-01-01&to=2020-01-01&grcs=2&grcs=3');
       await tester.fixture.whenStable();
 
       await expect.element(tester.from).toHaveValue('01/01/2019');
@@ -238,7 +259,7 @@ describe('StatisticsComponent', () => {
     });
 
     test('should initialize form when no query param', async () => {
-      tester = new StatisticsComponentTester();
+      tester = await createTester();
       await tester.fixture.whenStable();
 
       const currentYear = new Date().getFullYear();
@@ -261,13 +282,7 @@ describe('StatisticsComponent', () => {
     });
 
     test('should initialize form when query params present', async () => {
-      route.setQueryParams({
-        from: '2019-01-01',
-        to: '2020-01-01',
-        grcs: ['2']
-      });
-
-      tester = new StatisticsComponentTester();
+      tester = await createTester('/orders/stats?from=2019-01-01&to=2020-01-01&grcs=2');
       await tester.fixture.whenStable();
 
       await expect.element(tester.from).toHaveValue(`01/01/2019`);
@@ -283,7 +298,7 @@ describe('StatisticsComponent', () => {
     });
 
     test('should get statistics', async () => {
-      tester = new StatisticsComponentTester();
+      tester = await createTester();
       await tester.fixture.whenStable();
 
       const currentYear = new Date().getFullYear();
@@ -291,20 +306,10 @@ describe('StatisticsComponent', () => {
       const from = `${currentYear}-01-01`;
       const to = formatDate(now, 'yyyy-MM-dd', 'en-us');
       expect(orderService.getStatistics).toHaveBeenCalledWith(from, to, [1, 2]);
-      expect(router.navigate).toHaveBeenCalledWith([], {
-        queryParams: { from, to, grcs: [1, 2] },
-        replaceUrl: true
-      });
     });
 
     test('should display charts and tables for the given parameters', async () => {
-      route.setQueryParams({
-        from: '2019-01-01',
-        to: '2020-01-01',
-        grcs: ['2']
-      });
-
-      tester = new StatisticsComponentTester();
+      tester = await createTester('/orders/stats?from=2019-01-01&to=2020-01-01&grcs=2');
       await tester.fixture.whenStable();
 
       await expect.element(tester.from).toHaveValue('01/01/2019');
@@ -320,7 +325,7 @@ describe('StatisticsComponent', () => {
     });
 
     test('should initialize form when no query param', async () => {
-      tester = new StatisticsComponentTester();
+      tester = await createTester();
       await tester.fixture.whenStable();
 
       const currentYear = new Date().getFullYear();
@@ -336,13 +341,7 @@ describe('StatisticsComponent', () => {
     });
 
     test('should initialize form when query params present', async () => {
-      route.setQueryParams({
-        from: '2019-01-01',
-        to: '2020-01-01',
-        grcs: ['1']
-      });
-
-      tester = new StatisticsComponentTester();
+      tester = await createTester('/orders/stats?from=2019-01-01&to=2020-01-01&grcs=1');
       await tester.fixture.whenStable();
 
       await expect.element(tester.from).toHaveValue(`01/01/2019`);
@@ -353,7 +352,7 @@ describe('StatisticsComponent', () => {
     });
 
     test('should get statistics', async () => {
-      tester = new StatisticsComponentTester();
+      tester = await createTester();
       await tester.fixture.whenStable();
 
       const currentYear = new Date().getFullYear();
@@ -361,20 +360,10 @@ describe('StatisticsComponent', () => {
       const from = `${currentYear}-01-01`;
       const to = formatDate(now, 'yyyy-MM-dd', 'en-us');
       expect(orderService.getStatistics).toHaveBeenCalledWith(from, to, [1]);
-      expect(router.navigate).toHaveBeenCalledWith([], {
-        queryParams: { from, to, grcs: [1] },
-        replaceUrl: true
-      });
     });
 
     test('should display charts and tables for the given parameters', async () => {
-      route.setQueryParams({
-        from: '2019-01-01',
-        to: '2020-01-01',
-        grcs: ['1']
-      });
-
-      tester = new StatisticsComponentTester();
+      tester = await createTester('/orders/stats?from=2019-01-01&to=2020-01-01&grcs=1');
       await tester.fixture.whenStable();
 
       await expect.element(tester.from).toHaveValue('01/01/2019');
@@ -385,9 +374,8 @@ describe('StatisticsComponent', () => {
 
   describe('after first display', () => {
     beforeEach(async () => {
-      tester = new StatisticsComponentTester();
+      tester = await createTester();
       await tester.fixture.whenStable();
-      router.navigate.mockReset();
       orderService.getStatistics.mockReset();
       orderService.getStatistics.mockReturnValue(of(statistics));
     });
@@ -415,8 +403,24 @@ describe('StatisticsComponent', () => {
       }
       await tester.fixture.whenStable();
 
-      expect(router.navigate).not.toHaveBeenCalled();
+      expect(router.url).toBe('/orders/stats');
       expect(orderService.getStatistics).not.toHaveBeenCalled();
+    });
+
+    test('should refresh statistics for the selected grc', async () => {
+      await tester.editPerimeterButton.click();
+      await tester.noGlobalVisualizationRadio.click();
+      await tester.grcs.nth(1).click();
+
+      await tester.refreshButton.click();
+      await tester.fixture.whenStable();
+
+      const currentYear = new Date().getFullYear();
+      const to = formatDate(new Date(), 'yyyy-MM-dd', 'en-us');
+
+      expect(router.url).toBe(`/orders/stats?from=${currentYear}-01-01&to=${to}&grcs=2`);
+      expect(orderService.getStatistics).toHaveBeenCalledTimes(1);
+      expect(orderService.getStatistics).toHaveBeenCalledWith(`${currentYear}-01-01`, to, [2]);
     });
 
     test('should not display charts and tables if no order', async () => {
@@ -426,6 +430,12 @@ describe('StatisticsComponent', () => {
       statistics.customerTypeStatistics = [];
 
       await tester.refreshButton.click();
+
+      const currentYear = new Date().getFullYear();
+      const now = new Date();
+      expect(orderService.getStatistics.mock.calls).toHaveLength(1);
+      expect(orderService.getStatistics).toHaveBeenCalledWith(`${currentYear}-01-01`, formatDate(now, 'yyyy-MM-dd', 'en-us'), []);
+      expect(router.url).toBe(`/orders/stats?from=${currentYear}-01-01&to=${formatDate(now, 'yyyy-MM-dd', 'en-us')}`);
 
       await expect.element(tester.orderStatusStats).toHaveLength(0);
       await expect.element(tester.orderStatusChart).toHaveLength(0);

@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, computed, inject, LOCALE_ID, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, input, linkedSignal, LOCALE_ID, signal } from '@angular/core';
 import { OrderService } from '../order.service';
 import { CustomerTypeStatistics, OrderStatusStatistics } from '../order.model';
 import { ArcElement, Chart, ChartConfiguration, DoughnutController, Legend, Tooltip } from 'chart.js';
@@ -6,24 +6,19 @@ import { COLORS } from '../../chart/colors';
 import { TranslateDirective, TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { DecimalPipe, formatDate, formatNumber, formatPercent, PercentPipe } from '@angular/common';
 import { form, FormField, FormRoot, required, validate } from '@angular/forms/signals';
-import { ActivatedRoute, Params, Router } from '@angular/router';
-import { Grc, User } from '../../shared/user.model';
+import { Params, Router } from '@angular/router';
+import { Grc } from '../../shared/user.model';
 import { AuthenticationService } from '../../shared/authentication.service';
 import { GrcService } from '../../shared/grc.service';
-import { catchError, first, map, of, ReplaySubject, switchMap, tap } from 'rxjs';
+import { catchError, first, map, of, tap } from 'rxjs';
 import { OrderStatusEnumPipe } from '../order-status-enum.pipe';
 import { CustomerTypeEnumPipe } from '../../shared/customer-type-enum.pipe';
 import { ChartComponent } from '../../chart/chart/chart.component';
 import { ValidationErrorDirective, ValidationSignalErrorsComponent } from 'ngx-valdemort';
 import { NgbInputDatepicker } from '@ng-bootstrap/ng-bootstrap';
 import { DatepickerContainerComponent } from '../../rb-ngb/datepicker-container.component';
-import { toSignal } from '@angular/core/rxjs-interop';
+import { rxResource } from '@angular/core/rxjs-interop';
 import { validSignalDateRange } from '../../shared/validators';
-
-interface ViewModel {
-  user: User;
-  grcs: Array<Grc>;
-}
 
 interface StatsParams {
   from: string;
@@ -33,6 +28,13 @@ interface StatsParams {
 
 // Native radio values are strings; convert this back to a boolean when building stats params.
 type GlobalSelection = 'true' | 'false';
+
+interface StatisticsFormValue {
+  from: string;
+  to: string;
+  global: GlobalSelection;
+  grcs: Array<{ grc: Grc; selected: boolean }>;
+}
 
 @Component({
   selector: 'rb-statistics',
@@ -57,17 +59,34 @@ type GlobalSelection = 'true' | 'false';
 })
 export class StatisticsComponent {
   private readonly router = inject(Router);
-  private readonly route = inject(ActivatedRoute);
   private readonly orderService = inject(OrderService);
+  private readonly authenticationService = inject(AuthenticationService);
   private readonly grcService = inject(GrcService);
   private readonly translateService = inject(TranslateService);
+  private readonly locale = inject(LOCALE_ID);
 
-  readonly formValue = signal({
-    from: '',
-    to: '',
-    global: 'false' as GlobalSelection,
-    grcs: [] as Array<{ grc: Grc; selected: boolean }>
+  readonly from = input<string>();
+  readonly to = input<string>();
+  readonly grcs = input<Array<string>, string | Array<string> | undefined>([], {
+    transform: (value: string | Array<string> | undefined) => (!value ? [] : Array.isArray(value) ? value : [value])
   });
+
+  readonly colors = COLORS;
+  readonly perimeterEdited = signal(false);
+  readonly refreshed = signal(false);
+
+  readonly user = rxResource({
+    stream: () =>
+      this.authenticationService.getCurrentUser().pipe(
+        first(),
+        map(user => user!)
+      )
+  });
+  readonly availableGrcs = rxResource({
+    params: ({ chain }) => chain(this.user),
+    stream: ({ params: user }) => (user.globalVisualization ? this.grcService.list() : of(user.visualizationGrcs))
+  });
+  readonly formValue = linkedSignal(() => this.createFormValue());
   readonly form = form(
     this.formValue,
     f => {
@@ -87,52 +106,32 @@ export class StatisticsComponent {
       }
     }
   );
+  readonly statsParams = computed(() => {
+    if (!this.user.hasValue() || !this.availableGrcs.hasValue()) {
+      return undefined;
+    }
 
-  readonly colors = COLORS;
-  readonly perimeterEdited = signal(false);
-  readonly refreshed = signal(false);
-
-  private readonly locale = inject(LOCALE_ID);
-
-  readonly startParamsSubject = new ReplaySubject<StatsParams>(1);
-  readonly stats = toSignal(
-    this.startParamsSubject.pipe(
-      switchMap(statsParams =>
-        this.orderService.getStatistics(statsParams.from, statsParams.to, statsParams.grcIds).pipe(
-          tap(() => this.refreshed.set(true)),
-          tap(stats => stats.customerTypeStatistics.sort((s1, s2) => s2.finalizedOrderCount - s1.finalizedOrderCount)),
-          catchError(() => of(undefined))
-        )
+    return this.createStatsParams(this.createFormValue());
+  });
+  readonly stats = rxResource({
+    params: this.statsParams,
+    stream: ({ params }) =>
+      this.orderService.getStatistics(params.from, params.to, params.grcIds).pipe(
+        tap(() => this.refreshed.set(true)),
+        tap(stats => stats.customerTypeStatistics.sort((s1, s2) => s2.finalizedOrderCount - s1.finalizedOrderCount)),
+        catchError(() => of(undefined))
       )
-    )
-  );
-  readonly vm = toSignal(
-    inject(AuthenticationService)
-      .getCurrentUser()
-      .pipe(
-        first(),
-        switchMap(user => {
-          const u = user!;
-          const grcs$ = u.globalVisualization ? this.grcService.list() : of(u.visualizationGrcs);
-          return grcs$.pipe(map(grcs => ({ grcs, user: u })));
-        }),
-        tap(vm => {
-          this.populateForm(vm);
-          this.initializeForm(vm);
-          void this.refresh();
-        })
-      )
-  );
+  });
   readonly perimeterModifiable = computed(() => {
-    const vm = this.vm();
-    return !!vm && vm.grcs.length > 1;
+    const grcs = this.availableGrcs.value();
+    return !!grcs && grcs.length > 1;
   });
   readonly customerTypeDoughnut = computed(() => {
-    const stats = this.stats();
+    const stats = this.stats.value();
     return stats ? this.createCustomerTypeDoughnutChart(stats.customerTypeStatistics) : undefined;
   });
   readonly orderStatusDoughnut = computed(() => {
-    const stats = this.stats();
+    const stats = this.stats.value();
     return stats ? this.createOrderStatusDoughnutChart(stats.orderStatusStatistics) : undefined;
   });
 
@@ -141,16 +140,10 @@ export class StatisticsComponent {
       return;
     }
 
+    const formValue = this.formValue();
+    const statsParams = this.createStatsParams(formValue);
     this.refreshed.set(false);
     this.perimeterEdited.set(false);
-    const formValue = this.formValue();
-    const grcIds = formValue.global === 'true' ? [] : formValue.grcs.filter(({ selected }) => selected).map(({ grc }) => grc.id);
-
-    const statsParams: StatsParams = {
-      from: formValue.from,
-      to: formValue.to,
-      grcIds: grcIds
-    };
     const queryParams: Params = {
       from: statsParams.from,
       to: statsParams.to
@@ -163,16 +156,14 @@ export class StatisticsComponent {
       queryParams,
       replaceUrl: true
     });
-
-    this.startParamsSubject.next(statsParams);
   }
 
   createdOrderCountRatio(stat: OrderStatusStatistics) {
-    return stat.createdOrderCount / this.stats()!.createdOrderCount;
+    return stat.createdOrderCount / this.stats.value()!.createdOrderCount;
   }
 
   finalizedOrderCountRatio(stat: CustomerTypeStatistics) {
-    return stat.finalizedOrderCount / this.stats()!.finalizedOrderCount;
+    return stat.finalizedOrderCount / this.stats.value()!.finalizedOrderCount;
   }
 
   get constrainedPerimeterGrcs(): string {
@@ -261,55 +252,41 @@ export class StatisticsComponent {
     };
   }
 
-  private populateForm(vm: ViewModel) {
+  private createFormValue(): StatisticsFormValue {
+    const user = this.user.value();
+    const grcs = this.availableGrcs.value();
+    if (!user || !grcs) {
+      return { from: '', to: '', global: 'false', grcs: [] };
+    }
+
     const now = new Date();
     const startOfYear = new Date();
     startOfYear.setDate(1);
     startOfYear.setMonth(0);
-
-    this.formValue.update(value => ({
-      ...value,
-      from: formatDate(startOfYear, 'yyyy-MM-dd', this.locale),
-      to: formatDate(now, 'yyyy-MM-dd', this.locale),
-      global: vm.user.globalVisualization ? 'true' : 'false',
-      grcs: vm.grcs.map(grc => ({ grc, selected: false }))
+    const from = this.from() ?? formatDate(startOfYear, 'yyyy-MM-dd', this.locale);
+    const to = this.to() ?? formatDate(now, 'yyyy-MM-dd', this.locale);
+    const grcIds = this.grcs();
+    const global: GlobalSelection = user.globalVisualization && grcIds.length === 0 ? 'true' : 'false';
+    const formGrcs = grcs.map(grc => ({
+      grc,
+      selected: grcIds.length > 0 ? grcIds.includes(`${grc.id}`) : !user.globalVisualization
     }));
+
+    return {
+      from,
+      to,
+      global,
+      grcs: formGrcs
+    };
   }
 
-  private initializeForm(vm: ViewModel) {
-    const newValue: {
-      from?: string;
-      to?: string;
-      global?: GlobalSelection;
-      grcs?: Array<{ grc: Grc; selected: boolean }>;
-    } = {};
-    const paramMap = this.route.snapshot.queryParamMap;
-    const from = paramMap.get('from');
-    if (from) {
-      newValue.from = from;
-    }
-    const to = paramMap.get('to');
-    if (to) {
-      newValue.to = to;
-    }
-    if (vm.user.globalVisualization) {
-      const grcIds = paramMap.getAll('grcs');
-      if (grcIds.length > 0) {
-        newValue.global = 'false';
-        newValue.grcs = vm.grcs.map(grc => ({ grc, selected: grcIds.includes(`${grc.id}`) }));
-      } else {
-        newValue.global = 'true';
-      }
-    } else {
-      newValue.global = 'false';
-      const grcIds = paramMap.getAll('grcs');
-      if (grcIds.length > 0) {
-        newValue.grcs = vm.grcs.map(grc => ({ grc, selected: grcIds.includes(`${grc.id}`) }));
-      } else {
-        newValue.grcs = vm.grcs.map(grc => ({ grc, selected: true }));
-      }
-    }
+  private createStatsParams(formValue: StatisticsFormValue): StatsParams {
+    const grcIds = formValue.global === 'true' ? [] : formValue.grcs.filter(({ selected }) => selected).map(({ grc }) => grc.id);
 
-    this.formValue.update(value => ({ ...value, ...newValue }));
+    return {
+      from: formValue.from,
+      to: formValue.to,
+      grcIds
+    };
   }
 }
