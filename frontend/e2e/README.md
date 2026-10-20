@@ -13,4 +13,3 @@ In particular:
 - to run step by step: `pnpm e2e e2e/the-test-file.spec.ts --project=chromium --debug`
 
 To be able to skip some parts in debug mode, add `await page.pause();` to the test, where you want to pause.
-

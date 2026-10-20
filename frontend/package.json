@@ -8,7 +8,8 @@
     "build": "ng build --no-progress",
     "test": "ng test --no-progress --no-watch",
     "lint": "pnpx mkdirp build && ng lint > build/eslint-result.txt",
-    "format": "prettier --write \"{src,e2e}/**/*.+(ts|js|json|html|scss)\"",
+    "format": "oxfmt --write .",
+    "format:check": "oxfmt --check .",
     "e2e": "pnpm playwright test",
     "postinstall": "pnpm exec playwright install",
     "knip": "pnpx knip --fix-type exports,types --exclude dependencies,unlisted,files,binaries --tags=knipignore"
@@ -53,9 +54,7 @@
     "@vitest/spy": "5.0.5",
     "angular-eslint": "22.6.0",
     "eslint": "10.12.0",
-    "eslint-config-prettier": "10.1.8",
-    "eslint-plugin-prettier": "5.5.7",
-    "prettier": "3.9.10",
+    "oxfmt": "0.73.0",
     "typescript": "6.0.3",
     "typescript-eslint": "8.71.2",
     "vitest": "5.0.5"

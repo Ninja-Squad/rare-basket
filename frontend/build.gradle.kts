@@ -54,8 +54,12 @@ tasks {
         dependsOn(prepare)
         inputs.dir("src")
         inputs.file("eslint.config.js")
-        inputs.file(".prettierrc")
         outputs.file(layout.buildDirectory.file("eslint-result.txt"))
+    }
+
+    val pnpmFormatCheck by registering(PnpmTask::class) {
+        args.set(listOf("format:check"))
+        dependsOn(prepare)
     }
 
     val lint by registering {
@@ -71,6 +75,7 @@ tasks {
     }
 
     check {
+        dependsOn(pnpmFormatCheck)
         dependsOn(lint)
         dependsOn(test)
         dependsOn(e2e)
