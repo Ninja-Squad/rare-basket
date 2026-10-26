@@ -8,7 +8,7 @@ import { AuthenticationConfigService, authFactory, CustomSecurityStorage } from 
 import { AbstractSecurityStorage, provideAuth, StsConfigLoader } from 'angular-auth-oidc-client';
 import { errorInterceptor } from './app/shared/error.interceptor';
 import { authenticationInterceptor } from './app/shared/authentication.interceptor';
-import { provideHttpClient, withInterceptors, withNoXsrfProtection } from '@angular/common/http';
+import { provideHttpClient, withInterceptors, withNoXsrfProtection, withXhr } from '@angular/common/http';
 import { provideNgbDatepickerServices } from './app/rb-ngb/datepicker-providers';
 import { provideRbSignalFormsConfig } from './app/signal-forms';
 
@@ -24,7 +24,8 @@ bootstrapApplication(AppComponent, {
     }),
     { provide: AbstractSecurityStorage, useClass: CustomSecurityStorage },
     provideRouter(APP_ROUTES, withViewTransitions({ skipInitialTransition: true }), withComponentInputBinding()),
-    provideHttpClient(withInterceptors([authenticationInterceptor, errorInterceptor]), withNoXsrfProtection()),
+    // Fetch does not support upload progress; XHR is needed for the document upload progress bar.
+    provideHttpClient(withInterceptors([authenticationInterceptor, errorInterceptor]), withNoXsrfProtection(), withXhr()),
     provideI18n(),
     provideNgbDatepickerServices(),
     provideRbSignalFormsConfig()

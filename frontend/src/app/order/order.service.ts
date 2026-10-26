@@ -52,7 +52,7 @@ export class OrderService {
     formData.append('document', new Blob([JSON.stringify(command.document)], { type: 'application/json' }));
 
     return this.http.post<Document>(`api/orders/${orderId}/documents`, formData, {
-      reportProgress: true,
+      reportUploadProgress: true,
       observe: 'events'
     });
   }

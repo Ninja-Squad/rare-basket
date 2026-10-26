@@ -91,6 +91,7 @@ describe('OrderService', () => {
       .subscribe(response => (actual = (response as HttpResponse<Document>).body));
 
     const testRequest = http.expectOne({ method: 'POST', url: 'api/orders/42/documents' });
+    expect(testRequest.request.reportUploadProgress).toBe(true);
     const formData: FormData = testRequest.request.body;
     expect(formData.has('file')).toBe(true);
     const documentCommand = formData.get('document') as Blob;
