@@ -1,7 +1,7 @@
 import { Service } from '@angular/core';
-import { OrderItemCommand } from './order.model';
 import * as Papa from 'papaparse';
 import { Accession } from '../basket/basket.model';
+import { OrderItemCommand } from './order.model';
 
 @Service()
 export class OrderCsvParserService {

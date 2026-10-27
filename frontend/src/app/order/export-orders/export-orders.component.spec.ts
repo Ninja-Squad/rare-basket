@@ -1,16 +1,15 @@
-import { TestBed } from '@angular/core/testing';
-
-import { ExportOrdersComponent } from './export-orders.component';
-import { createMock, MockObject } from '../../../test/mock';
-import { OrderService } from '../order.service';
-import { DownloadService } from '../../shared/download.service';
 import { HttpResponse } from '@angular/common/http';
+import { TestBed } from '@angular/core/testing';
 import { Subject } from 'rxjs';
-import { ValidationDefaultsComponent } from '../../validation-defaults/validation-defaults.component';
+import { beforeEach, describe, expect, test } from 'vitest';
+import { page } from 'vitest/browser';
+import { createMock, MockObject } from '../../../test/mock';
 import { provideI18nTesting } from '../../i18n/mock-18n';
 import { provideNgbDatepickerServices } from '../../rb-ngb/datepicker-providers';
-import { page } from 'vitest/browser';
-import { beforeEach, describe, expect, test } from 'vitest';
+import { DownloadService } from '../../shared/download.service';
+import { ValidationDefaultsComponent } from '../../validation-defaults/validation-defaults.component';
+import { OrderService } from '../order.service';
+import { ExportOrdersComponent } from './export-orders.component';
 
 class ExportOrdersComponentTester {
   readonly fixture = TestBed.createComponent(ExportOrdersComponent);

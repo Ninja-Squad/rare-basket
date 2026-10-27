@@ -1,13 +1,12 @@
 import { Component, output, input, ChangeDetectionStrategy, linkedSignal } from '@angular/core';
-import { ALL_CUSTOMER_TYPES, ALL_LANGUAGES, CustomerCommand, CustomerType, Language } from '../../basket/basket.model';
 import { disabled, email, form, FormField, FormRoot, required } from '@angular/forms/signals';
-import { CustomerInformationCommand } from '../order.model';
-import { LanguageEnumPipe } from '../../shared/language-enum.pipe';
-import { CustomerTypeEnumPipe } from '../../shared/customer-type-enum.pipe';
-
 import { NgbCollapse } from '@ng-bootstrap/ng-bootstrap';
-import { ValidationSignalErrorsComponent } from 'ngx-valdemort';
 import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
+import { ValidationSignalErrorsComponent } from 'ngx-valdemort';
+import { ALL_CUSTOMER_TYPES, ALL_LANGUAGES, CustomerCommand, CustomerType, Language } from '../../basket/basket.model';
+import { CustomerTypeEnumPipe } from '../../shared/customer-type-enum.pipe';
+import { LanguageEnumPipe } from '../../shared/language-enum.pipe';
+import { CustomerInformationCommand } from '../order.model';
 
 @Component({
   selector: 'rb-edit-customer-information',

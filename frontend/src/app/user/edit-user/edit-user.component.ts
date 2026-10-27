@@ -1,17 +1,17 @@
 import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
-import { ActivatedRoute, Router, RouterLink } from '@angular/router';
-import { AccessionHolder, Grc, Permission, UserCommand } from '../../shared/user.model';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { form, FormField, FormRoot, required, validate } from '@angular/forms/signals';
-import { UserService } from '../user.service';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
+import { ValidationErrorDirective, ValidationSignalErrorsComponent } from 'ngx-valdemort';
 import { combineLatest, firstValueFrom, map, of, tap } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { AccessionHolderService } from '../../shared/accession-holder.service';
 import { GrcService } from '../../shared/grc.service';
 import { ToastService } from '../../shared/toast.service';
+import { AccessionHolder, Grc, Permission, UserCommand } from '../../shared/user.model';
 import { PermissionEnumPipe } from '../permission-enum.pipe';
-import { ValidationErrorDirective, ValidationSignalErrorsComponent } from 'ngx-valdemort';
-import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
-import { toSignal } from '@angular/core/rxjs-interop';
+import { UserService } from '../user.service';
 
 interface SelectableAccessionHolder extends AccessionHolder {
   selected: boolean;

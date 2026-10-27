@@ -1,18 +1,17 @@
 import { TestBed } from '@angular/core/testing';
 import { ActivatedRoute, Router } from '@angular/router';
 import { of } from 'rxjs';
+import { beforeEach, describe, expect, test, vi } from 'vitest';
+import { page } from 'vitest/browser';
 import { createMock, MockObject } from '../../../test/mock';
 import { ActivatedRouteStub, stubRoute } from '../../../test/route-stub';
-
-import { EditAccessionHolderComponent } from './edit-accession-holder.component';
+import { provideI18nTesting } from '../../i18n/mock-18n';
 import { AccessionHolderService } from '../../shared/accession-holder.service';
-import { ValidationDefaultsComponent } from '../../validation-defaults/validation-defaults.component';
-import { AccessionHolder, AccessionHolderCommand, Grc } from '../../shared/user.model';
 import { GrcService } from '../../shared/grc.service';
 import { ToastService } from '../../shared/toast.service';
-import { provideI18nTesting } from '../../i18n/mock-18n';
-import { page } from 'vitest/browser';
-import { beforeEach, describe, expect, test, vi } from 'vitest';
+import { AccessionHolder, AccessionHolderCommand, Grc } from '../../shared/user.model';
+import { ValidationDefaultsComponent } from '../../validation-defaults/validation-defaults.component';
+import { EditAccessionHolderComponent } from './edit-accession-holder.component';
 
 class EditAccessionHolderComponentTester {
   readonly fixture = TestBed.createComponent(EditAccessionHolderComponent);

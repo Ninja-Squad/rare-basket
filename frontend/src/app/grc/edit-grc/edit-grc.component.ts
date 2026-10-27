@@ -1,13 +1,13 @@
 import { ChangeDetectionStrategy, Component, inject, Signal, signal } from '@angular/core';
-import { Grc, GrcCommand } from '../../shared/user.model';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { form, FormField, FormRoot, required } from '@angular/forms/signals';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
-import { GrcService } from '../../shared/grc.service';
-import { firstValueFrom, map, Observable, of, tap } from 'rxjs';
-import { ToastService } from '../../shared/toast.service';
-import { ValidationSignalErrorsComponent } from 'ngx-valdemort';
 import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
-import { toSignal } from '@angular/core/rxjs-interop';
+import { ValidationSignalErrorsComponent } from 'ngx-valdemort';
+import { firstValueFrom, map, Observable, of, tap } from 'rxjs';
+import { GrcService } from '../../shared/grc.service';
+import { ToastService } from '../../shared/toast.service';
+import { Grc, GrcCommand } from '../../shared/user.model';
 
 interface ViewModel {
   mode: 'create' | 'update';

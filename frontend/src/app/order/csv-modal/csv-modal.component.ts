@@ -1,10 +1,10 @@
+import { DecimalPipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
 import { form, FormField, FormRoot } from '@angular/forms/signals';
-import { CsvResult, OrderCsvParserService } from '../order-csv-parser.service';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
-import { AccessionComponent } from '../../shared/accession/accession.component';
-import { DecimalPipe } from '@angular/common';
 import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
+import { AccessionComponent } from '../../shared/accession/accession.component';
+import { CsvResult, OrderCsvParserService } from '../order-csv-parser.service';
 
 @Component({
   selector: 'rb-csv-modal',

@@ -1,11 +1,10 @@
-import { TestBed } from '@angular/core/testing';
-
-import { EditConfirmationComponent } from './edit-confirmation.component';
 import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
-import { AccessionHolderBasket, Basket } from '../basket.model';
-import { provideI18nTesting } from '../../i18n/mock-18n';
-import { page } from 'vitest/browser';
+import { TestBed } from '@angular/core/testing';
 import { beforeEach, describe, expect, test } from 'vitest';
+import { page } from 'vitest/browser';
+import { provideI18nTesting } from '../../i18n/mock-18n';
+import { AccessionHolderBasket, Basket } from '../basket.model';
+import { EditConfirmationComponent } from './edit-confirmation.component';
 
 @Component({
   template: `

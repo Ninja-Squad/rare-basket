@@ -1,15 +1,14 @@
 import { ChangeDetectionStrategy, Component, inject, Signal } from '@angular/core';
-import { AccessionHolder } from '../../shared/user.model';
+import { toSignal } from '@angular/core/rxjs-interop';
+import { RouterLink } from '@angular/router';
+import { FaIconComponent } from '@fortawesome/angular-fontawesome';
 import { faPlus, faStoreAlt, faTrash } from '@fortawesome/free-solid-svg-icons';
+import { TranslateDirective } from '@ngx-translate/core';
+import { startWith, Subject, switchMap, tap } from 'rxjs';
 import { AccessionHolderService } from '../../shared/accession-holder.service';
 import { ConfirmationService } from '../../shared/confirmation.service';
 import { ToastService } from '../../shared/toast.service';
-import { RouterLink } from '@angular/router';
-import { FaIconComponent } from '@fortawesome/angular-fontawesome';
-
-import { TranslateDirective } from '@ngx-translate/core';
-import { startWith, Subject, switchMap, tap } from 'rxjs';
-import { toSignal } from '@angular/core/rxjs-interop';
+import { AccessionHolder } from '../../shared/user.model';
 
 @Component({
   selector: 'rb-accession-holders',

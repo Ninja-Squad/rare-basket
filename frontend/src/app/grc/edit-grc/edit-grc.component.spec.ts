@@ -1,17 +1,16 @@
 import { TestBed } from '@angular/core/testing';
 import { ActivatedRoute, Router } from '@angular/router';
 import { of } from 'rxjs';
+import { beforeEach, describe, expect, test, vi } from 'vitest';
+import { page } from 'vitest/browser';
 import { createMock, MockObject } from '../../../test/mock';
 import { ActivatedRouteStub, stubRoute } from '../../../test/route-stub';
-
-import { EditGrcComponent } from './edit-grc.component';
-import { ValidationDefaultsComponent } from '../../validation-defaults/validation-defaults.component';
-import { Grc, GrcCommand } from '../../shared/user.model';
+import { provideI18nTesting } from '../../i18n/mock-18n';
 import { GrcService } from '../../shared/grc.service';
 import { ToastService } from '../../shared/toast.service';
-import { provideI18nTesting } from '../../i18n/mock-18n';
-import { page } from 'vitest/browser';
-import { beforeEach, describe, expect, test, vi } from 'vitest';
+import { Grc, GrcCommand } from '../../shared/user.model';
+import { ValidationDefaultsComponent } from '../../validation-defaults/validation-defaults.component';
+import { EditGrcComponent } from './edit-grc.component';
 
 class EditGrcComponentTester {
   readonly fixture = TestBed.createComponent(EditGrcComponent);

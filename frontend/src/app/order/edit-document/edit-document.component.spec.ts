@@ -1,16 +1,15 @@
-import { TestBed } from '@angular/core/testing';
-
-import { EditDocumentComponent } from './edit-document.component';
 import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
-import { ALL_DOCUMENT_TYPES, DetailedOrder, Document, DocumentCommand } from '../order.model';
-import { NgbProgressbar } from '@ng-bootstrap/ng-bootstrap';
+import { TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
-import { ValidationDefaultsComponent } from '../../validation-defaults/validation-defaults.component';
-import { provideI18nTesting } from '../../i18n/mock-18n';
 import { provideRouter } from '@angular/router';
-import { page } from 'vitest/browser';
+import { NgbProgressbar } from '@ng-bootstrap/ng-bootstrap';
 import { beforeEach, describe, expect, test } from 'vitest';
+import { page } from 'vitest/browser';
+import { provideI18nTesting } from '../../i18n/mock-18n';
 import { provideRbSignalFormsConfig } from '../../signal-forms';
+import { ValidationDefaultsComponent } from '../../validation-defaults/validation-defaults.component';
+import { ALL_DOCUMENT_TYPES, DetailedOrder, Document, DocumentCommand } from '../order.model';
+import { EditDocumentComponent } from './edit-document.component';
 
 @Component({
   template:

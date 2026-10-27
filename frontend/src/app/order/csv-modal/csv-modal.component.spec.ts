@@ -1,13 +1,12 @@
 import { TestBed } from '@angular/core/testing';
-
-import { CsvModalComponent } from './csv-modal.component';
-import { createMock, MockObject } from '../../../test/mock';
-import { OrderCsvParserService } from '../order-csv-parser.service';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
-import { OrderItemCommand } from '../order.model';
-import { provideI18nTesting } from '../../i18n/mock-18n';
-import { page } from 'vitest/browser';
 import { beforeEach, describe, expect, test } from 'vitest';
+import { page } from 'vitest/browser';
+import { createMock, MockObject } from '../../../test/mock';
+import { provideI18nTesting } from '../../i18n/mock-18n';
+import { OrderCsvParserService } from '../order-csv-parser.service';
+import { OrderItemCommand } from '../order.model';
+import { CsvModalComponent } from './csv-modal.component';
 
 class CsvModalComponentTester {
   readonly fixture = TestBed.createComponent(CsvModalComponent);

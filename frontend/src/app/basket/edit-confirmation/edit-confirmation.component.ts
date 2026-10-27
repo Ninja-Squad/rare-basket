@@ -1,10 +1,10 @@
 import { Component, output, input, ChangeDetectionStrategy, signal } from '@angular/core';
-import { Basket } from '../basket.model';
 import { form, FormField, FormRoot, required } from '@angular/forms/signals';
-import { faCheckCircle, faInfoCircle } from '@fortawesome/free-solid-svg-icons';
-import { BasketContentComponent } from '../basket-content/basket-content.component';
-import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
 import { FaIconComponent } from '@fortawesome/angular-fontawesome';
+import { faCheckCircle, faInfoCircle } from '@fortawesome/free-solid-svg-icons';
+import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
+import { BasketContentComponent } from '../basket-content/basket-content.component';
+import { Basket } from '../basket.model';
 
 /**
  * Component displayed once the user has saved the basket, informing the customer about the

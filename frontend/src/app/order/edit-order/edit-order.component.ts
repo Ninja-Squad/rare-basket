@@ -1,14 +1,14 @@
 import { Component, inject, output, input, DestroyRef, ChangeDetectionStrategy, linkedSignal, afterNextRender } from '@angular/core';
-import { Order, OrderCommand, OrderItemCommand } from '../order.model';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { applyEach, form, FormField, FormRoot, min, required } from '@angular/forms/signals';
+import { FaIconComponent } from '@fortawesome/angular-fontawesome';
 import { faFileCsv, faPlus, faTrash } from '@fortawesome/free-solid-svg-icons';
+import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
+import { ValidationSignalErrorsComponent } from 'ngx-valdemort';
+import { Accession } from '../../basket/basket.model';
 import { ModalService } from '../../rb-ngb/modal.service';
 import { CsvModalComponent } from '../csv-modal/csv-modal.component';
-import { FaIconComponent } from '@fortawesome/angular-fontawesome';
-import { ValidationSignalErrorsComponent } from 'ngx-valdemort';
-import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { Accession } from '../../basket/basket.model';
+import { Order, OrderCommand, OrderItemCommand } from '../order.model';
 
 interface ItemFormValue {
   name: string;

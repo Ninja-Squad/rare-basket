@@ -1,10 +1,10 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { ConfirmationOptions, ConfirmationService } from '../confirmation.service';
 import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Observable } from 'rxjs';
+import { afterEach, beforeEach, describe, expect, test } from 'vitest';
 import { provideI18nTesting } from '../../i18n/mock-18n';
 import { provideDisabledNgbAnimation } from '../../rb-ngb/disable-animations';
-import { afterEach, beforeEach, describe, expect, test } from 'vitest';
+import { ConfirmationOptions, ConfirmationService } from '../confirmation.service';
 
 class ModalComponentTester {
   constructor(public fixture: ComponentFixture<unknown>) {}

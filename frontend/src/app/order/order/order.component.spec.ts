@@ -1,25 +1,24 @@
-import { TestBed } from '@angular/core/testing';
-
-import { OrderComponent } from './order.component';
-import { page } from 'vitest/browser';
-import { stubRoute } from '../../../test/route-stub';
-import { createMock, MockObject } from '../../../test/mock';
-import { ActivatedRoute } from '@angular/router';
-import { OrderService } from '../order.service';
-import { EMPTY, of, Subject } from 'rxjs';
-import { DetailedOrder, Document, DocumentCommand, OrderCommand } from '../order.model';
-import { LOCALE_ID } from '@angular/core';
-import { EditOrderComponent } from '../edit-order/edit-order.component';
-import { By } from '@angular/platform-browser';
-import { ConfirmationService } from '../../shared/confirmation.service';
-import { EditDocumentComponent } from '../edit-document/edit-document.component';
 import { HttpEvent, HttpEventType, HttpProgressEvent, HttpResponse } from '@angular/common/http';
-import { DownloadService } from '../../shared/download.service';
-import { MockModalService, provideModalTesting } from '../../rb-ngb/mock-modal.service';
-import { FinalizationWarningsModalComponent } from '../finalization-warnings-modal/finalization-warnings-modal.component';
-import { ToastService } from '../../shared/toast.service';
-import { provideI18nTesting } from '../../i18n/mock-18n';
+import { LOCALE_ID } from '@angular/core';
+import { TestBed } from '@angular/core/testing';
+import { By } from '@angular/platform-browser';
+import { ActivatedRoute } from '@angular/router';
+import { EMPTY, of, Subject } from 'rxjs';
 import { beforeEach, describe, expect, test } from 'vitest';
+import { page } from 'vitest/browser';
+import { createMock, MockObject } from '../../../test/mock';
+import { stubRoute } from '../../../test/route-stub';
+import { provideI18nTesting } from '../../i18n/mock-18n';
+import { MockModalService, provideModalTesting } from '../../rb-ngb/mock-modal.service';
+import { ConfirmationService } from '../../shared/confirmation.service';
+import { DownloadService } from '../../shared/download.service';
+import { ToastService } from '../../shared/toast.service';
+import { EditDocumentComponent } from '../edit-document/edit-document.component';
+import { EditOrderComponent } from '../edit-order/edit-order.component';
+import { FinalizationWarningsModalComponent } from '../finalization-warnings-modal/finalization-warnings-modal.component';
+import { DetailedOrder, Document, DocumentCommand, OrderCommand } from '../order.model';
+import { OrderService } from '../order.service';
+import { OrderComponent } from './order.component';
 
 class OrderComponentTester {
   readonly fixture = TestBed.createComponent(OrderComponent);

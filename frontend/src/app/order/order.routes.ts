@@ -1,12 +1,12 @@
-import { OrderComponent } from './order/order.component';
 import { Routes } from '@angular/router';
-import { OrdersContainerComponent } from './orders-container/orders-container.component';
-import { InProgressOrdersComponent } from './in-progress-orders/in-progress-orders.component';
+import { CreateOrderComponent } from './create-order/create-order.component';
 import { DoneOrdersComponent } from './done-orders/done-orders.component';
 import { ExportOrdersComponent } from './export-orders/export-orders.component';
-import { StatisticsComponent } from './statistics/statistics.component';
+import { InProgressOrdersComponent } from './in-progress-orders/in-progress-orders.component';
+import { OrderComponent } from './order/order.component';
+import { OrdersContainerComponent } from './orders-container/orders-container.component';
 import { ordersGuard } from './orders.guard';
-import { CreateOrderComponent } from './create-order/create-order.component';
+import { StatisticsComponent } from './statistics/statistics.component';
 
 export const ORDER_ROUTES: Routes = [
   {

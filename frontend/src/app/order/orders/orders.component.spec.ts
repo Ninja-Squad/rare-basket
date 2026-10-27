@@ -1,15 +1,14 @@
-import { TestBed } from '@angular/core/testing';
-
-import { OrdersComponent } from './orders.component';
 import { ChangeDetectionStrategy, Component, LOCALE_ID } from '@angular/core';
-import { Order } from '../order.model';
-import { Page } from '../../shared/page.model';
-import { PaginationComponent } from '../../rb-ngb/pagination/pagination.component';
-import { provideI18nTesting } from '../../i18n/mock-18n';
-import { provideRouter } from '@angular/router';
-import { page } from 'vitest/browser';
+import { TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
+import { provideRouter } from '@angular/router';
 import { beforeEach, describe, expect, test } from 'vitest';
+import { page } from 'vitest/browser';
+import { provideI18nTesting } from '../../i18n/mock-18n';
+import { PaginationComponent } from '../../rb-ngb/pagination/pagination.component';
+import { Page } from '../../shared/page.model';
+import { Order } from '../order.model';
+import { OrdersComponent } from './orders.component';
 
 @Component({
   template: `<rb-orders [orders]="orders" />`,

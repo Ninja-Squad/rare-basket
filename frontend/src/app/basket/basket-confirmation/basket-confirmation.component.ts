@@ -1,9 +1,9 @@
 import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
-import { BasketService } from '../basket.service';
+import { FaIconComponent } from '@fortawesome/angular-fontawesome';
 import { faExclamationCircle } from '@fortawesome/free-solid-svg-icons';
 import { TranslateDirective } from '@ngx-translate/core';
-import { FaIconComponent } from '@fortawesome/angular-fontawesome';
+import { BasketService } from '../basket.service';
 
 /**
  * Component that is used only when the customer clicks on the confirmation link in the

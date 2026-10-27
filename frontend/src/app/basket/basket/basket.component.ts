@@ -1,13 +1,13 @@
 import { ChangeDetectionStrategy, Component, inject, Signal } from '@angular/core';
-import { BasketService } from '../basket.service';
-import { Basket, BasketCommand } from '../basket.model';
-import { ActivatedRoute } from '@angular/router';
-import { ConfirmedComponent } from '../confirmed/confirmed.component';
-import { EditConfirmationComponent } from '../edit-confirmation/edit-confirmation.component';
-import { EditBasketComponent } from '../edit-basket/edit-basket.component';
-import { TranslateDirective } from '@ngx-translate/core';
 import { toSignal } from '@angular/core/rxjs-interop';
+import { ActivatedRoute } from '@angular/router';
+import { TranslateDirective } from '@ngx-translate/core';
 import { startWith, Subject, switchMap } from 'rxjs';
+import { Basket, BasketCommand } from '../basket.model';
+import { BasketService } from '../basket.service';
+import { ConfirmedComponent } from '../confirmed/confirmed.component';
+import { EditBasketComponent } from '../edit-basket/edit-basket.component';
+import { EditConfirmationComponent } from '../edit-confirmation/edit-confirmation.component';
 
 @Component({
   selector: 'rb-basket',

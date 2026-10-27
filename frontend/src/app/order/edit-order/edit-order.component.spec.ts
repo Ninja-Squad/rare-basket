@@ -1,15 +1,14 @@
-import { TestBed } from '@angular/core/testing';
-
-import { EditOrderComponent } from './edit-order.component';
 import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
-import { Order, OrderCommand, OrderItemCommand } from '../order.model';
-import { createMock } from '../../../test/mock';
-import { ValidationDefaultsComponent } from '../../validation-defaults/validation-defaults.component';
-import { MockModalService, provideModalTesting } from '../../rb-ngb/mock-modal.service';
-import { CsvModalComponent } from '../csv-modal/csv-modal.component';
-import { provideI18nTesting } from '../../i18n/mock-18n';
-import { page } from 'vitest/browser';
+import { TestBed } from '@angular/core/testing';
 import { beforeEach, describe, expect, test } from 'vitest';
+import { page } from 'vitest/browser';
+import { createMock } from '../../../test/mock';
+import { provideI18nTesting } from '../../i18n/mock-18n';
+import { MockModalService, provideModalTesting } from '../../rb-ngb/mock-modal.service';
+import { ValidationDefaultsComponent } from '../../validation-defaults/validation-defaults.component';
+import { CsvModalComponent } from '../csv-modal/csv-modal.component';
+import { Order, OrderCommand, OrderItemCommand } from '../order.model';
+import { EditOrderComponent } from './edit-order.component';
 
 @Component({
   template: '<rb-edit-order [order]="order" (cancelled)="cancelled.set(true)" (saved)="saved.set($event)" />',

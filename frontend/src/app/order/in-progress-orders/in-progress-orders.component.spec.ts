@@ -1,20 +1,19 @@
 import { TestBed } from '@angular/core/testing';
-
-import { InProgressOrdersComponent } from './in-progress-orders.component';
-import { createMock, MockObject } from '../../../test/mock';
-import { OrdersComponent } from '../orders/orders.component';
+import { By } from '@angular/platform-browser';
 import { provideRouter, Router, withComponentInputBinding } from '@angular/router';
+import { RouterTestingHarness } from '@angular/router/testing';
 import { of, Subject, throwError } from 'rxjs';
-import { OrderService } from '../order.service';
-import { Order } from '../order.model';
-import { Page } from '../../shared/page.model';
+import { beforeEach, describe, expect, test } from 'vitest';
+import { page } from 'vitest/browser';
+import { createMock, MockObject } from '../../../test/mock';
 import { provideI18nTesting } from '../../i18n/mock-18n';
 import { AuthenticationService } from '../../shared/authentication.service';
+import { Page } from '../../shared/page.model';
 import { User } from '../../shared/user.model';
-import { RouterTestingHarness } from '@angular/router/testing';
-import { page } from 'vitest/browser';
-import { By } from '@angular/platform-browser';
-import { beforeEach, describe, expect, test } from 'vitest';
+import { Order } from '../order.model';
+import { OrderService } from '../order.service';
+import { OrdersComponent } from '../orders/orders.component';
+import { InProgressOrdersComponent } from './in-progress-orders.component';
 
 class InProgressOrdersComponentTester {
   readonly root;

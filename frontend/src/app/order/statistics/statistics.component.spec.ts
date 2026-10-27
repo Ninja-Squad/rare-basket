@@ -1,21 +1,20 @@
+import { formatDate } from '@angular/common';
 import { TestBed } from '@angular/core/testing';
-
-import { StatisticsComponent } from './statistics.component';
+import { provideRouter, Router, withComponentInputBinding } from '@angular/router';
+import { RouterTestingHarness } from '@angular/router/testing';
+import { of, Subject } from 'rxjs';
+import { beforeEach, describe, expect, test } from 'vitest';
 import { page } from 'vitest/browser';
 import { createMock, MockObject } from '../../../test/mock';
-import { of, Subject } from 'rxjs';
-import { provideRouter, Router, withComponentInputBinding } from '@angular/router';
-import { OrderService } from '../order.service';
-import { ValidationDefaultsComponent } from '../../validation-defaults/validation-defaults.component';
-import { formatDate } from '@angular/common';
-import { Grc, User } from '../../shared/user.model';
-import { AuthenticationService } from '../../shared/authentication.service';
-import { GrcService } from '../../shared/grc.service';
-import { OrderStatistics } from '../order.model';
 import { provideI18nTesting } from '../../i18n/mock-18n';
 import { provideNgbDatepickerServices } from '../../rb-ngb/datepicker-providers';
-import { RouterTestingHarness } from '@angular/router/testing';
-import { beforeEach, describe, expect, test } from 'vitest';
+import { AuthenticationService } from '../../shared/authentication.service';
+import { GrcService } from '../../shared/grc.service';
+import { Grc, User } from '../../shared/user.model';
+import { ValidationDefaultsComponent } from '../../validation-defaults/validation-defaults.component';
+import { OrderStatistics } from '../order.model';
+import { OrderService } from '../order.service';
+import { StatisticsComponent } from './statistics.component';
 
 class StatisticsComponentTester {
   readonly root = page.getByCss('rb-statistics');

@@ -1,11 +1,10 @@
-import { TestBed } from '@angular/core/testing';
-
-import { BasketContentComponent } from './basket-content.component';
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { Basket } from '../basket.model';
-import { provideI18nTesting } from '../../i18n/mock-18n';
-import { page } from 'vitest/browser';
+import { TestBed } from '@angular/core/testing';
 import { beforeEach, describe, expect, test } from 'vitest';
+import { page } from 'vitest/browser';
+import { provideI18nTesting } from '../../i18n/mock-18n';
+import { Basket } from '../basket.model';
+import { BasketContentComponent } from './basket-content.component';
 
 @Component({
   template: '<rb-basket-content [basket]="basket" />',

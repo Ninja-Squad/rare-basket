@@ -1,14 +1,13 @@
-import { TestBed } from '@angular/core/testing';
-
-import { PaginationComponent } from './pagination.component';
-import { NgbPagination } from '@ng-bootstrap/ng-bootstrap';
 import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
-import { provideRouter, Router, Routes } from '@angular/router';
-import { Page } from '../../shared/page.model';
-import { RouterTestingHarness } from '@angular/router/testing';
-import { page } from 'vitest/browser';
+import { TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
+import { provideRouter, Router, Routes } from '@angular/router';
+import { RouterTestingHarness } from '@angular/router/testing';
+import { NgbPagination } from '@ng-bootstrap/ng-bootstrap';
 import { beforeEach, describe, expect, test } from 'vitest';
+import { page } from 'vitest/browser';
+import { Page } from '../../shared/page.model';
+import { PaginationComponent } from './pagination.component';
 
 @Component({
   template: `@if (page(); as page) {

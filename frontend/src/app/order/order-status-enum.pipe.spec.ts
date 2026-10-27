@@ -1,6 +1,6 @@
-import { OrderStatusEnumPipe } from './order-status-enum.pipe';
-import { testEnumPipe } from '../shared/base-enum-pipe-test';
 import { describe, expect, test } from 'vitest';
+import { testEnumPipe } from '../shared/base-enum-pipe-test';
+import { OrderStatusEnumPipe } from './order-status-enum.pipe';
 
 describe('OrderStatusEnumPipe', () => {
   test('should translate order statuses', () => {

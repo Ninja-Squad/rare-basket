@@ -1,9 +1,8 @@
-import { TestBed } from '@angular/core/testing';
 import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { TestBed } from '@angular/core/testing';
 import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
-
-import { ModalOptions, ModalService } from './modal.service';
 import { beforeEach, describe, expect, test, vi } from 'vitest';
+import { ModalOptions, ModalService } from './modal.service';
 
 @Component({
   template: 'Hello',

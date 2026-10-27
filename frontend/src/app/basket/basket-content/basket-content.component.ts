@@ -1,9 +1,9 @@
-import { ChangeDetectionStrategy, Component, input, computed } from '@angular/core';
-import { Basket } from '../basket.model';
-import { AccessionComponent } from '../../shared/accession/accession.component';
 import { DecimalPipe } from '@angular/common';
-import { CustomerInformationComponent } from '../../shared/customer-information/customer-information.component';
+import { ChangeDetectionStrategy, Component, input, computed } from '@angular/core';
 import { TranslateDirective } from '@ngx-translate/core';
+import { AccessionComponent } from '../../shared/accession/accession.component';
+import { CustomerInformationComponent } from '../../shared/customer-information/customer-information.component';
+import { Basket } from '../basket.model';
 
 /**
  * Component used to remind the customer of his basket

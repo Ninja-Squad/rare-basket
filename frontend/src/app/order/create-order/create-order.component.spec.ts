@@ -1,18 +1,17 @@
 import { TestBed } from '@angular/core/testing';
-
-import { CreateOrderComponent } from './create-order.component';
-import { createMock, MockObject } from '../../../test/mock';
-import { OrderService } from '../order.service';
 import { Router } from '@angular/router';
-import { DetailedOrder, OrderCreationCommand } from '../order.model';
 import { of } from 'rxjs';
-import { ToastService } from '../../shared/toast.service';
+import { beforeEach, describe, expect, test, vi } from 'vitest';
+import { page } from 'vitest/browser';
+import { createMock, MockObject } from '../../../test/mock';
 import { provideI18nTesting } from '../../i18n/mock-18n';
 import { AuthenticationService } from '../../shared/authentication.service';
-import { ValidationDefaultsComponent } from '../../validation-defaults/validation-defaults.component';
+import { ToastService } from '../../shared/toast.service';
 import { User } from '../../shared/user.model';
-import { page } from 'vitest/browser';
-import { beforeEach, describe, expect, test, vi } from 'vitest';
+import { ValidationDefaultsComponent } from '../../validation-defaults/validation-defaults.component';
+import { DetailedOrder, OrderCreationCommand } from '../order.model';
+import { OrderService } from '../order.service';
+import { CreateOrderComponent } from './create-order.component';
 
 class CreateOrderComponentTester {
   readonly fixture = TestBed.createComponent(CreateOrderComponent);

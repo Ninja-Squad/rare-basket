@@ -1,12 +1,11 @@
-import { TestBed } from '@angular/core/testing';
-
-import { authenticationInterceptor } from './authentication.interceptor';
-import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { HttpClient, provideHttpClient, withInterceptors } from '@angular/common/http';
+import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
+import { TestBed } from '@angular/core/testing';
 import { OidcSecurityService } from 'angular-auth-oidc-client';
 import { of } from 'rxjs';
-import { createMock, MockObject } from '../../test/mock';
 import { beforeEach, describe, expect, test } from 'vitest';
+import { createMock, MockObject } from '../../test/mock';
+import { authenticationInterceptor } from './authentication.interceptor';
 
 describe('authenticationInterceptor', () => {
   let httpTestingController: HttpTestingController;

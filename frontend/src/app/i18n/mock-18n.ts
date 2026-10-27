@@ -1,3 +1,5 @@
+import { registerLocaleData } from '@angular/common';
+import localeFr from '@angular/common/locales/fr';
 import { inject, LOCALE_ID, provideEnvironmentInitializer } from '@angular/core';
 import {
   MissingTranslationHandler,
@@ -7,8 +9,6 @@ import {
   TranslateService
 } from '@ngx-translate/core';
 import FR_TRANSLATIONS from './fr.json';
-import localeFr from '@angular/common/locales/fr';
-import { registerLocaleData } from '@angular/common';
 
 registerLocaleData(localeFr);
 

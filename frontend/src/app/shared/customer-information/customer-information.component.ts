@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, input } from '@angular/core';
-import { Customer } from '../../basket/basket.model';
+import { FaIconComponent } from '@fortawesome/angular-fontawesome';
 import {
   faAddressCard,
   faAt,
@@ -10,11 +10,10 @@ import {
   faSitemap,
   faUser
 } from '@fortawesome/free-solid-svg-icons';
-import { LanguageEnumPipe } from '../language-enum.pipe';
-import { CustomerTypeEnumPipe } from '../customer-type-enum.pipe';
-
 import { TranslateDirective } from '@ngx-translate/core';
-import { FaIconComponent } from '@fortawesome/angular-fontawesome';
+import { Customer } from '../../basket/basket.model';
+import { CustomerTypeEnumPipe } from '../customer-type-enum.pipe';
+import { LanguageEnumPipe } from '../language-enum.pipe';
 
 @Component({
   selector: 'rb-customer-information',

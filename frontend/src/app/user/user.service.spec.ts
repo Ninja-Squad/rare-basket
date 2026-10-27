@@ -1,10 +1,9 @@
-import { TestBed } from '@angular/core/testing';
-
-import { UserService } from './user.service';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
+import { TestBed } from '@angular/core/testing';
+import { afterEach, beforeEach, describe, expect, test } from 'vitest';
 import { Page } from '../shared/page.model';
 import { User, UserCommand } from '../shared/user.model';
-import { afterEach, beforeEach, describe, expect, test } from 'vitest';
+import { UserService } from './user.service';
 
 describe('UserService', () => {
   let service: UserService;

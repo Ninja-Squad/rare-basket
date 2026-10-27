@@ -1,6 +1,6 @@
 import { Routes } from '@angular/router';
-import { BasketComponent } from './basket/basket.component';
 import { BasketConfirmationComponent } from './basket-confirmation/basket-confirmation.component';
+import { BasketComponent } from './basket/basket.component';
 
 export const BASKET_ROUTES: Routes = [
   {

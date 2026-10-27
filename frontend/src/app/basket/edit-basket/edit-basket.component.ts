@@ -1,4 +1,15 @@
+import { DecimalPipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, computed, inject, input, linkedSignal, LOCALE_ID, output, signal } from '@angular/core';
+import { disabled, email, form, FormField, FormRoot, required } from '@angular/forms/signals';
+import { FaIconComponent } from '@fortawesome/angular-fontawesome';
+import { faCheck, faTrash } from '@fortawesome/free-solid-svg-icons';
+import { NgbCollapse } from '@ng-bootstrap/ng-bootstrap';
+import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
+import { ValidationErrorDirective, ValidationSignalErrorsComponent } from 'ngx-valdemort';
+import { environment } from '../../../environments/environment';
+import { AccessionComponent } from '../../shared/accession/accession.component';
+import { ConfirmationService } from '../../shared/confirmation.service';
+import { CustomerTypeEnumPipe } from '../../shared/customer-type-enum.pipe';
 import {
   AccessionHolderBasket,
   ALL_CUSTOMER_TYPES,
@@ -9,17 +20,6 @@ import {
   CustomerType,
   Language
 } from '../basket.model';
-import { disabled, email, form, FormField, FormRoot, required } from '@angular/forms/signals';
-import { faCheck, faTrash } from '@fortawesome/free-solid-svg-icons';
-import { ConfirmationService } from '../../shared/confirmation.service';
-import { environment } from '../../../environments/environment';
-import { FaIconComponent } from '@fortawesome/angular-fontawesome';
-import { AccessionComponent } from '../../shared/accession/accession.component';
-import { DecimalPipe } from '@angular/common';
-import { NgbCollapse } from '@ng-bootstrap/ng-bootstrap';
-import { ValidationErrorDirective, ValidationSignalErrorsComponent } from 'ngx-valdemort';
-import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
-import { CustomerTypeEnumPipe } from '../../shared/customer-type-enum.pipe';
 
 @Component({
   selector: 'rb-edit-basket',

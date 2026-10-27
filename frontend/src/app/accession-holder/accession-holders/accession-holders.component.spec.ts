@@ -1,15 +1,15 @@
-import { beforeEach, describe, expect, test } from 'vitest';
 import { TestBed } from '@angular/core/testing';
-import { createMock, MockObject } from '../../../test/mock';
-import { EMPTY, of } from 'rxjs';
-import { AccessionHolder } from '../../shared/user.model';
-import { ConfirmationService } from '../../shared/confirmation.service';
-import { AccessionHoldersComponent } from './accession-holders.component';
-import { AccessionHolderService } from '../../shared/accession-holder.service';
-import { ToastService } from '../../shared/toast.service';
-import { provideI18nTesting } from '../../i18n/mock-18n';
 import { provideRouter } from '@angular/router';
+import { EMPTY, of } from 'rxjs';
+import { beforeEach, describe, expect, test } from 'vitest';
 import { page } from 'vitest/browser';
+import { createMock, MockObject } from '../../../test/mock';
+import { provideI18nTesting } from '../../i18n/mock-18n';
+import { AccessionHolderService } from '../../shared/accession-holder.service';
+import { ConfirmationService } from '../../shared/confirmation.service';
+import { ToastService } from '../../shared/toast.service';
+import { AccessionHolder } from '../../shared/user.model';
+import { AccessionHoldersComponent } from './accession-holders.component';
 
 class AccessionHoldersComponentTester {
   readonly fixture = TestBed.createComponent(AccessionHoldersComponent);

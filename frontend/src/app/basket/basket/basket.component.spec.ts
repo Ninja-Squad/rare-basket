@@ -1,19 +1,18 @@
 import { TestBed } from '@angular/core/testing';
-
-import { BasketComponent } from './basket.component';
+import { By } from '@angular/platform-browser';
+import { ActivatedRoute } from '@angular/router';
+import { of } from 'rxjs';
+import { beforeEach, describe, expect, test } from 'vitest';
+import { page } from 'vitest/browser';
 import { createMock, MockObject } from '../../../test/mock';
 import { stubRoute } from '../../../test/route-stub';
-import { EditBasketComponent } from '../edit-basket/edit-basket.component';
-import { ActivatedRoute } from '@angular/router';
+import { provideI18nTesting } from '../../i18n/mock-18n';
 import { AccessionHolderBasket, Basket, BasketCommand } from '../basket.model';
 import { BasketService } from '../basket.service';
-import { of } from 'rxjs';
-import { EditConfirmationComponent } from '../edit-confirmation/edit-confirmation.component';
 import { ConfirmedComponent } from '../confirmed/confirmed.component';
-import { provideI18nTesting } from '../../i18n/mock-18n';
-import { page } from 'vitest/browser';
-import { By } from '@angular/platform-browser';
-import { beforeEach, describe, expect, test } from 'vitest';
+import { EditBasketComponent } from '../edit-basket/edit-basket.component';
+import { EditConfirmationComponent } from '../edit-confirmation/edit-confirmation.component';
+import { BasketComponent } from './basket.component';
 
 class BasketComponentTester {
   readonly fixture = TestBed.createComponent(BasketComponent);

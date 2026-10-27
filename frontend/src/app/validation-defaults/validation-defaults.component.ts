@@ -1,7 +1,7 @@
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
-import { DisplayMode, ValdemortConfig, DefaultValidationErrorsDirective, ValidationErrorDirective } from 'ngx-valdemort';
 import { DecimalPipe } from '@angular/common';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { TranslateDirective } from '@ngx-translate/core';
+import { DisplayMode, ValdemortConfig, DefaultValidationErrorsDirective, ValidationErrorDirective } from 'ngx-valdemort';
 
 @Component({
   selector: 'rb-validation-defaults',

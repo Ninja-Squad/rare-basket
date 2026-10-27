@@ -1,10 +1,10 @@
-import { TestBed } from '@angular/core/testing';
 import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
-import { Customer } from '../../basket/basket.model';
-import { CustomerInformationComponent } from './customer-information.component';
-import { provideI18nTesting } from '../../i18n/mock-18n';
-import { page } from 'vitest/browser';
+import { TestBed } from '@angular/core/testing';
 import { beforeEach, describe, expect, test } from 'vitest';
+import { page } from 'vitest/browser';
+import { Customer } from '../../basket/basket.model';
+import { provideI18nTesting } from '../../i18n/mock-18n';
+import { CustomerInformationComponent } from './customer-information.component';
 
 @Component({
   template: '<rb-customer-information [customer]="customer()" [rationale]="rationale()" [withLanguage]="withLanguage()" />',

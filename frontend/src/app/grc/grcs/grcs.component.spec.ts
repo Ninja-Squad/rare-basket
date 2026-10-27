@@ -1,16 +1,15 @@
 import { TestBed } from '@angular/core/testing';
-
-import { GrcsComponent } from './grcs.component';
-import { createMock, MockObject } from '../../../test/mock';
-import { ConfirmationService } from '../../shared/confirmation.service';
+import { provideRouter } from '@angular/router';
 import { EMPTY, of } from 'rxjs';
-import { Grc } from '../../shared/user.model';
+import { beforeEach, describe, expect, test } from 'vitest';
+import { page } from 'vitest/browser';
+import { createMock, MockObject } from '../../../test/mock';
+import { provideI18nTesting } from '../../i18n/mock-18n';
+import { ConfirmationService } from '../../shared/confirmation.service';
 import { GrcService } from '../../shared/grc.service';
 import { ToastService } from '../../shared/toast.service';
-import { provideI18nTesting } from '../../i18n/mock-18n';
-import { provideRouter } from '@angular/router';
-import { page } from 'vitest/browser';
-import { beforeEach, describe, expect, test } from 'vitest';
+import { Grc } from '../../shared/user.model';
+import { GrcsComponent } from './grcs.component';
 
 class GrcsComponentTester {
   readonly fixture = TestBed.createComponent(GrcsComponent);

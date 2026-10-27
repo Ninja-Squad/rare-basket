@@ -1,5 +1,7 @@
 import { ChangeDetectionStrategy, Component, signal, inject, Signal } from '@angular/core';
-import { AuthenticationService } from '../shared/authentication.service';
+import { toSignal } from '@angular/core/rxjs-interop';
+import { RouterLink } from '@angular/router';
+import { FaIconComponent } from '@fortawesome/angular-fontawesome';
 import {
   faBuilding,
   faPowerOff,
@@ -10,14 +12,11 @@ import {
   faUser,
   faUsersCog
 } from '@fortawesome/free-solid-svg-icons';
-import { Permission, User } from '../shared/user.model';
-import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
-import { FaIconComponent } from '@fortawesome/angular-fontawesome';
-import { RouterLink } from '@angular/router';
-
 import { NgbCollapse, NgbDropdown, NgbDropdownItem, NgbDropdownMenu, NgbDropdownToggle } from '@ng-bootstrap/ng-bootstrap';
+import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
 import { map } from 'rxjs';
-import { toSignal } from '@angular/core/rxjs-interop';
+import { AuthenticationService } from '../shared/authentication.service';
+import { Permission, User } from '../shared/user.model';
 
 type ViewModel = { status: 'unknown' | 'absent' } | { status: 'present'; user: User };
 

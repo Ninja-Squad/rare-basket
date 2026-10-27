@@ -1,6 +1,6 @@
-import { PermissionEnumPipe } from './permission-enum.pipe';
-import { testEnumPipe } from '../shared/base-enum-pipe-test';
 import { describe, expect, test } from 'vitest';
+import { testEnumPipe } from '../shared/base-enum-pipe-test';
+import { PermissionEnumPipe } from './permission-enum.pipe';
 
 describe('PermissionEnumPipe', () => {
   test('should translate permissions', () => {

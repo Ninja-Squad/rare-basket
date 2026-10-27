@@ -1,13 +1,12 @@
-import { TestBed } from '@angular/core/testing';
-
-import { EditCustomerInformationComponent } from './edit-customer-information.component';
 import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
-import { ALL_CUSTOMER_TYPES, ALL_LANGUAGES } from '../../basket/basket.model';
-import { CustomerInformationCommand } from '../order.model';
-import { ValidationDefaultsComponent } from '../../validation-defaults/validation-defaults.component';
-import { provideI18nTesting } from '../../i18n/mock-18n';
-import { page } from 'vitest/browser';
+import { TestBed } from '@angular/core/testing';
 import { beforeEach, describe, expect, test } from 'vitest';
+import { page } from 'vitest/browser';
+import { ALL_CUSTOMER_TYPES, ALL_LANGUAGES } from '../../basket/basket.model';
+import { provideI18nTesting } from '../../i18n/mock-18n';
+import { ValidationDefaultsComponent } from '../../validation-defaults/validation-defaults.component';
+import { CustomerInformationCommand } from '../order.model';
+import { EditCustomerInformationComponent } from './edit-customer-information.component';
 
 @Component({
   template: `

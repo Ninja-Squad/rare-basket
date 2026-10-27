@@ -1,7 +1,7 @@
-import { inject } from '@angular/core';
 import { HttpInterceptorFn } from '@angular/common/http';
-import { first, switchMap } from 'rxjs';
+import { inject } from '@angular/core';
 import { OidcSecurityService } from 'angular-auth-oidc-client';
+import { first, switchMap } from 'rxjs';
 
 export const authenticationInterceptor: HttpInterceptorFn = (req, next) => {
   const oidcSecurityService = inject(OidcSecurityService);

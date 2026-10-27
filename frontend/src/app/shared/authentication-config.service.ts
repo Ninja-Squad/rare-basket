@@ -1,3 +1,4 @@
+import { LocationStrategy } from '@angular/common';
 import { inject, Service } from '@angular/core';
 import {
   AbstractSecurityStorage,
@@ -6,9 +7,8 @@ import {
   OpenIdConfiguration,
   StsConfigStaticLoader
 } from 'angular-auth-oidc-client';
-import { WINDOW } from './window.service';
-import { LocationStrategy } from '@angular/common';
 import { environment } from '../../environments/environment';
+import { WINDOW } from './window.service';
 
 const CONFIG_ID = 'rare-basket-auth';
 

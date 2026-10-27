@@ -1,10 +1,10 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
-import { AuthenticationService } from './shared/authentication.service';
-import { ToastsComponent } from './rb-ngb/toasts/toasts.component';
 import { RouterOutlet } from '@angular/router';
-import { ValidationDefaultsComponent } from './validation-defaults/validation-defaults.component';
-import { NavbarComponent } from './navbar/navbar.component';
 import { TranslateDirective } from '@ngx-translate/core';
+import { NavbarComponent } from './navbar/navbar.component';
+import { ToastsComponent } from './rb-ngb/toasts/toasts.component';
+import { AuthenticationService } from './shared/authentication.service';
+import { ValidationDefaultsComponent } from './validation-defaults/validation-defaults.component';
 
 @Component({
   selector: 'rb-root',

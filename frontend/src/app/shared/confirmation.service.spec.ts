@@ -1,11 +1,11 @@
 import { TestBed } from '@angular/core/testing';
+import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
+import { beforeEach, describe, expect, test } from 'vitest';
+import { createMock } from '../../test/mock';
+import { provideI18nTesting } from '../i18n/mock-18n';
+import { MockModalService, provideModalTesting } from '../rb-ngb/mock-modal.service';
 import { ConfirmationModalComponent } from './confirmation-modal/confirmation-modal.component';
 import { ConfirmationOptions, ConfirmationService } from './confirmation.service';
-import { MockModalService, provideModalTesting } from '../rb-ngb/mock-modal.service';
-import { provideI18nTesting } from '../i18n/mock-18n';
-import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
-import { createMock } from '../../test/mock';
-import { beforeEach, describe, expect, test } from 'vitest';
 
 describe('ConfirmationService', () => {
   let confirmationService: ConfirmationService;

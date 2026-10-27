@@ -1,16 +1,16 @@
 import { ChangeDetectionStrategy, Component, inject, Signal } from '@angular/core';
-import { UserService } from '../user.service';
-import { User } from '../../shared/user.model';
-import { Page } from '../../shared/page.model';
-import { TranslateDirective, TranslateService } from '@ngx-translate/core';
-import { ActivatedRoute, RouterLink } from '@angular/router';
-import { faPlus, faTrash, faUser } from '@fortawesome/free-solid-svg-icons';
-import { ConfirmationService } from '../../shared/confirmation.service';
-import { map, merge, Subject, switchMap, tap } from 'rxjs';
-import { ToastService } from '../../shared/toast.service';
-import { PaginationComponent } from '../../rb-ngb/pagination/pagination.component';
-import { FaIconComponent } from '@fortawesome/angular-fontawesome';
 import { toSignal } from '@angular/core/rxjs-interop';
+import { ActivatedRoute, RouterLink } from '@angular/router';
+import { FaIconComponent } from '@fortawesome/angular-fontawesome';
+import { faPlus, faTrash, faUser } from '@fortawesome/free-solid-svg-icons';
+import { TranslateDirective, TranslateService } from '@ngx-translate/core';
+import { map, merge, Subject, switchMap, tap } from 'rxjs';
+import { PaginationComponent } from '../../rb-ngb/pagination/pagination.component';
+import { ConfirmationService } from '../../shared/confirmation.service';
+import { Page } from '../../shared/page.model';
+import { ToastService } from '../../shared/toast.service';
+import { User } from '../../shared/user.model';
+import { UserService } from '../user.service';
 
 @Component({
   selector: 'rb-users',

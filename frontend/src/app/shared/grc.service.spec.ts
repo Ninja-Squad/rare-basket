@@ -1,9 +1,8 @@
-import { TestBed } from '@angular/core/testing';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
-
+import { TestBed } from '@angular/core/testing';
+import { afterEach, beforeEach, describe, expect, test } from 'vitest';
 import { GrcService } from './grc.service';
 import { Grc, GrcCommand } from './user.model';
-import { afterEach, beforeEach, describe, expect, test } from 'vitest';
 
 describe('GrcService', () => {
   let service: GrcService;

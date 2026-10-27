@@ -1,7 +1,7 @@
 import { Component, inject, output, input, ChangeDetectionStrategy } from '@angular/core';
 import { Router } from '@angular/router';
-import { Page } from '../../shared/page.model';
 import { NgbPagination } from '@ng-bootstrap/ng-bootstrap';
+import { Page } from '../../shared/page.model';
 
 @Component({
   selector: 'rb-pagination',

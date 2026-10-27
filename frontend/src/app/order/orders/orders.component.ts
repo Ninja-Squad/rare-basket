@@ -1,12 +1,12 @@
+import { DatePipe, DecimalPipe, NgPlural, NgPluralCase } from '@angular/common';
 import { ChangeDetectionStrategy, Component, input } from '@angular/core';
-import { Order } from '../order.model';
+import { RouterLink } from '@angular/router';
+import { TranslateDirective } from '@ngx-translate/core';
+import { PaginationComponent } from '../../rb-ngb/pagination/pagination.component';
+import { CustomerTypeEnumPipe } from '../../shared/customer-type-enum.pipe';
 import { Page } from '../../shared/page.model';
 import { OrderStatusEnumPipe } from '../order-status-enum.pipe';
-import { CustomerTypeEnumPipe } from '../../shared/customer-type-enum.pipe';
-import { PaginationComponent } from '../../rb-ngb/pagination/pagination.component';
-import { TranslateDirective } from '@ngx-translate/core';
-import { RouterLink } from '@angular/router';
-import { DatePipe, DecimalPipe, NgPlural, NgPluralCase } from '@angular/common';
+import { Order } from '../order.model';
 
 @Component({
   selector: 'rb-orders',

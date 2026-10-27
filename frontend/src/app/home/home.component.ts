@@ -1,13 +1,12 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
-import { faShoppingBag, faSignInAlt } from '@fortawesome/free-solid-svg-icons';
-import { Permission, User } from '../shared/user.model';
-import { AuthenticationService } from '../shared/authentication.service';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { RouterLink } from '@angular/router';
 import { FaIconComponent } from '@fortawesome/angular-fontawesome';
-
+import { faShoppingBag, faSignInAlt } from '@fortawesome/free-solid-svg-icons';
 import { TranslateDirective } from '@ngx-translate/core';
-import { toSignal } from '@angular/core/rxjs-interop';
 import { map } from 'rxjs';
+import { AuthenticationService } from '../shared/authentication.service';
+import { Permission, User } from '../shared/user.model';
 
 type ViewModel = { status: 'unknown' | 'absent' } | { status: 'present'; user: User };
 

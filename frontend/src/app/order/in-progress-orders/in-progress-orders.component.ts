@@ -1,14 +1,14 @@
-import { ChangeDetectionStrategy, Component, inject, input } from '@angular/core';
-import { RouterLink } from '@angular/router';
-import { faExclamationCircle, faPlus, faSpinner, faThumbsUp } from '@fortawesome/free-solid-svg-icons';
-import { FaIconComponent } from '@fortawesome/angular-fontawesome';
-import { OrdersComponent } from '../orders/orders.component';
-import { TranslateDirective } from '@ngx-translate/core';
-import { FormField } from '@angular/forms/signals';
 import { DecimalPipe } from '@angular/common';
-import { OrderListService } from '../order-list.service';
-import { AuthenticationService } from '../../shared/authentication.service';
+import { ChangeDetectionStrategy, Component, inject, input } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
+import { FormField } from '@angular/forms/signals';
+import { RouterLink } from '@angular/router';
+import { FaIconComponent } from '@fortawesome/angular-fontawesome';
+import { faExclamationCircle, faPlus, faSpinner, faThumbsUp } from '@fortawesome/free-solid-svg-icons';
+import { TranslateDirective } from '@ngx-translate/core';
+import { AuthenticationService } from '../../shared/authentication.service';
+import { OrderListService } from '../order-list.service';
+import { OrdersComponent } from '../orders/orders.component';
 
 @Component({
   selector: 'rb-in-progress-orders',

@@ -1,12 +1,12 @@
-import { TestBed } from '@angular/core/testing';
 import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
-import { NgbInputDatepicker } from '@ng-bootstrap/ng-bootstrap';
-import { DatepickerContainerComponent } from './datepicker-container.component';
-import { provideI18nTesting } from '../i18n/mock-18n';
-import { provideNgbDatepickerServices } from './datepicker-providers';
-import { page } from 'vitest/browser';
-import { beforeEach, describe, expect, test } from 'vitest';
+import { TestBed } from '@angular/core/testing';
 import { form, FormField, FormRoot } from '@angular/forms/signals';
+import { NgbInputDatepicker } from '@ng-bootstrap/ng-bootstrap';
+import { beforeEach, describe, expect, test } from 'vitest';
+import { page } from 'vitest/browser';
+import { provideI18nTesting } from '../i18n/mock-18n';
+import { DatepickerContainerComponent } from './datepicker-container.component';
+import { provideNgbDatepickerServices } from './datepicker-providers';
 
 @Component({
   template: `

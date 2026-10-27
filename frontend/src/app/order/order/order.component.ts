@@ -1,7 +1,9 @@
+import { DatePipe, DecimalPipe } from '@angular/common';
+import { HttpEventType } from '@angular/common/http';
 import { ChangeDetectionStrategy, Component, computed, inject, Signal, signal } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, RouterLink } from '@angular/router';
-import { OrderService } from '../order.service';
-import { CustomerInformationCommand, DetailedOrder, Document, DocumentCommand, OrderCommand } from '../order.model';
+import { FaIconComponent } from '@fortawesome/angular-fontawesome';
 import {
   faCheckSquare,
   faChevronLeft,
@@ -15,24 +17,22 @@ import {
   faTrash,
   faWindowClose
 } from '@fortawesome/free-solid-svg-icons';
-import { ConfirmationService } from '../../shared/confirmation.service';
-import { HttpEventType } from '@angular/common/http';
-import { DownloadService } from '../../shared/download.service';
 import { TranslateDirective, TranslateService } from '@ngx-translate/core';
-import { FinalizationWarningsModalComponent } from '../finalization-warnings-modal/finalization-warnings-modal.component';
 import { filter, finalize, map, Observable, startWith, Subject, switchMap, tap } from 'rxjs';
 import { ModalService } from '../../rb-ngb/modal.service';
+import { AccessionComponent } from '../../shared/accession/accession.component';
+import { ConfirmationService } from '../../shared/confirmation.service';
+import { CustomerInformationComponent } from '../../shared/customer-information/customer-information.component';
+import { DownloadService } from '../../shared/download.service';
 import { ToastService } from '../../shared/toast.service';
 import { DocumentTypeEnumPipe } from '../document-type-enum.pipe';
-import { OrderStatusEnumPipe } from '../order-status-enum.pipe';
+import { EditCustomerInformationComponent } from '../edit-customer-information/edit-customer-information.component';
 import { EditDocumentComponent } from '../edit-document/edit-document.component';
 import { EditOrderComponent } from '../edit-order/edit-order.component';
-import { AccessionComponent } from '../../shared/accession/accession.component';
-import { EditCustomerInformationComponent } from '../edit-customer-information/edit-customer-information.component';
-import { FaIconComponent } from '@fortawesome/angular-fontawesome';
-import { CustomerInformationComponent } from '../../shared/customer-information/customer-information.component';
-import { DatePipe, DecimalPipe } from '@angular/common';
-import { toSignal } from '@angular/core/rxjs-interop';
+import { FinalizationWarningsModalComponent } from '../finalization-warnings-modal/finalization-warnings-modal.component';
+import { OrderStatusEnumPipe } from '../order-status-enum.pipe';
+import { CustomerInformationCommand, DetailedOrder, Document, DocumentCommand, OrderCommand } from '../order.model';
+import { OrderService } from '../order.service';
 
 /**
  * Component displaying the details of an order to a GRC user

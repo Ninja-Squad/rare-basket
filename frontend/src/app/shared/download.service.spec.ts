@@ -1,8 +1,7 @@
-import { TestBed } from '@angular/core/testing';
-
-import { DownloadService } from './download.service';
 import { HttpHeaders, HttpResponse } from '@angular/common/http';
+import { TestBed } from '@angular/core/testing';
 import { beforeEach, describe, expect, test } from 'vitest';
+import { DownloadService } from './download.service';
 
 describe('DownloadService', () => {
   let service: DownloadService;

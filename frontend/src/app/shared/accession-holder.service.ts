@@ -1,5 +1,5 @@
-import { Service, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { Service, inject } from '@angular/core';
 import { Observable } from 'rxjs';
 import { AccessionHolder, AccessionHolderCommand } from './user.model';
 

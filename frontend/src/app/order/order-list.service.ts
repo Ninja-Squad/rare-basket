@@ -1,7 +1,7 @@
 import { inject, linkedSignal, Service } from '@angular/core';
-import { Router } from '@angular/router';
 import { rxResource } from '@angular/core/rxjs-interop';
 import { form } from '@angular/forms/signals';
+import { Router } from '@angular/router';
 import { Observable } from 'rxjs';
 import { Page } from '../shared/page.model';
 import { User } from '../shared/user.model';

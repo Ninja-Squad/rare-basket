@@ -1,6 +1,6 @@
 import { TestBed } from '@angular/core/testing';
-import { OrderCsvParserService } from './order-csv-parser.service';
 import { beforeEach, describe, expect, test } from 'vitest';
+import { OrderCsvParserService } from './order-csv-parser.service';
 
 describe('OrderCsvParserService', () => {
   let service: OrderCsvParserService;

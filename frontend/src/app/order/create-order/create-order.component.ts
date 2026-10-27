@@ -1,18 +1,18 @@
 import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
-import { OrderCreationCommand } from '../order.model';
-import { OrderService } from '../order.service';
-import { Router } from '@angular/router';
-import { ToastService } from '../../shared/toast.service';
-import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { disabled, email, form, FormField, FormRoot, required } from '@angular/forms/signals';
+import { Router } from '@angular/router';
+import { NgbCollapse } from '@ng-bootstrap/ng-bootstrap';
+import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
+import { ValidationSignalErrorsComponent } from 'ngx-valdemort';
+import { first, firstValueFrom, map, tap } from 'rxjs';
 import { ALL_CUSTOMER_TYPES, ALL_LANGUAGES, CustomerCommand, CustomerType, Language } from '../../basket/basket.model';
+import { AuthenticationService } from '../../shared/authentication.service';
 import { CustomerTypeEnumPipe } from '../../shared/customer-type-enum.pipe';
 import { LanguageEnumPipe } from '../../shared/language-enum.pipe';
-import { ValidationSignalErrorsComponent } from 'ngx-valdemort';
-import { NgbCollapse } from '@ng-bootstrap/ng-bootstrap';
-import { AuthenticationService } from '../../shared/authentication.service';
-import { toSignal } from '@angular/core/rxjs-interop';
-import { first, firstValueFrom, map, tap } from 'rxjs';
+import { ToastService } from '../../shared/toast.service';
+import { OrderCreationCommand } from '../order.model';
+import { OrderService } from '../order.service';
 
 @Component({
   selector: 'rb-create-order',

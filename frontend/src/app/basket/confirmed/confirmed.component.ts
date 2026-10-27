@@ -1,9 +1,9 @@
 import { ChangeDetectionStrategy, Component, input } from '@angular/core';
-import { Basket } from '../basket.model';
-import { faCheckCircle } from '@fortawesome/free-solid-svg-icons';
-import { BasketContentComponent } from '../basket-content/basket-content.component';
-import { TranslateDirective } from '@ngx-translate/core';
 import { FaIconComponent } from '@fortawesome/angular-fontawesome';
+import { faCheckCircle } from '@fortawesome/free-solid-svg-icons';
+import { TranslateDirective } from '@ngx-translate/core';
+import { BasketContentComponent } from '../basket-content/basket-content.component';
+import { Basket } from '../basket.model';
 
 /**
  * Component displayed when the basket is confirmed

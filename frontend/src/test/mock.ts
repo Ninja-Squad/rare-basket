@@ -1,6 +1,6 @@
 import { Type } from '@angular/core';
-import { vi } from 'vitest';
 import { MockedFunction } from '@vitest/spy';
+import { vi } from 'vitest';
 
 function collectMethodNames(proto: unknown): Array<string> {
   if (!proto || proto === Object.prototype) {

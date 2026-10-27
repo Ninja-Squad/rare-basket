@@ -1,10 +1,10 @@
+import { HttpClient } from '@angular/common/http';
 import { inject, Service } from '@angular/core';
+import { Router } from '@angular/router';
 import { OidcSecurityService } from 'angular-auth-oidc-client';
 import { map, Observable, of, ReplaySubject, switchMap } from 'rxjs';
-import { Router } from '@angular/router';
-import { WINDOW } from './window.service';
-import { HttpClient } from '@angular/common/http';
 import { User } from './user.model';
+import { WINDOW } from './window.service';
 
 const REQUESTED_URL_KEY = 'rare-basket-requested-url';
 

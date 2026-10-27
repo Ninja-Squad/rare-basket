@@ -1,12 +1,11 @@
 import { TestBed } from '@angular/core/testing';
-
-import { ToastsComponent } from './toasts.component';
 import { Subject } from 'rxjs';
-import { Toast, ToastService } from '../../shared/toast.service';
-import { provideDisabledNgbAnimation } from '../disable-animations';
+import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 import { page } from 'vitest/browser';
 import { createMock, MockObject } from '../../../test/mock';
-import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
+import { Toast, ToastService } from '../../shared/toast.service';
+import { provideDisabledNgbAnimation } from '../disable-animations';
+import { ToastsComponent } from './toasts.component';
 
 class ToastsComponentTester {
   readonly fixture = TestBed.createComponent(ToastsComponent);

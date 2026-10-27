@@ -1,6 +1,6 @@
 import { Routes } from '@angular/router';
-import { GrcsComponent } from './grcs/grcs.component';
 import { EditGrcComponent } from './edit-grc/edit-grc.component';
+import { GrcsComponent } from './grcs/grcs.component';
 
 export const GRC_ROUTES: Routes = [
   {

@@ -1,5 +1,5 @@
-import { DateStringAdapterService } from './date-string-adapter.service';
 import { describe, expect, test } from 'vitest';
+import { DateStringAdapterService } from './date-string-adapter.service';
 
 describe('DateStringAdapterService', () => {
   test('should transform string to NgbDateStruct', () => {

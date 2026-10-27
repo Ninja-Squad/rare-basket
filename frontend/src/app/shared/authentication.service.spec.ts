@@ -1,14 +1,13 @@
-import { TestBed } from '@angular/core/testing';
-
-import { AuthenticationService } from './authentication.service';
-import { WINDOW } from './window.service';
-import { LoginResponse, OidcSecurityService } from 'angular-auth-oidc-client';
-import { Router } from '@angular/router';
-import { defer, of, Subject } from 'rxjs';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
-import { createMock, MockObject } from '../../test/mock';
+import { TestBed } from '@angular/core/testing';
+import { Router } from '@angular/router';
+import { LoginResponse, OidcSecurityService } from 'angular-auth-oidc-client';
+import { defer, of, Subject } from 'rxjs';
 import type { Mock } from 'vitest';
 import { beforeEach, describe, expect, test, vi } from 'vitest';
+import { createMock, MockObject } from '../../test/mock';
+import { AuthenticationService } from './authentication.service';
+import { WINDOW } from './window.service';
 
 describe('AuthenticationService', () => {
   let service: AuthenticationService;

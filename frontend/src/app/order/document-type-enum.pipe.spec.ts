@@ -1,6 +1,6 @@
-import { DocumentTypeEnumPipe } from './document-type-enum.pipe';
-import { testEnumPipe } from '../shared/base-enum-pipe-test';
 import { describe, expect, test } from 'vitest';
+import { testEnumPipe } from '../shared/base-enum-pipe-test';
+import { DocumentTypeEnumPipe } from './document-type-enum.pipe';
 
 describe('DocumentTypeEnumPipe', () => {
   test('should translate document types', () => {

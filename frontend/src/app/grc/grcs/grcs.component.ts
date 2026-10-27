@@ -1,15 +1,14 @@
 import { ChangeDetectionStrategy, Component, inject, Signal } from '@angular/core';
-import { Grc } from '../../shared/user.model';
+import { toSignal } from '@angular/core/rxjs-interop';
+import { RouterLink } from '@angular/router';
+import { FaIconComponent } from '@fortawesome/angular-fontawesome';
+import { faBuilding, faPlus, faTrash } from '@fortawesome/free-solid-svg-icons';
+import { TranslateDirective } from '@ngx-translate/core';
+import { startWith, Subject, switchMap, tap } from 'rxjs';
 import { ConfirmationService } from '../../shared/confirmation.service';
 import { GrcService } from '../../shared/grc.service';
-import { faBuilding, faPlus, faTrash } from '@fortawesome/free-solid-svg-icons';
 import { ToastService } from '../../shared/toast.service';
-import { RouterLink } from '@angular/router';
-
-import { TranslateDirective } from '@ngx-translate/core';
-import { FaIconComponent } from '@fortawesome/angular-fontawesome';
-import { startWith, Subject, switchMap, tap } from 'rxjs';
-import { toSignal } from '@angular/core/rxjs-interop';
+import { Grc } from '../../shared/user.model';
 
 @Component({
   selector: 'rb-grcs',

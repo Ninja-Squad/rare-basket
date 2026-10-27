@@ -1,20 +1,19 @@
 import { TestBed } from '@angular/core/testing';
-
-import { UsersComponent } from './users.component';
-import { createMock, MockObject } from '../../../test/mock';
-import { stubRoute } from '../../../test/route-stub';
-import { PaginationComponent } from '../../rb-ngb/pagination/pagination.component';
+import { By } from '@angular/platform-browser';
 import { ActivatedRoute } from '@angular/router';
 import { EMPTY, of } from 'rxjs';
-import { UserService } from '../user.service';
-import { Page } from '../../shared/page.model';
-import { User } from '../../shared/user.model';
-import { ConfirmationService } from '../../shared/confirmation.service';
-import { ToastService } from '../../shared/toast.service';
-import { provideI18nTesting } from '../../i18n/mock-18n';
-import { page } from 'vitest/browser';
-import { By } from '@angular/platform-browser';
 import { beforeEach, describe, expect, test } from 'vitest';
+import { page } from 'vitest/browser';
+import { createMock, MockObject } from '../../../test/mock';
+import { stubRoute } from '../../../test/route-stub';
+import { provideI18nTesting } from '../../i18n/mock-18n';
+import { PaginationComponent } from '../../rb-ngb/pagination/pagination.component';
+import { ConfirmationService } from '../../shared/confirmation.service';
+import { Page } from '../../shared/page.model';
+import { ToastService } from '../../shared/toast.service';
+import { User } from '../../shared/user.model';
+import { UserService } from '../user.service';
+import { UsersComponent } from './users.component';
 
 class UsersComponentTester {
   readonly fixture = TestBed.createComponent(UsersComponent);

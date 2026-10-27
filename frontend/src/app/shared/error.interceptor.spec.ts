@@ -1,11 +1,10 @@
-import { TestBed } from '@angular/core/testing';
-
-import { errorInterceptor } from './error.interceptor';
-import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { HttpClient, provideHttpClient, withInterceptors } from '@angular/common/http';
-import { ToastService } from './toast.service';
-import { createMock, MockObject } from '../../test/mock';
+import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
+import { TestBed } from '@angular/core/testing';
 import { beforeEach, describe, expect, test } from 'vitest';
+import { createMock, MockObject } from '../../test/mock';
+import { errorInterceptor } from './error.interceptor';
+import { ToastService } from './toast.service';
 
 describe('errorInterceptor', () => {
   let http: HttpTestingController;

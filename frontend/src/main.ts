@@ -1,15 +1,15 @@
-import { provideBrowserGlobalErrorListeners } from '@angular/core';
-import { AppComponent } from './app/app.component';
-import { provideI18n } from './app/i18n/i18n';
-import { APP_ROUTES } from './app/app.routes';
-import { provideRouter, withComponentInputBinding, withViewTransitions } from '@angular/router';
-import { bootstrapApplication } from '@angular/platform-browser';
-import { AuthenticationConfigService, authFactory, CustomSecurityStorage } from './app/shared/authentication-config.service';
-import { AbstractSecurityStorage, provideAuth, StsConfigLoader } from 'angular-auth-oidc-client';
-import { errorInterceptor } from './app/shared/error.interceptor';
-import { authenticationInterceptor } from './app/shared/authentication.interceptor';
 import { provideHttpClient, withInterceptors, withNoXsrfProtection, withXhr } from '@angular/common/http';
+import { provideBrowserGlobalErrorListeners } from '@angular/core';
+import { bootstrapApplication } from '@angular/platform-browser';
+import { provideRouter, withComponentInputBinding, withViewTransitions } from '@angular/router';
+import { AbstractSecurityStorage, provideAuth, StsConfigLoader } from 'angular-auth-oidc-client';
+import { AppComponent } from './app/app.component';
+import { APP_ROUTES } from './app/app.routes';
+import { provideI18n } from './app/i18n/i18n';
 import { provideNgbDatepickerServices } from './app/rb-ngb/datepicker-providers';
+import { AuthenticationConfigService, authFactory, CustomSecurityStorage } from './app/shared/authentication-config.service';
+import { authenticationInterceptor } from './app/shared/authentication.interceptor';
+import { errorInterceptor } from './app/shared/error.interceptor';
 import { provideRbSignalFormsConfig } from './app/signal-forms';
 
 bootstrapApplication(AppComponent, {

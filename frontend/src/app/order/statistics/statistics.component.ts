@@ -1,3 +1,4 @@
+import { DecimalPipe, formatDate, formatNumber, formatPercent, PercentPipe } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -11,26 +12,25 @@ import {
   ResourceSnapshot,
   signal
 } from '@angular/core';
-import { OrderService } from '../order.service';
-import { CustomerTypeStatistics, OrderStatusStatistics } from '../order.model';
-import { ArcElement, Chart, ChartConfiguration, DoughnutController, Legend, Tooltip } from 'chart.js';
-import { COLORS } from '../../chart/colors';
-import { TranslateDirective, TranslatePipe, TranslateService } from '@ngx-translate/core';
-import { DecimalPipe, formatDate, formatNumber, formatPercent, PercentPipe } from '@angular/common';
+import { rxResource } from '@angular/core/rxjs-interop';
 import { form, FormField, FormRoot, required, validate } from '@angular/forms/signals';
 import { Params, Router } from '@angular/router';
-import { Grc } from '../../shared/user.model';
-import { AuthenticationService } from '../../shared/authentication.service';
-import { GrcService } from '../../shared/grc.service';
-import { catchError, first, map, of, tap } from 'rxjs';
-import { OrderStatusEnumPipe } from '../order-status-enum.pipe';
-import { CustomerTypeEnumPipe } from '../../shared/customer-type-enum.pipe';
-import { ChartComponent } from '../../chart/chart/chart.component';
-import { ValidationErrorDirective, ValidationSignalErrorsComponent } from 'ngx-valdemort';
 import { NgbInputDatepicker } from '@ng-bootstrap/ng-bootstrap';
+import { TranslateDirective, TranslatePipe, TranslateService } from '@ngx-translate/core';
+import { ArcElement, Chart, ChartConfiguration, DoughnutController, Legend, Tooltip } from 'chart.js';
+import { ValidationErrorDirective, ValidationSignalErrorsComponent } from 'ngx-valdemort';
+import { catchError, first, map, of, tap } from 'rxjs';
+import { ChartComponent } from '../../chart/chart/chart.component';
+import { COLORS } from '../../chart/colors';
 import { DatepickerContainerComponent } from '../../rb-ngb/datepicker-container.component';
-import { rxResource } from '@angular/core/rxjs-interop';
+import { AuthenticationService } from '../../shared/authentication.service';
+import { CustomerTypeEnumPipe } from '../../shared/customer-type-enum.pipe';
+import { GrcService } from '../../shared/grc.service';
+import { Grc } from '../../shared/user.model';
 import { validSignalDateRange } from '../../shared/validators';
+import { OrderStatusEnumPipe } from '../order-status-enum.pipe';
+import { CustomerTypeStatistics, OrderStatusStatistics } from '../order.model';
+import { OrderService } from '../order.service';
 
 interface StatsParams {
   from: string;

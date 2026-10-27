@@ -1,7 +1,7 @@
-import { afterEach, beforeEach, describe, expect, test } from 'vitest';
-import { TestBed } from '@angular/core/testing';
-import { AccessionHolderService } from './accession-holder.service';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
+import { TestBed } from '@angular/core/testing';
+import { afterEach, beforeEach, describe, expect, test } from 'vitest';
+import { AccessionHolderService } from './accession-holder.service';
 import { AccessionHolder, AccessionHolderCommand } from './user.model';
 
 describe('AccessionHolderService', () => {

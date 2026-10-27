@@ -1,10 +1,10 @@
 import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
-import { Toast, ToastService } from '../../shared/toast.service';
-import { faCheckCircle, faExclamationCircle } from '@fortawesome/free-solid-svg-icons';
-import { FaIconComponent } from '@fortawesome/angular-fontawesome';
-import { NgbToast } from '@ng-bootstrap/ng-bootstrap';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { FaIconComponent } from '@fortawesome/angular-fontawesome';
+import { faCheckCircle, faExclamationCircle } from '@fortawesome/free-solid-svg-icons';
+import { NgbToast } from '@ng-bootstrap/ng-bootstrap';
 import { delay } from 'rxjs';
+import { Toast, ToastService } from '../../shared/toast.service';
 
 @Component({
   selector: 'rb-toasts',

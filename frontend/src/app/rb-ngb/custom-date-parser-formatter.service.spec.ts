@@ -1,6 +1,6 @@
-import { CustomDateParserFormatterService } from './custom-date-parser-formatter.service';
 import { NgbDateStruct } from '@ng-bootstrap/ng-bootstrap';
 import { beforeEach, describe, expect, test } from 'vitest';
+import { CustomDateParserFormatterService } from './custom-date-parser-formatter.service';
 
 describe('FrenchDateParserFormatterService', () => {
   let pf: CustomDateParserFormatterService;

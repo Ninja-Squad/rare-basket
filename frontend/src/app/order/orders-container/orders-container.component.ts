@@ -1,10 +1,10 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
+import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
+import { TranslateDirective } from '@ngx-translate/core';
+import { RouterNavDirective, RouterNavLinkDirective, RouterNavPanelDirective } from '../../rb-ngb/router-nav.directive';
 import { AuthenticationService } from '../../shared/authentication.service';
 import { Permission } from '../../shared/user.model';
-import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
-import { RouterNavDirective, RouterNavLinkDirective, RouterNavPanelDirective } from '../../rb-ngb/router-nav.directive';
-import { TranslateDirective } from '@ngx-translate/core';
-import { toSignal } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'rb-orders-container',

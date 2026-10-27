@@ -1,5 +1,12 @@
+import { DecimalPipe } from '@angular/common';
 import { Component, ElementRef, output, input, computed, signal, ChangeDetectionStrategy, viewChild } from '@angular/core';
 import { disabled, form, FormField, FormRoot, required } from '@angular/forms/signals';
+import { FaIconComponent } from '@fortawesome/angular-fontawesome';
+import { faFileUpload } from '@fortawesome/free-solid-svg-icons';
+import { NgbProgressbar } from '@ng-bootstrap/ng-bootstrap';
+import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
+import { ValidationSignalErrorsComponent } from 'ngx-valdemort';
+import { DocumentTypeEnumPipe } from '../document-type-enum.pipe';
 import {
   ALL_DOCUMENT_TYPES,
   DetailedOrder,
@@ -8,13 +15,6 @@ import {
   isDocumentTypeUnique,
   ON_DELIVERY_FORM_BY_DEFAULT_DOCUMENT_TYPES
 } from '../order.model';
-import { faFileUpload } from '@fortawesome/free-solid-svg-icons';
-import { DocumentTypeEnumPipe } from '../document-type-enum.pipe';
-import { FaIconComponent } from '@fortawesome/angular-fontawesome';
-import { NgbProgressbar } from '@ng-bootstrap/ng-bootstrap';
-import { ValidationSignalErrorsComponent } from 'ngx-valdemort';
-import { DecimalPipe } from '@angular/common';
-import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
 
 const validExtensions = ['.pdf', '.txt', '.eml', '.pst', '.ost'];
 const maxFileSize = 10 * 1024 * 1024; // 10 MB

@@ -1,9 +1,8 @@
-import { TestBed } from '@angular/core/testing';
 import { HttpStatusCode } from '@angular/common/http';
-
-import { Toast, ToastService } from './toast.service';
-import { provideI18nTesting } from '../i18n/mock-18n';
+import { TestBed } from '@angular/core/testing';
 import { beforeEach, describe, expect, test } from 'vitest';
+import { provideI18nTesting } from '../i18n/mock-18n';
+import { Toast, ToastService } from './toast.service';
 
 describe('ToastService', () => {
   let service: ToastService;

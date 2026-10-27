@@ -1,12 +1,11 @@
-import { TestBed } from '@angular/core/testing';
-
-import { OrderService } from './order.service';
-import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
-import { CustomerInformationCommand, Document, DocumentCommand, Order, OrderCommand, OrderStatistics } from './order.model';
-import { Page } from '../shared/page.model';
-import { filter } from 'rxjs';
 import { HttpEventType, HttpResponse } from '@angular/common/http';
+import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
+import { TestBed } from '@angular/core/testing';
+import { filter } from 'rxjs';
 import { afterEach, beforeEach, describe, expect, test } from 'vitest';
+import { Page } from '../shared/page.model';
+import { CustomerInformationCommand, Document, DocumentCommand, Order, OrderCommand, OrderStatistics } from './order.model';
+import { OrderService } from './order.service';
 
 describe('OrderService', () => {
   let service: OrderService;

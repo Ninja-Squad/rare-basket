@@ -1,10 +1,9 @@
-import { TestBed } from '@angular/core/testing';
 import { HttpStatusCode } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
-
-import { BasketService } from './basket.service';
-import { Basket, BasketCommand } from './basket.model';
+import { TestBed } from '@angular/core/testing';
 import { afterEach, beforeEach, describe, expect, test } from 'vitest';
+import { Basket, BasketCommand } from './basket.model';
+import { BasketService } from './basket.service';
 
 describe('BasketService', () => {
   let service: BasketService;

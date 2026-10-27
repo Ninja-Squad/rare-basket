@@ -1,11 +1,10 @@
 import { TestBed } from '@angular/core/testing';
-
-import { FinalizationWarningsModalComponent } from './finalization-warnings-modal.component';
-import { createMock, MockObject } from '../../../test/mock';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
-import { provideI18nTesting } from '../../i18n/mock-18n';
-import { page } from 'vitest/browser';
 import { beforeEach, describe, expect, test } from 'vitest';
+import { page } from 'vitest/browser';
+import { createMock, MockObject } from '../../../test/mock';
+import { provideI18nTesting } from '../../i18n/mock-18n';
+import { FinalizationWarningsModalComponent } from './finalization-warnings-modal.component';
 
 class FinalizationWarningsModalComponentTester {
   readonly fixture = TestBed.createComponent(FinalizationWarningsModalComponent);

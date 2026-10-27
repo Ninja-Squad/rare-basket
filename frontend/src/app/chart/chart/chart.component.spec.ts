@@ -1,10 +1,10 @@
-import { ChartComponent } from './chart.component';
 import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
-import { ArcElement, Chart, ChartConfiguration, DoughnutController } from 'chart.js';
 import { TestBed } from '@angular/core/testing';
-import { page } from 'vitest/browser';
 import { By } from '@angular/platform-browser';
+import { ArcElement, Chart, ChartConfiguration, DoughnutController } from 'chart.js';
 import { beforeEach, describe, expect, test } from 'vitest';
+import { page } from 'vitest/browser';
+import { ChartComponent } from './chart.component';
 
 @Component({
   template: '<rb-chart [configuration]="configuration()" />',

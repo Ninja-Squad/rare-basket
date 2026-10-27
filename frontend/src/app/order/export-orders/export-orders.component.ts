@@ -1,16 +1,16 @@
+import { formatDate } from '@angular/common';
 import { ChangeDetectionStrategy, Component, inject, LOCALE_ID, signal } from '@angular/core';
 import { form, FormField, FormRoot, required } from '@angular/forms/signals';
-import { formatDate } from '@angular/common';
-import { OrderService } from '../order.service';
-import { DownloadService } from '../../shared/download.service';
-import { finalize, firstValueFrom } from 'rxjs';
-import { faSpinner } from '@fortawesome/free-solid-svg-icons';
-import { ValidationSignalErrorsComponent } from 'ngx-valdemort';
 import { FaIconComponent } from '@fortawesome/angular-fontawesome';
+import { faSpinner } from '@fortawesome/free-solid-svg-icons';
 import { NgbInputDatepicker } from '@ng-bootstrap/ng-bootstrap';
-import { DatepickerContainerComponent } from '../../rb-ngb/datepicker-container.component';
 import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
+import { ValidationSignalErrorsComponent } from 'ngx-valdemort';
+import { finalize, firstValueFrom } from 'rxjs';
+import { DatepickerContainerComponent } from '../../rb-ngb/datepicker-container.component';
+import { DownloadService } from '../../shared/download.service';
 import { validSignalDateRange } from '../../shared/validators';
+import { OrderService } from '../order.service';
 
 @Component({
   selector: 'rb-export-orders',

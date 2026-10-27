@@ -1,12 +1,12 @@
 import { ChangeDetectionStrategy, Component, inject, input } from '@angular/core';
-import { OrdersComponent } from '../orders/orders.component';
-import { FormField } from '@angular/forms/signals';
-import { TranslateDirective } from '@ngx-translate/core';
-import { OrderListService } from '../order-list.service';
-import { AuthenticationService } from '../../shared/authentication.service';
 import { toSignal } from '@angular/core/rxjs-interop';
+import { FormField } from '@angular/forms/signals';
 import { FaIconComponent } from '@fortawesome/angular-fontawesome';
 import { faExclamationCircle, faSpinner } from '@fortawesome/free-solid-svg-icons';
+import { TranslateDirective } from '@ngx-translate/core';
+import { AuthenticationService } from '../../shared/authentication.service';
+import { OrderListService } from '../order-list.service';
+import { OrdersComponent } from '../orders/orders.component';
 
 @Component({
   selector: 'rb-done-orders',

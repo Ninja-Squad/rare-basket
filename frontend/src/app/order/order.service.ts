@@ -1,5 +1,7 @@
-import { Service, inject } from '@angular/core';
 import { HttpClient, HttpEvent, HttpResponse } from '@angular/common/http';
+import { Service, inject } from '@angular/core';
+import { Observable } from 'rxjs';
+import { Page } from '../shared/page.model';
 import {
   CustomerInformationCommand,
   DetailedOrder,
@@ -11,8 +13,6 @@ import {
   OrderStatistics,
   OrderStatus
 } from './order.model';
-import { Observable } from 'rxjs';
-import { Page } from '../shared/page.model';
 
 @Service()
 export class OrderService {

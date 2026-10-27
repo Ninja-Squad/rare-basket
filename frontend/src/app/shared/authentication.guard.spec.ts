@@ -1,10 +1,10 @@
 import { TestBed } from '@angular/core/testing';
-import { AuthenticationService } from './authentication.service';
-import { lastValueFrom, of } from 'rxjs';
 import { ActivatedRouteSnapshot, RouterStateSnapshot } from '@angular/router';
-import { authenticationGuard } from './authentication.guard';
+import { lastValueFrom, of } from 'rxjs';
 import { beforeEach, describe, expect, test } from 'vitest';
 import { createMock, MockObject } from '../../test/mock';
+import { authenticationGuard } from './authentication.guard';
+import { AuthenticationService } from './authentication.service';
 
 describe('AuthenticationGuard', () => {
   let authenticationService: MockObject<AuthenticationService>;

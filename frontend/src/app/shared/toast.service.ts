@@ -1,6 +1,6 @@
 import { Service, inject } from '@angular/core';
-import { Observable, Subject } from 'rxjs';
 import { TranslateService } from '@ngx-translate/core';
+import { Observable, Subject } from 'rxjs';
 
 export interface Toast {
   message: string;

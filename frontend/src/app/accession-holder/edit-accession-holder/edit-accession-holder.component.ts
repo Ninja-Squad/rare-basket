@@ -1,15 +1,14 @@
 import { ChangeDetectionStrategy, Component, inject, Signal, signal } from '@angular/core';
-import { AccessionHolder, AccessionHolderCommand, Grc } from '../../shared/user.model';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { email, form, FormField, FormRoot, required } from '@angular/forms/signals';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
+import { ValidationSignalErrorsComponent } from 'ngx-valdemort';
+import { combineLatest, firstValueFrom, map, Observable, of, tap } from 'rxjs';
 import { AccessionHolderService } from '../../shared/accession-holder.service';
 import { GrcService } from '../../shared/grc.service';
-import { combineLatest, firstValueFrom, map, Observable, of, tap } from 'rxjs';
 import { ToastService } from '../../shared/toast.service';
-
-import { ValidationSignalErrorsComponent } from 'ngx-valdemort';
-import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
-import { toSignal } from '@angular/core/rxjs-interop';
+import { AccessionHolder, AccessionHolderCommand, Grc } from '../../shared/user.model';
 
 interface ViewModel {
   mode: 'create' | 'update';

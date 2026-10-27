@@ -1,12 +1,11 @@
 import { TestBed } from '@angular/core/testing';
-
-import { ordersGuard } from './orders.guard';
-import { AuthenticationService } from '../shared/authentication.service';
-import { BehaviorSubject } from 'rxjs';
-import { User } from '../shared/user.model';
 import { UrlTree } from '@angular/router';
-import { createMock, MockObject } from '../../test/mock';
+import { BehaviorSubject } from 'rxjs';
 import { beforeEach, describe, expect, test } from 'vitest';
+import { createMock, MockObject } from '../../test/mock';
+import { AuthenticationService } from '../shared/authentication.service';
+import { User } from '../shared/user.model';
+import { ordersGuard } from './orders.guard';
 
 describe('ordersGuard', () => {
   let authenticationService: MockObject<AuthenticationService>;

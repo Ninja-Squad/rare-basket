@@ -1,8 +1,8 @@
 import { Service, inject } from '@angular/core';
-import { Observable } from 'rxjs';
-import { ConfirmationModalComponent } from './confirmation-modal/confirmation-modal.component';
-import { ModalService } from '../rb-ngb/modal.service';
 import { TranslateService } from '@ngx-translate/core';
+import { Observable } from 'rxjs';
+import { ModalService } from '../rb-ngb/modal.service';
+import { ConfirmationModalComponent } from './confirmation-modal/confirmation-modal.component';
 
 /**
  * The options that are passed when opening a confirmation modal.

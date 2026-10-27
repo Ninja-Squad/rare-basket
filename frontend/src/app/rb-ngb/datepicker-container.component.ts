@@ -1,8 +1,8 @@
 import { ChangeDetectionStrategy, Component, contentChild } from '@angular/core';
-import { NgbInputDatepicker } from '@ng-bootstrap/ng-bootstrap';
-import { faCalendarAlt } from '@fortawesome/free-solid-svg-icons';
-import { TranslateDirective } from '@ngx-translate/core';
 import { FaIconComponent } from '@fortawesome/angular-fontawesome';
+import { faCalendarAlt } from '@fortawesome/free-solid-svg-icons';
+import { NgbInputDatepicker } from '@ng-bootstrap/ng-bootstrap';
+import { TranslateDirective } from '@ngx-translate/core';
 
 /**
  * Component used to simplify the markup of a datepicker in a popup. It wraps the input which has the

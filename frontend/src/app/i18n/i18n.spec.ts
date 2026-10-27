@@ -1,6 +1,6 @@
-import FR_TRANSLATIONS from './fr.json';
-import EN_TRANSLATIONS from './en.json';
 import { describe, expect, test } from 'vitest';
+import EN_TRANSLATIONS from './en.json';
+import FR_TRANSLATIONS from './fr.json';
 
 describe('i18n', () => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any

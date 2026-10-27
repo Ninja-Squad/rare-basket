@@ -1,14 +1,13 @@
 import { TestBed } from '@angular/core/testing';
-
-import { BasketConfirmationComponent } from './basket-confirmation.component';
+import { ActivatedRoute, Router } from '@angular/router';
+import { of, throwError } from 'rxjs';
+import { beforeEach, describe, expect, test, vi } from 'vitest';
+import { page } from 'vitest/browser';
 import { createMock, MockObject } from '../../../test/mock';
 import { stubRoute } from '../../../test/route-stub';
-import { ActivatedRoute, Router } from '@angular/router';
-import { BasketService } from '../basket.service';
-import { of, throwError } from 'rxjs';
 import { provideI18nTesting } from '../../i18n/mock-18n';
-import { page } from 'vitest/browser';
-import { beforeEach, describe, expect, test, vi } from 'vitest';
+import { BasketService } from '../basket.service';
+import { BasketConfirmationComponent } from './basket-confirmation.component';
 
 class BasketConfirmationComponentTester {
   readonly fixture = TestBed.createComponent(BasketConfirmationComponent);

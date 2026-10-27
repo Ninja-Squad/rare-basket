@@ -1,8 +1,8 @@
-import { Service, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { Service, inject } from '@angular/core';
 import { Observable } from 'rxjs';
-import { User, UserCommand } from '../shared/user.model';
 import { Page } from '../shared/page.model';
+import { User, UserCommand } from '../shared/user.model';
 
 @Service()
 export class UserService {

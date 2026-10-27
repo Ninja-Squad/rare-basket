@@ -1,15 +1,14 @@
-import { TestBed } from '@angular/core/testing';
-
-import { EditBasketComponent } from './edit-basket.component';
-import { createMock, MockObject } from '../../../test/mock';
 import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
-import { AccessionHolderBasket, Basket, BasketCommand, BasketItem } from '../basket.model';
-import { ValidationDefaultsComponent } from '../../validation-defaults/validation-defaults.component';
-import { ConfirmationService } from '../../shared/confirmation.service';
+import { TestBed } from '@angular/core/testing';
 import { of } from 'rxjs';
-import { provideI18nTesting } from '../../i18n/mock-18n';
-import { page } from 'vitest/browser';
 import { beforeEach, describe, expect, test } from 'vitest';
+import { page } from 'vitest/browser';
+import { createMock, MockObject } from '../../../test/mock';
+import { provideI18nTesting } from '../../i18n/mock-18n';
+import { ConfirmationService } from '../../shared/confirmation.service';
+import { ValidationDefaultsComponent } from '../../validation-defaults/validation-defaults.component';
+import { AccessionHolderBasket, Basket, BasketCommand, BasketItem } from '../basket.model';
+import { EditBasketComponent } from './edit-basket.component';
 
 @Component({
   template: `@if (basket(); as basket) {
