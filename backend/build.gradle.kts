@@ -87,7 +87,7 @@ dependencyManagement {
 }
 
 dependencies {
-    val itextVersion = "9.8.0"
+    val itextVersion = "9.8.1"
 
     implementation("org.springframework.boot:spring-boot-starter-webmvc")
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
