@@ -42,9 +42,6 @@ spring:
     username:
     password:
     port: 25
-  mvc:
-    pathmatch:
-      matching-strategy: ant-path-matcher
   security:
     oauth2:
       resourceserver:
