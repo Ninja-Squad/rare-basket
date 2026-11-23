@@ -20,7 +20,7 @@ test:
  stage: test
  image: cimg/openjdk:17.0-browsers
  services:
-  - name: postgres:18.7-alpine
+  - name: postgres:19.0-alpine
     alias: postgres
  variables:
   STORE_DIR: "$CI_PROJECT_DIR/.pnpm-store"
